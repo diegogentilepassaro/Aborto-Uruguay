@@ -1,0 +1,9 @@
+raw/
+*.gph
+*.dta
+*.png
+tables/
+figures/
+base/
+temp/
+draft/
