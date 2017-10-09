@@ -4,8 +4,8 @@ cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
 *cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
 
 program main 
-	preclean_98_00
-	clean_98_00_p 
+	append_different_waves_98_00
+	clean_98_00
 	clean_01_05 
 	clean_06 
 	clean_07 
@@ -13,7 +13,7 @@ program main
 	clean_09_16
 end
 
-program preclean_98_00
+program append_different_waves_98_00
    	
 	foreach year in 1998 1999 2000 {
 		foreach t in p h {
@@ -34,9 +34,9 @@ program preclean_98_00
 	
 end
 
-program clean_98_00_p
-	* Note: can't find: religion afro asia blanco indigena otro hijos_nac hijos_nac_num ytransf
-	forvalues year in 1998/2000 {
+program clean_98_00
+	* Note: can't find: afro asia blanco indigena otro then generated raza equal missing
+	forvalues year=1998/2000 {
 		use ..\base\preclean_`year'_p.dta, replace
 		keep    correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
 				pe2 pe3 pe5  pobpcoac pe6 pf133 pe14* pf053 pf37 pf38 pf351 pt1
@@ -45,11 +45,13 @@ program clean_98_00_p
 			   (numero     pers    nper anio semn dpto seccion segm estrato )
 
 			   
-		rename (pe2  pe5           pobpcoac         pe6              pf133         pe141 pe142 ///
+		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
 				pe3  pf053         pf38             pf37             pf351         pt1)  ///
-			   (sexo estado_civil  codigo_actividad prestador_salud  estudiante    educ  ult_anio_educ ///
+			   (sexo estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
-		
+				
+				
+		gen etnia = .
 		save ..\base\clean_`year'_p.dta, replace
 		}
 				
