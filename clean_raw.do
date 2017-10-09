@@ -4,9 +4,8 @@ cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
 *cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
 
 program main 
-	foreach year in 1998 1999 2000 {
-	    clean_98_00, year(`year')
-	} 
+	preclean_98_00
+	clean_98_00_p 
 	clean_01_05 
 	clean_06 
 	clean_07 
@@ -14,36 +13,46 @@ program main
 	clean_09_16
 end
 
-program clean_98_00
-    syntax, year(str)
+program preclean_98_00
+   	
+	foreach year in 1998 1999 2000 {
+		foreach t in p h {
+			foreach w in 1 2 {
+				foreach c in i m {
+					import excel using "`year'/`t'`year's`w'`c'.xls", clear first
+					tempfile temp_`t'_`w'`c'
+					save `temp_`t'_`w'`c''
+					}
+				append using `temp_`t'_`w'i'
+				tempfile temp_`t'_`w'
+				save `temp_`t'_`w''
+				}
+			append using `temp_`t'_1'
+			save ..\base\preclean_`year'_`t'.dta, replace
+		}
+	}
 	
-	foreach w in 1 2 {
-	    foreach c in i m {
-			import excel using "`year'\h`year's`w'`c'.xls", clear first
-			tempfile temp_h_`w'`c'
-			save `temp_h_`w'`c''
-		    }
-	    append using `temp_h_`w'i'
-		tempfile temp_h_`w'
-		save `temp_h_`w''
+end
+
+program clean_98_00_p
+	* Note: can't find: religion afro asia blanco indigena otro hijos_nac hijos_nac_num ytransf
+	forvalues year in 1998/2000 {
+		use ..\base\preclean_`year'_p.dta, replace
+		keep    correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
+				pe2 pe3 pe5  pobpcoac pe6 pf133 pe14* pf053 pf37 pf38 pf351 pt1
+		
+		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h    ) ///
+			   (numero     pers    nper anio semn dpto seccion segm estrato )
+
+			   
+		rename (pe2  pe5           pobpcoac         pe6              pf133         pe141 pe142 ///
+				pe3  pf053         pf38             pf37             pf351         pt1)  ///
+			   (sexo estado_civil  codigo_actividad prestador_salud  estudiante    educ  ult_anio_educ ///
+				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
+		
+		save ..\base\clean_`year'_p.dta, replace
 		}
-
-	append using `temp_h_1'
-	save ..\base\clean_`year'_h.dta, replace
-
-	foreach w in 1 2 {
-	    foreach c in i m {
-			import excel using "`year'\p`year's`w'`c'.xls", clear first
-			tempfile temp_p_`w'`c'
-			save `temp_p_`w'`c''
-		    }
-	    append using `temp_p_`w'i'
-		tempfile temp_p_`w'
-		save `temp_p_`w''
-		}
-
-	append using `temp_p_1'
-	save ..\base\clean_`year'_p.dta, replace
+				
 end
 
 program clean_01_05
