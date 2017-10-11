@@ -70,22 +70,24 @@ program clean_01_05
 		foreach year in 2001 2002 2003 2004 {
 			append using `temp_`t'_`year''
 		}
-		keep anio correlativ nper dpto  secc segm barrio ccz  nombarrio e11* e13 ///
-		     mes estrato pesoan  e1 e2 e4 ///
-			 e9 f1_1 f17_1 f23 pt1
-			 
-		capture     gen trimestre = 1 if inlist(mes, 1, 2, 3)
-		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
-		capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
-		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
-		
-		rename (correlativ pesoan  e1   e2   e4 ///
-				e9         f1_1    f17_1         f23           pt1) ///
-		       (numero     pesoano sexo edad estado_civil ///
-				estudiante trabajo horas_trabajo busca_trabajo ytotal)
-		
 		save ..\base\clean_01_to_05_`t'.dta, replace
 	}
+
+	use ..\base\clean_01_to_05_p.dta, clear
+	keep anio correlativ nper dpto  secc segm barrio ccz  nombarrio e11* e13 ///
+     mes estrato pesoan  e1 e2 e4 ///
+	 e9 f1_1 f17_1 f23 pt1
+		 
+	capture     gen trimestre = 1 if inlist(mes, 1, 2, 3)
+	capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
+	capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
+	capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
+	
+	rename (correlativ pesoan  e1   e2   e4 ///
+			e9         f1_1    f17_1         f23           pt1) ///
+	       (numero     pesoano sexo edad estado_civil ///
+			estudiante trabajo horas_trabajo busca_trabajo ytotal)
+	save ..\base\clean_01_to_05_`t'.dta, replace
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
 end
 
