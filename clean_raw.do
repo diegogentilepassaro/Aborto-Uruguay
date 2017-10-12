@@ -1,7 +1,7 @@
 clear all
 set more off
-cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
-*cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
+*cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
+cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
 
 program main 
 	append_different_waves_98_00
@@ -87,7 +87,7 @@ program clean_01_05
 			e9         f1_1    f17_1         f23           pt1) ///
 	       (numero     pesoano sexo edad estado_civil ///
 			estudiante trabajo horas_trabajo busca_trabajo ytotal)
-	save ..\base\clean_01_to_05_`t'.dta, replace
+	save ..\base\clean_01_to_05_p.dta, replace
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
 end
 
