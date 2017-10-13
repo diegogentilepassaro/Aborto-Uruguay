@@ -1,7 +1,7 @@
 clear all
 set more off
 *cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
-cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
+cd "C:\Users\cravizza\Google Drive\Projects\proyecto_aborto\raw"
 
 program main 
 	append_different_waves_98_00
@@ -50,7 +50,7 @@ program clean_98_00
 			   (sexo estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
 				
-				
+		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
 		save ..\base\clean_`year'_p.dta, replace
 		}
@@ -87,8 +87,47 @@ program clean_01_05
 			e9         f1_1    f17_1         f23           pt1) ///
 	       (numero     pesoano sexo edad estado_civil ///
 			estudiante trabajo horas_trabajo busca_trabajo ytotal)
+
+	gen meses_trabajando = .
+	gen anios_trabajando = .
+	gen married = (estado_civil==1|estado_civil==2)
+	gen etnia = .
 	save ..\base\clean_01_to_05_p.dta, replace
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
+end
+
+program clean_etnia_variable
+	* Reorganize etnia variables
+		foreach var in asia afro blanco indigena otro {
+			replace `var'=0 if `var'!=1
+			assert  `var'==1 | `var'==0
+			gen _`var' = `var'
+		}
+		* Create mestizo if blanco and either afro or indigena or both
+		capture gen mestizo = 0
+		gen num_race0 = asia+afro+blanco+indigena+otro+mestizo
+		local cond_mestizo "(num_race==2 & _blanco==1 & (_afro==1 | _indigena==1))|(num_race==3 & _blanco==1 & _afro==1 & _indigena==1)"
+		replace mestizo  = 1 if `cond_mestizo'
+		replace afro     = 0 if `cond_mestizo'
+		replace indigena = 0 if `cond_mestizo'
+		replace blanco   = 0 if `cond_mestizo'
+		* If blanco and otro, then blanco only
+		replace otro     = 0 if num_race0==2 & _blanco==1 & _otro==1 
+		* Set to otro if more than one (updated) race
+		gen num_race1    = asia+afro+blanco+indigena+otro+mestizo
+		replace otro     = 1 if num_race1 > 1 | num_race1==0
+		foreach var in indigena afro asia blanco mestizo {
+			replace `var' = 0 if num_race1 > 1
+		}
+		assert asia+afro+blanco+indigena+otro+mestizo==1
+		drop num_race* _*
+		* Gen etnia 
+		gen etnia = .
+		local i=0
+		foreach var in otro afro asia blanco indigena mestizo {
+			replace etnia = 1 if `var'==1
+			local i=`i'+1
+		}
 end
 
 program clean_06
@@ -110,7 +149,20 @@ program clean_06
 			(sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal)
-			
+		
+		gen     married  = (estado_civil==2)	
+		* Create mestizo dummy from otro
+		gen     mestizo  = regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")
+		replace asia     = 1   if regexm(otro,"[Aa][Ss][Ii][Aa]*")==1
+		replace blanco   = 1   if regexm(otro,"[Bb][Ll][Aa][Nn][Cc]*")==1
+		replace otro     = ""  if regexm(otro,"[Bb][Ll][Aa][Nn][Cc]*")==1 ///
+								| regexm(otro,"[Aa][Ss][Ii][Aa]*")==1 ///
+								| regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")==1
+		gen     otro_new = !mi(otro)
+		drop    otro
+		rename  otro_new otro
+		replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
+		clean_etnia_variable
 		save ..\base\clean_2006, replace	
 end
 
@@ -132,7 +184,9 @@ program clean_07
 			(sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal)
-			
+		
+		gen married = (estado_civil==2)
+		clean_etnia_variable
 		save ..\base\clean_2007, replace
 end 
 
@@ -154,14 +208,16 @@ program clean_08
 			(sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal)
-			
+
+		gen married = (estado_civil==2)		
+		clean_etnia_variable
 		save ..\base\clean_2008, replace
 end 
 
 program clean_09_16
 
     forval year=2009/2016 {
-	    
+	    local year 2009
 		if "`year'" == "2016" {
 			usespss HyP_`year'_TERCEROS.sav, clear
 			}
@@ -189,7 +245,10 @@ program clean_09_16
 			(sexo edad ascendencia estado_civil estudiante trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
 			ytotal)
-			
+		
+		gen married = (estado_civil==3)	
+		gen etnia = ascendencia
+		replace etnia=0 if ascendencia==5
 		save ..\base\clean_`year', replace
 		}
 end
