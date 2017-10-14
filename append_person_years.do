@@ -10,12 +10,12 @@ end
 program append_person_years
    	use ..\base\clean_1998_p.dta
 	
-	forval year=1999/2000 {
+	forval year=1999/2008 {
 	    append using ..\base\clean_`year'_p.dta
 	}
-    isid numero pers anio
+   isid numero pers anio
 	
-	save ..\base\clean_1998_2000_pers, replace
+	save ..\base\clean_1998_2016_pers, replace
 end
 
 main

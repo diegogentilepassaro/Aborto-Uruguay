@@ -1,16 +1,16 @@
 clear all
 set more off
-*cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
-cd "C:\Users\cravizza\Google Drive\Projects\proyecto_aborto\raw"
+cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
+*cd "C:\Users\cravizza\Google Drive\Projects\proyecto_aborto\raw"
 
 program main 
-	append_different_waves_98_00
-	clean_98_00
+	/*append_different_waves_98_00 
+	clean_98_00 
 	clean_01_05 
-	clean_06 
-	clean_07 
-	clean_08
-	clean_09_16
+	clean_06
+	clean_07*/
+	clean_08  
+	/*clean_09_16 */
 end
 
 program append_different_waves_98_00
@@ -39,10 +39,10 @@ program clean_98_00
 	forvalues year=1998/2000 {
 		use ..\base\preclean_`year'_p.dta, replace
 		keep    correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
-				pe2 pe3 pe5  pobpcoac pe6 pf133 pe14* pf053 pf37 pf38 pf351 pt1
+				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
 		
-		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h    ) ///
-			   (numero     pers    nper anio semn dpto seccion segm estrato )
+		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
+			   (numero     pers    nper anio semn dpto seccion segm estrato loc nomloc)
 
 			   
 		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
@@ -63,25 +63,24 @@ program clean_01_05
 	foreach t in p h {
 		foreach year in 2001 2002 2003 2004 2005 {
 			import excel using "`year'/`t'`year'.xls", clear first
-			capture rename nombre nombarrio
-			save ..\base\clean_`year'_`t'.dta, replace
+			save ..\base\preclean_`year'_`t'.dta, replace
 		}
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
-		use ..\base\clean_`year'_p.dta, clear
-		keep anio correlativ nper dpto  secc segm barrio ccz  nombarrio e11* e13 ///
-		 mes estrato pesoan  e1 e2 e4 ///
-		 e9 f1_1 f17_1 f23 pt1
+		use ..\base\preclean_`year'_p.dta, clear
+		keep anio correlativ nper dpto  secc segm ccz  e11* e13 ///
+		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
+		    locech nomlocech
 			 
-		capture     gen trimestre = 1 if inlist(mes, 1, 2, 3)
+		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
 		capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		
-		rename (correlativ pesoan  e1   e2   e4 ///
-				e9         f1_1    f17_1         f23           pt1) ///
-			   (numero     pesoano sexo edad estado_civil ///
-				estudiante trabajo horas_trabajo busca_trabajo ytotal)
+		rename (nper correlativ e1   e2   e4 ///
+				e9         f1_1    f17_1         f23           pt1 locech nomlocech) ///
+			   (pers numero sexo edad estado_civil ///
+				estudiante trabajo horas_trabajo busca_trabajo ytotal loc nomloc)
 
 		gen meses_trabajando = .
 		gen anios_trabajando = .
@@ -130,22 +129,26 @@ program clean_06
 		usespss FUSIONADO_2006_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
-		capture rename loc_agr locagr 
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
 
-		keep anio numero nper dpto region_3 region_4 secc segm barrio ///
-		    nombarrio trimestre mes estrato pesoano ///
+		keep anio numero nper dpto region_3 region_4 secc segm ///
+		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1
+			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr
 			
-		rename (e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1) ///
-			(sexo edad afro asia blanco indigena otro estado_civil ///
+		rename (nper e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
+			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano) ///
+			(pers sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal)
+			anios_trabajando busca_trabajo ytotal loc nomloc pesoan)
 		
+		destring anio, replace
+		destring secc, replace
+		destring segm, replace
+		destring estrato, replace
+
 		gen     married  = (estado_civil==2)	
 		* Create mestizo dummy from otro
 		gen     mestizo  = regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")
@@ -159,7 +162,7 @@ program clean_06
 		rename  otro_new otro
 		replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
 		clean_etnia_variable
-		save ..\base\clean_2006, replace	
+		save ..\base\clean_2006_p, replace	
 end
 
 program clean_07
@@ -170,20 +173,27 @@ program clean_07
 		capture rename Estrato estrato
 		capture rename PT1 pt1
 
-		keep anio numero nper dpto region_3 region_4 secc segm barrio ///
-		    nombarrio trimestre mes estrato pesoano ///
+		keep anio numero nper dpto region_3 region_4 secc segm ///
+		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1
-			
-		rename (e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1) ///
-			(sexo edad afro asia blanco indigena otro estado_civil ///
+			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr
+					
+		rename (nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
+			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano) ///
+			(pers sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal)
+			anios_trabajando busca_trabajo ytotal loc pesoan)
 		
+		destring numero, replace
+		destring anio, replace
+		destring secc, replace
+		destring segm, replace
+		destring estrato, replace
+		
+		gen nomloc = ""
 		gen married = (estado_civil==2)
 		clean_etnia_variable
-		save ..\base\clean_2007, replace
+		save ..\base\clean_2007_p, replace
 end 
 
 program clean_08
@@ -194,26 +204,32 @@ program clean_08
 		capture rename Estrato estrato
 		capture rename PT1 pt1
 
-		keep anio numero nper dpto region_3 region_4 secc segm barrio ///
-		    nombarrio trimestre mes estrato pesoano ///
+		keep anio numero nper dpto region_3 region_4 secc segm ///
+		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1
+			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr
 			
-		rename (e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1) ///
-			(sexo edad afro asia blanco indigena otro estado_civil ///
+		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
+			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano) ///
+			(pers sexo edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal)
+			anios_trabajando busca_trabajo ytotal nomloc pesoan)
 
+		destring numero, replace
+		destring anio, replace
+		destring secc, replace
+		destring segm, replace
+		destring estrato, replace
+		
+	    gen loc = ""
 		gen married = (estado_civil==2)		
 		clean_etnia_variable
-		save ..\base\clean_2008, replace
+		save ..\base\clean_2008_p, replace
 end 
 
 program clean_09_16
 
     forval year=2009/2016 {
-	    local year 2009
 		if "`year'" == "2016" {
 			usespss HyP_`year'_TERCEROS.sav, clear
 			}
@@ -223,29 +239,32 @@ program clean_09_16
 		
 		capture rename estratogeo09 estrato
 		capture rename estratogeo estrato
-        capture rename codbarrio barrio
-        capture rename nombrebarr nombarrio
 		capture rename estred13 estrato
 		capture rename PT1 pt1
+		capture rename Loc_agr_13 locagr
+		capture rename Nom_loc_agr_13 nom_locagr
 		
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
 		capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
-		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)	
+		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
+		capture gen pesosem = .
+		capture gen pesotri = .
 
 		keep anio numero nper dpto region_3 region_4 secc segm barrio ///
 		    nombarrio trimestre mes estrato pesoano ///
-			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1
+			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
+			locagr nom_locagr
 			
-		rename (e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1) ///
-			(sexo edad ascendencia estado_civil estudiante trabajo ///
+		rename (nper e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 locagr nom_locagr pesoano) ///
+			(pers sexo edad ascendencia estado_civil estudiante trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
-			ytotal)
+			ytotal loc nomloc pesoan)
 		
 		gen married = (estado_civil==3)	
 		gen etnia = ascendencia
 		replace etnia=0 if ascendencia==5
-		save ..\base\clean_`year', replace
+		save ..\base\clean_`year'_p, replace
 		}
 end
 
