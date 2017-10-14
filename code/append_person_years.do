@@ -1,16 +1,14 @@
 clear all
 set more off
-cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
-*cd "C:\Users\cravizza\Google Drive\RIIPL\_PIW\abortion_UR\raw"
 
-program main 
+program main_append_person_years
 	append_person_years
 end
 
 program append_person_years
    	use ..\base\clean_1998_p.dta
 	
-	forval year=1999/2008 {
+	forval year=1999/2016{
 	    append using ..\base\clean_`year'_p.dta
 	}
    isid numero pers anio
@@ -18,4 +16,4 @@ program append_person_years
 	save ..\base\clean_1998_2016_pers, replace
 end
 
-main
+main_append_person_years

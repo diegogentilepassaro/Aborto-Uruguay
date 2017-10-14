@@ -1,16 +1,14 @@
 clear all
 set more off
-cd "C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\raw"
-*cd "C:\Users\cravizza\Google Drive\Projects\proyecto_aborto\raw"
 
-program main 
-	/*append_different_waves_98_00 
+program main_clean_raw
+	append_different_waves_98_00 
 	clean_98_00 
 	clean_01_05 
 	clean_06
-	clean_07*/
-	clean_08  
-	/*clean_09_16 */
+	clean_07
+	clean_08 
+	clean_09_16
 end
 
 program append_different_waves_98_00
@@ -19,7 +17,7 @@ program append_different_waves_98_00
 		foreach t in p h {
 			foreach w in 1 2 {
 				foreach c in i m {
-					import excel using "`year'/`t'`year's`w'`c'.xls", clear first
+					import excel using "..\raw/`year'/`t'`year's`w'`c'.xls", clear first
 					tempfile temp_`t'_`w'`c'
 					save `temp_`t'_`w'`c''
 					}
@@ -62,13 +60,13 @@ program clean_01_05
 	* Can't find: meses_trabajando anios_trabajando
 	foreach t in p h {
 		foreach year in 2001 2002 2003 2004 2005 {
-			import excel using "`year'/`t'`year'.xls", clear first
+			import excel using "..\raw/`year'/`t'`year'.xls", clear first
 			save ..\base\preclean_`year'_`t'.dta, replace
 		}
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
 		use ..\base\preclean_`year'_p.dta, clear
-		keep anio correlativ nper dpto  secc segm ccz  e11* e13 ///
+		keep anio correlativ nper dpto  secc segm ccz  /*e11*/ e13 ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
 		    locech nomlocech
 			 
@@ -126,7 +124,7 @@ program clean_etnia_variable
 end
 
 program clean_06
-		usespss FUSIONADO_2006_TERCEROS.sav, clear
+		usespss ../raw/FUSIONADO_2006_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
@@ -166,7 +164,7 @@ program clean_06
 end
 
 program clean_07
-		usespss FUSIONADO_2007_TERCEROS.sav, clear
+		usespss ../raw/FUSIONADO_2007_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
@@ -197,7 +195,7 @@ program clean_07
 end 
 
 program clean_08
-		usespss FUSIONADO_2008_TERCEROS.sav, clear
+		usespss ../raw/FUSIONADO_2008_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
@@ -231,10 +229,10 @@ program clean_09_16
 
     forval year=2009/2016 {
 		if "`year'" == "2016" {
-			usespss HyP_`year'_TERCEROS.sav, clear
+			usespss ../raw/HyP_`year'_TERCEROS.sav, clear
 			}
 			else {
-		    usespss FUSIONADO_`year'_TERCEROS.sav, clear
+		    usespss ../raw/FUSIONADO_`year'_TERCEROS.sav, clear
 		}
 		
 		capture rename estratogeo09 estrato
@@ -251,8 +249,8 @@ program clean_09_16
 		capture gen pesosem = .
 		capture gen pesotri = .
 
-		keep anio numero nper dpto region_3 region_4 secc segm barrio ///
-		    nombarrio trimestre mes estrato pesoano ///
+		keep anio numero nper dpto region_3 region_4 secc segm ///
+		    trimestre mes estrato pesoano ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
 			locagr nom_locagr
 			
@@ -261,6 +259,12 @@ program clean_09_16
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
 			ytotal loc nomloc pesoan)
 		
+		destring numero, replace
+		destring anio, replace
+		destring secc, replace
+		destring segm, replace
+		destring estrato, replace
+		
 		gen married = (estado_civil==3)	
 		gen etnia = ascendencia
 		replace etnia=0 if ascendencia==5
@@ -268,4 +272,4 @@ program clean_09_16
 		}
 end
 
-main
+main_clean_raw
