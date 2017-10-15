@@ -2,12 +2,12 @@ clear all
 set more off
 
 program main_clean_raw
-	append_different_waves_98_00 
+	/*append_different_waves_98_00 
 	clean_98_00 
 	clean_01_05 
 	clean_06
 	clean_07
-	clean_08 
+	clean_08 */
 	clean_09_16
 end
 
@@ -66,7 +66,7 @@ program clean_01_05
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
 		use ..\base\preclean_`year'_p.dta, clear
-		keep anio correlativ nper dpto  secc segm ccz  /*e11*/ e13 ///
+		keep anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
 		    locech nomlocech
 			 
@@ -250,7 +250,7 @@ program clean_09_16
 		capture gen pesotri = .
 
 		keep anio numero nper dpto region_3 region_4 secc segm ///
-		    trimestre mes estrato pesoano ///
+		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
 			locagr nom_locagr
 			
