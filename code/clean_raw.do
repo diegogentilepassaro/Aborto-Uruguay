@@ -2,12 +2,12 @@ clear all
 set more off
 
 program main_clean_raw
-	/*append_different_waves_98_00 
+	append_different_waves_98_00 
 	clean_98_00 
 	clean_01_05 
 	clean_06
 	clean_07
-	clean_08 */
+	clean_08
 	clean_09_16
 end
 
@@ -40,7 +40,7 @@ program clean_98_00
 				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
 		
 		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
-			   (numero     pers    nper anio semn dpto seccion segm estrato loc nomloc)
+			   (numero     pers    nper anio semn dpto secc segm estrato loc nomloc)
 
 			   
 		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///

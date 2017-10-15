@@ -11,7 +11,25 @@ program homogenize_geo_vars
 	fix_98_05
 	fix_2007
 	fix_2008
-
+	save ../temp/98_2011_loc_homo.dta, replace
+	
+	import excel lista_homogen_codes_geo.xlsx, sheet("Sheet1") ///
+	    cellrange(B1:F100) firstrow clear
+	rename (codigodpto localidad codigo98_2005 codigo_2006_2011 codigo_2012_2014) ///
+	    (dpto nomloc2 loc98_05 loc loc12_14)
+    save ../temp/loc_xwalk.dta, replace
+	
+	use ../temp/98_2011_loc_homo.dta, clear
+	
+	merge m:1 dpto loc using ../temp/loc_xwalk.dta
+	
+	replace loc = loc12_14 if _merge == 3
+	replace loc = "000" if _merge == 1
+	replace nomloc = nomloc2
+	
+	drop _merge nomloc2 loc12_14 loc98_05
+	
+	save ..\temp\clean_loc_1998_2016_pers.dta, replace
 end
 
 program fix_98_05
@@ -213,6 +231,6 @@ program fill_missing_loc
 	rename `ren_var' `ren_var'2
 	save ../temp/loc_2006, replace
 	restore
-end 
+end
 
 main_homogeneize_geo_vars
