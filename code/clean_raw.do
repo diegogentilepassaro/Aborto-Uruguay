@@ -2,12 +2,12 @@ clear all
 set more off
 
 program main_clean_raw
-	/*append_different_waves_98_00 
+	append_different_waves_98_00 
 	clean_98_00 
 	clean_01_05 
 	clean_06
 	clean_07
-	clean_08 */
+	clean_08
 	clean_09_16
 end
 
@@ -17,7 +17,7 @@ program append_different_waves_98_00
 		foreach t in p h {
 			foreach w in 1 2 {
 				foreach c in i m {
-					import excel using "..\raw/`year'/`t'`year's`w'`c'.xls", clear first
+					import excel using "..\..\raw/`year'/`t'`year's`w'`c'.xls", clear first
 					tempfile temp_`t'_`w'`c'
 					save `temp_`t'_`w'`c''
 					}
@@ -26,7 +26,7 @@ program append_different_waves_98_00
 				save `temp_`t'_`w''
 				}
 			append using `temp_`t'_1'
-			save ..\base\preclean_`year'_`t'.dta, replace
+			save ..\..\base\preclean_`year'_`t'.dta, replace
 		}
 	}
 	
@@ -35,7 +35,7 @@ end
 program clean_98_00
 	* Note: can't find: afro asia blanco indigena otro then generated raza equal missing
 	forvalues year=1998/2000 {
-		use ..\base\preclean_`year'_p.dta, replace
+		use ..\..\base\preclean_`year'_p.dta, replace
 		keep    correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
 				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
 		
@@ -50,9 +50,33 @@ program clean_98_00
 				
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
-		save ..\base\clean_`year'_p.dta, replace
+		save ..\..\base\clean_`year'_p.dta, replace
 		}
 				
+end
+
+program educ_var_compl_last_level
+syntax, var_level_prefix(string) var_compl_last(string)
+	gen educ_level = .
+	gen educ_level_max = .
+	gen educ_level_2nd = .
+	forvalues i = 2/6 {
+		replace educ_level     = `i'-1 if `var_level_prefix'_`i'>0 & `var_compl_last'==1
+		replace educ_level_max = `i'-1 if `var_level_prefix'_`i'>0
+	}
+	forvalues i = 2/6 {
+		replace educ_level_2nd =  `i' if `var_level_prefix'_`i'>0 & `i'-1<educ_level_max & `var_compl_last'==2
+	}
+	replace educ_level = educ_level_2nd if `var_compl_last'==2
+	replace educ_level = 0              if `var_compl_last'==0 | (`var_compl_last'==2 & (educ_level_max==1|educ_level==.))
+end
+
+program educ_var_compl_each_level
+syntax, var_compl_prefix(string)
+	gen educ_level = .
+	forvalues i = 1/7 {
+		replace educ_level = `i' if `var_compl_prefix'_`i'_2==1
+	}
 end
 
 program clean_01_05
@@ -60,15 +84,16 @@ program clean_01_05
 	* Can't find: meses_trabajando anios_trabajando
 	foreach t in p h {
 		foreach year in 2001 2002 2003 2004 2005 {
-			import excel using "..\raw/`year'/`t'`year'.xls", clear first
-			save ..\base\preclean_`year'_`t'.dta, replace
+			import excel using "..\..\raw/`year'/`t'`year'.xls", clear first
+			save ..\..\base\preclean_`year'_`t'.dta, replace
 		}
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
-		use ..\base\preclean_`year'_p.dta, clear
+		use ..\..\base\preclean_`year'_p.dta, clear
+		educ_var_compl_last_level, var_level_prefix(e11) var_compl_last(e13) 
 		keep anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
-		    locech nomlocech
+		    locech nomlocech educ_level
 			 
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
@@ -84,7 +109,7 @@ program clean_01_05
 		gen anios_trabajando = .
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
-		save ..\base\clean_`year'_p.dta, replace
+		save ..\..\base\clean_`year'_p.dta, replace
 	}
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
 end
@@ -124,17 +149,19 @@ program clean_etnia_variable
 end
 
 program clean_06
-		usespss ../raw/FUSIONADO_2006_TERCEROS.sav, clear
+		usespss ../../raw/FUSIONADO_2006_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		
+		educ_var_compl_each_level, var_compl_prefix(e52) 
 
 		keep anio numero nper dpto region_3 region_4 secc segm ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr
+			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr educ_level
 			
 		rename (nper e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
 			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano) ///
@@ -160,21 +187,23 @@ program clean_06
 		rename  otro_new otro
 		replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
 		clean_etnia_variable
-		save ..\base\clean_2006_p, replace	
+		save ..\..\base\clean_2006_p, replace	
 end
 
 program clean_07
-		usespss ../raw/FUSIONADO_2007_TERCEROS.sav, clear
+		usespss ../../raw/FUSIONADO_2007_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		
+		educ_var_compl_each_level, var_compl_prefix(e54)
 
 		keep anio numero nper dpto region_3 region_4 secc segm ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr
+			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr educ_level
 					
 		rename (nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano) ///
@@ -191,21 +220,23 @@ program clean_07
 		gen nomloc = ""
 		gen married = (estado_civil==2)
 		clean_etnia_variable
-		save ..\base\clean_2007_p, replace
+		save ..\..\base\clean_2007_p, replace
 end 
 
 program clean_08
-		usespss ../raw/FUSIONADO_2008_TERCEROS.sav, clear
+		usespss ../../raw/FUSIONADO_2008_TERCEROS.sav, clear
 		
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		
+		educ_var_compl_each_level, var_compl_prefix(e54)
 
 		keep anio numero nper dpto region_3 region_4 secc segm ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr
+			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr educ_level
 			
 		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano) ///
@@ -222,17 +253,17 @@ program clean_08
 	    gen loc = ""
 		gen married = (estado_civil==2)		
 		clean_etnia_variable
-		save ..\base\clean_2008_p, replace
+		save ..\..\base\clean_2008_p, replace
 end 
 
 program clean_09_16
 
     forval year=2009/2016 {
 		if "`year'" == "2016" {
-			usespss ../raw/HyP_`year'_TERCEROS.sav, clear
+			usespss ../../raw/HyP_`year'_TERCEROS.sav, clear
 			}
 			else {
-		    usespss ../raw/FUSIONADO_`year'_TERCEROS.sav, clear
+		    usespss ../../raw/FUSIONADO_`year'_TERCEROS.sav, clear
 		}
 		
 		capture rename estratogeo09 estrato
@@ -249,10 +280,32 @@ program clean_09_16
 		capture gen pesosem = .
 		capture gen pesotri = .
 
+		if "`year'" <= "2010" {
+				replace e51_2 = e51_3 if e51_3>0
+				drop e51_3
+				rename e51_4 e51_3
+				replace e51_3 = e51_5 if e51_5>0
+				replace e51_3 = e51_6 if e51_6>0
+				drop e51_5 e51_6
+				forvalues i = 7/11 {
+					local j = `i'-3
+					rename e51_`i' e51_`j'
+				}
+				educ_var_compl_last_level, var_level_prefix(e51) var_compl_last(e53) 	
+			}
+			else {
+				local i = 1
+				foreach var in e197 e201 e212 e215 e218 e221 e224 {
+					rename `var'_1 var_`i'_2
+					local i = `i'+1
+				}
+				educ_var_compl_each_level, var_compl_prefix(var) 		    
+		}
+		
 		keep anio numero nper dpto region_3 region_4 secc segm ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
-			locagr nom_locagr
+			locagr nom_locagr educ_level
 			
 		rename (nper e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 locagr nom_locagr pesoano) ///
 			(pers sexo edad ascendencia estado_civil estudiante trabajo ///
@@ -268,7 +321,7 @@ program clean_09_16
 		gen married = (estado_civil==3)	
 		gen etnia = ascendencia
 		replace etnia=0 if ascendencia==5
-		save ..\base\clean_`year'_p, replace
+		save ..\..\base\clean_`year'_p, replace
 		}
 end
 
