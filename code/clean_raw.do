@@ -40,19 +40,22 @@ program clean_98_00
 				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
 		
 		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
-			   (numero     pers    nper anio semn dpto secc segm estrato loc nomloc)
+			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc)
 
-			   
 		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
 				pe3  pf053         pf38             pf37             pf351         pt1)  ///
 			   (sexo estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
-				
+	    
+		gen trimestre = 1 if inrange(semana, 1, 12)
+		replace trimestre = 2 if inrange(semana, 13, 24)
+		replace trimestre = 3 if inrange(semana, 25, 36)
+		replace trimestre = 4 if inrange(semana, 37, 48)
+		
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
 		save ..\base\clean_`year'_p.dta, replace
-		}
-				
+		}			
 end
 
 program clean_01_05
