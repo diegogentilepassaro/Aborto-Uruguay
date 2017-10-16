@@ -6,7 +6,7 @@ program main_append_person_years
 end
 
 program append_person_years
-   	use ..\base\clean_1998_p.dta
+   	use ..\base\clean_1998_p.dta, clear
 	
 	forval year=1999/2016{
 	    append using ..\base\clean_`year'_p.dta
@@ -26,8 +26,6 @@ program append_person_years
 	
 	isid numero pers anio*/
 	
-	*Recordatorio: 2012 only has pesoan but not pesotri or pesomes. We should either ask for them or impute using other years. 
-
 	save ..\base\clean_1998_2016_pers, replace
 end
 

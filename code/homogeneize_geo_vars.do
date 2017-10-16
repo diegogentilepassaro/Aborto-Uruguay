@@ -28,6 +28,10 @@ program homogenize_geo_vars
 	replace nomloc = nomloc2
 	
 	drop _merge nomloc2 loc12_14 loc98_05
+    
+	save ..\temp\clean_98_2016_temp.dta, replace
+	
+	fix_2012_weights
 	
 	save ..\temp\clean_loc_1998_2016_pers.dta, replace
 end
@@ -231,6 +235,26 @@ program fill_missing_loc
 	rename `ren_var' `ren_var'2
 	save ../temp/loc_2006, replace
 	restore
+end
+	
+program fix_2012_weights
+	keep if anio == 2013
+	replace anio = 2012 
+	
+	local by_vars "dpto loc edad sexo estrato"
+	
+	rename (pesotri pesosem) (pesotri2 pesosem2)
+	collapse (mean) pesotri pesosem, by(`by_vars')
+	
+	save ..\temp\pesos_2012_imputed.dta, replace
+
+	use ..\temp\clean_98_2016_temp.dta, clear
+
+	merge m:1 `by_vars' using ..\temp\pesos_2012_imputed.dta
+	replace pesotri = pesotri2 if anio == 2012
+	replace pesosem = pesosem2 if anio == 2012
+	
+	drop pesotri2 pesosem2
 end
 
 main_homogeneize_geo_vars

@@ -13,7 +13,6 @@ program assign_treatment
 	
 	gen anio_qtr = yq(anio, trimestre)
 	format anio_qtr %tq
-	drop anio trimestre
 	
 	gen post_rivera = (anio_qtr >= tq(2010q2)) /* apertura de clinica en Rivera */
 	gen post_salto = (anio_qtr >= tq(2013q1)) /* implementacion de la ley IVE */
