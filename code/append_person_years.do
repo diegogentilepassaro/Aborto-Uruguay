@@ -5,6 +5,14 @@ program main_append_person_years
 	append_person_years
 end
 
+program recode_dummies
+syntax, vars(varlist) // trabajo estudiante
+	foreach var in `vars' {
+		replace `var'=. if `var'==0
+		replace `var'=0 if `var'==2
+	}
+end
+
 program append_person_years
    	use ..\base\clean_1998_p.dta, clear
 	
@@ -25,6 +33,8 @@ program append_person_years
 	}
 	
 	isid numero pers anio*/
+	
+	recode_dummies, vars(trabajo estudiante sexo busca_trabajo)
 	
 	save ..\base\clean_1998_2016_pers, replace
 end

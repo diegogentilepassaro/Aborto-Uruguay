@@ -54,6 +54,8 @@ program clean_98_00
 		
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
+		assert nper==pers
+		drop nper
 		save ..\base\clean_`year'_p.dta, replace
 		}
 end
