@@ -10,7 +10,8 @@ program assign_treatment
     
 	gen rivera_city = (loc == "13020" & dpto == 13)
 	gen salto_city = (loc == "15020" & dpto == 15)
-	gen montevideo_city = (loc == "01010" & dpto == 1)
+	gen montevideo_city = (loc == "01010" & dpto == 1 & inlist(ccz, 1 , 2, 3, 4, 5, 6, 7, 8, 15, 16))
+	gen montevideo_perif = (loc == "01010" & dpto == 1 & inlist(ccz, 9, 10, 11, 12, 13, 14, 17, 18))
 	
 	gen anio_qtr = yq(anio, trimestre)
 	format anio_qtr %tq
