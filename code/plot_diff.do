@@ -7,16 +7,18 @@ end
 
 program plot_diff
    	use  ..\base\ech_final_98_2016.dta, clear
-
-	collapse (mean) trabajo estudiante rivera_city post_rivera ///
-	    salto_city post_salto control_paysandu [aw = pesotri], by(anio_qtr)
-		
-	twoway (line trabajo anio_qtr if salto_city == 1) ///
-	    (line trabajo anio_qtr if control_paysandu == 1)
 	
-	use  ..\base\ech_final_98_2016.dta, clear
+	*reg trabajo i.salto_city##i.post_ive i.anio_qtr i.dpto [aw = pesotri]	
 
-	reg trabajo (i.salto_city##i.post_ley) i.anio_qtr i.dpto [aw = pesotri]	
+	keep if treatment_salto==1 | treatment_rivera==1 | control_paysandu==1 /*we don't actually need this*/
+	
+	* Collapse such that we get a different row for different study groups
+	collapse (mean) trabajo estudiante [aw = pesotri] ///
+		, by(anio_qtr treatment_salto treatment_rivera control_paysandu)
+		
+	twoway (line trabajo anio_qtr if treatment_salto  == 1) ///
+	       (line trabajo anio_qtr if control_paysandu == 1)
+	
 end
 
 main_diff_plot
