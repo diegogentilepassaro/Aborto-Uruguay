@@ -163,7 +163,7 @@ program clean_06
 		
 		educ_var_compl_each_level, var_compl_prefix(e52) 
 
-		keep anio numero nper dpto region_3 region_4 secc segm ///
+		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
 			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr educ_level
@@ -205,7 +205,7 @@ program clean_07
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
 
-		keep anio numero nper dpto region_3 region_4 secc segm ///
+		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr educ_level
@@ -238,7 +238,7 @@ program clean_08
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
 
-		keep anio numero nper dpto region_3 region_4 secc segm ///
+		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr educ_level
@@ -307,7 +307,7 @@ program clean_09_16
 				educ_var_compl_each_level, var_compl_prefix(var) 		    
 		}
 		
-		keep anio numero nper dpto region_3 region_4 secc segm ///
+		keep anio numero nper dpto region_3 region_4 secc segm ccz* ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
 			locagr nom_locagr educ_level

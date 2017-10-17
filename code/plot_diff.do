@@ -16,7 +16,7 @@ program plot_diff
 	
 	use  ..\base\ech_final_98_2016.dta, clear
 
-	reg trabajo (i.salto_city##i.post_salto) i.anio_qtr i.dpto [aw = pesotri]	
+	reg trabajo (i.salto_city##i.post_ley) i.anio_qtr i.dpto [aw = pesotri]	
 end
 
 main_diff_plot

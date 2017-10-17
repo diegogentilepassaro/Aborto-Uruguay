@@ -2,10 +2,6 @@ clear all
 set more off
 
 program main_homogeneize_geo_vars 
-	homogenize_geo_vars
-end
-
-program homogenize_geo_vars
 	use ..\base\clean_1998_2016_pers, clear
 	
 	fix_98_05
@@ -19,19 +15,14 @@ program homogenize_geo_vars
 	    (dpto nomloc2 loc98_05 loc loc12_14)
     save ../temp/loc_xwalk.dta, replace
 	
-	use ../temp/98_2011_loc_homo.dta, clear
-	
-	merge m:1 dpto loc using ../temp/loc_xwalk.dta
-	
-	replace loc = loc12_14 if _merge == 3
-	replace loc = "000" if _merge == 1
-	replace nomloc = nomloc2
-	
-	drop _merge nomloc2 loc12_14 loc98_05
-    
-	save ..\temp\clean_98_2016_temp.dta, replace
+    homogeneize_loc_to_2012_2014
 	
 	fix_2012_weights
+	
+	drop if missing(anio)
+	
+	replace ccz = ccz04 if anio == 2012
+	drop ccz04 ccz10
 	
 	save ..\temp\clean_loc_1998_2016_pers.dta, replace
 end
@@ -235,6 +226,30 @@ program fill_missing_loc
 	rename `ren_var' `ren_var'2
 	save ../temp/loc_2006, replace
 	restore
+end
+
+program homogeneize_loc_to_2012_2014
+	use ../temp/98_2011_loc_homo.dta, clear
+	
+	merge m:1 dpto loc using ../temp/loc_xwalk.dta
+	
+	replace loc = "000" if missing(loc)
+	
+	replace loc = loc12_14 if _merge == 3
+	replace nomloc = nomloc2
+	
+	drop _merge nomloc2 loc12_14 loc98_05
+	
+	replace loc = "000" if length(loc) < 5
+    
+    merge m:1 dpto loc using ../temp/loc_xwalk.dta
+    
+	replace loc = loc12_14 if _merge == 3
+	replace nomloc = nomloc2
+	
+	drop _merge nomloc2 loc12_14 loc98_05
+
+	save ..\temp\clean_98_2016_temp.dta, replace
 end
 	
 program fix_2012_weights
