@@ -202,7 +202,7 @@ program clean_06
 		rename  otro_new otro
 		replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
 		clean_etnia_variable
-		save ..\base\clean_2006_p, replace	
+		save ..\base\clean_2006, replace	
 end
 
 program clean_07
@@ -235,7 +235,7 @@ program clean_07
 		gen nomloc = ""
 		gen married = (estado_civil==2)
 		clean_etnia_variable
-		save ..\base\clean_2007_p, replace
+		save ..\base\clean_2007, replace
 end 
 
 program clean_08
@@ -268,7 +268,7 @@ program clean_08
 	    gen loc = ""
 		gen married = (estado_civil==2)		
 		clean_etnia_variable
-		save ..\base\clean_2008_p, replace
+		save ..\base\clean_2008, replace
 end 
 
 program clean_09_16
@@ -336,7 +336,7 @@ program clean_09_16
 		gen married = (estado_civil==3)	
 		gen etnia = ascendencia
 		replace etnia=0 if ascendencia==5
-		save ..\base\clean_`year'_p, replace
+		save ..\base\clean_`year', replace
 		}
 end
 

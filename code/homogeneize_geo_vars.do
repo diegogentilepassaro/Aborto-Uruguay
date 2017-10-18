@@ -2,7 +2,7 @@ clear all
 set more off
 
 program main_homogeneize_geo_vars 
-	use ..\base\clean_1998_2016_pers, clear
+	use ..\base\clean_1998_2016, clear
 	
 	fix_98_05
 	fix_2007
@@ -24,7 +24,7 @@ program main_homogeneize_geo_vars
 	replace ccz = ccz04 if anio == 2012
 	drop ccz04 ccz10
 	
-	save ..\temp\clean_loc_1998_2016_pers.dta, replace
+	save ..\temp\clean_loc_1998_2016.dta, replace
 end
 
 program fix_98_05
@@ -200,7 +200,7 @@ program fix_2007
 	
 	fill_missing_loc, dest_year(2007) ren_var(nomloc)
 	
-	merge m:1 anio dpto loc using ../temp/loc_2006, nogen
+	merge m:1 anio dpto loc using ../temp/loc_2006.dta, nogen
 	
 	replace nomloc = nomloc2 if anio == 2007
 	drop nomloc2

@@ -1,8 +1,8 @@
 clear all
 set more off
 
-program main_append_person_years
-	append_person_years
+program main_append_years
+	append_years
 end
 
 program recode_dummies
@@ -13,11 +13,11 @@ syntax, vars(varlist) // trabajo estudiante
 	}
 end
 
-program append_person_years
-   	use ..\base\clean_1998_p.dta, clear
+program append_years
+   	use ..\base\clean_1998.dta, clear
 	
 	forval year=1999/2016{
-	    append using ..\base\clean_`year'_p.dta
+	    append using ..\base\clean_`year'.dta
 	}
 	replace anio = 1998 if anio == 98
 	replace anio = 1999 if anio == 99
@@ -26,17 +26,17 @@ program append_person_years
 	* asserting basic properties: 
 	* - that there are no missing departamentos in any year
 	* - and the primary keys
-	/*forval year=1999/2016{
+	forval year=1999/2016{
 	    unique dpto if anio == `year'
 		local n = r(sum)
 		assert `n' == 19
 	}
 	
-	isid numero pers anio*/
+	isid numero pers anio
 	
 	recode_dummies, vars(trabajo estudiante sexo busca_trabajo)
 	
-	save ..\base\clean_1998_2016_pers, replace
+	save ..\base\clean_1998_2016, replace
 end
 
-main_append_person_years
+main_append_years
