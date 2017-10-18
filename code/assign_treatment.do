@@ -6,7 +6,7 @@ program main_assign_treatment
 end
 
 program assign_treatment
-   	use ..\temp\clean_loc_1998_2016_pers.dta, clear 
+   	use ..\temp\clean_loc_1998_2016.dta, clear 
     
 	gen treatment_rivera    = (loc == "13020" & dpto == 13)
 	gen treatment_salto     = (loc == "15020" & dpto == 15)
