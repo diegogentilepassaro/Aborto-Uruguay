@@ -28,6 +28,11 @@ program append_different_waves_98_00
 			append using `temp_`t'_1'
 			save ..\base\preclean_`year'_`t'.dta, replace
 		}
+		 use ..\base\preclean_`year'_p.dta, clear
+
+         rename correlativ ident
+         merge m:1 ident using ..\base\preclean_`year'_h.dta, nogen
+		 save ..\base\preclean_`year'.dta, replace
 	}
 	
 end
@@ -35,11 +40,11 @@ end
 program clean_98_00
 	* Note: can't find: afro asia blanco indigena otro then generated raza equal missing
 	forvalues year=1998/2000 {
-		use ..\base\preclean_`year'_p.dta, replace
-		keep    correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
+		use ..\base\preclean_`year'.dta, replace
+		keep    ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
 				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
 		
-		rename (correlativ persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
+		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
 			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc)
 
 		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
@@ -56,7 +61,7 @@ program clean_98_00
 		gen etnia = .
 		assert nper==pers
 		drop nper
-		save ..\base\clean_`year'_p.dta, replace
+		save ..\base\clean_`year'.dta, replace
 		}
 end
 
@@ -87,14 +92,19 @@ end
 program clean_01_05
 	* Note: there is no nomdepto for 2005: check running table nomdpto anio
 	* Can't find: meses_trabajando anios_trabajando
-	foreach t in p h {
-		foreach year in 2001 2002 2003 2004 2005 {
+	
+	foreach year in 2001 2002 2003 2004 2005 {
+		foreach t in p h {
 			import excel using "..\raw/`year'/`t'`year'.xls", clear first
 			save ..\base\preclean_`year'_`t'.dta, replace
 		}
+		use ..\base\preclean_`year'_p.dta, clear
+
+        merge m:1 correlativ using ..\base\preclean_`year'_h.dta, nogen
+	    save ..\base\preclean_`year'.dta, replace
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
-		use ..\base\preclean_`year'_p.dta, clear
+		use ..\base\preclean_`year'.dta, clear
 		educ_var_compl_last_level, var_level_prefix(e11) var_compl_last(e13) 
 		keep anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
@@ -114,7 +124,7 @@ program clean_01_05
 		gen anios_trabajando = .
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
-		save ..\base\clean_`year'_p.dta, replace
+		save ..\base\clean_`year'.dta, replace
 	}
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
 end
