@@ -19,13 +19,14 @@ program assign_treatment
 	gen post_is_chpr = (anio_qtr >= tq(2002q1))
 	gen post_n369    = (anio_qtr >= tq(2004q4))
 	gen post_rivera  = (anio_qtr >= tq(2010q2)) /* apertura de clinica en Rivera */
-	gen post_ive     = (anio_qtr >= tq(2013q1)) /* implementacion de la ley IVE */
+	gen post_ive     = (anio_qtr >= tq(2012q4)) /* implementacion de la ley IVE */
 	
 	/* Para empezar metamos a Paysandu de control para Salto y para Rivera
 	despues hacemos algo con synthetic control o algo asi, que ya tengo el 
 	codigo del proyecto de Katrina */
 	
 	gen control_paysandu = (loc == "11020" & dpto == 11)
+	gen control_artigas = (loc == "02020" & dpto == 2)
 	
    	save ..\base\ech_final_98_2016.dta, replace 
 end

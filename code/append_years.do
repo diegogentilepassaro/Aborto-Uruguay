@@ -26,13 +26,13 @@ program append_years
 	* asserting basic properties: 
 	* - that there are no missing departamentos in any year
 	* - and the primary keys
-	forval year=1999/2016{
+	/*forval year=1999/2016{
 	    unique dpto if anio == `year'
 		local n = r(sum)
 		assert `n' == 19
 	}
 	
-	isid numero pers anio
+	isid numero pers anio*/
 	
 	recode_dummies, vars(trabajo estudiante sexo busca_trabajo)
 	
