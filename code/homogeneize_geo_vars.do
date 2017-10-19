@@ -256,7 +256,7 @@ program fix_2012_weights
 	keep if anio == 2013
 	replace anio = 2012 
 	
-	local by_vars "dpto loc edad sexo estrato"
+	local by_vars "dpto loc edad hombre estrato"
 	
 	rename (pesotri pesosem) (pesotri2 pesosem2)
 	collapse (mean) pesotri pesosem, by(`by_vars')

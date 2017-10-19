@@ -3,12 +3,12 @@ set more off
 
 program main_append_years
 	append_years
+	label_vars
 end
 
 program recode_dummies
-syntax, vars(varlist) // trabajo estudiante
+syntax, vars(varlist)
 	foreach var in `vars' {
-		replace `var'=. if `var'==0
 		replace `var'=0 if `var'==2
 	}
 end
@@ -34,9 +34,16 @@ program append_years
 	
 	isid numero pers anio*/
 	
-	recode_dummies, vars(trabajo estudiante sexo busca_trabajo)
+	recode_dummies, vars(trabajo estudiante hombre busca_trabajo)
 	
 	save ..\base\clean_1998_2016, replace
+end
+
+program label_vars
+    label var trabajo "Employment"
+	label var horas_trabajo "Hours worked"
+
+	save ..\base\ech_final_98_2016.dta, replace 
 end
 
 main_append_years

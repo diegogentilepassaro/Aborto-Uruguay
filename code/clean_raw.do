@@ -2,7 +2,7 @@ clear all
 set more off
 
 program main_clean_raw
-	append_different_waves_98_00 
+	*append_different_waves_98_00 
 	clean_98_00 
 	clean_01_05 
 	clean_06
@@ -42,14 +42,15 @@ program clean_98_00
 	forvalues year=1998/2000 {
 		use ..\base\preclean_`year'.dta, replace
 		keep    ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
-				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 locech nomlocech
+				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 ///
+				locech nomlocech ht11
 		
-		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech) ///
-			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc)
+		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech ht11) ///
+			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc y_hogar)
 
 		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
 				pe3  pf053         pf38             pf37             pf351         pt1)  ///
-			   (sexo estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
+			   (hombre estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
 	    
 		gen trimestre = 1 if inrange(semana, 1, 12)
@@ -57,6 +58,8 @@ program clean_98_00
 		replace trimestre = 3 if inrange(semana, 25, 36)
 		replace trimestre = 4 if inrange(semana, 37, 48)
 		
+		gen trabajo = (codigo_actividad == 11 | codigo_actividad == 12)
+		drop codigo_actividad
 		gen married = (estado_civil==1|estado_civil==2)
 		gen etnia = .
 		assert nper==pers
@@ -108,7 +111,7 @@ program clean_01_05
 		educ_var_compl_last_level, var_level_prefix(e11) var_compl_last(e13) 
 		keep anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
-		    locech nomlocech educ_level
+		    locech nomlocech educ_level ht11
 			 
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
@@ -116,9 +119,9 @@ program clean_01_05
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		
 		rename (nper correlativ e1   e2   e4 ///
-				e9         f1_1    f17_1         f23           pt1 locech nomlocech) ///
-			   (pers numero sexo edad estado_civil ///
-				estudiante trabajo horas_trabajo busca_trabajo ytotal loc nomloc)
+				e9         f1_1    f17_1         f23           pt1 locech nomlocech ht11) ///
+			   (pers numero hombre edad estado_civil ///
+				estudiante trabajo horas_trabajo busca_trabajo ytotal loc nomloc y_hogar)
 
 		gen meses_trabajando = .
 		gen anios_trabajando = .
@@ -170,19 +173,21 @@ program clean_06
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e52) 
 
 		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr educ_level
+			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr ///
+			nom_locagr educ_level ht11
 			
 		rename (nper e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano) ///
-			(pers sexo edad afro asia blanco indigena otro estado_civil ///
+			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano ht11) ///
+			(pers hombre edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal loc nomloc pesoan)
+			anios_trabajando busca_trabajo ytotal loc nomloc pesoan y_hogar)
 		
 		destring anio, replace
 		destring secc, replace
@@ -212,19 +217,21 @@ program clean_07
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
 
 		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr educ_level
+			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 ///
+			loc_agr educ_level ht11
 					
 		rename (nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano) ///
-			(pers sexo edad afro asia blanco indigena otro estado_civil ///
+			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano ht11) ///
+			(pers hombre edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal loc pesoan)
+			anios_trabajando busca_trabajo ytotal loc pesoan y_hogar)
 		
 		destring numero, replace
 		destring anio, replace
@@ -245,19 +252,21 @@ program clean_08
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
 		capture rename PT1 pt1
+		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
 
 		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr educ_level
+			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 ///
+			nom_locagr educ_level ht11
 			
 		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano) ///
-			(pers sexo edad afro asia blanco indigena otro estado_civil ///
+			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ht11) ///
+			(pers hombre edad afro asia blanco indigena otro estado_civil ///
 			estudiante trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal nomloc pesoan)
+			anios_trabajando busca_trabajo ytotal nomloc pesoan y_hogar)
 
 		destring numero, replace
 		destring anio, replace
@@ -285,6 +294,7 @@ program clean_09_16
 		capture rename estratogeo estrato
 		capture rename estred13 estrato
 		capture rename PT1 pt1
+		capture rename HT11 ht11		
 		capture rename Loc_agr_13 locagr
 		capture rename Nom_loc_agr_13 nom_locagr
 		
@@ -320,12 +330,13 @@ program clean_09_16
 		keep anio numero nper dpto region_3 region_4 secc segm ccz* ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
-			locagr nom_locagr educ_level
+			locagr nom_locagr educ_level ht11
 			
-		rename (nper e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 locagr nom_locagr pesoano) ///
-			(pers sexo edad ascendencia estado_civil estudiante trabajo ///
+		rename (nper e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 locagr ///
+		    nom_locagr pesoano ht11) ///
+			(pers hombre edad ascendencia estado_civil estudiante trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
-			ytotal loc nomloc pesoan)
+			ytotal loc nomloc pesoan y_hogar)
 		
 		destring numero, replace
 		destring anio, replace
