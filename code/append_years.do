@@ -42,6 +42,12 @@ end
 program label_vars
     label var trabajo "Employment"
 	label var horas_trabajo "Hours worked"
+	label var  educ_level "Educational attainment"
+	label define educ_level 0 "Pre school" 1 "Primary school" 0 "High school" 3 "Technical" 4 "Teacher" 5 "Post-secondary college" 6 "Post-secondary non-university" 7 "Graduate"
+	label values educ_level educ_level
+	gen educ_HS = (educ_level<=2)
+	label define educ_HS 0 "HS degree or less" 1 "More than HS diploma"
+	label values educ_HS educ_HS
 
 	save ..\base\ech_final_98_2016.dta, replace 
 end

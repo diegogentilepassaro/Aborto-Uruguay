@@ -13,9 +13,9 @@ program main_diff_analysis
 	
 	foreach var in `outcome_vars' {
 		forvalues i=1/`rd' {
-			local t : word `i' of `treatment_list'
-			local c : word `i' of `control_list'
-			local e : word `i' of `event_list'
+			local t  : word `i' of `treatment_list'
+			local c  : word `i' of `control_list'
+			local e  : word `i' of `event_list'
 			local tl : word `i' of `tline_list'
 			di "outcome  : `var'"
 			di "treatment: `t'"

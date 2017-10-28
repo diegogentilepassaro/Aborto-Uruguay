@@ -10,8 +10,8 @@ program assign_treatment
     
 	gen treatment_rivera    = (loc == "13020" & dpto == 13 & hombre == 0)
 	gen treatment_salto     = (loc == "15020" & dpto == 15 & hombre == 0)
-	gen treatment_mvd_city  = (loc == "01010" & dpto == 1 & ///
-	    inlist(ccz, 1 , 2, 3, 4, 5, 6, 7, 8, 15, 16) & hombre == 0)
+	gen treatment_mvd_city  = (loc == "01010" & dpto == 1  & hombre == 0 & inrange(edad,30,40) ///
+	                           & inlist(ccz, 1 , 2, 3, 4, 5, 6, 7, 8, 15, 16))
 	gen treatment_mvd_perif = (((loc == "01010" & dpto == 1 & inlist(ccz, 9, 10, 11, 12, 13, 14, 17, 18)) | ///
 	    (loc == "30020" & dpto == 3) | (loc == "30020" & dpto == 16)) & hombre == 0)
 	
@@ -20,9 +20,9 @@ program assign_treatment
 	codigo del proyecto de Katrina */
 	
 	gen control_paysandu = (loc == "11020" & dpto == 11 & hombre == 0)
-	gen control_rivera = ((loc == "02020" & dpto == 2) & hombre == 0)
-	gen control_mvd_city  = (loc == "01010" & dpto == 1 & ///
-	    inlist(ccz, 1 , 2, 3, 4, 5, 6, 7, 8, 15, 16) & hombre == 1)
+	gen control_rivera   = (loc == "02020" & dpto == 2  & hombre == 0)
+	gen control_mvd_city = (loc == "01010" & dpto == 1  & hombre == 0 & inrange(edad,45,55) ///
+	                         & inlist(ccz, 1 , 2, 3, 4, 5, 6, 7, 8, 15, 16))
 	gen control_mvd_perif = (((loc == "01010" & dpto == 1 & inlist(ccz, 9, 10, 11, 12, 13, 14, 17, 18)) | ///
 	    (loc == "30020" & dpto == 3) | (loc == "30020" & dpto == 16)) & hombre == 1)
 		
