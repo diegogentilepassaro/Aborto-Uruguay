@@ -16,13 +16,17 @@ program main_homogeneize_geo_vars
     save ../temp/loc_xwalk.dta, replace
 	
     homogeneize_loc_to_2012_2014
-	
-	fix_2012_weights
-	
+		
 	drop if missing(anio)
 	
 	replace ccz = ccz04 if anio == 2012
 	drop ccz04 ccz10
+	
+	tostring dpto, gen(dpto_string)
+	gen loc_code = dpto_string + loc
+	drop dpto_string
+	destring loc_code, replace
+	replace loc_code = ccz if dpto == 1
 	
 	save ..\temp\clean_loc_1998_2016.dta, replace
 end
@@ -250,26 +254,6 @@ program homogeneize_loc_to_2012_2014
 	drop _merge nomloc2 loc12_14 loc98_05
 
 	save ..\temp\clean_98_2016_temp.dta, replace
-end
-	
-program fix_2012_weights
-	keep if anio == 2013
-	replace anio = 2012 
-	
-	local by_vars "dpto loc edad hombre estrato"
-	
-	rename (pesotri pesosem) (pesotri2 pesosem2)
-	collapse (mean) pesotri pesosem, by(`by_vars')
-	
-	save ..\temp\pesos_2012_imputed.dta, replace
-
-	use ..\temp\clean_98_2016_temp.dta, clear
-
-	merge m:1 `by_vars' using ..\temp\pesos_2012_imputed.dta
-	replace pesotri = pesotri2 if anio == 2012
-	replace pesosem = pesosem2 if anio == 2012
-	
-	drop pesotri2 pesosem2
 end
 
 main_homogeneize_geo_vars
