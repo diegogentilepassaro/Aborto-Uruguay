@@ -14,6 +14,8 @@ program main_prepare_for_analysis
     impute_poverty_lines_pre06
 	
 	gen pobre = (y_hogar <= lp_06)
+	gen indigente = (y_hogar <= li_06)
+	gen hay_menores = (cantidad_personas > cantidad_mayores)
 
 	label_vars
     save ..\temp\clean_loc_1998_2016.dta, replace	
