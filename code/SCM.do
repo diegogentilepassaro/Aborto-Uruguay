@@ -1,108 +1,145 @@
 clear all
 set more off
-/*
-program scm
 
-	* Create donor pools for each Research Design (city)
-	gen dp_mvd_city = 1
-	gen geocode = _n
-
-    local control_vars  = "i.anio_qtr i.dpto edad married y_hogar"
+program main_scm
+    local control_vars  = "edad married cantidad_personas hay_menores y_hogar"
 	local outcome_vars	= "trabajo horas_trabajo"
+	local stub_list = `" "Employment" "Hours-Worked" "'
+	
+	use "..\base\ech_final_98_2016.dta", clear
+	drop if hombre == 1
+	keep if inrange(edad, 20, 40)
+	
+	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
+	    city(mvd) tr_period(2002q1)
+	
+	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
+	    city(rivera) tr_period(2010q2) restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))
 		
-	build_synth_control, data("..\base\ech_final_98_2016.dta") sample(asec) ///
-	    outcomes(`outcome_vars') controls(`control_vars') city(mvd_city) tline(2002q1)
-
+	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
+	    city(salto) tr_period(2012q4)
+    
+	plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) tr_period(2002q1) ///
+	    stub_list(`stub_list')
+	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) tr_period(2010q2) ///
+	    stub_list(`stub_list')
+	plot_scm, outcomes(`outcome_vars') city(salto) city_legend(Salto) tr_period(2012q4) ///
+	    stub_list(`stub_list')
 end
 
 program build_synth_control
-	syntax [if], data(string) outcomes(string) controls(string) city(string) sample(string) tline(string) [stub(string)]
-    // tr_period(int)
-	use `data', clear
-	*/
+	syntax [if], outcomes(string) controls(string) city(string) tr_period(string) ///
+	    [special(string) restr(string)]
+		
+    preserve
 	
-	use "..\base\ech_final_98_2016.dta", clear
-	gen dp_mvd_city = 1
-	egen geocode = group(loc dpto)
-	local city mvd_city
-	local tline 2002q1
-	local outcomes	= "trabajo"
-	local controls  = "edad married y_hogar"
-    
-	//preserve
+	keep if inrange(anio_qtr, tq(`tr_period') - 12,tq(`tr_period') + 12) 
 	
-		drop if dp_`city'==0
-		keep if inrange(anio_qtr, tq(`tline') - 12,tq(`tline') + 12)
+	cap drop if `restr'
+	
+	qui sum loc_code if treatment_`city'==1
+	local trunit = r(mean)
+	qui sum anio_qtr  if  anio_qtr == tq(`tr_period'), det
+	local tr_period = r(mean)
+
+	collapse (mean) `controls' `outcomes' treatment_`city' `if' [aw = pesotri], by(anio_qtr loc_code)
+	
+	* Check the panel is balanced, this is for the synthetic control to work
+	xtset loc_code anio_qtr
+	local num_anio_qtrs = r(tmax) - r(tmin) + 1
+	bysort loc_code: gen num_anio_qtr = _N
+	keep if num_anio_qtr == `num_anio_qtrs'  /*for proper geocodes this should be an assertion*/
+
+	* Check the panel is balanced against missing values
+	local n_outcomes: word count `outcomes'
+	forval i = 1/`n_outcomes' {
+		local outcome_var: word `i' of `outcomes' 
+		drop if `outcome_var'==.
+	}
+	bysort loc_code: replace num_anio_qtr = _N
+	keep if num_anio_qtr == `num_anio_qtrs' /*for proper geocodes this should be an assertion*/
+
+	save "../temp/donorpool_`city'`special'.dta", replace
+	
+	* Create the synth control for each outcome
+	forval i = 1/`n_outcomes' {
+		use "../temp/donorpool_`city'`special'.dta", clear
 		
-		* NOTE: we need a unique geo code for each place, at the finest level, for now I'm calling it geocode
-		qui sum geocode if treatment_`city'==1
-		local trunit = r(mean)
-		qui sum anio_qtr  if  tq(`tline'), det
-		local tr_period = r(p50)
-		gen anio_qtr_2 = qofd(dofq(anio_qtr))
-		drop anio_qtr
-		rename anio_qtr_2 anio_qtr
-
-		collapse (mean) `controls' `outcomes' treatment_`city' `if' [aw = pesotri], by(anio_qtr geocode)
+		local var: word `i' of `outcomes'
+		/*local lag1 = `tr_period' - 10
+		local lag2 = `tr_period' - 8
+		local lag3 = `tr_period' - 6
+		local lag4 = `tr_period' - 4
+		local lag5 = `tr_period' - 2
+		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"*/
 		
-		* Check the panel is balanced, this is for the synthetic control to work
-		xtset geocode anio_qtr
-		local num_anio_qtrs = r(tmax) - r(tmin) + 1
-		di `num_anio_qtrs'
-		bysort geocode: gen num_anio_qtr = _N
-		keep if num_anio_qtr == `num_anio_qtrs'  /*for proper geocodes this should be an assertion*/
+		synth `var' `controls' `lags', ///
+			trunit(`trunit') trperiod(`tr_period') figure ///
+			keep("../temp/synth_`city'_`var'`special'.dta", replace)	
 
-		* Check the panel is balanced against missing values
-		local n_outcomes: word count `outcomes'
-		forval i = 1/`n_outcomes' {
-			local outcome_var: word `i' of `outcomes' 
-			drop if `outcome_var'==.
-		}
-		bysort geocode: replace num_anio_qtr = _N
-		keep if num_anio_qtr == `num_anio_qtrs' /*for proper geocodes this should be an assertion*/
+		use "../temp/synth_`city'_`var'`special'.dta", clear
+		rename (_Co_Number _time _Y_treated _Y_synthetic) ///
+			(geocode anio_qtr `city'_`var'`special' synthetic_`city'_`var'`special')
 
-		save "../temp/`sample'_donorpool_`city'`stub'.dta", replace
-		
-		* Create the synth control for each outcome
-		forval i = 1/`n_outcomes' {
-			use "../temp/`sample'_donorpool_`city'`stub'.dta", clear
-			
-			local var: word `i' of `outcomes'
-			/*local lag1 = `tr_period' - 10
-			local lag2 = `tr_period' - 8
-			local lag3 = `tr_period' - 6
-			local lag4 = `tr_period' - 4
-			local lag5 = `tr_period' - 2
-			local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"*/
-			
-			synth `var' `controls' `lags', ///
-				trunit(`trunit') trperiod(`tr_period') figure ///
-				keep("../temp/`sample'_synth_`city'_`var'`stub'.dta", replace)
-		}	
-			
+		drop if anio_qtr==.
+		drop geocode _W_Weight
 
-			/*use "../temp/`sample'_synth_`city'_`var'`stub'.dta", clear
-			rename (_Co_Number _time _Y_treated _Y_synthetic) ///
-				(geocode anio_qtr `city'_`var' synthetic_`city'_`var')
+		save "../temp/synth_`city'_`var'`special'.dta", replace
+	}
 
-			drop if anio_qtr==.
-			drop geocode _W_Weight
+	local outcome_var: word 1 of `outcomes' 
+	use "../temp/synth_`city'_`outcome_var'`special'", clear
 
-			save "../temp/`sample'_synth_`city'_`var'`stub'.dta", replace
-		}
+	forval i = 2/`n_outcomes' {
+		local outcome_var: word `i' of `outcomes' 
 
-		local n_outcomes: word count `outcomes'
-		local outcome_var: word 1 of `outcomes' 
-		use "../temp/`sample'_synth_`city'_`outcome_var'`stub'", clear
-
-		forval i = 2/`n_outcomes' {
-			local outcome_var: word `i' of `outcomes' 
-
-			merge 1:1 anio_qtr using "../temp/`sample'_synth_`city'_`outcome_var'`stub'", nogen
-		}
-		save "../derived_`sample'/controltrends_`city'`stub'.dta", replace
-
+		merge 1:1 anio_qtr using "../temp/synth_`city'_`outcome_var'`special'", nogen
+	}
+	save "../derived/controltrends_`city'`special'.dta", replace
+	
 	restore
-	
-end*/
+end
 
+program plot_scm
+    syntax, outcomes(string) city(string) city_legend(string) tr_period(string) ///
+	    stub_list(string) [special(string) special_legend(string)]
+	
+	use "../derived/controltrends_`city'`special'.dta", clear
+	
+	format anio_qtr %tq
+	
+	local number_outcomes: word count `outcomes'
+    local vertical = tq(`tr_period')
+	
+	tsset anio_qtr
+
+	
+	forval i = 1/`number_outcomes' {
+		local outcome_var: word `i' of `outcomes'
+	    local stub_var: word `i' of `stub_list'
+		
+		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 1) replace
+		tssmooth ma synthetic_`city'_`outcome_var' = synthetic_`city'_`outcome_var', window(1 1 1) replace
+		
+		qui twoway (line `city'_`outcome_var' anio_qtr, lcolor(navy) lwidth(thick)) ///
+			   (line synthetic_`city'_`outcome_var' anio_qtr, lpattern(dash) lcolor(black)), xtitle("Year-qtr") ///
+			   ytitle("`stub_var'") xline(`vertical', lcolor(black) lpattern(dot)) ///
+			   legend(label(1 `city_legend') label(2 "Synthetic `city_legend'")) ///
+			   title(`stub_var', color(black) size(medium)) ///
+			   ylabel(#2) graphregion(color(white)) bgcolor(white) name(`city'_trend_`outcome_var'`special', replace)
+    }
+	
+	forval i = 1/`number_outcomes' {
+		local outcome_var: word `i' of `outcomes'
+		local plots = "`plots' " + "`city'_trend_`outcome_var'`special'"
+	}
+		
+	local plot1: word 1 of `plots' 	
+	
+	grc1leg `plots', rows(3) legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
+		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
+	*graph display, ysize(8.5) xsize(6.5)
+	graph export ../figures/scm_`city'`special'.png, replace
+end
+
+main_scm

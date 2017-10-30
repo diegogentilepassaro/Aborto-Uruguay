@@ -26,7 +26,8 @@ program main_homogeneize_geo_vars
 	gen loc_code = dpto_string + loc
 	drop dpto_string
 	destring loc_code, replace
-	replace loc_code = ccz if dpto == 1
+	
+	*replace loc_code = ccz if dpto == 1
 	
 	save ..\temp\clean_loc_1998_2016.dta, replace
 end
