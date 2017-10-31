@@ -102,6 +102,7 @@ syntax, var_compl_prefix(string)
 	forvalues i = 1/7 {
 		replace educ_level = `i' if `var_compl_prefix'_`i'_2==1
 	}
+	replace educ_level = 5 if educ_level == 6 | educ_level == 7
 end
 
 program clean_01_05
@@ -277,7 +278,24 @@ program clean_08
 		capture rename PT1 pt1
 		capture rename HT11 ht11
 		
-		educ_var_compl_each_level, var_compl_prefix(e54)
+		rename  e52_1 e52_0
+		replace e52_2 = e52_3 if e52_3>0
+		drop e52_3
+		rename e52_4 e52_3
+		replace e52_3 = e52_5 if e52_5>0
+		replace e52_3 = e52_6 if e52_6>0
+		drop e52_5 e52_6
+		rename e52_7_1 e52_4
+		rename e52_8   e52_5
+		rename e52_9   e52_6
+		rename e52_10  e52_7
+		replace e52_7 = e52_11 if e52_11>0
+		drop e52_7_2
+		forvalues i=2/7 {
+			gen e52_`i'_2 = e52_`i'
+		}
+		educ_var_compl_last_level, var_level_prefix(e52) var_compl_last(e53_2) 
+		//educ_var_compl_each_level, var_compl_prefix(e52)
 		gen estudiante = (pobpcoac == 7)
 
 		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
