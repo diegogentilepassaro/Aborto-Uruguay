@@ -4,26 +4,26 @@ set more off
 program main_scm
     local control_vars  = "edad married cantidad_personas hay_menores y_hogar"
 	local outcome_vars	= "trabajo horas_trabajo"
-	local stub_list = `" "Employment" "Hours-Worked" "'
+	local stub_list = `" "Employment" "Hours-worked" "'
 	
 	use "..\base\ech_final_98_2016.dta", clear
 	drop if hombre == 1
-	keep if inrange(edad, 20, 40)
+	keep if inrange(edad, 14, 45)
 	
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
 	    city(mvd) tr_period(2002q1)
 	
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(rivera) tr_period(2010q2) restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))
+	    city(rivera) tr_period(2010q3) restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))
 		
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(salto) tr_period(2012q4)
+	    city(salto) tr_period(2013q1)
     
 	plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) tr_period(2002q1) ///
 	    stub_list(`stub_list')
-	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) tr_period(2010q2) ///
+	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) tr_period(2010q3) ///
 	    stub_list(`stub_list')
-	plot_scm, outcomes(`outcome_vars') city(salto) city_legend(Salto) tr_period(2012q4) ///
+	plot_scm, outcomes(`outcome_vars') city(salto) city_legend(Salto) tr_period(2013q1) ///
 	    stub_list(`stub_list')
 end
 
