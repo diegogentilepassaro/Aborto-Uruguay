@@ -42,17 +42,27 @@ program clean_98_00
 	forvalues year=1998/2000 {
 		use ..\base\preclean_`year'.dta, replace
 		keep    ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
-				pe2 pe3 pe5  pobpcoac pf133 pe14* pf053 pf37 pf38 pf351 pt1 ///
+				pe2 pe3 pe5  pobpcoac pf133 pe14* pe15 pf053 pf37 pf38 pf351 pt1 ///
 				locech nomlocech ht11 hd21 hd22
+				
+		gen pe141_2 = (pe141==1)	
+		gen pe141_3 = (pe141==2|pe141==3)
+		gen pe141_4 = (pe141==4)
+		gen pe141_5 = (pe141==5)
+		gen pe141_6 = (pe141==6|pe141==7)
+		
+		educ_var_compl_last_level, var_level_prefix(pe141) var_compl_last(pe15) 
+		
+		gen estudiante = (pobpcoac==33)
 		
 		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech ///
 		        ht11 hd21 hd22) ///
 			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc ///
 			    y_hogar cantidad_personas cantidad_mayores)
 
-		rename (pe2  pe5           pobpcoac         pf133         pe141 pe142 ///
+		rename (pe2  pe5           pobpcoac               ///
 				pe3  pf053         pf38             pf37             pf351         pt1)  ///
-			   (hombre estado_civil  codigo_actividad  estudiante    educ  ult_anio_educ ///
+			   (hombre estado_civil  codigo_actividad    ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
 	    
 		gen trimestre = 1 if inrange(semana, 1, 12)
@@ -110,8 +120,11 @@ program clean_01_05
 	}
 	foreach year in 2001 2002 2003 2004 2005 {
 		use ..\base\preclean_`year'.dta, clear
+		
 		educ_var_compl_last_level, var_level_prefix(e11) var_compl_last(e13) 
-		keep anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
+		gen estudiante = (pobpcoac == 7)
+		
+		keep estudiante anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
 		    locech nomlocech educ_level ht11 d14 d16
 			 
@@ -121,10 +134,10 @@ program clean_01_05
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		
 		rename (nper correlativ e1   e2   e4 ///
-				e9         f1_1    f17_1         f23           pt1 locech nomlocech ///
+				f1_1    f17_1         f23           pt1 locech nomlocech ///
 				ht11 d14 d16) ///
 			   (pers numero hombre edad estado_civil ///
-				estudiante trabajo horas_trabajo busca_trabajo ytotal loc nomloc ///
+				trabajo horas_trabajo busca_trabajo ytotal loc nomloc ///
 				y_hogar cantidad_mayores cantidad_personas)
 
 		gen meses_trabajando = .
@@ -180,18 +193,19 @@ program clean_06
 		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e52) 
+		gen estudiante = (Pobpcoac == 7)
 
-		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
+		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
 			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr ///
 			nom_locagr educ_level ht11 d25 d23 lp_06 li_06
 			
 		rename (nper e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano ///
+			e37 f62 f81 f82_1 f82_2 f102 pt1 locagr nom_locagr  pesoano ///
 			ht11 d23 d25) ///
 			(pers hombre edad afro asia blanco indigena otro estado_civil ///
-			estudiante trabajo horas_trabajo meses_trabajando ///
+			 trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal loc nomloc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
 		
@@ -226,18 +240,19 @@ program clean_07
 		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
+		gen estudiante = (Pobpcoac == 7)
 
-		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
+		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 ///
 			loc_agr educ_level ht11 d24 d26 lp_06 li_06
 					
 		rename (nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano ///
+			e40 f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano ///
 			ht11 d24 d26) ///
 			(pers hombre edad afro asia blanco indigena otro estado_civil ///
-			estudiante trabajo horas_trabajo meses_trabajando ///
+			trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal loc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
 		
@@ -263,18 +278,19 @@ program clean_08
 		capture rename HT11 ht11
 		
 		educ_var_compl_each_level, var_compl_prefix(e54)
+		gen estudiante = (pobpcoac == 7)
 
-		keep anio numero nper dpto region_3 region_4 secc segm ccz ///
+		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 ///
 			nom_locagr educ_level ht11 d24 d26 lp_06 li_06
 			
 		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ///
+			e40 f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ///
 			ht11 d24 d26) ///
 			(pers hombre edad afro asia blanco indigena otro estado_civil ///
-			estudiante trabajo horas_trabajo meses_trabajando ///
+			trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal nomloc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
 
@@ -307,6 +323,7 @@ program clean_09_16
 		capture rename HT11 ht11		
 		capture rename Loc_agr_13 locagr
 		capture rename Nom_loc_agr_13 nom_locagr
+		capture rename POBPCOAC pobpcoac
 		
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
@@ -326,6 +343,8 @@ program clean_09_16
 					local j = `i'-3
 					rename e51_`i' e51_`j'
 				}
+				replace e51_6 = e51_7 if e51_7>0
+				replace e51_6 = e51_8 if e51_8>0
 				educ_var_compl_last_level, var_level_prefix(e51) var_compl_last(e53) 	
 			}
 			else {
@@ -337,14 +356,16 @@ program clean_09_16
 				educ_var_compl_each_level, var_compl_prefix(var) 		    
 		}
 		
-		keep anio numero nper dpto region_3 region_4 secc segm ccz* ///
+		gen estudiante = (pobpcoac == 7)
+		
+		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz* ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
 			locagr nom_locagr educ_level ht11 d23 d25 lp_06 li_06
 			
-		rename (nper e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 locagr ///
+		rename (nper e26 e27 e29_6 e36 f66 f85 f88_1 f88_2 f99 pt1 locagr ///
 		    nom_locagr pesoano ht11 d23 d25) ///
-			(pers hombre edad ascendencia estado_civil estudiante trabajo ///
+			(pers hombre edad ascendencia estado_civil trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
 			ytotal loc nomloc pesoan y_hogar cantidad_mayores cantidad_personas)
 		
