@@ -11,7 +11,7 @@ program main_diff_analysis
 
 	local restr "inrange(edad, 14, 45)"
 	
-	/*plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
 	    control(mvd) event_date(`date_is_chpr') ///
 		weight(pesotri) time(anio_qtr) city_legend(Montevideo) restr(`restr')
 
@@ -21,7 +21,7 @@ program main_diff_analysis
 		
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(salto)  ///
 	    control(paysandu) event_date(`date_ive') ///
-		weight(pesotri) time(anio_qtr) city_legend(Salto) restr(`restr')*/
+		weight(pesotri) time(anio_qtr) city_legend(Salto) restr(`restr')
 		
 	reg_diff, outcomes(`outcome_vars') treatment(mvd)  ///
 	    control(mvd) event(Female) event_date(`date_is_chpr') ///
