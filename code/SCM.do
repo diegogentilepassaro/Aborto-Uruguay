@@ -11,36 +11,36 @@ program main_scm
 	keep if inrange(edad, 14, 45)
 	
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(mvd) tr_period(2002q1)
+	    city(mvd) event_date(2002q1)
 	
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(rivera) tr_period(2010q3) restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))
+	    city(rivera) event_date(2010q3) restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))
 		
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(salto) tr_period(2013q1)
+	    city(salto) event_date(2013q1)
     
-	plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) tr_period(2002q1) ///
+	plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) event_date(2002q1) ///
 	    stub_list(`stub_list')
-	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) tr_period(2010q3) ///
+	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) event_date(2010q3) ///
 	    stub_list(`stub_list')
-	plot_scm, outcomes(`outcome_vars') city(salto) city_legend(Salto) tr_period(2013q1) ///
+	plot_scm, outcomes(`outcome_vars') city(salto) city_legend(Salto) event_date(2013q1) ///
 	    stub_list(`stub_list')
 end
 
 program build_synth_control
-	syntax [if], outcomes(string) controls(string) city(string) tr_period(string) ///
+	syntax [if], outcomes(string) controls(string) city(string) event_date(string) ///
 	    [special(string) restr(string)]
 		
     preserve
 	
-	keep if inrange(anio_qtr, tq(`tr_period') - 12,tq(`tr_period') + 12) 
+	keep if inrange(anio_qtr, tq(`event_date') - 12,tq(`event_date') + 12) 
 	
 	cap drop if `restr'
 	
 	qui sum loc_code if treatment_`city'==1
 	local trunit = r(mean)
-	qui sum anio_qtr  if  anio_qtr == tq(`tr_period'), det
-	local tr_period = r(mean)
+	qui sum anio_qtr  if  anio_qtr == tq(`event_date'), det
+	local event_date = r(mean)
 
 	collapse (mean) `controls' `outcomes' treatment_`city' `if' [aw = pesotri], by(anio_qtr loc_code)
 	
@@ -66,15 +66,15 @@ program build_synth_control
 		use "../temp/donorpool_`city'`special'.dta", clear
 		
 		local var: word `i' of `outcomes'
-		/*local lag1 = `tr_period' - 10
-		local lag2 = `tr_period' - 8
-		local lag3 = `tr_period' - 6
-		local lag4 = `tr_period' - 4
-		local lag5 = `tr_period' - 2
+		/*local lag1 = `event_date' - 10
+		local lag2 = `event_date' - 8
+		local lag3 = `event_date' - 6
+		local lag4 = `event_date' - 4
+		local lag5 = `event_date' - 2
 		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"*/
 		
 		synth `var' `controls' `lags', ///
-			trunit(`trunit') trperiod(`tr_period') figure ///
+			trunit(`trunit') trperiod(`event_date') figure ///
 			keep("../temp/synth_`city'_`var'`special'.dta", replace)	
 
 		use "../temp/synth_`city'_`var'`special'.dta", clear
@@ -101,7 +101,7 @@ program build_synth_control
 end
 
 program plot_scm
-    syntax, outcomes(string) city(string) city_legend(string) tr_period(string) ///
+    syntax, outcomes(string) city(string) city_legend(string) event_date(string) ///
 	    stub_list(string) [special(string) special_legend(string)]
 	
 	use "../derived/controltrends_`city'`special'.dta", clear
@@ -109,7 +109,7 @@ program plot_scm
 	format anio_qtr %tq
 	
 	local number_outcomes: word count `outcomes'
-    local vertical = tq(`tr_period')
+    local vertical = tq(`event_date')
 	
 	tsset anio_qtr
 
@@ -136,7 +136,7 @@ program plot_scm
 		
 	local plot1: word 1 of `plots' 	
 	
-	grc1leg `plots', rows(3) legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
+	grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
 	*graph display, ysize(8.5) xsize(6.5)
 	graph export ../figures/scm_`city'`special'.png, replace
