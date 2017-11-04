@@ -40,20 +40,22 @@ end
 program clean_98_00
 	* Note: can't find: afro asia blanco indigena otro then generated raza equal missing
 	forvalues year=1998/2000 {
-		use ..\base\preclean_`year'.dta, replace
-		keep    ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
-				pe2 pe3 pe5  pobpcoac pf133 pe14* pe15 pf053 pf37 pf38 pf351 pt1 ///
-				locech nomlocech ht11 hd21 hd22
-				
-		gen pe141_2 = (pe141==1)	
-		gen pe141_3 = (pe141==2|pe141==3)
-		gen pe141_4 = (pe141==4)
-		gen pe141_5 = (pe141==5)
-		gen pe141_6 = (pe141==6|pe141==7)
+		use ..\base\preclean_`year'.dta, replace		
 		
-		educ_var_compl_last_level, var_level_prefix(pe141) var_compl_last(pe15) 
+		gen     primaria   = (pe141==8|pe141==1|pe141==2|pe141==3|pe141==4)
+		gen     secundaria = (((pe141==3|pe141==4) & pe15==1)|pe141==5|pe141==6|pe141==7)
+		gen     terciaria  = ((pe141==5|pe141==6|pe141==7) & pe15==1)
+		gen     educ_level = 1              if primaria==1
+		replace educ_level = 2              if secundaria==1
+		replace educ_level = 3              if terciaria==1
+		assert  pe141==0 | pe141==9         if educ_level==.
+		replace educ_level = 1              if educ_level==.
 		
 		gen estudiante = (pobpcoac==33)
+		
+		keep    educ_level estudiante ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
+				pe2 pe3 pe5  pobpcoac pf133 pf053 pf37 pf38 pf351 pt1 ///
+				locech nomlocech ht11 hd21 hd22
 		
 		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech ///
 		        ht11 hd21 hd22) ///
@@ -122,12 +124,19 @@ program clean_01_05
 	foreach year in 2001 2002 2003 2004 2005 {
 		use ..\base\preclean_`year'.dta, clear
 		
-		educ_var_compl_last_level, var_level_prefix(e11) var_compl_last(e13) 
+		gen     primaria   = e11_1 + e11_2
+		gen     secundaria = max(e11_3,e11_4)
+		gen     terciaria  = max(e11_5,e11_6)
+		gen     educ_level = 1 if primaria>=0
+		replace educ_level = 2 if secundaria==6 | (e11_3+e11_4==6 & e13==1) 
+		replace educ_level = 3 if terciaria>0 & e13==1
+		assert !mi(educ_level)
+
 		gen estudiante = (pobpcoac == 7)
 		
-		keep estudiante anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
+		keep estudiante educ_level anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
-		    locech nomlocech educ_level ht11 d14 d16
+		    locech nomlocech ht11 d14 d16
 			 
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
@@ -193,7 +202,18 @@ program clean_06
 		capture rename PT1 pt1
 		capture rename HT11 ht11
 		
-		educ_var_compl_each_level, var_compl_prefix(e52) 
+		gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4>0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
+						   | (e48==2 & (e52_1_1>0|e52_2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
+		gen     secundaria = (e48==1 & (e50_9>0|e50_10>0|e50_11>0|e50_12>0)) ///
+						   | (e48==2 & (e52_2_2==1|e52_3_2==1|e52_3_3==1|e52_4_1>0|e52_5_1>0|e52_6_1>0|e52_7_1>0))
+		gen     terciaria  = (e48==1 & (e50_12>0)) ///
+						   | (e48==2 & (e52_4_2==1|e52_5_2==1|e52_6_2==1|e52_7_2==1))
+		gen     educ_level = 1 if primaria==1
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e51==2 if educ_level ==. & e51!=0
+		replace educ_level=1 if educ_level==.
+
 		gen estudiante = (Pobpcoac == 7)
 
 		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
@@ -240,7 +260,18 @@ program clean_07
 		capture rename PT1 pt1
 		capture rename HT11 ht11
 		
-		educ_var_compl_each_level, var_compl_prefix(e54)
+		gen     primaria   = (e50==1 & (e52_1>0|e52_2>0|e52_3>0|e52_4>0|e52_5>0|e52_6>0|e52_7>0|e52_8>0)) ///
+						   | (e50==2 & (e54_1_1>0|e54_2_1>0|e54_3_1>0|e54_3_3==1|e54_3_3==2|e54_3_3==3))
+		gen     secundaria = (e50==1 & (e52_9>0|e52_10>0|e52_11>0|e52_12>0)) ///
+						   | (e50==2 & (e54_2_2==1|e54_3_2==1|e54_3_3==1|e54_4_1>0|e54_5_1>0|e54_6_1>0|e54_7_1>0))
+		gen     terciaria  = (e50==1 & (e52_12>0)) ///
+						   | (e50==2 & (e54_4_2==1|e54_5_2==1|e54_6_2==1|e54_7_2==1))	
+		gen     educ_level = 1 if primaria==1
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e53==2 if educ_level ==. & e53!=0
+		replace educ_level=1 if educ_level==.
+		
 		gen estudiante = (Pobpcoac == 7)
 
 		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
@@ -278,24 +309,15 @@ program clean_08
 		capture rename PT1 pt1
 		capture rename HT11 ht11
 		
-		rename  e52_1 e52_0
-		replace e52_2 = e52_3 if e52_3>0
-		drop e52_3
-		rename e52_4 e52_3
-		replace e52_3 = e52_5 if e52_5>0
-		replace e52_3 = e52_6 if e52_6>0
-		drop e52_5 e52_6
-		rename e52_7_1 e52_4
-		rename e52_8   e52_5
-		rename e52_9   e52_6
-		rename e52_10  e52_7
-		replace e52_7 = e52_11 if e52_11>0
-		drop e52_7_2
-		forvalues i=2/7 {
-			gen e52_`i'_2 = e52_`i'
-		}
-		educ_var_compl_last_level, var_level_prefix(e52) var_compl_last(e53_2) 
-		//educ_var_compl_each_level, var_compl_prefix(e52)
+		gen     primaria   = (e52_1>0|e52_2>0|e53_2>0|e52_7_2==3|e52_7_2==2)
+		gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_2==1)|e52_7_2==1)
+		gen     terciaria  = (((e52_8>0|e52_9>0|e52_10>0) & e53_2==1) | e52_11>0)
+		gen     educ_level = 1 if primaria>0
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e52_1+e52_2+e52_3+e52_4+e52_5+e52_6+e52_7_1+e52_8+e52_9+e52_10+e52_11==0 if educ_level ==.
+		replace educ_level = 1 if educ_level==.
+		
 		gen estudiante = (pobpcoac == 7)
 
 		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
@@ -351,27 +373,26 @@ program clean_09_16
 		capture gen pesotri = .
 
 		if "`year'" <= "2010" {
-				replace e51_2 = e51_3 if e51_3>0
-				drop e51_3
-				rename e51_4 e51_3
-				replace e51_3 = e51_5 if e51_5>0
-				replace e51_3 = e51_6 if e51_6>0
-				drop e51_5 e51_6
-				forvalues i = 7/11 {
-					local j = `i'-3
-					rename e51_`i' e51_`j'
-				}
-				replace e51_6 = e51_7 if e51_7>0
-				replace e51_6 = e51_8 if e51_8>0
-				educ_var_compl_last_level, var_level_prefix(e51) var_compl_last(e53) 	
+				gen     primaria   = (e51_1>0|e51_2>0|e51_3>0|e51_4>0)
+				gen     secundaria = (e51_5==3|e51_6==3|(e51_7>=3 & e53==1)|e51_7_1==1)
+				gen     terciaria  = (((e51_8>0|e51_9>0|e51_10>0) & e53==1) | e51_11>0)
+
+				gen     educ_level = 1 if primaria>0
+				replace educ_level = 2 if secundaria==1
+				replace educ_level = 3 if terciaria==1
+				assert e51_1+e51_2+e51_3+e51_4+e51_5+e51_6+e51_7_1+e51_8+e51_9+e51_10+e51_11==0 if educ_level ==.
+				replace educ_level = 1 if educ_level==.	
 			}
 			else {
-				local i = 1
-				foreach var in e197 e201 e212 e215 e218 e221 e224 {
-					rename `var'_1 var_`i'_2
-					local i = `i'+1
-				}
-				educ_var_compl_each_level, var_compl_prefix(var) 		    
+				gen     primaria   = (e193!=3|e197!=3|e201_1==2|e212_1==2)
+				gen     secundaria = (e201_1==1|e212_1==1|e215_1==2|e218_1==2|e218_1==2|e221_1==2|e224_1==2)
+				gen     terciaria  = (e215_1==1|e218_1==1|e218_1==1|e221_1==1|e224_1==1)
+				gen     educ_level = 1 if primaria==1
+				replace educ_level = 2 if secundaria==1
+				replace educ_level = 3 if terciaria==1
+				assert  e193==3        if educ_level==.
+				assert e197_1+e201_+e212_1+e215_1+e218_1+e218_1+e221_1+e224_1==0 if educ_level==.
+				replace educ_level = 1 if educ_level==. 		    
 		}
 		
 		gen estudiante = (pobpcoac == 7)
