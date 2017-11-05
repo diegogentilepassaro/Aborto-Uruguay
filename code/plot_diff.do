@@ -2,38 +2,66 @@ clear all
 set more off
 
 program main_diff_analysis
-	local outcome_vars   = "trabajo horas_trabajo"
-	local stub_list      = "Employment Hours-worked"
+	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
+	local stub_list      = "Employment Hours-worked High-school"
 	
 	local date_is_chpr "2002q1"
 	local date_rivera "2010q3"
 	local date_ive "2013q1"
-
-	local restr "inrange(edad, 14, 45)"
+	
+	local sem_date_is_chpr "2002h1"
+	local sem_date_rivera "2010h2"
+	local sem_date_ive "2013h1"
+	
+	local restr "inrange(edad, 14, 40)"
 	
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
 	    control(mvd) event_date(`date_is_chpr') ///
 		weight(pesotri) time(anio_qtr) city_legend(Montevideo) restr(`restr')
-
+		
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
+	    control(mvd) event_date(`sem_date_is_chpr') ///
+		weight(pesosem) time(anio_sem) city_legend(Montevideo) restr(`restr')
+		
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(rivera)  ///
 	    control(artigas) event_date(`date_rivera') ///
 		weight(pesotri) time(anio_qtr) city_legend(Rivera) restr(`restr')
+
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(rivera)  ///
+	    control(artigas) event_date(`sem_date_rivera') ///
+		weight(pesosem) time(anio_sem) city_legend(Rivera) restr(`restr')
 		
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(salto)  ///
 	    control(paysandu) event_date(`date_ive') ///
 		weight(pesotri) time(anio_qtr) city_legend(Salto) restr(`restr')
+
+    plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(salto)  ///
+	    control(paysandu) event_date(`sem_date_ive') ///
+		weight(pesosem) time(anio_sem) city_legend(Salto) restr(`restr')
 		
 	reg_diff, outcomes(`outcome_vars') treatment(mvd)  ///
 	    control(mvd) event(Female) event_date(`date_is_chpr') ///
 		weight(pesotri) time(anio_qtr) restr(`restr')
+		
+	reg_diff, outcomes(`outcome_vars') treatment(mvd)  ///
+	    control(mvd) event(Female) event_date(`sem_date_is_chpr') ///
+		weight(pesosem) time(anio_sem) restr(`restr')		
 
 	reg_diff, outcomes(`outcome_vars') treatment(rivera)  ///
 	    control(artigas) event(Rivera) event_date(`date_rivera') ///
 		weight(pesotri) time(anio_qtr) restr(`restr')
+
+	reg_diff, outcomes(`outcome_vars') treatment(rivera)  ///
+	    control(artigas) event(Rivera) event_date(`sem_date_rivera') ///
+		weight(pesosem) time(anio_sem) restr(`restr')
 		
 	reg_diff, outcomes(`outcome_vars') treatment(salto)  ///
 	    control(paysandu) event(Salto) event_date(`date_ive') ///
-		weight(pesotri) time(anio_qtr) restr(`restr')		
+		weight(pesotri) time(anio_qtr) restr(`restr')
+
+	reg_diff, outcomes(`outcome_vars') treatment(salto)  ///
+	    control(paysandu) event(Salto) event_date(`sem_date_ive') ///
+		weight(pesosem) time(anio_sem) restr(`restr')		
 end
 
 program plot_diff
@@ -86,7 +114,7 @@ program plot_diff
 			   tline(`event_date', lcolor(black) lpattern(dot)) ///
 			   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 			   ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-			   title("`stub_var'", color(black) size(medium)) ///
+			   title("`stub_var'", color(black) size(medium)) ylabel(#2)
 
 		}
 		
@@ -99,8 +127,8 @@ program plot_diff
 	
 	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
-	*graph display, ysize(8.5) xsize(6.5)
-	graph export ../figures/did_`treatment'.png, replace
+	graph display, ysize(8.5) xsize(6.5)
+	graph export ../figures/did_`treatment'_`time'.png, replace
 		
 end
 
@@ -129,7 +157,7 @@ program reg_diff
 		    gen post = (`time' >= tq(`event_date'))
 			} 
 			else {
-			gen post = (`time' >= th(`event_date')
+			gen post = (`time' >= th(`event_date'))
 			}
 		gen interaction = treatment_`treatment' * post
 		
@@ -140,7 +168,7 @@ program reg_diff
 		
 		drop interaction post
 		}
-		esttab using ../tables/did_`treatment'.tex, label se ar2 compress ///
+		esttab using ../tables/did_`treatment'_`time'.tex, label se ar2 compress ///
 		    replace nonotes coeflabels(interaction "`event' x Post") keep(interaction)
 		eststo clear
 end
