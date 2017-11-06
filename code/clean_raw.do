@@ -243,8 +243,8 @@ program clean_06
 		gen	c98_hhld_stove		=	(d19!=3)
 		gen	c98_hhld_hot_water	=	(d21_1_1==1|d21_1_2==1|d21_1_3==1|d21_2_1==1|d21_2_2==1)
 		gen	c98_hhld_refrigerat	=	(d21_3==1|d21_4==1)
-		gen	c98_hhld_TV			=	(d21_5_1==1)
-		gen	c98_hhld_VCR		=	(d21_8==1|d21_9==1)
+		gen	c98_hhld_tv			=	(d21_5_1==1)
+		gen	c98_hhld_vcr		=	(d21_8==1|d21_9==1)
 		gen	c98_hhld_wash_mac	=	(d21_10==1)
 		gen	c98_hhld_dishwasher	=	(d21_12==1)
 		gen	c98_hhld_microwave	=	(d21_13==1)
@@ -252,7 +252,7 @@ program clean_06
 		gen	c01_hhld_computer	=	(d21_14_1==1)
 		gen	c01_hhld_internet	=	(d21_15==1)
 		gen	c01_hhld_phone		=	(d21_16_1==1|d21_17_1==1)
-		gen	c01_hhld_cable_TV	=	(d21_7==1)
+		gen	c01_hhld_cable_tv	=	(d21_7==1)
 
 		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
@@ -326,8 +326,8 @@ program clean_07
 		gen	c98_hhld_stove		=	(d20!=3)
 		gen	c98_hhld_hot_water	=	(d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
 		gen	c98_hhld_refrigerat	=	(d22_1_2==1|d22_4==1)
-		gen	c98_hhld_TV			=	(d22_5_1==1)
-		gen	c98_hhld_VCR		=	(d22_8==1|d22_9==1)
+		gen	c98_hhld_tv			=	(d22_5_1==1)
+		gen	c98_hhld_vcr		=	(d22_8==1|d22_9==1)
 		gen	c98_hhld_wash_mac	=	(d22_10==1)
 		gen	c98_hhld_dishwasher	=	(d22_12==1)
 		gen	c98_hhld_microwave	=	(d22_13==1)
@@ -335,7 +335,7 @@ program clean_07
 		gen	c01_hhld_computer	=	(d22_14_1==1)
 		gen	c01_hhld_internet	=	(d22_15_1==1|d22_15_2==1)
 		gen	c01_hhld_phone		=	(d22_16_1==1|d22_17_1==1)
-		gen	c01_hhld_cable_TV	=	(d22_7==1)
+		gen	c01_hhld_cable_tv	=	(d22_7==1)
 
 		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
@@ -397,8 +397,8 @@ program clean_08
 		gen	c98_hhld_stove		=	(d20!=3)
 		gen	c98_hhld_hot_water	=	(d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
 		gen	c98_hhld_refrigerat	=	(d22_1_2==1|d22_4==1)
-		gen	c98_hhld_TV			=	(d22_5_1==1)
-		gen	c98_hhld_VCR		=	(d22_8==1|d22_9==1)
+		gen	c98_hhld_tv			=	(d22_5_1==1)
+		gen	c98_hhld_vcr		=	(d22_8==1|d22_9==1)
 		gen	c98_hhld_wash_mac	=	(d22_10==1)
 		gen	c98_hhld_dishwasher	=	(d22_12==1)
 		gen	c98_hhld_microwave	=	(d22_13==1)
@@ -406,7 +406,7 @@ program clean_08
 		gen	c01_hhld_computer	=	(d22_14_1==1)
 		gen	c01_hhld_internet	=	(d22_15_1==1|d22_15_2==1)
 		gen	c01_hhld_phone		=	(d22_16_1==1|d22_17_1==1)
-		gen	c01_hhld_cable_TV	=	(d22_7==1)
+		gen	c01_hhld_cable_tv	=	(d22_7==1)
 
 		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
@@ -499,8 +499,8 @@ program clean_09_16
 		gen	c98_hhld_stove		=	(d19!=3)
 		gen	c98_hhld_hot_water	=	(d21_1==1|d21_2==1)
 		gen	c98_hhld_refrigerat	=	(d21_3==1)
-		gen	c98_hhld_TV			=	(d21_4==1|d21_5==1)
-		gen	c98_hhld_VCR		=	(d21_8==1|d21_9==1)
+		gen	c98_hhld_tv			=	(d21_4==1|d21_5==1)
+		gen	c98_hhld_vcr		=	(d21_8==1|d21_9==1)
 		gen	c98_hhld_wash_mac	=	(d21_10==1)
 		gen	c98_hhld_dishwasher	=	(d21_12==1)
 		gen	c98_hhld_microwave	=	(d21_13==1)
@@ -508,7 +508,7 @@ program clean_09_16
 		gen	c01_hhld_computer	=	(d21_15==1)
 		gen	c01_hhld_internet	=	(d21_16==1)
 		gen	c01_hhld_phone		=	(d21_17	==1)
-		gen	c01_hhld_cable_TV	=	(d21_7==1)
+		gen	c01_hhld_cable_tv	=	(d21_7==1)
 
 		keep c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz* ///
 		    trimestre mes estrato pesoano pesosem pesotri ///

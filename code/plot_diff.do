@@ -15,27 +15,27 @@ program main_diff_analysis
 	
 	local restr "inrange(edad, 14, 40)"
 	
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(mvd)  ///
 	    control(mvd) event_date(`date_is_chpr') ///
 		weight(pesotri) time(anio_qtr) city_legend(Montevideo) restr(`restr')
 		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(mvd)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(mvd)  ///
 	    control(mvd) event_date(`sem_date_is_chpr') ///
 		weight(pesosem) time(anio_sem) city_legend(Montevideo) restr(`restr')
 		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(rivera)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(rivera)  ///
 	    control(artigas) event_date(`date_rivera') ///
 		weight(pesotri) time(anio_qtr) city_legend(Rivera) restr(`restr')
 
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(rivera)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(rivera)  ///
 	    control(artigas) event_date(`sem_date_rivera') ///
 		weight(pesosem) time(anio_sem) city_legend(Rivera) restr(`restr')
 		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(salto)  ///
+	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(salto)  ///
 	    control(paysandu) event_date(`date_ive') ///
 		weight(pesotri) time(anio_qtr) city_legend(Salto) restr(`restr')
 
-    plot_diff, outcomes(`outcome_vars') stubs(`stub_list'') treatment(salto)  ///
+    plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(salto)  ///
 	    control(paysandu) event_date(`sem_date_ive') ///
 		weight(pesosem) time(anio_sem) city_legend(Salto) restr(`restr')
 		
@@ -144,11 +144,25 @@ program reg_diff
 	
 	if "`time'" == "anio_qtr" {
 		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+		qui sum `time' `range'	
+		local min_year = year(dofq(r(min)))
 		}
 	else {
 		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+		qui sum `time' `range'	
+		local min_year = year(dofh(r(min)))
 		}
 
+	if `min_year' < 2001  {
+		local control_vars " c98_* "
+		}
+	else if `min_year' >=2001 & `min_year' < 2006  {
+		local control_vars " c98_* c01_* "
+		}
+	else {
+		local control_vars " c98_* c01_* c06_* "
+		}
+	
 	local n_outcomes: word count `outcomes'
 	forval i = 1/`n_outcomes' {
 		local outcome: word `i' of `outcomes'
@@ -161,10 +175,10 @@ program reg_diff
 			}
 		gen interaction = treatment_`treatment' * post
 		
-				
+		sum `control_vars'		
 		eststo: reg `outcome' i.treatment_`treatment' i.post interaction ///
 					i.`time' cantidad_personas hay_menores edad married ///
-					y_hogar `range' [aw = `weight']
+					y_hogar `control_vars' `range' [aw = `weight']
 		
 		drop interaction post
 		}
