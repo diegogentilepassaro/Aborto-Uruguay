@@ -52,8 +52,25 @@ program clean_98_00
 		replace educ_level = 1              if educ_level==.
 		
 		gen estudiante = (pobpcoac==33)
-		
-		keep    educ_level estudiante ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
+
+		gen	c98_resid_house		=	(hc1==1)
+		gen	c98_resid_owned		=	(hd3==1|hd3==2)
+		gen	c98_nbr_rooms		=	hd41
+		gen	c98_nbr_bedrooms	=	hd42
+		gen	c98_b_piped_water	=	(hd6==1)
+		gen	c98_hhld_toilet		=	(hd7==1)
+		gen	c98_b_sewage		=	(hd9==1)
+		gen	c98_hhld_stove		=	(hd102!=7)
+		gen	c98_hhld_hot_water	=	(hd111==1)
+		gen	c98_hhld_refrigerat	=	(hd112==1|hd113==1)
+		gen	c98_hhld_tv			=	(hd114==1|hd115==1)
+		gen	c98_hhld_vcr		=	(hd116==1)
+		gen	c98_hhld_wash_mac	=	(hd117==1)
+		gen	c98_hhld_dishwasher	=	(hd118==1)
+		gen	c98_hhld_microwave	=	(hd119==1)
+		gen	c98_hhld_car		=	(hd1110==1)
+				
+		keep    c98_* educ_level estudiante ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
 				pe2 pe3 pe5  pobpcoac pf133 pf053 pf37 pf38 pf351 pt1 ///
 				locech nomlocech ht11 hd21 hd22
 		
@@ -82,31 +99,6 @@ program clean_98_00
 		}
 end
 
-program educ_var_compl_last_level
-syntax, var_level_prefix(string) var_compl_last(string)
-	gen educ_level = .
-	gen educ_level_max = .
-	gen educ_level_2nd = .
-	forvalues i = 2/6 {
-		replace educ_level     = `i'-1 if `var_level_prefix'_`i'>0 & `var_compl_last'==1
-		replace educ_level_max = `i'-1 if `var_level_prefix'_`i'>0
-	}
-	forvalues i = 2/6 {
-		replace educ_level_2nd =  `i' if `var_level_prefix'_`i'>0 & `i'-1<educ_level_max & `var_compl_last'==2
-	}
-	replace educ_level = educ_level_2nd if `var_compl_last'==2
-	replace educ_level = 0              if `var_compl_last'==0 | (`var_compl_last'==2 & (educ_level_max==1|educ_level==.))
-end
-
-program educ_var_compl_each_level
-syntax, var_compl_prefix(string)
-	gen educ_level = .
-	forvalues i = 1/7 {
-		replace educ_level = `i' if `var_compl_prefix'_`i'_2==1
-	}
-	replace educ_level = 5 if educ_level == 6 | educ_level == 7
-end
-
 program clean_01_05
 	* Note: there is no nomdepto for 2005: check running table nomdpto anio
 	* Can't find: meses_trabajando anios_trabajando
@@ -133,8 +125,29 @@ program clean_01_05
 		assert !mi(educ_level)
 
 		gen estudiante = (pobpcoac == 7)
+
+		gen	c98_resid_house		=	(c1==1)
+		gen	c98_resid_owned		=	(d2==1|d2==2)
+		gen	c98_nbr_rooms		=	d3
+		gen	c98_nbr_bedrooms	=	d4
+		gen	c98_b_piped_water	=	(d6==1)
+		gen	c98_hhld_toilet		=	(d7==1)
+		gen	c98_b_sewage		=	(d8==1)
+		gen	c98_hhld_stove		=	(d9!=5)
+		gen	c98_hhld_hot_water	=	(d10_1==1|d10_2==1)
+		gen	c98_hhld_refrigerat	=	(d10_3==1)
+		gen	c98_hhld_tv			=	(d10_4==1)
+		gen	c98_hhld_vcr		=	(d10_6==1)
+		gen	c98_hhld_wash_mac	=	(d10_7==1)
+		gen	c98_hhld_dishwasher	=	(d10_8==1)
+		gen	c98_hhld_microwave	=	(d10_9==1)
+		gen	c98_hhld_car		=	(d10_12==1)
+		gen	c01_hhld_computer	=	(d10_10==1)
+		gen	c01_hhld_internet	=	(d10_11==1)
+		gen	c01_hhld_phone		=	(d10_13==1)
+		gen	c01_hhld_cable_tv	=	(d10_5==1)
 		
-		keep estudiante educ_level anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
+		keep  c98_*  c01_* estudiante educ_level anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
 		    mes estrato pesoan pesosem pesotri e1 e2 e4 e9 f1_1 f17_1 f23 pt1 ///
 		    locech nomlocech ht11 d14 d16
 			 
@@ -216,7 +229,32 @@ program clean_06
 
 		gen estudiante = (Pobpcoac == 7)
 
-		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
+		gen	c98_resid_house		=	(c1!=5)
+		gen	c06_mat_walls		=	(c2==1|c2==2)
+		gen	c06_mat_roof		=	(c3==1|c3==2)
+		gen	c06_mat_floor		=	(c4==1|c4==2)
+		gen	c98_resid_owned		=	(d7_1==1|d7_1==2|d7_1==3|d7_1==4)
+		gen	c98_nbr_rooms		=	d8
+		gen	c98_nbr_bedrooms	=	d9
+		gen	c98_b_piped_water	=	(d13==1)
+		gen	c98_hhld_toilet		=	(d14==1)
+		gen	c98_b_sewage		=	(d17==1)
+		gen	c06_b_electr		=	(d18_1==1|d18_1==2)
+		gen	c98_hhld_stove		=	(d19!=3)
+		gen	c98_hhld_hot_water	=	(d21_1_1==1|d21_1_2==1|d21_1_3==1|d21_2_1==1|d21_2_2==1)
+		gen	c98_hhld_refrigerat	=	(d21_3==1|d21_4==1)
+		gen	c98_hhld_TV			=	(d21_5_1==1)
+		gen	c98_hhld_VCR		=	(d21_8==1|d21_9==1)
+		gen	c98_hhld_wash_mac	=	(d21_10==1)
+		gen	c98_hhld_dishwasher	=	(d21_12==1)
+		gen	c98_hhld_microwave	=	(d21_13==1)
+		gen	c98_hhld_car		=	(d21_18_1==1)
+		gen	c01_hhld_computer	=	(d21_14_1==1)
+		gen	c01_hhld_internet	=	(d21_15==1)
+		gen	c01_hhld_phone		=	(d21_16_1==1|d21_17_1==1)
+		gen	c01_hhld_cable_TV	=	(d21_7==1)
+
+		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
 			e37 e48 f62 f81 f82_1 f82_2 f102 pt1 locagr ///
@@ -274,7 +312,32 @@ program clean_07
 		
 		gen estudiante = (Pobpcoac == 7)
 
-		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
+		gen	c98_resid_house		=	(c1!=5)
+		gen	c06_mat_walls		=	(c2==1|c2==2)
+		gen	c06_mat_roof		=	(c3==1|c3==2)
+		gen	c06_mat_floor		=	(c4==1|c4==2)
+		gen	c98_resid_owned		=	(d8_1==1|d8_1==2|d8_1==3|d8_1==4)
+		gen	c98_nbr_rooms		=	d9
+		gen	c98_nbr_bedrooms	=	d10
+		gen	c98_b_piped_water	=	(d14_1==1)
+		gen	c98_hhld_toilet		=	(d15==1)
+		gen	c98_b_sewage		=	(d18_1==1)
+		gen	c06_b_electr		=	(d19_1==1|d19_1==2)
+		gen	c98_hhld_stove		=	(d20!=3)
+		gen	c98_hhld_hot_water	=	(d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+		gen	c98_hhld_refrigerat	=	(d22_1_2==1|d22_4==1)
+		gen	c98_hhld_TV			=	(d22_5_1==1)
+		gen	c98_hhld_VCR		=	(d22_8==1|d22_9==1)
+		gen	c98_hhld_wash_mac	=	(d22_10==1)
+		gen	c98_hhld_dishwasher	=	(d22_12==1)
+		gen	c98_hhld_microwave	=	(d22_13==1)
+		gen	c98_hhld_car		=	(d22_18_1==1)
+		gen	c01_hhld_computer	=	(d22_14_1==1)
+		gen	c01_hhld_internet	=	(d22_15_1==1|d22_15_2==1)
+		gen	c01_hhld_phone		=	(d22_16_1==1|d22_17_1==1)
+		gen	c01_hhld_cable_TV	=	(d22_7==1)
+
+		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88 f89_1 f89_2 f102 pt1 ///
@@ -320,7 +383,32 @@ program clean_08
 		
 		gen estudiante = (pobpcoac == 7)
 
-		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
+		gen	c98_resid_house		=	(c1!=5)
+		gen	c06_mat_walls		=	(c2==1|c2==2)
+		gen	c06_mat_roof		=	(c3==1|c3==2)
+		gen	c06_mat_floor		=	(c4==1|c4==2)
+		gen	c98_resid_owned		=	(d8_1==1|d8_1==2|d8_1==3|d8_1==4)
+		gen	c98_nbr_rooms		=	d9
+		gen	c98_nbr_bedrooms	=	d10
+		gen	c98_b_piped_water	=	(d14_1==1)
+		gen	c98_hhld_toilet		=	(d15==1)
+		gen	c98_b_sewage		=	(d18_1==1)
+		gen	c06_b_electr		=	(d19_1==1|d19_1==2)
+		gen	c98_hhld_stove		=	(d20!=3)
+		gen	c98_hhld_hot_water	=	(d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+		gen	c98_hhld_refrigerat	=	(d22_1_2==1|d22_4==1)
+		gen	c98_hhld_TV			=	(d22_5_1==1)
+		gen	c98_hhld_VCR		=	(d22_8==1|d22_9==1)
+		gen	c98_hhld_wash_mac	=	(d22_10==1)
+		gen	c98_hhld_dishwasher	=	(d22_12==1)
+		gen	c98_hhld_microwave	=	(d22_13==1)
+		gen	c98_hhld_car		=	(d22_18_1==1)
+		gen	c01_hhld_computer	=	(d22_14_1==1)
+		gen	c01_hhld_internet	=	(d22_15_1==1|d22_15_2==1)
+		gen	c01_hhld_phone		=	(d22_16_1==1|d22_17_1==1)
+		gen	c01_hhld_cable_TV	=	(d22_7==1)
+
+		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			e40 e50 f68 f88_1 f89_1 f89_2 f102 pt1 ///
@@ -397,7 +485,32 @@ program clean_09_16
 		
 		gen estudiante = (pobpcoac == 7)
 		
-		keep estudiante anio numero nper dpto region_3 region_4 secc segm ccz* ///
+		gen	c98_resid_house		=	(c1!=5)
+		gen	c06_mat_walls		=	(c2==1|c2==2)
+		gen	c06_mat_roof		=	(c3==1|c3==2)
+		gen	c06_mat_floor		=	(c4==1|c4==2)
+		gen	c98_resid_owned		=	(d8_1==1|d8_1==2|d8_1==3|d8_1==4)
+		gen	c98_nbr_rooms		=	d9
+		gen	c98_nbr_bedrooms	=	d10
+		gen	c98_b_piped_water	=	(d12==1)
+		gen	c98_hhld_toilet		=	(d13==1)
+		gen	c98_b_sewage		=	(d16==1)
+		gen	c06_b_electr		=	(d18==1)
+		gen	c98_hhld_stove		=	(d19!=3)
+		gen	c98_hhld_hot_water	=	(d21_1==1|d21_2==1)
+		gen	c98_hhld_refrigerat	=	(d21_3==1)
+		gen	c98_hhld_TV			=	(d21_4==1|d21_5==1)
+		gen	c98_hhld_VCR		=	(d21_8==1|d21_9==1)
+		gen	c98_hhld_wash_mac	=	(d21_10==1)
+		gen	c98_hhld_dishwasher	=	(d21_12==1)
+		gen	c98_hhld_microwave	=	(d21_13==1)
+		gen	c98_hhld_car		=	(d21_18==1)
+		gen	c01_hhld_computer	=	(d21_15==1)
+		gen	c01_hhld_internet	=	(d21_16==1)
+		gen	c01_hhld_phone		=	(d21_17	==1)
+		gen	c01_hhld_cable_TV	=	(d21_7==1)
+
+		keep c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz* ///
 		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e36 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
 			locagr nom_locagr educ_level ht11 d23 d25 lp_06 li_06
