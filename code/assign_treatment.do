@@ -10,11 +10,12 @@ program assign_treatment
     
     gen treatment_rivera    = (loc_code == 1313020 & hombre == 0)
     gen treatment_salto     = (loc_code == 1515020 & hombre == 0)
-    gen treatment_mvd       = (loc_code == 101010 & hombre == 0)
 
+	gen placebo_rivera    = (loc_code == 1313020 & hombre == 1)
+    gen placebo_salto     = (loc_code == 1515020 & hombre == 1)
+	
     gen control_paysandu = (loc_code == 1111020 & hombre == 0)
     gen control_artigas   = (loc_code == 202020 & hombre == 0)
-    gen control_mvd = (loc_code == 101010 & hombre == 1)
 
 	gen semestre = 1 if inlist(trimestre, 1, 2)
 	replace semestre = 2 if inlist(trimestre, 3, 4)

@@ -17,12 +17,6 @@ program main_scm
 	local sem_date_is_chpr "2002h1"
 	local sem_date_rivera "2010h2"
 	local sem_date_ive "2013h1"
-	
-	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(mvd) event_date(`date_is_chpr') time(anio_qtr) weight(pesotri)
-	
-	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
-	    city(mvd) event_date(`sem_date_is_chpr') time(anio_sem) weight(pesosem)
 
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
 	    city(rivera) event_date(`date_rivera') time(anio_qtr) weight(pesotri) ///
@@ -37,12 +31,6 @@ program main_scm
 		
 	build_synth_control, outcomes(`outcome_vars') controls(`control_vars') ///
 	    city(salto) event_date(`sem_date_ive') time(anio_sem) weight(pesosem)
-		
-    plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) ///
-	    event_date(`date_is_chpr') time(anio_qtr) stub_list(`stub_list')
-
-	plot_scm, outcomes(`outcome_vars') city(mvd) city_legend(Montevideo) ///
-	    event_date(`sem_date_is_chpr') time(anio_sem) stub_list(`stub_list') 
 
 	plot_scm, outcomes(`outcome_vars') city(rivera) city_legend(Rivera) ///
 	    event_date(`date_rivera') time(anio_qtr) stub_list(`stub_list')
@@ -119,11 +107,11 @@ program build_synth_control
 		
 		local var: word `i' of `outcomes'
 		local lag1 = `event_date' - 1
-		local lag2 = `event_date' - 2
-		local lag3 = `event_date' - 3
-		local lag4 = `event_date' - 4
-		local lag5 = `event_date' - 5
-		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"
+		local lag2 = `event_date' - 3
+		local lag3 = `event_date' - 5
+		*local lag4 = `event_date' - 4
+		*local lag5 = `event_date' - 5
+		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3')" // `var'(`lag4') `var'(`lag5')"
 		
 		desc `control_vars' , f varlist
 		local control_vars_exp `r(varlist)'

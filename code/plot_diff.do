@@ -13,14 +13,6 @@ program main_diff_analysis
 	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
 	local stub_list      = "Employment Hours-worked High-school"
 	local restr "inrange(edad, 14, 40)"
-	
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(mvd)  ///
-	    control(mvd) event_date(`date_is_chpr') ///
-		weight(pesotri) time(anio_qtr) city_legend(Montevideo) restr(`restr')
-		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(mvd)  ///
-	    control(mvd) event_date(`sem_date_is_chpr') ///
-		weight(pesosem) time(anio_sem) city_legend(Montevideo) restr(`restr')
 		
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(rivera)  ///
 	    control(artigas) event_date(`date_rivera') ///
@@ -37,14 +29,6 @@ program main_diff_analysis
     plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(salto)  ///
 	    control(paysandu) event_date(`sem_date_ive') ///
 		weight(pesosem) time(anio_sem) city_legend(Salto) restr(`restr')
-		
-	reg_diff, outcomes(`outcome_vars') treatment(mvd)  ///
-	    control(mvd) event(Female) event_date(`date_is_chpr') ///
-		weight(pesotri) time(anio_qtr) restr(`restr')
-		
-	reg_diff, outcomes(`outcome_vars') treatment(mvd)  ///
-	    control(mvd) event(Female) event_date(`sem_date_is_chpr') ///
-		weight(pesosem) time(anio_sem) restr(`restr')		
 
 	reg_diff, outcomes(`outcome_vars') treatment(rivera)  ///
 	    control(artigas) event(Rivera) event_date(`date_rivera') ///
