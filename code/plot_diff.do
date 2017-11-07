@@ -2,9 +2,6 @@ clear all
 set more off
 
 program main_diff_analysis
-	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
-	local stub_list      = "Employment Hours-worked High-school"
-	
 	local date_is_chpr "2002q1"
 	local date_rivera "2010q3"
 	local date_ive "2013q1"
@@ -12,7 +9,9 @@ program main_diff_analysis
 	local sem_date_is_chpr "2002h1"
 	local sem_date_rivera "2010h2"
 	local sem_date_ive "2013h1"
-	
+
+	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
+	local stub_list      = "Employment Hours-worked High-school"
 	local restr "inrange(edad, 14, 40)"
 	
 	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(mvd)  ///
@@ -66,7 +65,7 @@ end
 
 program plot_diff
     syntax , outcomes(string) stubs(string) treatment(string) control(string) ///
-        event_date(string) weight(string) time(string) city_legend(string) [restr(string)]
+        event_date(string) weight(string) time(string) city_legend(string) [restr(string) sample(str)]
 		
    	use  ..\base\ech_final_98_2016.dta, clear
 
@@ -134,7 +133,7 @@ end
 
 program reg_diff
     syntax, outcomes(string) treatment(string) control(string) ///
-        event_date(string) event(string) weight(string) time(string) [restr(string)]
+        event_date(string) event(string) weight(string) time(string) [restr(string) sample(str)]
 		
    	use  ..\base\ech_final_98_2016.dta, clear
     
@@ -178,7 +177,7 @@ program reg_diff
 		sum `control_vars'		
 		eststo: reg `outcome' i.treatment_`treatment' i.post interaction ///
 					i.`time' cantidad_personas hay_menores edad married ///
-					y_hogar `control_vars' `range' [aw = `weight']
+					y_hogar_alt `control_vars' `range' [aw = `weight']
 		
 		drop interaction post
 		}

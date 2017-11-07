@@ -111,11 +111,11 @@ program build_synth_control
 	bysort loc_code: replace num_`time' = _N
 	keep if num_`time' == `num_`time's' /*for proper geocodes this should be an assertion*/
 
-	save "../temp/donorpool_`city'`special'.dta", replace
+	save "../base/donorpool_`city'_`time'`special'.dta", replace
 	
 	* Create the synth control for each outcome
 	forval i = 1/`n_outcomes' {
-		use "../temp/donorpool_`city'`special'.dta", clear
+		use "../base/donorpool_`city'_`time'`special'.dta", clear
 		
 		local var: word `i' of `outcomes'
 		local lag1 = `event_date' - 1

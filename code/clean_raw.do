@@ -83,7 +83,9 @@ program clean_98_00
 				pe3  pf053         pf38             pf37             pf351         pt1)  ///
 			   (hombre estado_civil  codigo_actividad    ///
 				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
-	    
+
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+
 		gen trimestre = 1 if inrange(semana, 1, 12)
 		replace trimestre = 2 if inrange(semana, 13, 24)
 		replace trimestre = 3 if inrange(semana, 25, 36)
@@ -162,6 +164,8 @@ program clean_01_05
 			   (pers numero hombre edad estado_civil ///
 				trabajo horas_trabajo busca_trabajo ytotal loc nomloc ///
 				y_hogar cantidad_mayores cantidad_personas)
+
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
 
 		gen meses_trabajando = .
 		gen anios_trabajando = .
@@ -267,7 +271,9 @@ program clean_06
 			 trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal loc nomloc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
-		
+
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+
 		destring anio, replace
 		destring secc, replace
 		destring segm, replace
@@ -350,7 +356,9 @@ program clean_07
 			trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal loc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
-		
+
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+
 		destring numero, replace
 		destring anio, replace
 		destring secc, replace
@@ -421,6 +429,8 @@ program clean_08
 			trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal nomloc pesoan ///
 			y_hogar cantidad_mayores cantidad_personas)
+
+	    bysort numero: egen y_hogar_alt = sum(ytotal) 
 
 		destring numero, replace
 		destring anio, replace
@@ -520,6 +530,8 @@ program clean_09_16
 			(pers hombre edad ascendencia estado_civil trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
 			ytotal loc nomloc pesoan y_hogar cantidad_mayores cantidad_personas)
+		
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
 		
 		destring numero, replace
 		destring anio, replace
