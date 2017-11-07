@@ -65,11 +65,15 @@ program build_synth_control
 	
 	if "`time'" == "anio_qtr" {
 		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
-	    qui sum `time'  if  `time' == tq(`event_date')
+	    qui sum `time' `range'	
+		local min_year = year(dofq(r(min)))
+		qui sum `time'  if  `time' == tq(`event_date')
 		}
 		else {
 		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
-	    qui sum `time'  if  `time' == th(`event_date')		
+	    qui sum `time' `range'	
+		local min_year = year(dofh(r(min)))
+		qui sum `time'  if  `time' == th(`event_date')		
 		}
 	local event_date = r(mean)		
 		
@@ -79,8 +83,18 @@ program build_synth_control
 	
 	qui sum loc_code if treatment_`city'==1
 	local trunit = r(mean)
-
-	collapse (mean) `controls' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' loc_code)
+	
+	if `min_year' < 2001  {
+		local control_vars " c98_* "
+		}
+	else if `min_year' >=2001 & `min_year' < 2006  {
+		local control_vars " c98_* c01_* "
+		}
+	else {
+		local control_vars " c98_* c01_* c06_* "
+		}
+	
+	collapse (mean) `controls' `control_vars' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' loc_code)
 	
 	* Check the panel is balanced, this is for the synthetic control to work
 	xtset loc_code `time'
@@ -104,14 +118,17 @@ program build_synth_control
 		use "../temp/donorpool_`city'`special'.dta", clear
 		
 		local var: word `i' of `outcomes'
-		/*local lag1 = `event_date' - 10
-		local lag2 = `event_date' - 8
-		local lag3 = `event_date' - 6
+		local lag1 = `event_date' - 1
+		local lag2 = `event_date' - 2
+		local lag3 = `event_date' - 3
 		local lag4 = `event_date' - 4
-		local lag5 = `event_date' - 2
-		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"*/
+		local lag5 = `event_date' - 5
+		local lags = "`var'(`lag1') `var'(`lag2') `var'(`lag3') `var'(`lag4') `var'(`lag5')"
 		
-		synth `var' `controls' `lags', ///
+		desc `control_vars' , f varlist
+		local control_vars_exp `r(varlist)'
+		
+		synth `var' `controls' `control_vars_exp' `lags', ///
 			trunit(`trunit') trperiod(`event_date') figure ///
 			keep("../temp/synth_`city'_`var'`special'.dta", replace)	
 
