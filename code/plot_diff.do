@@ -2,63 +2,88 @@ clear all
 set more off
 
 program main_diff_analysis
-	local date_is_chpr "2002q1"
-	local date_rivera "2010q3"
-	local date_ive "2013q1"
+	local labor_vars   = "trabajo horas_trabajo"
+	local educ_vars    = "educ_HS_or_more educ_more_HS"
+	local outcome_vars = "`labor_vars' " + "`educ_vars'"
+	local labor_stubs  = `" "Employment" "Hours-worked" "'
+	local educ_stubs   = `" "High-school" "Some-college" "'
+	local labor_restr "inrange(edad, 14, 40)"
+	local educ_restr "inrange(edad, 14, 40)"
 	
-	local sem_date_is_chpr "2002h1"
-	local sem_date_rivera "2010h2"
-	local sem_date_ive "2013h1"
+	local legend_rivera = "Rivera"
+	local legend_salto  = "Salto"
+	
+	local control_rivera = "artigas"
+	local control_salto  = "paysandu"
+	
+	local q_date_mvd  "2002q1"
+	local q_date_rivera  "2010q3"
+	local q_date_salto "2013q1"
+	
+	local s_date_mvd "2002h1"
+	local s_date_rivera "2010h2"
+	local s_date_salto "2013h1"
+	
+	local y_date_mvd 2002 
+	local y_date_rivera 2010 
+	local y_date_salto 2013 
 
-	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
-	local stub_list      = "Employment Hours-worked High-school"
-	local restr "inrange(edad, 14, 40)"
+	foreach city in rivera salto {
 		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(rivera)  ///
-	    control(artigas) event_date(`date_rivera') ///
-		weight(pesotri) time(anio_qtr) city_legend(Rivera) restr(`restr')
+		foreach group_vars in labor educ {
 
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(rivera)  ///
-	    control(artigas) event_date(`sem_date_rivera') ///
-		weight(pesosem) time(anio_sem) city_legend(Rivera) restr(`restr')
-		
-	plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(salto)  ///
-	    control(paysandu) event_date(`date_ive') ///
-		weight(pesotri) time(anio_qtr) city_legend(Salto) restr(`restr')
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
 
-    plot_diff, outcomes(`outcome_vars') stubs(`stub_list') treatment(salto)  ///
-	    control(paysandu) event_date(`sem_date_ive') ///
-		weight(pesosem) time(anio_sem) city_legend(Salto) restr(`restr')
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
 
-	reg_diff, outcomes(`outcome_vars') treatment(rivera)  ///
-	    control(artigas) event(Rivera) event_date(`date_rivera') ///
-		weight(pesotri) time(anio_qtr) restr(`restr')
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+				time(anio)     event_date(`y_date_`city'') city_legend(`legend_`city'') ///
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
 
-	reg_diff, outcomes(`outcome_vars') treatment(rivera)  ///
-	    control(artigas) event(Rivera) event_date(`sem_date_rivera') ///
-		weight(pesosem) time(anio_sem) restr(`restr')
-		
-	reg_diff, outcomes(`outcome_vars') treatment(salto)  ///
-	    control(paysandu) event(Salto) event_date(`date_ive') ///
-		weight(pesotri) time(anio_qtr) restr(`restr')
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+				time(anio_qtr) event(`legend_`city'') event_date(`q_date_rivera') restr(`restr') ///
+				groups_vars(`group_vars')
 
-	reg_diff, outcomes(`outcome_vars') treatment(salto)  ///
-	    control(paysandu) event(Salto) event_date(`sem_date_ive') ///
-		weight(pesosem) time(anio_sem) restr(`restr')		
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+				time(anio_sem) event(`legend_`city'') event_date(`s_date_rivera') restr(`restr') ///
+				groups_vars(`group_vars')
+
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+				time(anio)     event(`legend_`city'') event_date(`y_date_rivera') restr(`restr') ///
+				groups_vars(`group_vars')
+		}
+	}
 end
 
 program plot_diff
     syntax , outcomes(string) stubs(string) treatment(string) control(string) ///
-        event_date(string) weight(string) time(string) city_legend(string) [restr(string) sample(str)]
-		
+        event_date(string) time(string) city_legend(string) [groups_vars(str) restr(string) sample(str)]
+
+	if "`time'" == "anio_qtr" {
+		local weight pesotri
+		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+		local xtitle "Year-qtr"
+	}
+	else if "`time'" == "anio_sem" {
+		local weight pesosem
+		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+		local xtitle "Year-half"
+	}
+	else {
+		local weight pesoan
+		local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+		local xtitle "Year"
+	}
+	
    	use  ..\base\ech_final_98_2016.dta, clear
-
 	cap keep if `restr'
-
 	keep if treatment_`treatment'==1 | control_`control'==1
-	
 	save ..\temp\did_sample.dta, replace
-	
+			
 	local n_outcomes: word count `outcomes'
 	
 	forval i = 1/`n_outcomes' {
@@ -81,15 +106,7 @@ program plot_diff
 		save ../temp/control_`outcome'_ts.dta, replace
 		append using ../temp/treat_`outcome'_ts.dta
 		replace treat = 0 if missing(treat)
-			
-		if "`time'" == "anio_qtr" {
-			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
-			local xtitle "Year-qtr"
-		}
-		else {
-			local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
-			local xtitle "Year-half"
-		}
+
 
 		qui twoway (line `outcome' `time' if treat == 1) ///
 			   (line `outcome' `time' if treat == 0) `range', /// 
@@ -111,13 +128,13 @@ program plot_diff
 	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
 	graph display, ysize(8.5) xsize(6.5)
-	graph export ../figures/did_`treatment'_`time'.png, replace
+	graph export ../figures/did_`treatment'_`groups_vars'_`time'.png, replace
 		
 end
 
 program reg_diff
     syntax, outcomes(string) treatment(string) control(string) ///
-        event_date(string) event(string) weight(string) time(string) [restr(string) sample(str)]
+        event_date(string) event(string) time(string) [groups_vars(str) restr(string) sample(str)]
 		
    	use  ..\base\ech_final_98_2016.dta, clear
     
@@ -126,14 +143,22 @@ program reg_diff
 	keep if treatment_`treatment'==1 | control_`control'==1
 	
 	if "`time'" == "anio_qtr" {
-		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
-		qui sum `time' `range'	
-		local min_year = year(dofq(r(min)))
+			local weight pesotri
+			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+			qui sum `time' `range'	
+			local min_year = year(dofq(r(min)))
 		}
-	else {
-		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
-		qui sum `time' `range'	
-		local min_year = year(dofh(r(min)))
+		else if "`time'" == "anio_sem" {
+			local weight pesosem
+			local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+			qui sum `time' `range'	
+			local min_year = year(dofh(r(min)))
+		}
+		else {
+			local weight pesoan
+			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+			qui sum `time' `range'	
+			local min_year = r(min)
 		}
 
 	if `min_year' < 2001  {
@@ -151,11 +176,15 @@ program reg_diff
 		local outcome: word `i' of `outcomes'
 		
 		if "`time'" == "anio_qtr" {
-		    gen post = (`time' >= tq(`event_date'))
+				gen post = (`time' >= tq(`event_date'))
 			} 
-			else {
-			gen post = (`time' >= th(`event_date'))
+			else if "`time'" == "anio_sem" {
+				gen post = (`time' >= th(`event_date'))
 			}
+			else {
+				gen post = (`time' >= `event_date')
+			}
+			
 		gen interaction = treatment_`treatment' * post
 		
 		sum `control_vars'		
@@ -165,7 +194,7 @@ program reg_diff
 		
 		drop interaction post
 		}
-		esttab using ../tables/did_`treatment'_`time'.tex, label se ar2 compress ///
+		esttab using ../tables/did_`treatment'_`groups_vars'_`time'.tex, label se ar2 compress ///
 		    replace nonotes coeflabels(interaction "`event' x Post") keep(interaction)
 		eststo clear
 end
