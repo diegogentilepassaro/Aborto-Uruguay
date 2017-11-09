@@ -10,7 +10,7 @@ program main
 	do prepare_for_analysis
 	do assign_treatment
 	do plot_diff
-	do SCM
+	*do SCM
 	do triple_diff
 end
 
