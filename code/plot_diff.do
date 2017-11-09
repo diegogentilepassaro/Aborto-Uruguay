@@ -93,29 +93,40 @@ program plot_diff
 		use ..\temp\did_sample.dta, clear
 		
         preserve
-			collapse (mean) `outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
+			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
 			tsset `time'
 			tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 			gen treat = 1
 			save ../temp/treat_`outcome'_ts.dta, replace
 		restore
 		
-		collapse (mean) `outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
+		collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
 		tsset `time'
 		tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 		save ../temp/control_`outcome'_ts.dta, replace
 		append using ../temp/treat_`outcome'_ts.dta
 		replace treat = 0 if missing(treat)
 
+		gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
+		gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
 
-		qui twoway (line `outcome' `time' if treat == 1) ///
+		qui twoway (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
+				   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) ///
+				   (line  `outcome'                      `time' `range' & treat == 1, lc(red)  lp(solid) lw(medthick)) ///
+				   (line  `outcome'                      `time' `range' & treat == 0, lc(blue) lp(solid) lw(medthick)), ///
+			legend(on order(3 4) label(3 "Treatment") label(4 "Control")) ///
+			tline(`event_date', lcolor(black) lpattern(dot)) ///
+			graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
+			ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
+			title("`stub_var'", color(black) size(medium)) ylabel(#2)
+		
+		/*qui twoway (line `outcome' `time' if treat == 1) ///
 			   (line `outcome' `time' if treat == 0) `range', /// 
 			   legend(label(1 "Treatment") label(2 "Control")) ///
 			   tline(`event_date', lcolor(black) lpattern(dot)) ///
 			   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 			   ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-			   title("`stub_var'", color(black) size(medium)) ylabel(#2)
-
+			   title("`stub_var'", color(black) size(medium)) ylabel(#2)*/
 		}
 		
 	forval i = 1/`n_outcomes' {
