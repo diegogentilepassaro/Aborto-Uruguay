@@ -36,10 +36,10 @@ program main_scm
 				if "`special_legend'" == "placebo" {
 				
 				    if "`group_vars'" == "labor" {
-					    local sample_restr = "keep if hombre == 1 & edad > 40"
+					    local sample_restr = "keep if hombre == 0 & edad > 40"
 					}
 					else {
-					    local sample_restr = "keep if hombre == 1 & edad > 40"
+					    local sample_restr = "keep if hombre == 0 & edad > 40"
 					}
 				}
 				else {
@@ -51,9 +51,9 @@ program main_scm
 					}
 				}
 					
-			/*build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`q_date_`city'') ///
+			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`q_date_`city'') ///
 				time(anio_qtr) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
-				sample_restr(`sample_restr')*/
+				sample_restr(`sample_restr')
 				
 			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`s_date_`city'') ///
 				time(anio_sem) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
@@ -64,9 +64,9 @@ program main_scm
 				sample_restr(`sample_restr')
 			
 
-			/*plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`q_date_`city'') ///
+			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`q_date_`city'') ///
 				time(anio_qtr) groups_vars(`group_vars') city_legend(`legend_`city'')        ///
-				stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
+				stub_list(``group_vars'_stubs') special_legend(`special_legend')
 		 
 			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`s_date_`city'') ///
 				time(anio_sem) groups_vars(`group_vars') city_legend(`legend_`city'')           ///
@@ -77,23 +77,23 @@ program main_scm
 				stub_list(``group_vars'_stubs') special_legend(`special_legend')
 		}
 		
-	/*grc1leg scm_`city'_`group_vars'_anio_qtr scm_`city'_labor_anio_qtrplacebo, cols(2) ///
-	    legendfrom(scm_`city'_labor_anio_qtr) position(6) ///
+	grc1leg scm_`city'_`group_vars'_anio_qtr scm_`city'_`group_vars'_anio_qtrplacebo, cols(2) ///
+	    legendfrom(scm_`city'_`group_vars'_anio_qtr) position(6) ///
 	    graphregion(color(white))
-	graph display, ysize(6.5) xsize(8.5)
-	graph export ../figures/scm_`city'_labor_anio_qtr.png, replace*/
+	graph display, ysize(6.5) xsize(9.5)
+	graph export ../figures/scm_`city'_`group_vars'_anio_qtr.pdf, replace
 
 	grc1leg scm_`city'_`group_vars'_anio_sem scm_`city'_`group_vars'_anio_semplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio_sem) position(6) ///
 	    graphregion(color(white))
-	graph display, ysize(6.5) xsize(8.5)
-	graph export ../figures/scm_`city'_`group_vars'_anio_sem.png, replace
+	graph display, ysize(6.5) xsize(9.5)
+	graph export ../figures/scm_`city'_`group_vars'_anio_sem.pdf, replace
 
 	grc1leg scm_`city'_`group_vars'_anio scm_`city'_`group_vars'_anioplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio) position(6) ///
 	    graphregion(color(white))
-	graph display, ysize(6.5) xsize(8.5)
-	graph export ../figures/scm_`city'_`group_vars'_anio.png, replace
+	graph display, ysize(6.5) xsize(9.5)
+	graph export ../figures/scm_`city'_`group_vars'_anio.pdf, replace
 	
 	}
 	}
@@ -109,24 +109,24 @@ program build_synth_control
 	* Setup time settings by: qtr, sem, yr
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local lag_list `" 1 3 5 7 "'
-			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+			local lag_list `" 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32"' //`" 1 3 5 7 "'
+			local range "if inrange(`time', tq(`event_date') - 32,tq(`event_date') + 12) "
 			qui sum `time' `range'	
 			local min_year = year(dofq(r(min)))
 			qui sum `time'  if  `time' == tq(`event_date')
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local lag_list `" 5 6 7 8 9 10 11 12 "'
-			local range "if inrange(`time', th(`event_date') - 12,th(`event_date') + 6) "
+			local lag_list `" 2 4 6 8 10 12 14 16 "' //`" 5 6 7 8 9 10 11 12 "'
+			local range "if inrange(`time', th(`event_date') - 16,th(`event_date') + 6) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 			qui sum `time'  if  `time' == th(`event_date')		
 		}
 		else {
 			local weight pesoan
-			local lag_list `" 3 4 5 6 "'
-			local range "if inrange(`time', `event_date' - 6, `event_date' + 3) "
+			local lag_list `" 2 4 6 8 "' //`" 3 4 5 6 "'
+			local range "if inrange(`time', `event_date' - 8, `event_date' + 3) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 			qui sum `time'  if  `time' == `event_date'	
@@ -239,8 +239,8 @@ program plot_scm
 		local outcome_var: word `i' of `outcomes'
 	    local stub_var: word `i' of `stub_list'
 		
-		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 1) replace
-		tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 1) replace
+		*tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 1) replace
+		*tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 1) replace
 		
 		qui twoway (line `city'_`outcome_var' `time', lcolor(navy) lwidth(thick)) ///
 			   (line s_`city'_`outcome_var' `time', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
