@@ -2,37 +2,44 @@ clear all
 set more off
 
 program main_triple_diff
-	local outcome_vars   = "trabajo horas_trabajo educ_HS_or_more"
-	local stub_list      = "Employment Hours-worked High-school"
+	local labor_outcome_vars = "trabajo horas_trabajo"
+	local labor_stubs  = `" "Employment" "Hours-worked" "'
+	
+	local educ_outcome_vars = "educ_HS_or_more educ_more_HS"  
+	local educ_stubs   = `" "High-school" "Some-college" "'
 	
 	local date_is_chpr "2002q1"
 	
 	local sem_date_is_chpr "2002h1"
 	
 	local groups "mvd_poor_male mvd_poor_female mvd_non_poor_male mvd_non_poor_female"
-    
-	plot_triple_diff, outcomes(`outcome_vars') groups(`groups') design(income_gender) ///
-	    stubs(`stub_list') event_date(`date_is_chpr') time(anio_qtr) ///
-		weight(pesotri) city(mvd) city_legend(Montevideo)
-		
-	plot_triple_diff, outcomes(`outcome_vars') groups(`groups') design(income_gender) ///
-	    stubs(`stub_list') event_date(`sem_date_is_chpr') time(anio_sem) ///
-		weight(pesosem) city(mvd) city_legend(Montevideo)
-		
-	local groups "mvd_poor_fertile mvd_poor_infertile mvd_non_poor_fertile mvd_non_poor_infertile"
-	
-	plot_triple_diff, outcomes(`outcome_vars') groups(`groups') design(income_fertility) ///
-	    stubs(`stub_list') event_date(`date_is_chpr') time(anio_qtr) ///
-		weight(pesotri) city(mvd) city_legend(Montevideo)
 
-	plot_triple_diff, outcomes(`outcome_vars') groups(`groups') design(income_fertility) ///
-	    stubs(`stub_list') event_date(`sem_date_is_chpr') time(anio_sem) ///
-		weight(pesosem) city(mvd) city_legend(Montevideo)		
+    foreach outcome_type in labor educ {
+		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_gender) ///
+			stubs(``outcome_type'_stubs') event_date(`date_is_chpr') time(anio_qtr) ///
+			weight(pesotri) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
+			
+		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_gender) ///
+			stubs(``outcome_type'_stubs') event_date(`sem_date_is_chpr') time(anio_sem) ///
+			weight(pesosem) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
+			
+		local groups "mvd_poor_fertile mvd_poor_infertile mvd_non_poor_fertile mvd_non_poor_infertile"
+		
+		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_fertility) ///
+			stubs(``outcome_type'_stubs') event_date(`date_is_chpr') time(anio_qtr) ///
+			weight(pesotri) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
+
+		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_fertility) ///
+			stubs(``outcome_type'_stubs') event_date(`sem_date_is_chpr') time(anio_sem) ///
+			weight(pesosem) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
+	
+	}
 end
 
 program plot_triple_diff
 	syntax, outcomes(str) groups(str) design(str) event_date(str) ///
-	    stubs(str) time(str) weight(str) city(str) city_legend(str)
+	    stubs(str) time(str) weight(str) city(str) city_legend(str) ///
+		outcome_type_leg(str) sample_restr(str) [special_legend(str)]
 	
 	if "`design'" == "income_gender" {
 		local group_labels = `""Poor males" "Poor females" "Non-poor males" "Non-poor females""'
@@ -108,7 +115,7 @@ program plot_triple_diff
 	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
 	graph display, ysize(8.5) xsize(6.5)
-	graph export ../figures/triple_diff_`city'_`time'_`design'.png, replace
+	graph export ../figures/triple_diff_`city'_`time'_`outcome_type_leg'_`design'.png, replace
 end
 
 main_triple_diff
