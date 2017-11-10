@@ -34,26 +34,29 @@ program main_diff_analysis
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
 				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
-				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
+				plot_option(diff)
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
 				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
-				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
+				plot_option(diff)
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
 				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
-				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
+				plot_option(diff)
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio_qtr) event(`legend_`city'') event_date(`q_date_rivera') restr(`restr') ///
+				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(`restr') ///
 				groups_vars(`group_vars')
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio_sem) event(`legend_`city'') event_date(`s_date_rivera') restr(`restr') ///
+				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(`restr') ///
 				groups_vars(`group_vars')
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio)     event(`legend_`city'') event_date(`y_date_rivera') restr(`restr') ///
+				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(`restr') ///
 				groups_vars(`group_vars')
 		}
 	}
@@ -61,7 +64,8 @@ end
 
 program plot_diff
     syntax , outcomes(string) stubs(string) treatment(string) control(string) ///
-        event_date(string) time(string) city_legend(string) [groups_vars(str) restr(string) sample(str)]
+        event_date(string) time(string) city_legend(string) ///
+		plot_option(str) [groups_vars(str) restr(string) sample(str)]
 
 	if "`time'" == "anio_qtr" {
 		local weight pesotri
@@ -89,36 +93,67 @@ program plot_diff
 	forval i = 1/`n_outcomes' {
 		local outcome: word `i' of `outcomes'
 		local stub_var: word `i' of `stubs'
-		
+
 		use ..\temp\did_sample.dta, clear
+		
+		if "`plot_option'" == "diff" {
+		    preserve
+				collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
+					[aw = `weight'] if treatment_`treatment' == 1 , by(`time')
+				rename *`outcome' *`outcome'_t
+				save ../temp/treat_`outcome'_ts.dta, replace		    
+		    restore
+			
+			collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
+			    [aw = `weight'] if control_`control' == 1 , by(`time')
+			rename *`outcome' *`outcome'_c
+            merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
+			    assert(3) keep(3) nogen
 				
-        preserve
-			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
+			gen `outcome'_diff = `outcome'_t - `outcome'_c
+			gen `outcome'_diff_se = sqrt((sd_`outcome'_t^2/n_`outcome'_t)+(sd_`outcome'_c^2/n_`outcome'_c))
+		
+		    gen `outcome'_diff_ci_p = `outcome'_diff + 1.96 * `outcome'_diff_se
+		    gen `outcome'_diff_ci_n = `outcome'_diff - 1.96 * `outcome'_diff_se			
+		
+			qui twoway (rarea `outcome'_diff_ci_p  `outcome'_diff_ci_n `time' `range', fc(green)  lc(bg)    fin(inten20)) ///
+					   (line  `outcome'_diff                      `time' `range', lc(green)  lp(solid) lw(medthick)), ///
+				legend(on order(2) label(2 "Difference between treatment and control")) ///
+				tline(`event_date', lcolor(black) lpattern(dot)) ///
+				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
+				ytitle("`stub_var'") name(diff_`outcome'_`treatment', replace) ///
+				title("`stub_var'", color(black) size(medium)) ylabel(#2)
+				
+				local diff_stub "diff_"
+		}
+		else {	
+			preserve
+				collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
+				tsset `time'
+				*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+				gen treat = 1
+				save ../temp/treat_`outcome'_ts.dta, replace
+			restore
+			
+			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
 			tsset `time'
 			*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
-			gen treat = 1
-			save ../temp/treat_`outcome'_ts.dta, replace
-		restore
-		
-		collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
-		tsset `time'
-		*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
-		save ../temp/control_`outcome'_ts.dta, replace
-		append using ../temp/treat_`outcome'_ts.dta
-		replace treat = 0 if missing(treat)
+			save ../temp/control_`outcome'_ts.dta, replace
+			append using ../temp/treat_`outcome'_ts.dta
+			replace treat = 0 if missing(treat)
 
-		gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
-		gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
+			gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
+			gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
 
-		qui twoway (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
-				   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) ///
-				   (line  `outcome'                      `time' `range' & treat == 1, lc(red)  lp(solid) lw(medthick)) ///
-				   (line  `outcome'                      `time' `range' & treat == 0, lc(blue) lp(solid) lw(medthick)), ///
-			legend(on order(3 4) label(3 "Treatment") label(4 "Control")) ///
-			tline(`event_date', lcolor(black) lpattern(dot)) ///
-			graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
-			ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-			title("`stub_var'", color(black) size(medium)) ylabel(#2)
+			qui twoway (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
+					   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) ///
+					   (line  `outcome'                      `time' `range' & treat == 1, lc(red)  lp(solid) lw(medthick)) ///
+					   (line  `outcome'                      `time' `range' & treat == 0, lc(blue) lp(solid) lw(medthick)), ///
+				legend(on order(3 4) label(3 "Treatment") label(4 "Control")) ///
+				tline(`event_date', lcolor(black) lpattern(dot)) ///
+				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
+				ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
+				title("`stub_var'", color(black) size(medium)) ylabel(#2)
 		
 		/*qui twoway (line `outcome' `time' if treat == 1) ///
 			   (line `outcome' `time' if treat == 0) `range', /// 
@@ -126,20 +161,21 @@ program plot_diff
 			   tline(`event_date', lcolor(black) lpattern(dot)) ///
 			   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 			   ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-			   title("`stub_var'", color(black) size(medium)) ylabel(#2)*/
+			   title("`stub_var'", color(black) size(medium)) ylabel(#2)*/		   
+		}
 		}
 		
-	forval i = 1/`n_outcomes' {
-		local outcome: word `i' of `outcomes'
-		local plots = "`plots' " + "`outcome'_`treatment'"
-	}
+		forval i = 1/`n_outcomes' {
+			local outcome: word `i' of `outcomes'
+			local plots = "`plots' " + "`diff_stub'`outcome'_`treatment'"
+		}
+			
+		local plot1: word 1 of `plots' 	
 		
-	local plot1: word 1 of `plots' 	
-	
-	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
-		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
-	graph display, ysize(8.5) xsize(6.5)
-	graph export ../figures/did_`treatment'_`groups_vars'_`time'.png, replace
+		grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
+			   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
+		graph display, ysize(8.5) xsize(6.5)
+		graph export ../figures/did_`diff_stub'`treatment'_`groups_vars'_`time'.pdf, replace			
 		
 end
 
