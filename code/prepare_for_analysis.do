@@ -16,9 +16,19 @@ program main_prepare_for_analysis
 	gen pobre = (y_hogar_alt <= lp_06)
 	gen indigente = (y_hogar_alt <= li_06)
 	gen hay_menores = (cantidad_personas > cantidad_mayores)
+	gen semestre = 1 if inlist(trimestre, 1, 2)
+	replace semestre = 2 if inlist(trimestre, 3, 4)
+	gen anio_sem = yh(anio, semestre)
+	format anio_sem %th
+	
+    gen    anio_qtr = yq(anio, trimestre)
+    format anio_qtr %tq
 
+	local outcomes = "trabajo horas_trabajo"
+	deseasonalize, outcomes(`outcomes')
+	 
 	label_vars
-    save ..\temp\clean_loc_1998_2016.dta, replace	
+    save ..\base\clean_loc_1998_2016.dta, replace	
 end
 
 program fix_2012_weights
@@ -65,6 +75,39 @@ program impute_poverty_lines_pre06
 		replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
 	    save ..\temp\clean_loc_1998_2016.dta, replace
 
+	}
+end
+
+program deseasonalize  
+    syntax, outcomes(str)
+	
+	levelsof dpto, local(dptos)
+	
+	foreach outcome in `outcomes' {
+		gen unadj_`outcome' = `outcome'
+	}
+	
+	foreach dpto of local dptos {
+		foreach outcome in `outcomes' {
+
+			qui sum unadj_`outcome' if anio < 2004 & dpto == `dpto' [aw = pesotri]
+			local mean = r(mean)
+			
+			reg unadj_`outcome' i.trimestre if anio < 2004 & dpto == `dpto' [aw = pesotri]
+			predict p_`outcome', resid
+			
+			replace `outcome' = p_`outcome' + `mean' if anio < 2004 & dpto == `dpto'
+			drop p_`outcome'
+			
+			qui sum unadj_`outcome' if anio >= 2004 & dpto == `dpto' [aw = pesotri]
+			local mean = r(mean)
+			
+			reg unadj_`outcome' i.trimestre if anio >= 2004 & dpto == `dpto' [aw = pesotri]
+			predict p_`outcome', resid
+			
+			replace `outcome' = p_`outcome' + `mean' if anio >= 2004 & dpto == `dpto'
+			drop p_`outcome'	
+		}
 	}
 end
 

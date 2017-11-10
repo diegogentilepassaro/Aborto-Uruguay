@@ -25,8 +25,8 @@ program main_scm
 	local y_date_rivera 2010 
 	local y_date_salto 2013 
 	
-	local restr_rivera "restr((dpto == 1 | loc_code == 330020 | loc_code == 1630020))"
-	local restr_salto ""
+	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020))"
+	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020))"
 	
 	foreach city in rivera salto {
 	    foreach group_vars in educ labor {
@@ -36,10 +36,10 @@ program main_scm
 				if "`special_legend'" == "placebo" {
 				
 				    if "`group_vars'" == "labor" {
-					    local sample_restr = "keep if hombre == 0 & edad > 40"
+					    local sample_restr = "keep if hombre == 0 & inrange(edad, 40, 60)"
 					}
 					else {
-					    local sample_restr = "keep if hombre == 0 & edad > 40"
+					    local sample_restr = "keep if hombre == 0 & inrange(edad, 40, 60)"
 					}
 				}
 				else {
@@ -109,24 +109,24 @@ program build_synth_control
 	* Setup time settings by: qtr, sem, yr
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local lag_list `" 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32"' //`" 1 3 5 7 "'
-			local range "if inrange(`time', tq(`event_date') - 32,tq(`event_date') + 12) "
+			local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28"' //`" 1 3 5 7 "'
+			local range "if inrange(`time', tq(`event_date') - 28,tq(`event_date') + 8) "
 			qui sum `time' `range'	
 			local min_year = year(dofq(r(min)))
 			qui sum `time'  if  `time' == tq(`event_date')
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local lag_list `" 2 4 6 8 10 12 14 16 "' //`" 5 6 7 8 9 10 11 12 "'
-			local range "if inrange(`time', th(`event_date') - 16,th(`event_date') + 6) "
+			local lag_list `" 4 5 6 7 8 9 10 11 12 13 14 "' //`" 5 6 7 8 9 10 11 12 "'
+			local range "if inrange(`time', th(`event_date') - 14,th(`event_date') + 4) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 			qui sum `time'  if  `time' == th(`event_date')		
 		}
 		else {
 			local weight pesoan
-			local lag_list `" 2 4 6 8 "' //`" 3 4 5 6 "'
-			local range "if inrange(`time', `event_date' - 8, `event_date' + 3) "
+			local lag_list `" 2 3 4 5 6 7 "' //`" 3 4 5 6 "'
+			local range "if inrange(`time', `event_date' - 7, `event_date' + 2) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 			qui sum `time'  if  `time' == `event_date'	
@@ -258,7 +258,7 @@ program plot_scm
 		
 	local plot1: word 1 of `plots' 	
 	
-	grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) ///
+	qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) ///
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small)) ///
 		   name(scm_`city'_`groups_vars'_`time'`special_legend')
 end

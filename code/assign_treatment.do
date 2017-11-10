@@ -6,7 +6,7 @@ program main_assign_treatment
 end
 
 program assign_treatment
-    use ..\temp\clean_loc_1998_2016.dta, clear 
+    use ..\base\clean_loc_1998_2016.dta, clear 
     
     gen treatment_rivera    = (loc_code == 1313020 & hombre == 0)
     gen treatment_salto     = (loc_code == 1515020 & hombre == 0)
@@ -17,14 +17,6 @@ program assign_treatment
     gen control_paysandu = (loc_code == 1111020 & hombre == 0)
     gen control_artigas   = (loc_code == 202020 & hombre == 0)
 
-	gen semestre = 1 if inlist(trimestre, 1, 2)
-	replace semestre = 2 if inlist(trimestre, 3, 4)
-	gen anio_sem = yh(anio, semestre)
-	format anio_sem %th
-	
-    gen    anio_qtr = yq(anio, trimestre)
-    format anio_qtr %tq
-	
 	* for experimenting with triple diff
 	
 	* design 1

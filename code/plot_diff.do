@@ -8,7 +8,7 @@ program main_diff_analysis
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
 	local labor_restr "inrange(edad, 14, 40)"
-	local educ_restr "inrange(edad, 14, 40)"
+	local educ_restr "inrange(edad, 18, 25)"
 	
 	local legend_rivera = "Rivera"
 	local legend_salto  = "Salto"
@@ -41,7 +41,7 @@ program main_diff_analysis
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
-				time(anio)     event_date(`y_date_`city'') city_legend(`legend_`city'') ///
+				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars')
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
@@ -65,17 +65,17 @@ program plot_diff
 
 	if "`time'" == "anio_qtr" {
 		local weight pesotri
-		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+		local range "if inrange(`time', tq(`event_date') - 28,tq(`event_date') + 8) "
 		local xtitle "Year-qtr"
 	}
 	else if "`time'" == "anio_sem" {
 		local weight pesosem
-		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+		local range "if inrange(`time', th(`event_date') - 14,th(`event_date') + 4) "
 		local xtitle "Year-half"
 	}
 	else {
 		local weight pesoan
-		local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+		local range "if inrange(`time', `event_date' - 7, `event_date' + 2) "
 		local xtitle "Year"
 	}
 	
@@ -91,18 +91,18 @@ program plot_diff
 		local stub_var: word `i' of `stubs'
 		
 		use ..\temp\did_sample.dta, clear
-		
+				
         preserve
 			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
 			tsset `time'
-			tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+			*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 			gen treat = 1
 			save ../temp/treat_`outcome'_ts.dta, replace
 		restore
 		
 		collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
 		tsset `time'
-		tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+		*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 		save ../temp/control_`outcome'_ts.dta, replace
 		append using ../temp/treat_`outcome'_ts.dta
 		replace treat = 0 if missing(treat)
