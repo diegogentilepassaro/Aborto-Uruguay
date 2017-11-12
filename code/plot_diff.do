@@ -7,7 +7,7 @@ program main_diff_analysis
 	local outcome_vars = "`labor_vars' " + "`educ_vars'"
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
-	local labor_restr "inrange(edad, 14, 40)"
+	local labor_restr "inrange(edad, 16, 45)"
 	local educ_restr "inrange(edad, 18, 25)"
 	
 	local legend_rivera = "Rivera"
@@ -48,15 +48,15 @@ program main_diff_analysis
 				plot_option(diff)
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(`restr') ///
+				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(`restr') ///
+				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
-				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(`restr') ///
+				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 		}
 	}
@@ -69,17 +69,17 @@ program plot_diff
 
 	if "`time'" == "anio_qtr" {
 		local weight pesotri
-		local range "if inrange(`time', tq(`event_date') - 28,tq(`event_date') + 8) "
+		local range "if inrange(`time', tq(`event_date') - 16,tq(`event_date') + 16) "
 		local xtitle "Year-qtr"
 	}
 	else if "`time'" == "anio_sem" {
 		local weight pesosem
-		local range "if inrange(`time', th(`event_date') - 14,th(`event_date') + 4) "
+		local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 8) "
 		local xtitle "Year-half"
 	}
 	else {
 		local weight pesoan
-		local range "if inrange(`time', `event_date' - 7, `event_date' + 2) "
+		local range "if inrange(`time', `event_date' - 4, `event_date' + 4) "
 		local xtitle "Year"
 	}
 	
@@ -234,7 +234,7 @@ program reg_diff
 			
 		gen interaction = treatment_`treatment' * post
 		
-		sum `control_vars'		
+		qui sum `control_vars'		
 		eststo: reg `outcome' i.treatment_`treatment' i.post interaction ///
 					i.`time' cantidad_personas hay_menores edad married ///
 					y_hogar_alt `control_vars' `range' [aw = `weight']

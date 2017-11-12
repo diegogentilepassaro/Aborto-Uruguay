@@ -25,8 +25,10 @@ program main_homogeneize_geo_vars
 	tostring dpto, gen(dpto_string)
 	gen loc_code = dpto_string + loc
 	drop dpto_string
-	destring loc_code, replace
+	drop if substr(loc_code, -3,.) == "900" 
 	
+	destring loc_code, replace
+		
 	save ..\temp\clean_loc_1998_2016.dta, replace
 end
 
