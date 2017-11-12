@@ -2,120 +2,267 @@ clear all
 set more off
 
 program main_triple_diff
-	local labor_outcome_vars = "trabajo horas_trabajo"
+	local labor_vars   = "trabajo horas_trabajo"
+	local educ_vars    = "educ_HS_or_more educ_more_HS"  
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
-	
-	local educ_outcome_vars = "educ_HS_or_more educ_more_HS"  
 	local educ_stubs   = `" "High-school" "Some-college" "'
 	
-	local date_is_chpr "2002q1"
+	local q_date_mvd "2002q1"
+	local s_date_mvd "2002h1"
+	local y_date_mvd "2002"
 	
-	local sem_date_is_chpr "2002h1"
+    foreach group_vars in labor educ {
 	
-	local groups "mvd_poor_male mvd_poor_female mvd_non_poor_male mvd_non_poor_female"
-
-    foreach outcome_type in labor educ {
-		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_gender) ///
-			stubs(``outcome_type'_stubs') event_date(`date_is_chpr') time(anio_qtr) ///
-			weight(pesotri) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
-			
-		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_gender) ///
-			stubs(``outcome_type'_stubs') event_date(`sem_date_is_chpr') time(anio_sem) ///
-			weight(pesosem) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
-			
-		local groups "mvd_poor_fertile mvd_poor_infertile mvd_non_poor_fertile mvd_non_poor_infertile"
-		
-		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_fertility) ///
-			stubs(``outcome_type'_stubs') event_date(`date_is_chpr') time(anio_qtr) ///
-			weight(pesotri) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
-
-		plot_triple_diff, outcomes(``outcome_type'_outcome_vars') groups(`groups') design(income_fertility) ///
-			stubs(``outcome_type'_stubs') event_date(`sem_date_is_chpr') time(anio_sem) ///
-			weight(pesosem) city(mvd) city_legend(Montevideo) outcome_type_leg(`outcome_type')
-	
+		foreach design in income_gender income_fertility gender_fertility {
+			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
+				time(anio_qtr) event_date(`q_date_mvd') city(mvd) city_legend(Montevideo) ///
+				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+				
+			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
+				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
+				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+				
+			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
+				time(anio) event_date(`y_date_mvd') city(mvd) city_legend(Montevideo) ///
+				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+				
+			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
+				time(anio_qtr) event_date(`q_date_mvd') groups_vars(`group_vars') 
+								
+			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
+				time(anio_sem) event_date(`s_date_mvd') groups_vars(`group_vars') 		
+				
+			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
+				time(anio) event_date(`y_date_mvd') groups_vars(`group_vars') 
+		}			
 	}
 end
 
 program plot_triple_diff
-	syntax, outcomes(str) groups(str) design(str) event_date(str) ///
-	    stubs(str) time(str) weight(str) city(str) city_legend(str) ///
-		outcome_type_leg(str) sample_restr(str) [special_legend(str)]
+	syntax, outcomes(str) design(str) event_date(str) ///
+	    stubs(str) time(str) city(str) city_legend(str) ///
+		groups_vars(str) [plot_option(str) special_legend(str) sample_restr(str)]
 	
 	if "`design'" == "income_gender" {
-		local group_labels = `""Poor males" "Poor females" "Non-poor males" "Non-poor females""'
-	}
-	else {
-		local group_labels = `" "Poor fertile" "Poor infertile" "Non-poor fertile" "Non-poor infertile" "'
-	}
+			local group_labels = `"Poor male"   "Poor female"   "Non-poor male"   "Non-poor female""'
+			local groups      "mvd_poor_male mvd_poor_female mvd_non_poor_male mvd_non_poor_female"
+			local diff1 "Poor: male vs female"
+			local diff2 "Non-poor: male vs female"
+		}
+		else if "`design'" == "income_fertility" {
+			local group_labels = `""Poor fertile"   "Non-poor fertile"   "Poor infertile"   "Non-poor infertile" "'
+			local groups       "mvd_poor_fertile mvd_non_poor_fertile mvd_poor_infertile mvd_non_poor_infertile"
+			local diff1 "Fertile age: poor vs non-poor"
+			local diff2 "Infertile age: poor vs non-poor"
+		}
+		else if "`design'" == "gender_fertility" {
+			local group_labels = `""Male infertile"   "Male fertile"   "Female infertile"   "Female fertile" "'
+			local groups       "mvd_male_infertile mvd_male_fertile mvd_female_infertile mvd_female_fertile"
+			local diff1 "Male: infertile vs fertile"
+			local diff2 "Female: infertile vs fertile"
+		}
+		else {
+			di as err "The argument of design() must be one of the following: "
+			di as err "income_gender"
+			di as err "income_fertility"
+			di as err "gender_fertility"
+			exit
+		}
 	
-    local group1: word 1 of `groups' 
-	local group2: word 2 of `groups' 
-	local group3: word 3 of `groups' 
-	local group4: word 4 of `groups' 
-
+	if "`time'" == "anio_qtr" {
+			local weight pesotri
+			local range "if inrange(`time', tq(`event_date') - 8, tq(`event_date') + 8) "
+			local xtitle "Year-qtr"
+		}
+		else if "`time'" == "anio_sem" {
+			local weight pesosem
+			local range "if inrange(`time', th(`event_date') - 4, th(`event_date') + 4) "
+			local xtitle "Year-half"
+		}
+		else {
+			local weight pesoan
+			local range "if inrange(`time', `event_date' - 2, `event_date' + 2) "
+			local xtitle "Year"
+		}
+	
+    forval x = 1/4 {
+		local group`x'      : word `x' of `groups'
+		local group_label`x': word `x' of `group_labels'
+	}
 	local n_outcomes: word count `outcomes'
-	local n_groups: word count `groups'
+	local n_groups  : word count `groups'
 	
 	forval i = 1/`n_outcomes' {
-	    local outcome: word `i' of `outcomes'
+	    local outcome : word `i' of `outcomes'
 	    local stub_var: word `i' of `stubs'
-			use  ..\base\ech_final_98_2016.dta, clear 
-	        keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
+		local plots = " `plots' " + "triple_diff_`outcome'"
+		use  ..\base\ech_final_98_2016.dta, clear 
+	    keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
 			
-	    forval j = 1/`n_groups' {
-	        local group: word `j' of `groups'
-			
-			preserve
-				collapse (mean) `outcome' [aw = `weight'] if `group' == 1 , by(`time')
-				tsset `time'
-				tssmooth ma `outcome' = `outcome', window(1 1 1) replace
-				gen group = `j'
-				save ../temp/group`j'_`outcome'_ts.dta, replace
-			restore
+	    if "`plot_option'" == "diff" {
+			forval j = 1/`n_groups' {
+				local group: word `j' of `groups'
+				preserve
+					collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
+						[aw = `weight'] if `group' == 1 , by(`time')
+					tsset `time'
+					tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+					rename *`outcome' *`outcome'_`j'
+					save ../temp/group`j'_`outcome'_ts.dta, replace
+				restore
 			}
-			use ../temp/group4_`outcome'_ts.dta, clear
-			append using ../temp/group1_`outcome'_ts.dta
+			use                    ../temp/group1_`outcome'_ts.dta, clear
+			merge 1:1 `time' using ../temp/group2_`outcome'_ts.dta, assert(3) keep(3) nogen
+			merge 1:1 `time' using ../temp/group3_`outcome'_ts.dta, assert(3) keep(3) nogen
+			merge 1:1 `time' using ../temp/group4_`outcome'_ts.dta, assert(3) keep(3) nogen
+			
+			gen `outcome'_diff1 = `outcome'_1 - `outcome'_2
+			gen `outcome'_diff1_se = sqrt((sd_`outcome'_1^2/n_`outcome'_1)+(sd_`outcome'_2^2/n_`outcome'_2))
+			gen `outcome'_diff2 = `outcome'_3 - `outcome'_4
+			gen `outcome'_diff2_se = sqrt((sd_`outcome'_3^2/n_`outcome'_3)+(sd_`outcome'_4^2/n_`outcome'_4))
+			
+			gen `outcome'_diff1_ci_p = `outcome'_diff1 + 1.96 * `outcome'_diff1_se
+		    gen `outcome'_diff1_ci_n = `outcome'_diff1 - 1.96 * `outcome'_diff1_se		
+			gen `outcome'_diff2_ci_p = `outcome'_diff2 + 1.96 * `outcome'_diff2_se
+		    gen `outcome'_diff2_ci_n = `outcome'_diff2 - 1.96 * `outcome'_diff2_se	
+
+			qui twoway (rarea `outcome'_diff1_ci_p  `outcome'_diff1_ci_n `time' `range', fc(green) lc(bg)    fin(inten20)) ///   
+					   (rarea `outcome'_diff2_ci_p  `outcome'_diff2_ci_n `time' `range', fc(blue)  lc(bg)    fin(inten10)) ///   
+					   (line  `outcome'_diff1 `time' `range', lc(green) lp(solid) lw(medthick)) /// 
+					   (line  `outcome'_diff2 `time' `range', lc(blue)  lp(solid) lw(medthick)) /// 			   
+				,legend(on order(3 4) label(3 "`diff1'") label(4 "`diff2'") col(1) row(2)) ///
+				tline(`event_date', lcolor(black) lpattern(dot)) ///
+				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
+				ytitle("`stub_var'") name(triple_diff_`outcome', replace) ///
+				title("`stub_var'", color(black) size(medium)) ylabel(#2)
+			
+		}
+		else {
+			forval j = 1/`n_groups' {
+				local group: word `j' of `groups'
+				preserve
+					collapse (mean) `outcome' [aw = `weight'] if `group' == 1 , by(`time')
+					tsset `time'
+					tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+					gen group = `j'
+					save ../temp/group`j'_`outcome'_ts.dta, replace
+				restore
+			}
+			use          ../temp/group1_`outcome'_ts.dta, clear
 			append using ../temp/group2_`outcome'_ts.dta
-			append using ../temp/group3_`outcome'_ts.dta		
+			append using ../temp/group3_`outcome'_ts.dta
+			append using ../temp/group4_`outcome'_ts.dta		
 				
-			if "`time'" == "anio_qtr" {
-				local range "if inrange(`time', tq(`event_date') - 12, tq(`event_date') + 12) "
-				local xtitle "Year-qtr"
-			}
-			else {
-				local range "if inrange(`time', th(`event_date') - 6, th(`event_date') + 6) "
-				local xtitle "Year-half"
-			}
-            
-			local group_label1: word 1 of `group_labels' 
-			local group_label2: word 2 of `group_labels' 
-			local group_label3: word 3 of `group_labels' 
-			local group_label4: word 4 of `group_labels' 	
-			
 			qui twoway (line `outcome' `time' if group == 1) ///
-				   (line `outcome' `time' if group == 2) ///
-				   (line `outcome' `time' if group == 3) ///
-				   (line `outcome' `time' if group == 4) `range', /// 
-				   legend(label(1 "`group_label1'") label(2 "`group_label2'") ///
+					   (line `outcome' `time' if group == 2) ///
+					   (line `outcome' `time' if group == 3) ///
+					   (line `outcome' `time' if group == 4) `range', /// 
+				   legend(col(1) label(1 "`group_label1'") label(2 "`group_label2'") ///
 				   label(3 "`group_label3'") label(4 "`group_label4'")) ///
 				   tline(`event_date', lcolor(black) lpattern(dot)) ///
 				   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 				   ytitle("`stub_var'") name(triple_diff_`outcome', replace) ///
 				   title("`stub_var'", color(black) size(medium)) ylabel(#2)
+		}
 
 	}
 
-	forval i = 1/`n_outcomes' {
-		local outcome: word `i' of `outcomes'
-		local plots = "`plots' " + "triple_diff_`outcome'"
-	}
-		
 	local plot1: word 1 of `plots' 	
 	
 	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
 	graph display, ysize(8.5) xsize(6.5)
-	graph export ../figures/triple_diff_`city'_`time'_`outcome_type_leg'_`design'.png, replace
+	graph export ../figures/triple_diff_`city'_`time'_`groups_vars'_`design'`plot_option'.png, replace
+end
+
+program reg_triple_diff
+    syntax, outcomes(string) design(string) city(str) groups_vars(str) time(str) event_date(str)
+	
+	use  ..\base\ech_final_98_2016.dta, clear
+	
+	if "`time'" == "anio_qtr" {
+			local weight pesotri
+			gen post = (`time' >= tq(`event_date'))
+			local range "if inrange(`time', tq(`event_date') - 8,tq(`event_date') + 8) "
+			qui sum `time' `range'	
+			local min_year = year(dofq(r(min)))
+		}
+		else if "`time'" == "anio_sem" {
+			local weight pesosem
+			gen post = (`time' >= th(`event_date'))
+			local range "if inrange(`time', th(`event_date') - 4,th(`event_date') + 4) "
+			qui sum `time' `range'	
+			local min_year = year(dofh(r(min)))
+		}
+		else {
+			local weight pesoan
+			gen post = (`time' >= `event_date')
+			local range "if inrange(`time', `event_date' - 2, `event_date' + 2) "
+			qui sum `time' `range'	
+			local min_year = r(min)
+		}
+
+	if `min_year' < 2001  {
+		local control_vars " c98_* "
+		}
+	else if `min_year' >=2001 & `min_year' < 2006  {
+		local control_vars " c98_* c01_* "
+		}
+	else {
+		local control_vars " c98_* c01_* c06_* "
+		}
+	
+	if "`design'" == "income_gender" {
+			local groups      "mvd_poor_female mvd_poor_male mvd_non_poor_female mvd_non_poor_male"
+			local event "Poor x Female"
+			local gr_vars = "pobre female"
+			gen int_no_post = pobre * female
+			gen int_post1 = pobre* post
+			gen int_post2 = female * post
+		}
+		else if "`design'" == "income_fertility" {
+			local groups       "mvd_poor_fertile mvd_poor_infertile mvd_non_poor_fertile mvd_non_poor_infertile"
+			local event "Poor x Fertile"
+			local gr_vars = "pobre fertile_age"
+			gen int_no_post = pobre * fertile_age
+			gen int_post1 = pobre * post
+			gen int_post2 = fertile_age * post
+		}
+		else if "`design'" == "gender_fertility" {
+			local groups       "mvd_male_fertile mvd_male_infertile mvd_female_fertile mvd_female_infertile"
+			local event "Female x Fertile"
+			local gr_vars = "female fertile_age"
+			gen int_no_post = female * fertile_age
+			gen int_post1 = female * post
+			gen int_post2 = fertile_age * post
+		}
+		else {
+			di as err "The argument of design() must be one of the following: "
+			di as err "income_gender"
+			di as err "income_fertility"
+			di as err "gender_fertility"
+			exit
+		}
+		
+	forval x = 1/4 {
+		local group`x'      : word `x' of `groups'
+		local group_label`x': word `x' of `group_labels'
+	}
+	keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
+    
+	gen int_triple = int_no_post * post
+
+	local n_outcomes: word count `outcomes'
+	forval i = 1/`n_outcomes' {
+		local outcome: word `i' of `outcomes'
+		
+		eststo: reg `outcome' `gr_vars' i.post int_* ///
+					i.`time' cantidad_personas hay_menores edad married ///
+					y_hogar_alt `control_vars' `range' [aw = `weight']
+		}
+		esttab using ../tables/triple_diff_`city'_`time'_`groups_vars'_`design'.tex, label se ar2 compress ///
+			replace nonotes coeflabels(int_triple "`event' x Post") keep(int_triple)
+		eststo clear
 end
 
 main_triple_diff
