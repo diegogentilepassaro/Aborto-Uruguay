@@ -71,17 +71,17 @@ program plot_triple_diff
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local range "if inrange(`time', tq(`event_date') - 8, tq(`event_date') + 8) "
+			local range "if inrange(`time', tq(`event_date') - 12, tq(`event_date') + 12) "
 			local xtitle "Year-qtr"
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local range "if inrange(`time', th(`event_date') - 4, th(`event_date') + 4) "
+			local range "if inrange(`time', th(`event_date') - 6, th(`event_date') + 6) "
 			local xtitle "Year-half"
 		}
 		else {
 			local weight pesoan
-			local range "if inrange(`time', `event_date' - 2, `event_date' + 2) "
+			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
 			local xtitle "Year"
 		}
 	
@@ -183,21 +183,21 @@ program reg_triple_diff
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
 			gen post = (`time' >= tq(`event_date'))
-			local range "if inrange(`time', tq(`event_date') - 8,tq(`event_date') + 8) "
+			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
 			qui sum `time' `range'	
 			local min_year = year(dofq(r(min)))
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
 			gen post = (`time' >= th(`event_date'))
-			local range "if inrange(`time', th(`event_date') - 4,th(`event_date') + 4) "
+			local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 		}
 		else {
 			local weight pesoan
 			gen post = (`time' >= `event_date')
-			local range "if inrange(`time', `event_date' - 2, `event_date' + 2) "
+			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 		}

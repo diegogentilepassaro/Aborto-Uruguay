@@ -117,8 +117,10 @@ program label_vars
 	label var  educ_level "Educational attainment"
 	label define educ_level 1 "Primary school" 2 "High school" 3 "Post-secondary"
 	label values educ_level educ_level
+	label var  educ_more_HS "Some college"
 	gen educ_more_HS = (educ_level == 3)
 	gen educ_HS_or_more = (educ_level == 2 | educ_level == 3 )
+	label var educ_HS "High-school"
 	label define educ_HS 0 "HS degree or less" 1 "More than HS diploma"
 	label values educ_HS educ_HS
 end

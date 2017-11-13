@@ -13,9 +13,6 @@ program main_diff_analysis
 	local legend_rivera = "Rivera"
 	local legend_salto  = "Salto"
 	
-	local control_rivera = "artigas"
-	local control_salto  = "paysandu"
-	
 	local q_date_mvd  "2002q1"
 	local q_date_rivera  "2010q3"
 	local q_date_salto "2013q1"
@@ -32,30 +29,30 @@ program main_diff_analysis
 		
 		foreach group_vars in labor educ {
 
-			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city') ///
 				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(diff)
 
-			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(diff)
 
-			plot_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'') ///
+			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(diff)
 
-			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
 				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
-			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
 				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
-			reg_diff, outcomes(``group_vars'_vars') treatment(`city') control(`control_`city'')  ///
+			reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 		}
@@ -63,29 +60,29 @@ program main_diff_analysis
 end
 
 program plot_diff
-    syntax , outcomes(string) stubs(string) treatment(string) control(string) ///
+    syntax , outcomes(string) stubs(string) treatment(string)  ///
         event_date(string) time(string) city_legend(string) ///
 		plot_option(str) [groups_vars(str) restr(string) sample(str)]
 
 	if "`time'" == "anio_qtr" {
 		local weight pesotri
-		local range "if inrange(`time', tq(`event_date') - 16,tq(`event_date') + 16) "
+		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
 		local xtitle "Year-qtr"
 	}
 	else if "`time'" == "anio_sem" {
 		local weight pesosem
-		local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 8) "
+		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
 		local xtitle "Year-half"
 	}
 	else {
 		local weight pesoan
-		local range "if inrange(`time', `event_date' - 4, `event_date' + 4) "
+		local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
 		local xtitle "Year"
 	}
 	
    	use  ..\base\ech_final_98_2016.dta, clear
 	cap keep if `restr'
-	keep if treatment_`treatment'==1 | control_`control'==1
+	keep if treatment_`treatment'==1 | control_`treatment'==1
 	save ..\temp\did_sample.dta, replace
 			
 	local n_outcomes: word count `outcomes'
@@ -105,7 +102,7 @@ program plot_diff
 		    restore
 			
 			collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
-			    [aw = `weight'] if control_`control' == 1 , by(`time')
+			    [aw = `weight'] if control_`treatment' == 1 , by(`time')
 			rename *`outcome' *`outcome'_c
             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
 			    assert(3) keep(3) nogen
@@ -135,7 +132,7 @@ program plot_diff
 				save ../temp/treat_`outcome'_ts.dta, replace
 			restore
 			
-			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`control' == 1 , by(`time')
+			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`treatment' == 1 , by(`time')
 			tsset `time'
 			*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 			save ../temp/control_`outcome'_ts.dta, replace
@@ -180,14 +177,14 @@ program plot_diff
 end
 
 program reg_diff
-    syntax, outcomes(string) treatment(string) control(string) ///
+    syntax, outcomes(string) treatment(string) ///
         event_date(string) event(string) time(string) [groups_vars(str) restr(string) sample(str)]
 		
    	use  ..\base\ech_final_98_2016.dta, clear
     
 	cap keep if `restr'
 
-	keep if treatment_`treatment'==1 | control_`control'==1
+	keep if treatment_`treatment'==1 | control_`treatment'==1
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri

@@ -23,8 +23,8 @@ program assign_treatment
 	gen placebo_rivera   = (dpto == 13 & hombre == 1)
     gen placebo_salto    = (dpto == 15 & hombre == 1)
 	
-    gen control_paysandu = (dpto == 11 & hombre == 0)
-    gen control_artigas  = (dpto == 2  & hombre == 0)
+    gen control_rivera   = (dpto == 11 & hombre == 0)
+    gen control_salto    = (dpto == 2  & hombre == 0)
 
 	* for experimenting with triple diff
 	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
