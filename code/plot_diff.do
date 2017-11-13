@@ -29,32 +29,32 @@ program main_diff_analysis
 		
 		foreach group_vars in labor /*educ*/ {
 
-			plot_diff, outcomes(``group_vars'_vars') treatment(`city') ///
+			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city') ///
 				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
-				plot_option(diff)
+				plot_option(trend)*/
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
-				plot_option(diff)
+				plot_option(trend)
 
-			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
+			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
-				plot_option(diff)
+				plot_option(trend)
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
 				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(``group_vars'_restr') ///
-				groups_vars(`group_vars')
+				groups_vars(`group_vars')*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
 				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
-			reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
+			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
-				groups_vars(`group_vars')
+				groups_vars(`group_vars')*/
 		}
 	}
 end
@@ -71,12 +71,12 @@ program plot_diff
 	}
 	else if "`time'" == "anio_sem" {
 		local weight pesosem
-		local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+		local range "if inrange(`time', th(`event_date') -8,th(`event_date') + 4) "
 		local xtitle "Year-half"
 	}
 	else {
 		local weight pesoan
-		local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+		local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 		local xtitle "Year"
 	}
 	
@@ -119,7 +119,7 @@ program plot_diff
 				tline(`event_date', lcolor(black) lpattern(dot)) ///
 				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 				ytitle("`stub_var'") name(diff_`outcome'_`treatment', replace) ///
-				title("`stub_var'", color(black) size(medium)) ylabel(#2)
+				title("`stub_var'", color(black) size(medium)) ylabel()
 				
 				local diff_stub "diff_"
 		}
@@ -127,30 +127,42 @@ program plot_diff
 			preserve
 				collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 1 , by(`time')
 				tsset `time'
-				*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+				tssmooth ma `outcome' = `outcome', window(1 1 0) replace
 				gen treat = 1
 				save ../temp/treat_`outcome'_ts.dta, replace
 			restore
 			
 			collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`treatment' == 1 , by(`time')
 			tsset `time'
-			*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+			tssmooth ma `outcome' = `outcome', window(1 1 0) replace
 			save ../temp/control_`outcome'_ts.dta, replace
 			append using ../temp/treat_`outcome'_ts.dta
 			replace treat = 0 if missing(treat)
 
 			gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
 			gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
-
-			qui twoway (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
-					   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) ///
-					   (line  `outcome'                      `time' `range' & treat == 1, lc(red)  lp(solid) lw(medthick)) ///
-					   (line  `outcome'                      `time' `range' & treat == 0, lc(blue) lp(solid) lw(medthick)), ///
-				legend(on order(3 4) label(3 "Treatment") label(4 "Control")) ///
+            
+			if "`outcome'" == "trabajo" {
+			    local ylabel "0.4 (0.1) 0.6"
+			}
+			else if "`outcome'" == "horas_trabajo" {
+			    local ylabel "12 (8) 28"
+			}
+			
+			
+			qui twoway (scatter  `outcome'                      `time' `range' & treat == 1, lc(blue) lp(solid) lw(medthick)) ///
+					   (scatter  `outcome'                      `time' `range' & treat == 0, lc(red) lp(solid) lw(medthick)) ///
+					   (line  `outcome'                      `time' `range' & treat == 1, lc(blue) lp(solid) lw(thin)) ///
+					   (line  `outcome'                      `time' `range' & treat == 0, lc(red) lp(solid) lw(thin)) ///
+				,legend(on order(1 2) label(1 "Treatment") label(2 "Control")) ///
 				tline(`event_date', lcolor(black) lpattern(dot)) ///
 				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 				ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-				title("`stub_var'", color(black) size(medium)) ylabel(#2)
+				title("`stub_var'", color(black) size(medium)) ylabel(`ylabel') ///
+				xlabel(#7)
+				
+		/* (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
+					   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) /// */		
 		
 		/*qui twoway (line `outcome' `time' if treat == 1) ///
 			   (line `outcome' `time' if treat == 0) `range', /// 
@@ -194,13 +206,13 @@ program reg_diff
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 		}
 		else {
 			local weight pesoan
-			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 		}
