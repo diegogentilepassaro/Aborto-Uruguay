@@ -8,23 +8,23 @@ end
 program assign_treatment
     use ..\base\clean_loc_1998_2016.dta, clear 
     
-    /*gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
+    gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
     gen treatment_salto  = (loc_code == 1515020 & hombre == 0)
 
 	gen placebo_rivera   = (loc_code == 1313020 & hombre == 1)
     gen placebo_salto    = (loc_code == 1515020 & hombre == 1)
 	
-    gen control_paysandu = (loc_code == 1111020 & hombre == 0)
-    gen control_artigas  = (loc_code == 202020  & hombre == 0)*/
+    gen control_rivera  = (loc_code == 202020  & hombre == 0)
+    gen control_salto   = (loc_code == 1111020 & hombre == 0)
 	
-	gen treatment_rivera = (dpto == 13 & hombre == 0)
+	/*gen treatment_rivera = (dpto == 13 & hombre == 0)
     gen treatment_salto  = (dpto == 15 & hombre == 0)
 
 	gen placebo_rivera   = (dpto == 13 & hombre == 1)
     gen placebo_salto    = (dpto == 15 & hombre == 1)
 	
-    gen control_rivera   = (dpto == 11 & hombre == 0)
-    gen control_salto    = (dpto == 2  & hombre == 0)
+    gen control_rivera   = (dpto == 2 & hombre == 0)
+    gen control_salto    = (dpto == 11  & hombre == 0)*/
 
 	* for experimenting with triple diff
 	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)

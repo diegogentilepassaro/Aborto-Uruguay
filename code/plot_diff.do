@@ -27,7 +27,7 @@ program main_diff_analysis
 
 	foreach city in rivera salto {
 		
-		foreach group_vars in labor educ {
+		foreach group_vars in labor /*educ*/ {
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city') ///
 				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
