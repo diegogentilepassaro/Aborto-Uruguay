@@ -11,29 +11,23 @@ program main_triple_diff
 	local s_date_mvd "2002h1"
 	local y_date_mvd "2002"
 	
-    foreach group_vars in labor educ {
+    foreach group_vars in labor /*educ*/ {
 	
-		foreach design in income_gender income_fertility gender_fertility {
-			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
-				time(anio_qtr) event_date(`q_date_mvd') city(mvd) city_legend(Montevideo) ///
-				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+		foreach design in gender_married /*income_gender income_married*/ {
 				
 			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
 				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
-				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
 				
-			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
+			/*plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
 				time(anio) event_date(`y_date_mvd') city(mvd) city_legend(Montevideo) ///
-				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(diff)
+				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
 				
-			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
-				time(anio_qtr) event_date(`q_date_mvd') groups_vars(`group_vars') 
-								
 			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
 				time(anio_sem) event_date(`s_date_mvd') groups_vars(`group_vars') 		
 				
-			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
-				time(anio) event_date(`y_date_mvd') groups_vars(`group_vars') 
+			/*reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
+				time(anio) event_date(`y_date_mvd') groups_vars(`group_vars')*/
 		}			
 	}
 end
@@ -44,44 +38,43 @@ program plot_triple_diff
 		groups_vars(str) [plot_option(str) special_legend(str) sample_restr(str)]
 	
 	if "`design'" == "income_gender" {
-			local group_labels = `"Poor male"   "Poor female"   "Non-poor male"   "Non-poor female""'
+			local group_labels = `""Poor male"   "Poor female"   "Non-poor male"   "Non-poor female""'
 			local groups      "mvd_poor_male mvd_poor_female mvd_non_poor_male mvd_non_poor_female"
 			local diff1 "Poor: male vs female"
 			local diff2 "Non-poor: male vs female"
 		}
-		else if "`design'" == "income_fertility" {
-			local group_labels = `""Poor fertile"   "Non-poor fertile"   "Poor infertile"   "Non-poor infertile" "'
-			local groups       "mvd_poor_fertile mvd_non_poor_fertile mvd_poor_infertile mvd_non_poor_infertile"
-			local diff1 "Fertile age: poor vs non-poor"
-			local diff2 "Infertile age: poor vs non-poor"
+		else if "`design'" == "income_married" {
+			local group_labels = `""Poor single"   "Poor married"   "Non-poor single"   "Non-poor married" "'
+			local groups       "mvd_poor_single mvd_poor_married mvd_non_poor_single mvd_non_poor_married"
+			local diff1 "Poor: single vs married"
+			local diff2 "Non-poor: single vs married"
 		}
-		else if "`design'" == "gender_fertility" {
-			local group_labels = `""Male infertile"   "Male fertile"   "Female infertile"   "Female fertile" "'
-			local groups       "mvd_male_infertile mvd_male_fertile mvd_female_infertile mvd_female_fertile"
-			local diff1 "Male: infertile vs fertile"
-			local diff2 "Female: infertile vs fertile"
-		}
+		else if "`design'" == "gender_married" {
+			local group_labels = `""Female single"   "Female married"   "Male single"   "Male married" "'
+			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_female_married"
+			local diff1 "Poor: single vs married"
+			local diff2 "Non-poor: single vs married"
+		}		
 		else {
 			di as err "The argument of design() must be one of the following: "
 			di as err "income_gender"
-			di as err "income_fertility"
-			di as err "gender_fertility"
+			di as err "income_married"
 			exit
 		}
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local range "if inrange(`time', tq(`event_date') - 12, tq(`event_date') + 12) "
+			local range "if inrange(`time', tq(`event_date') - 16, tq(`event_date') + 8) "
 			local xtitle "Year-qtr"
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local range "if inrange(`time', th(`event_date') - 6, th(`event_date') + 6) "
+			local range "if inrange(`time', th(`event_date') - 8, th(`event_date') + 4) "
 			local xtitle "Year-half"
 		}
 		else {
 			local weight pesoan
-			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			local xtitle "Year"
 		}
 	
@@ -96,7 +89,10 @@ program plot_triple_diff
 	    local outcome : word `i' of `outcomes'
 	    local stub_var: word `i' of `stubs'
 		local plots = " `plots' " + "triple_diff_`outcome'"
+		
 		use  ..\base\ech_final_98_2016.dta, clear 
+		
+		keep if inrange(edad, 16, 45)
 	    keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
 			
 	    if "`plot_option'" == "diff" {
@@ -106,7 +102,7 @@ program plot_triple_diff
 					collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
 						[aw = `weight'] if `group' == 1 , by(`time')
 					tsset `time'
-					tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+					*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 					rename *`outcome' *`outcome'_`j'
 					save ../temp/group`j'_`outcome'_ts.dta, replace
 				restore
@@ -143,7 +139,7 @@ program plot_triple_diff
 				preserve
 					collapse (mean) `outcome' [aw = `weight'] if `group' == 1 , by(`time')
 					tsset `time'
-					tssmooth ma `outcome' = `outcome', window(1 1 1) replace
+					*tssmooth ma `outcome' = `outcome', window(1 1 0) replace
 					gen group = `j'
 					save ../temp/group`j'_`outcome'_ts.dta, replace
 				restore
@@ -153,11 +149,15 @@ program plot_triple_diff
 			append using ../temp/group3_`outcome'_ts.dta
 			append using ../temp/group4_`outcome'_ts.dta		
 				
-			qui twoway (line `outcome' `time' if group == 1) ///
-					   (line `outcome' `time' if group == 2) ///
-					   (line `outcome' `time' if group == 3) ///
-					   (line `outcome' `time' if group == 4) `range', /// 
-				   legend(col(1) label(1 "`group_label1'") label(2 "`group_label2'") ///
+			qui twoway (scatter `outcome' `time' if group == 1, mc(blue) ms(triangle)) ///
+					   (scatter `outcome' `time' if group == 2, mc(red)  ms(triangle)) ///
+					   (scatter `outcome' `time' if group == 3, mc(blue)) ///
+					   (scatter `outcome' `time' if group == 4, mc(red)) ///
+                       (line `outcome' `time' if group == 1, lc(blue)) ///
+					   (line `outcome' `time' if group == 2, lc(red)) ///
+					   (line `outcome' `time' if group == 3, lc(blue)) ///
+					   (line `outcome' `time' if group == 4, lc(red)) `range', /// 
+				   legend(on order (1 2 3 4) col(2) label(1 "`group_label1'") label(2 "`group_label2'") ///
 				   label(3 "`group_label3'") label(4 "`group_label4'")) ///
 				   tline(`event_date', lcolor(black) lpattern(dot)) ///
 				   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
@@ -220,22 +220,20 @@ program reg_triple_diff
 			gen int_post1 = pobre* post
 			gen int_post2 = female * post
 		}
-		else if "`design'" == "income_fertility" {
-			local groups       "mvd_poor_fertile mvd_poor_infertile mvd_non_poor_fertile mvd_non_poor_infertile"
-			local event "Poor x Fertile"
-			local gr_vars = "pobre fertile_age"
-			gen int_no_post = pobre * fertile_age
-			gen int_post1 = pobre * post
-			gen int_post2 = fertile_age * post
+		else if "`design'" == "income_married" {
+			local groups       "mvd_poor_single mvd_poor_married mvd_non_poor_single mvd_non_poor_married"
+			local event "Poor x Single"
+			local gr_vars = "pobre single"
+			gen int_no_post = pobre * single
+			gen int_post1 = pobre* post
+			gen int_post2 = single * post
 		}
-		else if "`design'" == "gender_fertility" {
-			local groups       "mvd_male_fertile mvd_male_infertile mvd_female_fertile mvd_female_infertile"
-			local event "Female x Fertile"
-			local gr_vars = "female fertile_age"
-			gen int_no_post = female * fertile_age
-			gen int_post1 = female * post
-			gen int_post2 = fertile_age * post
-		}
+		else if "`design'" == "gender_married" {
+			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_female_married"
+			local event "Female x Single"			
+			local diff1 "Female: single vs married"
+			local diff2 "Male: single vs married"
+		}		
 		else {
 			di as err "The argument of design() must be one of the following: "
 			di as err "income_gender"

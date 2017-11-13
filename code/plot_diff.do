@@ -10,6 +10,7 @@ program main_diff_analysis
 	local labor_restr "inrange(edad, 16, 45)"
 	local educ_restr "inrange(edad, 18, 25)"
 	
+	local legend_mvd    = "Montevideo"
 	local legend_rivera = "Rivera"
 	local legend_salto  = "Salto"
 	
@@ -29,11 +30,6 @@ program main_diff_analysis
 		
 		foreach group_vars in labor /*educ*/ {
 
-			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city') ///
-				time(anio_qtr) event_date(`q_date_`city'') city_legend(`legend_`city'') ///
-				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
-				plot_option(trend)*/
-
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
@@ -42,11 +38,7 @@ program main_diff_analysis
 			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
 				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
-				plot_option(trend)
-
-			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
-				time(anio_qtr) event(`legend_`city'') event_date(`q_date_`city'') restr(``group_vars'_restr') ///
-				groups_vars(`group_vars')*/
+				plot_option(trend)*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
 				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(``group_vars'_restr') ///
@@ -57,6 +49,32 @@ program main_diff_analysis
 				groups_vars(`group_vars')*/
 		}
 	}
+	
+	/*foreach demo in poor gender educ married { 
+		 
+		foreach group_vars in labor /*educ*/ {
+
+			plot_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')  ///
+				time(anio_sem) event_date(`s_date_mvd') city_legend(`legend_mvd') ///
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
+				plot_option(trend)
+
+			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
+				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
+				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
+				plot_option(trend)*/
+
+			reg_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')   ///
+				time(anio_sem) event(`legend_mvd') event_date(`s_date_mvd') restr(``group_vars'_restr') ///
+				groups_vars(`group_vars')
+
+			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
+				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
+				groups_vars(`group_vars')*/
+		}
+	}*/
+
+	
 end
 
 program plot_diff
@@ -81,7 +99,11 @@ program plot_diff
 	}
 	
    	use  ..\base\ech_final_98_2016.dta, clear
-	cap keep if `restr'
+	
+	if "`treatment'" != "mvd_fertile" {
+	    cap keep if `restr'
+	}
+	
 	keep if treatment_`treatment'==1 | control_`treatment'==1
 	save ..\temp\did_sample.dta, replace
 			
@@ -142,13 +164,22 @@ program plot_diff
 			gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
 			gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
             
-			if "`outcome'" == "trabajo" {
-			    local ylabel "0.4 (0.1) 0.6"
+			if "`treatment'" == "mvd_gender" {
+			    if "`outcome'" == "trabajo" {
+			        local ylabel "0.5 (0.1) 0.8"
+			    }
+			    else if "`outcome'" == "horas_trabajo" {
+			        local ylabel "16 (8) 40"
+			    }			
 			}
-			else if "`outcome'" == "horas_trabajo" {
-			    local ylabel "12 (8) 28"
+			else {
+			    if "`outcome'" == "trabajo" {
+			        local ylabel "0.4 (0.1) 0.6"
+			    }
+			    else if "`outcome'" == "horas_trabajo" {
+			        local ylabel "12 (8) 28"
+			    }
 			}
-			
 			
 			qui twoway (scatter  `outcome'                      `time' `range' & treat == 1, lc(blue) lp(solid) lw(medthick)) ///
 					   (scatter  `outcome'                      `time' `range' & treat == 0, lc(red) lp(solid) lw(medthick)) ///
