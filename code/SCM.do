@@ -29,9 +29,9 @@ program main_scm
 	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020))"
 	
 	foreach city in rivera salto {
-	    foreach group_vars in educ labor {
+	    foreach group_vars in /*educ*/ labor {
 			
-			foreach special_legend in "" "placebo" {
+			/*foreach special_legend in "" "placebo" {
 			
 				if "`special_legend'" == "placebo" {
 				
@@ -49,7 +49,7 @@ program main_scm
 					else {
 					    local sample_restr = "keep if hombre == 0 & inrange(edad, 18, 25)"
 					}
-				}
+				}*/
 					
 			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`q_date_`city'') ///
 				time(anio_qtr) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
@@ -117,8 +117,8 @@ program build_synth_control
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local lag_list `" 4 5 6 7 8 9 10 11 12 13 14 "' //`" 5 6 7 8 9 10 11 12 "'
-			local range "if inrange(`time', th(`event_date') - 14,th(`event_date') + 4) "
+			local lag_list `" 3 4 5 6 7 8"' //`" 5 6 7 8 9 10 11 12 "'
+			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 			qui sum `time'  if  `time' == th(`event_date')		
@@ -126,7 +126,7 @@ program build_synth_control
 		else {
 			local weight pesoan
 			local lag_list `" 2 3 4 5 6 7 "' //`" 3 4 5 6 "'
-			local range "if inrange(`time', `event_date' - 7, `event_date' + 2) "
+			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 			qui sum `time'  if  `time' == `event_date'	

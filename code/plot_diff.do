@@ -100,9 +100,7 @@ program plot_diff
 	
    	use  ..\base\ech_final_98_2016.dta, clear
 	
-	if "`treatment'" != "mvd_fertile" {
-	    cap keep if `restr'
-	}
+	cap keep if `restr'
 	
 	keep if treatment_`treatment'==1 | control_`treatment'==1
 	save ..\temp\did_sample.dta, replace
@@ -232,13 +230,13 @@ program reg_diff
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
 			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
-			qui sum `time' `range'	
+			qui sum `time' `range'
 			local min_year = year(dofq(r(min)))
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
 			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
-			qui sum `time' `range'	
+			qui sum `time' `range'
 			local min_year = year(dofh(r(min)))
 		}
 		else {
@@ -277,12 +275,13 @@ program reg_diff
 		qui sum `control_vars'		
 		eststo: reg `outcome' i.treatment_`treatment' i.post interaction ///
 					i.`time' cantidad_personas hay_menores edad married ///
-					y_hogar_alt `control_vars' `range' [aw = `weight']
+					y_hogar_alt `control_vars' `range' [aw = `weight'], vce(cluster `time')
 		
 		drop interaction post
 		}
 		esttab using ../tables/did_`treatment'_`groups_vars'_`time'.tex, label se ar2 compress ///
-		    replace nonotes coeflabels(interaction "`event' x Post") keep(interaction)
+		    replace nonotes coeflabels(interaction "`event' x Post") keep(interaction) ///
+			star(* 0.1 ** 0.05 *** 0.01)
 		eststo clear
 end
 
