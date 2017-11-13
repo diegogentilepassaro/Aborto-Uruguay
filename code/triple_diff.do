@@ -13,7 +13,7 @@ program main_triple_diff
 	
     foreach group_vars in labor /*educ*/ {
 	
-		foreach design in gender_married /*income_gender income_married*/ {
+		foreach design in  poor_single /*OK: poor_single*/ /*roto: female_single*/ /*NOT: lowed_single female_poor*/ {
 				
 			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
 				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
@@ -37,28 +37,36 @@ program plot_triple_diff
 	    stubs(str) time(str) city(str) city_legend(str) ///
 		groups_vars(str) [plot_option(str) special_legend(str) sample_restr(str)]
 	
-	if "`design'" == "income_gender" {
+	if "`design'" == "female_poor" {
 			local group_labels = `""Poor male"   "Poor female"   "Non-poor male"   "Non-poor female""'
-			local groups      "mvd_poor_male mvd_poor_female mvd_non_poor_male mvd_non_poor_female"
+			local groups      "mvd_male_poor mvd_female_poor mvd_male_rich mvd_female_rich"
 			local diff1 "Poor: male vs female"
 			local diff2 "Non-poor: male vs female"
 		}
-		else if "`design'" == "income_married" {
-			local group_labels = `""Poor single"   "Poor married"   "Non-poor single"   "Non-poor married" "'
-			local groups       "mvd_poor_single mvd_poor_married mvd_non_poor_single mvd_non_poor_married"
-			local diff1 "Poor: single vs married"
-			local diff2 "Non-poor: single vs married"
-		}
-		else if "`design'" == "gender_married" {
+		else if "`design'" == "female_single" {
 			local group_labels = `""Female single"   "Female married"   "Male single"   "Male married" "'
-			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_female_married"
+			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_male_married"
+			local diff1 "Female: single vs married"
+			local diff2 "Male: single vs married"
+		}
+		else if "`design'" == "poor_single" {
+			local group_labels = `""Poor single"   "Poor married"   "Non-poor single"   "Non-poor married" "'
+			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
 			local diff1 "Poor: single vs married"
 			local diff2 "Non-poor: single vs married"
-		}		
+		}	
+		else if "`design'" == "lowed_single" {
+			local group_labels = `""Low-educ single" "Low-educ married"   "High-educ single"   "High-educ married" "'
+			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
+			local diff1 "Low-educ: single vs married"
+			local diff2 "High-educ: single vs married"
+		}			
 		else {
 			di as err "The argument of design() must be one of the following: "
-			di as err "income_gender"
-			di as err "income_married"
+			di as err "female_poor"
+			di as err "female_single"
+			di as err "poor_single"
+			di as err "lowed_single"
 			exit
 		}
 	
@@ -179,6 +187,7 @@ program reg_triple_diff
     syntax, outcomes(string) design(string) city(str) groups_vars(str) time(str) event_date(str)
 	
 	use  ..\base\ech_final_98_2016.dta, clear
+	keep if inrange(edad, 16, 45)
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
@@ -212,33 +221,44 @@ program reg_triple_diff
 		local control_vars " c98_* c01_* c06_* "
 		}
 	
-	if "`design'" == "income_gender" {
-			local groups      "mvd_poor_female mvd_poor_male mvd_non_poor_female mvd_non_poor_male"
+	if "`design'" == "female_poor" {
+			local groups      "mvd_female_poor mvd_male_poor mvd_female_rich mvd_male_rich"
 			local event "Poor x Female"
-			local gr_vars = "pobre female"
-			gen int_no_post = pobre * female
-			gen int_post1 = pobre* post
-			gen int_post2 = female * post
+			local gr_vars   = "pobre female"
+			gen int_no_post = pobre  * female
+			gen int_post1   = pobre  * post
+			gen int_post2   = female * post
 		}
-		else if "`design'" == "income_married" {
-			local groups       "mvd_poor_single mvd_poor_married mvd_non_poor_single mvd_non_poor_married"
-			local event "Poor x Single"
-			local gr_vars = "pobre single"
-			gen int_no_post = pobre * single
-			gen int_post1 = pobre* post
-			gen int_post2 = single * post
-		}
-		else if "`design'" == "gender_married" {
+		else if "`design'" == "female_single" {
 			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_female_married"
-			local event "Female x Single"			
-			local diff1 "Female: single vs married"
-			local diff2 "Male: single vs married"
-		}		
+			local event "Female x Single"	
+			local gr_vars   = "female single"
+			gen int_no_post = female * single
+			gen int_post1   = female * post
+			gen int_post2   = single * post
+		}	
+		else if "`design'" == "poor_single" {
+			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
+			local event "Poor x Single"
+			local gr_vars   = "pobre single"
+			gen int_no_post = pobre  * single
+			gen int_post1   = pobre  * post
+			gen int_post2   = single * post
+		}	
+		else if "`design'" == "lowed_single" {
+			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
+			local event "Low-educ x Single"
+			local gr_vars   = "lowed single"
+			gen int_no_post = lowed  * single
+			gen int_post1   = lowed  * post
+			gen int_post2   = single * post
+		}
 		else {
 			di as err "The argument of design() must be one of the following: "
-			di as err "income_gender"
-			di as err "income_fertility"
-			di as err "gender_fertility"
+			di as err "female_poor"
+			di as err "female_single"
+			di as err "poor_single"
+			di as err "lowed_single"
 			exit
 		}
 		
