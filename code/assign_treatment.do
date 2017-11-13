@@ -14,27 +14,39 @@ program assign_treatment
 	gen single      = (married==0)            if !mi(married)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	
-    /*gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
+	* Diff in Diff Rivera y Salto
+	
+	gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
     gen treatment_salto  = (loc_code == 1515020 & hombre == 0)
 
 	gen placebo_rivera   = (loc_code == 1313020 & hombre == 1)
     gen placebo_salto    = (loc_code == 1515020 & hombre == 1)
 	
-    gen control_rivera  = (loc_code == 202020  & hombre == 0)
-    gen control_salto   = (loc_code == 1111020 & hombre == 0)*/
+    gen control_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 0)
+    gen control_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 0)
 
+	*rio branco 431050
+	*artigas    202020
+	
+	*paysandu 1111020
+	*fray bentos 1212020
+	
+	/*gen treatment_rivera = (dpto == 13 & hombre == 0)
+    gen treatment_salto  = (dpto == 15 & hombre == 0)
+
+	gen placebo_rivera   = (dpto == 13 & hombre == 1)
+    gen placebo_salto    = (dpto == 15 & hombre == 1)
+	
+    gen control_rivera   = ((dpto == 2 | dpto == 4 )& hombre == 0)
+    gen control_salto    = (dpto == 11  & hombre == 0)*/
+
+	* Diff in Diff Montevideo
 	gen treatment_mvd_gender  = (dpto == 1 & hombre == 0)
 	gen treatment_mvd_poor    = (dpto == 1 & hombre == 0 & pobre == 1)
 	gen treatment_mvd_fertile = (dpto == 1 & hombre == 0 & fertile_age == 1)
 	gen treatment_mvd_educ    = (dpto == 1 & hombre == 0 & educ_HS_or_more == 0)
 	gen treatment_mvd_married    = (dpto == 1 & hombre == 0 & married == 0)
 	gen treatment_mvd_student    = (dpto == 1 & hombre == 0 & estudiante == 1)
-	
-    gen treatment_rivera = (dpto == 13 & hombre == 0)
-    gen treatment_salto  = (dpto == 15 & hombre == 0)
-
-	gen placebo_rivera   = (dpto == 13 & hombre == 1)
-    gen placebo_salto    = (dpto == 15 & hombre == 1)
 
 	gen control_mvd_gender  = (dpto == 1 & hombre == 1)
 	gen control_mvd_poor    = (dpto == 1 & hombre == 0 & pobre == 0)
@@ -42,10 +54,8 @@ program assign_treatment
 	gen control_mvd_educ    = (dpto == 1 & hombre == 0 & educ_HS_or_more == 1)
     gen control_mvd_married = (dpto == 1 & hombre == 0 & married == 1)
 	gen control_mvd_student    = (dpto == 1 & hombre == 0 & estudiante == 0)
-
-    gen control_rivera   = (dpto == 4 & hombre == 0)
-    gen control_salto    = (dpto == 11  & hombre == 0)
 	
+	* Triple Diff
 	* Design 1: income_gender
 	gen mvd_poor_male       = (loc_code == 101010 & hombre == 1 & pobre == 1 & inrange(edad, 16, 60))
 	gen mvd_poor_female     = (loc_code == 101010 & hombre == 0 & pobre == 1 & inrange(edad, 16, 60))

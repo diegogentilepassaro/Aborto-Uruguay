@@ -31,7 +31,7 @@ program main_scm
 	foreach city in rivera salto {
 	    foreach group_vars in /*educ*/ labor {
 			
-			/*foreach special_legend in "" "placebo" {
+			foreach special_legend in "" /*"placebo"*/ {
 			
 				if "`special_legend'" == "placebo" {
 				
@@ -44,44 +44,29 @@ program main_scm
 				}
 				else {
 				    if "`group_vars'" == "labor" {
-					    local sample_restr = "keep if hombre == 0 & inrange(edad, 14, 40)"
+					    local sample_restr = "keep if hombre == 0 & inrange(edad, 16, 45)"
 					}
 					else {
 					    local sample_restr = "keep if hombre == 0 & inrange(edad, 18, 25)"
 					}
-				}*/
+				}
 					
-			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`q_date_`city'') ///
-				time(anio_qtr) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
-				sample_restr(`sample_restr')
-				
 			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`s_date_`city'') ///
 				time(anio_sem) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
 				sample_restr(`sample_restr')
 				
-			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`y_date_`city'') ///
+			/*build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`y_date_`city'') ///
 				time(anio)     controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
-				sample_restr(`sample_restr')
+				sample_restr(`sample_restr')*/
 			
-
-			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`q_date_`city'') ///
-				time(anio_qtr) groups_vars(`group_vars') city_legend(`legend_`city'')        ///
-				stub_list(``group_vars'_stubs') special_legend(`special_legend')
-		 
 			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`s_date_`city'') ///
 				time(anio_sem) groups_vars(`group_vars') city_legend(`legend_`city'')           ///
 				stub_list(``group_vars'_stubs') special_legend(`special_legend')
 
-			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`y_date_`city'') ///
+			/*plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`y_date_`city'') ///
 				time(anio)     groups_vars(`group_vars') city_legend(`legend_`city'')         ///
-				stub_list(``group_vars'_stubs') special_legend(`special_legend')
+				stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
-		
-	grc1leg scm_`city'_`group_vars'_anio_qtr scm_`city'_`group_vars'_anio_qtrplacebo, cols(2) ///
-	    legendfrom(scm_`city'_`group_vars'_anio_qtr) position(6) ///
-	    graphregion(color(white))
-	graph display, ysize(6.5) xsize(9.5)
-	graph export ../figures/scm_`city'_`group_vars'_anio_qtr.pdf, replace
 
 	grc1leg scm_`city'_`group_vars'_anio_sem scm_`city'_`group_vars'_anio_semplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio_sem) position(6) ///
@@ -89,12 +74,11 @@ program main_scm
 	graph display, ysize(6.5) xsize(9.5)
 	graph export ../figures/scm_`city'_`group_vars'_anio_sem.pdf, replace
 
-	grc1leg scm_`city'_`group_vars'_anio scm_`city'_`group_vars'_anioplacebo, cols(2) ///
+	/*grc1leg scm_`city'_`group_vars'_anio scm_`city'_`group_vars'_anioplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio) position(6) ///
 	    graphregion(color(white))
 	graph display, ysize(6.5) xsize(9.5)
-	graph export ../figures/scm_`city'_`group_vars'_anio.pdf, replace
-	
+	graph export ../figures/scm_`city'_`group_vars'_anio.pdf, replace*/
 	}
 	}
 end
