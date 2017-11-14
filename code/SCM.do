@@ -25,8 +25,8 @@ program main_scm
 	local y_date_rivera 2010 
 	local y_date_salto 2013 
 	
-	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020))"
-	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020))"
+	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
+	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
 	
 	foreach city in rivera salto {
 	    foreach group_vars in /*educ*/ labor {
@@ -68,13 +68,13 @@ program main_scm
 				stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
 
-	grc1leg scm_`city'_`group_vars'_anio_sem scm_`city'_`group_vars'_anio_semplacebo, cols(2) ///
+	/*grc1leg scm_`city'_`group_vars'_anio_sem scm_`city'_`group_vars'_anio_semplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio_sem) position(6) ///
 	    graphregion(color(white))
 	graph display, ysize(6.5) xsize(9.5)
 	graph export ../figures/scm_`city'_`group_vars'_anio_sem.pdf, replace
 
-	/*grc1leg scm_`city'_`group_vars'_anio scm_`city'_`group_vars'_anioplacebo, cols(2) ///
+	grc1leg scm_`city'_`group_vars'_anio scm_`city'_`group_vars'_anioplacebo, cols(2) ///
 	    legendfrom(scm_`city'_`group_vars'_anio) position(6) ///
 	    graphregion(color(white))
 	graph display, ysize(6.5) xsize(9.5)
@@ -101,8 +101,8 @@ program build_synth_control
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local lag_list `" 3 4 5 6 7 8"' //`" 5 6 7 8 9 10 11 12 "'
-			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
+			local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 19 20 "' //`" 5 6 7 8 9 10 11 12 "'
+			local range "if inrange(`time', th(`event_date') - 20,th(`event_date') + 4) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 			qui sum `time'  if  `time' == th(`event_date')		
@@ -223,15 +223,23 @@ program plot_scm
 		local outcome_var: word `i' of `outcomes'
 	    local stub_var: word `i' of `stub_list'
 		
-		*tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 1) replace
-		*tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 1) replace
-		
-		qui twoway (line `city'_`outcome_var' `time', lcolor(navy) lwidth(thick)) ///
-			   (line s_`city'_`outcome_var' `time', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
+		local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
+
+		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 0) replace
+		tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 0) replace
+		 if "`outcome_var'" == "trabajo" {
+			        local ylabel "0.4 (0.1) 0.6"
+			    }
+			    else if "`outcome_var'" == "horas_trabajo" {
+			        local ylabel "12 (8) 28"
+			    }
+				
+		qui twoway (line `city'_`outcome_var' `time' `range', lcolor(navy) lwidth(thick)) ///
+			   (line s_`city'_`outcome_var' `time' `range', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
 			   ytitle("`stub_var'") xline(`vertical', lcolor(black) lpattern(dot)) ///
 			   legend(label(1 `city_legend') label(2 "Synthetic `city_legend'")) ///
 			   title(`stub_var', color(black) size(medium)) ///
-			   ylabel(#2) graphregion(color(white)) bgcolor(white) ///
+			   ylabel(`ylabel') xlabel(#7) graphregion(color(white)) bgcolor(white) ///
 			   name(`city'_`outcome_var'`special_legend', replace)
     }
 	
@@ -245,6 +253,8 @@ program plot_scm
 	qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) ///
 		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small)) ///
 		   name(scm_`city'_`groups_vars'_`time'`special_legend')
+    graph display, ysize(8.5) xsize(6.5)
+	graph export ../figures/scm_`city'_`groups_vars'_`time'`special_legend'.pdf, replace    
 end
 
 main_scm
