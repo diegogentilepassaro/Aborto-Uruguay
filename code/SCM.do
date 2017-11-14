@@ -202,21 +202,23 @@ program plot_scm
 	* Setup time settings by: qtr, sem, yr
     if "`time'" == "anio_qtr" {
 	    format `time' %tq 
-		local vertical = tq(`event_date')
+		local vertical = tq(`event_date') + 0.5
 		local xtitle "Year-qtr"
 		}
 		else if "`time'" == "anio_sem" {
 		format `time' %th
-		local vertical = th(`event_date')
+		local vertical = th(`event_date') + 0.5
 		local xtitle "Year-half"		
 		}
 		else {
 		format `time' %ty
-		local vertical = `event_date'
+		local vertical = `event_date' + 0.5
 		local xtitle "Year"	
 		}
 	local number_outcomes: word count `outcomes'
 	tsset `time'
+	
+	di `vertical'
 
 	* Create plot for each outcome
 	forval i = 1/`number_outcomes' {
@@ -236,10 +238,10 @@ program plot_scm
 				
 		qui twoway (line `city'_`outcome_var' `time' `range', lcolor(navy) lwidth(thick)) ///
 			   (line s_`city'_`outcome_var' `time' `range', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
-			   ytitle("`stub_var'") xline(`vertical', lcolor(black) lpattern(dot)) ///
-			   legend(label(1 `city_legend') label(2 "Synthetic `city_legend'")) ///
-			   title(`stub_var', color(black) size(medium)) ///
-			   ylabel(`ylabel') xlabel(#7) graphregion(color(white)) bgcolor(white) ///
+			   ytitle("`stub_var'", size(vlarge)) xline(`vertical', lcolor(black) lpattern(dot)) ///
+			   legend(label(1 `city_legend') label(2 "Synthetic `city_legend'")  size(vlarge) width(100) forcesize) ///
+			   title(`stub_var', color(black) size(vlarge))  xtitle(, size(vlarge)) ///
+			   ylabel(`ylabel', labs(large)) xlabel(#7, labs(large)) graphregion(color(white)) bgcolor(white) ///
 			   name(`city'_`outcome_var'`special_legend', replace)
     }
 	
@@ -250,10 +252,10 @@ program plot_scm
 		
 	local plot1: word 1 of `plots' 	
 	
-	qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) ///
-		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small)) ///
+	qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) cols(2) ///
+		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(vlarge)) ///
 		   name(scm_`city'_`groups_vars'_`time'`special_legend')
-    graph display, ysize(8.5) xsize(6.5)
+    graph display, ysize(5) xsize(12)
 	graph export ../figures/scm_`city'_`groups_vars'_`time'`special_legend'.pdf, replace    
 end
 

@@ -50,7 +50,7 @@ program main_diff_analysis
 		}
 	}
 	
-	/*foreach demo in poor gender educ married { 
+	foreach demo in female single lowed poor { 
 		 
 		foreach group_vars in labor /*educ*/ {
 
@@ -72,7 +72,7 @@ program main_diff_analysis
 				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')*/
 		}
-	}*/
+	}
 
 	
 end
@@ -82,27 +82,31 @@ program plot_diff
         event_date(string) time(string) city_legend(string) ///
 		plot_option(str) [groups_vars(str) restr(string) sample(str)]
 
-	if "`time'" == "anio_qtr" {
-		local weight pesotri
-		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
-		local xtitle "Year-qtr"
-	}
-	else if "`time'" == "anio_sem" {
-		local weight pesosem
-		local range "if inrange(`time', th(`event_date') -8,th(`event_date') + 4) "
-		local xtitle "Year-half"
-	}
-	else {
-		local weight pesoan
-		local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
-		local xtitle "Year"
-	}
-	
    	use  ..\base\ech_final_98_2016.dta, clear
 	
 	cap keep if `restr'
 	
 	keep if treatment_`treatment'==1 | control_`treatment'==1
+	
+	if "`time'" == "anio_qtr" {
+		local weight pesotri
+		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+		local xtitle "Year-qtr"
+		local vertical = tq(`event_date') + 0.5	
+	}
+	else if "`time'" == "anio_sem" {
+		local weight pesosem
+		local range "if inrange(`time', th(`event_date') -8,th(`event_date') + 4) "
+		local xtitle "Year-half"
+		local vertical = th(`event_date') + 0.5	
+	}
+	else {
+		local weight pesoan
+		local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
+		local xtitle "Year"
+		local vertical = `event_date' + 0.5	
+	}
+	
 	save ..\temp\did_sample.dta, replace
 			
 	local n_outcomes: word count `outcomes'
@@ -136,7 +140,7 @@ program plot_diff
 			qui twoway (rarea `outcome'_diff_ci_p  `outcome'_diff_ci_n `time' `range', fc(green)  lc(bg)    fin(inten20)) ///
 					   (line  `outcome'_diff                      `time' `range', lc(green)  lp(solid) lw(medthick)), ///
 				legend(on order(2) label(2 "Difference between treatment and control")) ///
-				tline(`event_date', lcolor(black) lpattern(dot)) ///
+				tline(`vertical', lcolor(black) lpattern(dot)) ///
 				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
 				ytitle("`stub_var'") name(diff_`outcome'_`treatment', replace) ///
 				title("`stub_var'", color(black) size(medium)) ylabel()
@@ -162,12 +166,20 @@ program plot_diff
 			gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
 			gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
             
-			if "`treatment'" == "mvd_gender" {
+			if "`treatment'" == "mvd_female" {
 			    if "`outcome'" == "trabajo" {
 			        local ylabel "0.5 (0.1) 0.8"
 			    }
 			    else if "`outcome'" == "horas_trabajo" {
 			        local ylabel "16 (8) 40"
+			    }			
+			}
+			else if "`treatment'" == "mvd_single" | "`treatment'" == "mvd_lowed" | "`treatment'" == "mvd_poor" {
+			    if "`outcome'" == "trabajo" {
+			        local ylabel "0.4 (0.2) 0.8"
+			    }
+			    else if "`outcome'" == "horas_trabajo" {
+			        local ylabel "12 (8) 28"
 			    }			
 			}
 			else {
@@ -179,16 +191,16 @@ program plot_diff
 			    }
 			}
 			
-			qui twoway (scatter  `outcome'                      `time' `range' & treat == 1, lc(blue) lp(solid) lw(medthick)) ///
-					   (scatter  `outcome'                      `time' `range' & treat == 0, lc(red) lp(solid) lw(medthick)) ///
-					   (line  `outcome'                      `time' `range' & treat == 1, lc(blue) lp(solid) lw(thin)) ///
-					   (line  `outcome'                      `time' `range' & treat == 0, lc(red) lp(solid) lw(thin)) ///
-				,legend(on order(1 2) label(1 "Treatment") label(2 "Control")) ///
-				tline(`event_date', lcolor(black) lpattern(dot)) ///
-				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
-				ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
-				title("`stub_var'", color(black) size(medium)) ylabel(`ylabel') ///
-				xlabel(#7)
+			qui twoway (scatter  `outcome' `time' `range' & treat == 1, mc(blue) lp(solid) lw(medthick)) ///
+					   (scatter  `outcome' `time' `range' & treat == 0, mc(red)  lp(solid) lw(medthick)) ///
+					   (line     `outcome' `time' `range' & treat == 1, lc(blue) lp(solid) lw(thin)) ///
+					   (line     `outcome' `time' `range' & treat == 0, lc(red)  lp(solid) lw(thin)) ///
+				,legend(on order(1 2) label(1 "Treatment") label(2 "Control") size(vlarge) width(90) forcesize) ///
+				tline(`vertical', lcolor(black) lpattern(dot)) ///
+				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'", size(vlarge)) ///
+				ytitle("`stub_var'", size(vlarge)) name(`outcome'_`treatment', replace) ///
+				title("`stub_var'", color(black) size(vlarge)) ylabel(`ylabel', labs(large)) ///
+				xlabel(#7, labs(large)) xtitle(, size(vlarge))
 				
 		/* (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1, fc(red)  lc(bg)    fin(inten20)) ///
 					   (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 0, fc(blue) lc(bg)    fin(inten10)) /// */		
@@ -210,9 +222,9 @@ program plot_diff
 			
 		local plot1: word 1 of `plots' 	
 		
-		grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
-			   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
-		graph display, ysize(8.5) xsize(6.5)
+		grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) cols(2) /// /* cols(1) or cols(3) */
+			   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(vlarge))
+		graph display, ysize(3) xsize(7)
 		graph export ../figures/did_`diff_stub'`treatment'_`groups_vars'_`time'.pdf, replace			
 		
 end

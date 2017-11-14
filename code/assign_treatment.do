@@ -41,19 +41,19 @@ program assign_treatment
     gen control_salto    = (dpto == 11  & hombre == 0)*/
 
 	* Diff in Diff Montevideo
-	gen treatment_mvd_gender  = (dpto == 1 & hombre == 0)
-	gen treatment_mvd_poor    = (dpto == 1 & hombre == 0 & pobre == 1)
-	gen treatment_mvd_fertile = (dpto == 1 & hombre == 0 & fertile_age == 1)
-	gen treatment_mvd_educ    = (dpto == 1 & hombre == 0 & educ_HS_or_more == 0)
-	gen treatment_mvd_married    = (dpto == 1 & hombre == 0 & married == 0)
-	gen treatment_mvd_student    = (dpto == 1 & hombre == 0 & estudiante == 1)
+	gen treatment_mvd_female  = (dpto == 1 & female == 1)
+	gen treatment_mvd_poor    = (dpto == 1 & female == 1 & pobre == 1)
+	gen treatment_mvd_fertile = (dpto == 1 & female == 1 & fertile_age == 1)
+	gen treatment_mvd_lowed   = (dpto == 1 & female == 1 & lowed == 1)
+	gen treatment_mvd_single  = (dpto == 1 & female == 1 & single == 1)
+	gen treatment_mvd_student = (dpto == 1 & female == 1 & estudiante == 1)
 
-	gen control_mvd_gender  = (dpto == 1 & hombre == 1)
-	gen control_mvd_poor    = (dpto == 1 & hombre == 0 & pobre == 0)
-	gen control_mvd_fertile = (dpto == 1 & hombre == 0 & fertile_age == 0)
-	gen control_mvd_educ    = (dpto == 1 & hombre == 0 & educ_HS_or_more == 1)
-    gen control_mvd_married = (dpto == 1 & hombre == 0 & married == 1)
-	gen control_mvd_student    = (dpto == 1 & hombre == 0 & estudiante == 0)
+	gen control_mvd_female    = (dpto == 1 & female == 0)
+	gen control_mvd_poor      = (dpto == 1 & female == 1 & pobre == 0)
+	gen control_mvd_fertile   = (dpto == 1 & female == 1 & fertile_age == 0)
+	gen control_mvd_lowed     = (dpto == 1 & female == 1 & lowed == 0)
+    gen control_mvd_single    = (dpto == 1 & female == 1 & single == 0)
+	gen control_mvd_student   = (dpto == 1 & female == 1 & estudiante == 0)
 	
 	* Triple Diff
 	
