@@ -13,7 +13,7 @@ program main_triple_diff
 	
     foreach group_vars in labor /*educ*/ {
 	
-		foreach design in  poor_single /*OK: poor_single*/ /*roto: female_single*/ /*NOT: lowed_single female_poor*/ {
+		foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
 				
 			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
 				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
@@ -49,12 +49,24 @@ program plot_triple_diff
 			local diff1 "Female: single vs married"
 			local diff2 "Male: single vs married"
 		}
+		else if "`design'" == "female_lowed" {
+			local group_labels = `""Female low-ed"  "Female high-ed"  "Male low-ed"  "Male high-ed" "'
+			local groups       "mvd_female_lowed mvd_female_highed mvd_male_lowed mvd_male_highed"
+			local diff1 "Female: low vs high educ"
+			local diff2 "Male: single vs married"
+		}
 		else if "`design'" == "poor_single" {
 			local group_labels = `""Poor single"   "Poor married"   "Non-poor single"   "Non-poor married" "'
 			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
 			local diff1 "Poor: single vs married"
 			local diff2 "Non-poor: single vs married"
 		}	
+		else if "`design'" == "poor_lowed" {
+			local group_labels = `""Poor low-ed"  "Non-poor low-ed"  "Poor high-ed"  "Non-poor high-ed" "'
+			local groups       "mvd_poor_lowed mvd_rich_lowed mvd_poor_highed mvd_rich_highed"
+			local diff1 "Poor: low vs high education"
+			local diff2 "Non-poor: low vs high education"		
+		}
 		else if "`design'" == "lowed_single" {
 			local group_labels = `""Low-educ single" "Low-educ married"   "High-educ single"   "High-educ married" "'
 			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
@@ -199,14 +211,14 @@ program reg_triple_diff
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
 			gen post = (`time' >= th(`event_date'))
-			local range "if inrange(`time', th(`event_date') - 6,th(`event_date') + 6) "
+			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 		}
 		else {
 			local weight pesoan
 			gen post = (`time' >= `event_date')
-			local range "if inrange(`time', `event_date' - 3, `event_date' + 3) "
+			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 		}
@@ -230,13 +242,21 @@ program reg_triple_diff
 			gen int_post2   = female * post
 		}
 		else if "`design'" == "female_single" {
-			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_female_married"
+			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_male_married"
 			local event "Female x Single"	
 			local gr_vars   = "female single"
 			gen int_no_post = female * single
 			gen int_post1   = female * post
 			gen int_post2   = single * post
 		}	
+		else if "`design'" == "female_lowed" {
+			local groups       "mvd_female_lowed mvd_female_highed mvd_male_lowed mvd_male_highed"
+			local event "Female x Low-educ"	
+			local gr_vars   = "female lowed"
+			gen int_no_post = female * lowed
+			gen int_post1   = female * post
+			gen int_post2   = lowed * post
+		}			
 		else if "`design'" == "poor_single" {
 			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
 			local event "Poor x Single"
@@ -244,7 +264,15 @@ program reg_triple_diff
 			gen int_no_post = pobre  * single
 			gen int_post1   = pobre  * post
 			gen int_post2   = single * post
-		}	
+		}				
+		else if "`design'" == "poor_lowed" {
+			local groups       "mvd_poor_lowed mvd_rich_lowed mvd_poor_highed mvd_rich_highed"
+			local event "Low-educ x Poor"
+			local gr_vars   = "pobre lowed"
+			gen int_no_post = lowed  * pobre
+			gen int_post1   = lowed  * post
+			gen int_post2   = pobre  * post
+		}
 		else if "`design'" == "lowed_single" {
 			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
 			local event "Low-educ x Single"
@@ -276,7 +304,7 @@ program reg_triple_diff
 		
 		eststo: reg `outcome' `gr_vars' i.post int_* ///
 					i.`time' cantidad_personas hay_menores edad married ///
-					y_hogar_alt `control_vars' `range' [aw = `weight']
+					y_hogar_alt `control_vars' `range' [aw = `weight'], vce(cluster `time')
 		}
 		esttab using ../tables/triple_diff_`city'_`time'_`groups_vars'_`design'.tex, label se ar2 compress ///
 			replace nonotes coeflabels(int_triple "`event' x Post") keep(int_triple)

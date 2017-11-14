@@ -56,12 +56,7 @@ program assign_treatment
 	gen control_mvd_student    = (dpto == 1 & hombre == 0 & estudiante == 0)
 	
 	* Triple Diff
-	* Design 1: income_gender
-	gen mvd_poor_male       = (loc_code == 101010 & hombre == 1 & pobre == 1 & inrange(edad, 16, 60))
-	gen mvd_poor_female     = (loc_code == 101010 & hombre == 0 & pobre == 1 & inrange(edad, 16, 60))
-	gen mvd_non_poor_male   = (loc_code == 101010 & hombre == 1 & pobre == 0 & inrange(edad, 16, 60))
-	gen mvd_non_poor_female = (loc_code == 101010 & hombre == 0 & pobre == 0 & inrange(edad, 16, 60))
-
+	
 	/** Design 2: income_fertility (only women)
 	gen mvd_poor_fertile       = (loc_code == 101010 & pobre == 1 & fertile_age == 1 & hombre == 0)
 	gen mvd_poor_infertile     = (loc_code == 101010 & pobre == 1 & fertile_age == 0 & hombre == 0)
@@ -86,12 +81,24 @@ program assign_treatment
 	gen mvd_female_married    = (loc_code == 101010 & female == 1 & single == 0)
 	gen mvd_male_single       = (loc_code == 101010 & female == 0 & single == 1)
 	gen mvd_male_married      = (loc_code == 101010 & female == 0 & single == 0)
+	
+	* Design: female_lowed
+	gen mvd_female_lowed      = (loc_code == 101010 & female == 1 & lowed == 1)
+	gen mvd_female_highed     = (loc_code == 101010 & female == 1 & lowed == 0)
+	gen mvd_male_lowed        = (loc_code == 101010 & female == 0 & lowed == 1)
+	gen mvd_male_highed       = (loc_code == 101010 & female == 0 & lowed == 0)
 
 	* Design: poor_single (women)
 	gen mvd_poor_single       = (loc_code == 101010 & female == 1 & pobre == 1 & single == 1)
 	gen mvd_poor_married      = (loc_code == 101010 & female == 1 & pobre == 1 & single == 0)
 	gen mvd_rich_single       = (loc_code == 101010 & female == 1 & pobre == 0 & single == 1)
 	gen mvd_rich_married      = (loc_code == 101010 & female == 1 & pobre == 0 & single == 0)
+	
+	* Design: poor_lowed (women)
+	gen mvd_poor_lowed       = (loc_code == 101010 & female == 1 & pobre == 1 & lowed == 1)
+	gen mvd_poor_highed      = (loc_code == 101010 & female == 1 & pobre == 1 & lowed == 0)
+	gen mvd_rich_lowed       = (loc_code == 101010 & female == 1 & pobre == 0 & lowed == 1)
+	gen mvd_rich_highed      = (loc_code == 101010 & female == 1 & pobre == 0 & lowed == 0)
 
 	* Design: lowed_single (women)
 	gen mvd_lowed_single      = (loc_code == 101010 & female == 1 & lowed == 1 & single == 1)
