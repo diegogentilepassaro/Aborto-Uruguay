@@ -15,7 +15,7 @@ program main_triple_diff
 	
 		foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
 				
-			plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
+			plot_triple_diff, outcomes(``group_vars'_vars') var1(female) var2(lowed) ///
 				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
 				
@@ -23,8 +23,8 @@ program main_triple_diff
 				time(anio) event_date(`y_date_mvd') city(mvd) city_legend(Montevideo) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
 				
-			reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
-				time(anio_sem) event_date(`s_date_mvd') groups_vars(`group_vars') 		
+			reg_triple_diff, outcomes(``group_vars'_vars') var1(female) var2(lowed) city(mvd) ///
+				time(anio_sem) event_date(`s_date_mvd') groups_vars(`group_vars')
 				
 			/*reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
 				time(anio) event_date(`y_date_mvd') groups_vars(`group_vars')*/
@@ -33,54 +33,9 @@ program main_triple_diff
 end
 
 program plot_triple_diff
-	syntax, outcomes(str) design(str) event_date(str) ///
+	syntax, outcomes(str) var1(str) var2(str) event_date(str) ///
 	    stubs(str) time(str) city(str) city_legend(str) ///
 		groups_vars(str) [plot_option(str) special_legend(str) sample_restr(str)]
-	
-	if "`design'" == "female_poor" {
-			local group_labels = `""Poor male"   "Poor female"   "Non-poor male"   "Non-poor female""'
-			local groups      "mvd_male_poor mvd_female_poor mvd_male_rich mvd_female_rich"
-			local diff1 "Poor: male vs female"
-			local diff2 "Non-poor: male vs female"
-		}
-		else if "`design'" == "female_single" {
-			local group_labels = `""Female single"   "Female married"   "Male single"   "Male married" "'
-			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_male_married"
-			local diff1 "Female: single vs married"
-			local diff2 "Male: single vs married"
-		}
-		else if "`design'" == "female_lowed" {
-			local group_labels = `""Female low-ed"  "Female high-ed"  "Male low-ed"  "Male high-ed" "'
-			local groups       "mvd_female_lowed mvd_female_highed mvd_male_lowed mvd_male_highed"
-			local diff1 "Female: low vs high educ"
-			local diff2 "Male: single vs married"
-		}
-		else if "`design'" == "poor_single" {
-			local group_labels = `""Poor single"   "Poor married"   "Non-poor single"   "Non-poor married" "'
-			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
-			local diff1 "Poor: single vs married"
-			local diff2 "Non-poor: single vs married"
-		}	
-		else if "`design'" == "poor_lowed" {
-			local group_labels = `""Poor low-ed"  "Non-poor low-ed"  "Poor high-ed"  "Non-poor high-ed" "'
-			local groups       "mvd_poor_lowed mvd_rich_lowed mvd_poor_highed mvd_rich_highed"
-			local diff1 "Poor: low vs high education"
-			local diff2 "Non-poor: low vs high education"		
-		}
-		else if "`design'" == "lowed_single" {
-			local group_labels = `""Low-educ single" "Low-educ married"   "High-educ single"   "High-educ married" "'
-			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
-			local diff1 "Low-educ: single vs married"
-			local diff2 "High-educ: single vs married"
-		}			
-		else {
-			di as err "The argument of design() must be one of the following: "
-			di as err "female_poor"
-			di as err "female_single"
-			di as err "poor_single"
-			di as err "lowed_single"
-			exit
-		}
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
@@ -96,14 +51,43 @@ program plot_triple_diff
 			local weight pesoan
 			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			local xtitle "Year"
-		}
-	
-    forval x = 1/4 {
-		local group`x'      : word `x' of `groups'
-		local group_label`x': word `x' of `group_labels'
-	}
+		}	
+		
+	if "`var1'" == "female" | "`var2'" == "female" {
+            local sample = "dpto == 1 "
+        }
+        else {
+            local sample = "dpto == 1 & female == 1 "
+        }
+    
+    forvalues i=1/2 {
+        if          "`var`i''" == "female" {
+                local var`i'lab = "Female"
+                local var`i'opp = "Male"
+            }
+            else if "`var`i''" == "poor" {
+                local var`i'lab = "Poor"
+                local var`i'opp = "Rich"
+            }
+            else if "`var`i''" == "single" {
+                local var`i'lab = "Single"
+                local var`i'opp = "Married"                
+            }
+            else if "`var`i''" == "lowed" {
+                local var`i'lab = "Low-educ"
+                local var`i'opp = "High-educ"                
+            }
+    }
+        
+    local diff1 = "`var1lab': `var2lab' vs `var2opp'"
+    local diff2 = "`var1opp': `var2lab' vs `var2opp'"
+    
+    local group_lab1 = "`var1lab' `var2lab'"
+    local group_lab2 = "`var1lab' `var2opp'"
+    local group_lab3 = "`var1opp' `var2lab'" 
+    local group_lab4 = "`var1opp' `var2opp'"
+    
 	local n_outcomes: word count `outcomes'
-	local n_groups  : word count `groups'
 	
 	forval i = 1/`n_outcomes' {
 	    local outcome : word `i' of `outcomes'
@@ -111,16 +95,19 @@ program plot_triple_diff
 		local plots = " `plots' " + "triple_diff_`outcome'"
 		
 		use  ..\base\ech_final_98_2016.dta, clear 
+	
+		gen group1 = (`sample' & `var1'==1 & `var2' ==1)
+		gen group2 = (`sample' & `var1'==1 & `var2' ==0)
+		gen group3 = (`sample' & `var1'==0 & `var2' ==1)
+		gen group4 = (`sample' & `var1'==0 & `var2' ==0)
 		
 		keep if inrange(edad, 16, 45)
-	    keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
+		keep if group1 == 1 | group2 == 1 | group3 == 1 | group4 == 1	
 			
 	    if "`plot_option'" == "diff" {
-			forval j = 1/`n_groups' {
-				local group: word `j' of `groups'
+			forval j = 1/4 {
 				preserve
-					collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
-						[aw = `weight'] if `group' == 1 , by(`time')
+					collapse (mean) `outcome' [aw = `weight'] if group`j' == 1 , by(`time')
 					tsset `time'
 					*tssmooth ma `outcome' = `outcome', window(1 1 1) replace
 					rename *`outcome' *`outcome'_`j'
@@ -133,31 +120,22 @@ program plot_triple_diff
 			merge 1:1 `time' using ../temp/group4_`outcome'_ts.dta, assert(3) keep(3) nogen
 			
 			gen `outcome'_diff1 = `outcome'_1 - `outcome'_2
-			gen `outcome'_diff1_se = sqrt((sd_`outcome'_1^2/n_`outcome'_1)+(sd_`outcome'_2^2/n_`outcome'_2))
 			gen `outcome'_diff2 = `outcome'_3 - `outcome'_4
-			gen `outcome'_diff2_se = sqrt((sd_`outcome'_3^2/n_`outcome'_3)+(sd_`outcome'_4^2/n_`outcome'_4))
-			
-			gen `outcome'_diff1_ci_p = `outcome'_diff1 + 1.96 * `outcome'_diff1_se
-		    gen `outcome'_diff1_ci_n = `outcome'_diff1 - 1.96 * `outcome'_diff1_se		
-			gen `outcome'_diff2_ci_p = `outcome'_diff2 + 1.96 * `outcome'_diff2_se
-		    gen `outcome'_diff2_ci_n = `outcome'_diff2 - 1.96 * `outcome'_diff2_se	
 
-			qui twoway (rarea `outcome'_diff1_ci_p  `outcome'_diff1_ci_n `time' `range', fc(green) lc(bg)    fin(inten20)) ///   
-					   (rarea `outcome'_diff2_ci_p  `outcome'_diff2_ci_n `time' `range', fc(blue)  lc(bg)    fin(inten10)) ///   
-					   (line  `outcome'_diff1 `time' `range', lc(green) lp(solid) lw(medthick)) /// 
-					   (line  `outcome'_diff2 `time' `range', lc(blue)  lp(solid) lw(medthick)) /// 			   
-				,legend(on order(3 4) label(3 "`diff1'") label(4 "`diff2'") col(1) row(2)) ///
-				tline(`event_date', lcolor(black) lpattern(dot)) ///
-				graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
-				ytitle("`stub_var'") name(triple_diff_`outcome', replace) ///
-				title("`stub_var'", color(black) size(medium)) ylabel(#2)
+			qui twoway (scatter `outcome'_diff1 `time', c(l) lc(blue) mc(blue)) /// 
+                       (scatter `outcome'_diff2 `time', c(l) lc(red)  mc(red)) ///                
+                `range' , ///
+                legend(on order(1 2) label(1 "`diff1'") label(2 "`diff2'") col(1) row(2)) ///
+                tline(`event_date', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
+                xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(large)) ///
+				xlabel(, labs(large)) ylabel(#2, labs(large)) ///
+                graphregion(color(white)) bgcolor(white) name(triple_diff_`outcome', replace)
 			
 		}
 		else {
-			forval j = 1/`n_groups' {
-				local group: word `j' of `groups'
+			forval j = 1/4 {
 				preserve
-					collapse (mean) `outcome' [aw = `weight'] if `group' == 1 , by(`time')
+					collapse (mean) `outcome' [aw = `weight'] if group`j' == 1 , by(`time')
 					tsset `time'
 					*tssmooth ma `outcome' = `outcome', window(1 1 0) replace
 					gen group = `j'
@@ -169,34 +147,30 @@ program plot_triple_diff
 			append using ../temp/group3_`outcome'_ts.dta
 			append using ../temp/group4_`outcome'_ts.dta		
 				
-			qui twoway (scatter `outcome' `time' if group == 1, mc(blue) ms(triangle)) ///
-					   (scatter `outcome' `time' if group == 2, mc(red)  ms(triangle)) ///
-					   (scatter `outcome' `time' if group == 3, mc(blue)) ///
-					   (scatter `outcome' `time' if group == 4, mc(red)) ///
-                       (line `outcome' `time' if group == 1, lc(blue)) ///
-					   (line `outcome' `time' if group == 2, lc(red)) ///
-					   (line `outcome' `time' if group == 3, lc(blue)) ///
-					   (line `outcome' `time' if group == 4, lc(red)) `range', /// 
-				   legend(on order (1 2 3 4) col(2) label(1 "`group_label1'") label(2 "`group_label2'") ///
-				   label(3 "`group_label3'") label(4 "`group_label4'")) ///
-				   tline(`event_date', lcolor(black) lpattern(dot)) ///
-				   graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") ///
-				   ytitle("`stub_var'") name(triple_diff_`outcome', replace) ///
-				   title("`stub_var'", color(black) size(medium)) ylabel(#2)
+			 qui twoway (scatter `outcome' `time' if group == 1, c(l) lc(blue) mc(blue) ms(triangle)) ///
+                        (scatter `outcome' `time' if group == 2, c(l) lc(red)  mc(red)  ms(triangle)) ///
+                        (scatter `outcome' `time' if group == 3, c(l) lc(blue) mc(blue)) ///
+                        (scatter `outcome' `time' if group == 4, c(l) lc(red)  mc(red)) ///
+                `range', ///
+                legend(on order (1 2 3 4) col(2) label(1 "`group_lab1'") label(2 "`group_lab2'") ///
+                label(3 "`group_lab3'") label(4 "`group_lab4'") size(large)) ///
+                tline(`event_date', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
+                xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(vlarge)) ///
+				xlabel(, labs(large)) ylabel(#2, labs(large)) ///
+                graphregion(color(white)) bgcolor(white) name(triple_diff_`outcome', replace)
 		}
-
 	}
 
 	local plot1: word 1 of `plots' 	
 	
-	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) /// /* cols(1) or cols(3) */
-		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(small))
-	graph display, ysize(8.5) xsize(6.5)
+	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) cols(2) /// /* cols(1) or cols(3) */
+		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(vlarge))
+	graph display, ysize(3) xsize(7)
 	graph export ../figures/triple_diff_`city'_`time'_`groups_vars'_`design'`plot_option'.png, replace
 end
 
 program reg_triple_diff
-    syntax, outcomes(string) design(string) city(str) groups_vars(str) time(str) event_date(str)
+    syntax, outcomes(string) var1(str) var2(str) city(str) groups_vars(str) time(str) event_date(str)
 	
 	use  ..\base\ech_final_98_2016.dta, clear
 	keep if inrange(edad, 16, 45)
@@ -233,81 +207,52 @@ program reg_triple_diff
 		local control_vars " c98_* c01_* c06_* "
 		}
 	
-	if "`design'" == "female_poor" {
-			local groups      "mvd_female_poor mvd_male_poor mvd_female_rich mvd_male_rich"
-			local event "Poor x Female"
-			local gr_vars   = "pobre female"
-			gen int_no_post = pobre  * female
-			gen int_post1   = pobre  * post
-			gen int_post2   = female * post
-		}
-		else if "`design'" == "female_single" {
-			local groups       "mvd_female_single mvd_female_married mvd_male_single mvd_male_married"
-			local event "Female x Single"	
-			local gr_vars   = "female single"
-			gen int_no_post = female * single
-			gen int_post1   = female * post
-			gen int_post2   = single * post
-		}	
-		else if "`design'" == "female_lowed" {
-			local groups       "mvd_female_lowed mvd_female_highed mvd_male_lowed mvd_male_highed"
-			local event "Female x Low-educ"	
-			local gr_vars   = "female lowed"
-			gen int_no_post = female * lowed
-			gen int_post1   = female * post
-			gen int_post2   = lowed * post
-		}			
-		else if "`design'" == "poor_single" {
-			local groups       "mvd_poor_single mvd_poor_married mvd_rich_single mvd_rich_married"
-			local event "Poor x Single"
-			local gr_vars   = "pobre single"
-			gen int_no_post = pobre  * single
-			gen int_post1   = pobre  * post
-			gen int_post2   = single * post
-		}				
-		else if "`design'" == "poor_lowed" {
-			local groups       "mvd_poor_lowed mvd_rich_lowed mvd_poor_highed mvd_rich_highed"
-			local event "Low-educ x Poor"
-			local gr_vars   = "pobre lowed"
-			gen int_no_post = lowed  * pobre
-			gen int_post1   = lowed  * post
-			gen int_post2   = pobre  * post
-		}
-		else if "`design'" == "lowed_single" {
-			local groups       "mvd_lowed_single mvd_lowed_married mvd_highed_single mvd_highed_married"
-			local event "Low-educ x Single"
-			local gr_vars   = "lowed single"
-			gen int_no_post = lowed  * single
-			gen int_post1   = lowed  * post
-			gen int_post2   = single * post
-		}
-		else {
-			di as err "The argument of design() must be one of the following: "
-			di as err "female_poor"
-			di as err "female_single"
-			di as err "poor_single"
-			di as err "lowed_single"
-			exit
-		}
+	if "`var1'" == "female" | "`var2'" == "female" {
+            local sample = "dpto == 1 "
+        }
+        else {
+            local sample = "dpto == 1 & female == 1 "
+        }
+	
+	forvalues i=1/2 {
+        if          "`var`i''" == "female" {
+                local var`i'lab = "Female"
+            }
+            else if "`var`i''" == "poor" {
+                local var`i'lab = "Poor"
+            }
+            else if "`var`i''" == "single" {
+                local var`i'lab = "Single"             
+            }
+            else if "`var`i''" == "lowed" {
+                local var`i'lab = "Low-educ"              
+            }
+    }
+	
+	gen group1 = (`sample' & `var1'==1 & `var2' ==1)
+	gen group2 = (`sample' & `var1'==1 & `var2' ==0)
+	gen group3 = (`sample' & `var1'==0 & `var2' ==1)
+	gen group4 = (`sample' & `var1'==0 & `var2' ==0)
+	
+	keep if group1 == 1 | group2 == 1 | group3 == 1 | group4 == 1
 		
-	forval x = 1/4 {
-		local group`x'      : word `x' of `groups'
-		local group_label`x': word `x' of `group_labels'
-	}
-	keep if `group1' == 1 | `group2' == 1 | `group3' == 1 | `group4' == 1
-    
+	local event = "`var1lab' x `var2lab'"
+	gen int_no_post = `var1' * `var2'
+	gen int_post1   = `var1' * post
+	gen int_post2   = `var2' * post   
 	gen int_triple = int_no_post * post
-
+ 
 	local n_outcomes: word count `outcomes'
 	forval i = 1/`n_outcomes' {
 		local outcome: word `i' of `outcomes'
 		
-		eststo: reg `outcome' `gr_vars' i.post int_* ///
+		eststo: reg `outcome' `var1' `var2' i.post int_* ///
 					i.`time' cantidad_personas hay_menores edad married ///
 					y_hogar_alt `control_vars' `range' [aw = `weight'], vce(cluster `time')
 		}
-		esttab using ../tables/triple_diff_`city'_`time'_`groups_vars'_`design'.tex, label se ar2 compress ///
-			replace nonotes coeflabels(int_triple "`event' x Post") keep(int_triple)
+		esttab using ../tables/triple_diff_`city'_`time'_`groups_vars'_`var1'_`var2'.tex, label se ar2 compress ///
+			replace nonotes coeflabels(int_triple "`event' x Post") keep(int_triple) ///
+			star(* 0.1 ** 0.05 *** 0.01)
 		eststo clear
 end
 
