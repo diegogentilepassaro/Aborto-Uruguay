@@ -14,38 +14,26 @@ program main_diff_analysis
 	local legend_rivera = "Rivera"
 	local legend_salto  = "Salto"
 	
-	local q_date_mvd  "2002q1"
-	local q_date_rivera  "2010q3"
-	local q_date_salto "2013q1"
-	
-	local s_date_mvd "2002h1"
-	local s_date_rivera "2010h2"
-	local s_date_salto "2013h1"
-	
-	local y_date_mvd 2002 
-	local y_date_rivera 2010 
-	local y_date_salto 2013 
-
 	foreach city in rivera salto {
 		
 		foreach group_vars in labor /*educ*/ {
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio_sem) event_date(`s_date_`city'') city_legend(`legend_`city'') ///
+				time(anio_sem) event_date(${s_date_`city'}) city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)
 
 			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
+				time(anio) event_date(${y_date_`city'}) city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
-				time(anio_sem) event(`legend_`city'') event_date(`s_date_`city'') restr(``group_vars'_restr') ///
+				time(anio_sem) event(`legend_`city'') event_date(${s_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
+				time(anio)     event(`legend_`city'') event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')*/
 		}
 	}
@@ -55,21 +43,21 @@ program main_diff_analysis
 		foreach group_vars in labor /*educ*/ {
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')  ///
-				time(anio_sem) event_date(`s_date_mvd') city_legend(`legend_mvd') ///
+				time(anio_sem) event_date(${s_date_mvd}) city_legend(`legend_mvd') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)
 
 			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio) event_date(`y_date_`city'') city_legend(`legend_`city'') ///
+				time(anio) event_date(${y_date_`city'}) city_legend(`legend_`city'') ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')   ///
-				time(anio_sem) event(`legend_mvd') event_date(`s_date_mvd') restr(``group_vars'_restr') ///
+				time(anio_sem) event(`legend_mvd') event_date(${s_date_mvd}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio)     event(`legend_`city'') event_date(`y_date_`city'') restr(``group_vars'_restr') ///
+				time(anio)     event(`legend_`city'') event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')*/
 		}
 	}
@@ -92,19 +80,19 @@ program plot_diff
 		local weight pesotri
 		local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
 		local xtitle "Year-qtr"
-		local vertical = tq(`event_date') + 0.5	
+		local vertical = tq(`event_date') - 0.5	
 	}
 	else if "`time'" == "anio_sem" {
 		local weight pesosem
 		local range "if inrange(`time', th(`event_date') -8,th(`event_date') + 4) "
 		local xtitle "Year-half"
-		local vertical = th(`event_date') + 0.5	
+		local vertical = th(`event_date') - 0.5	
 	}
 	else {
 		local weight pesoan
 		local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 		local xtitle "Year"
-		local vertical = `event_date' + 0.5	
+		local vertical = `event_date' - 0.5	
 	}
 	
 	save ..\temp\did_sample.dta, replace

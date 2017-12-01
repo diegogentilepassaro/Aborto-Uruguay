@@ -14,6 +14,19 @@ program assign_treatment
 	gen single      = (married==0)            if !mi(married)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	
+	* Dates of treatments
+	global q_date_mvd    "2004q2"
+	global q_date_rivera "2010q3"
+	global q_date_salto  "2013q1"
+	
+	global s_date_mvd    "2004h1"
+	global s_date_rivera "2010h2"
+	global s_date_salto  "2013h1"
+	
+	global y_date_mvd    2004 
+	global y_date_rivera 2010 
+	global y_date_salto  2013 
+	
 	* Diff in Diff Rivera y Salto
 	
 	gen treatment_rivera = (loc_code == 1313020 & hombre == 0)

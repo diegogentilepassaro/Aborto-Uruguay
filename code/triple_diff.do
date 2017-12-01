@@ -15,19 +15,19 @@ program main_triple_diff
 	
 		foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
 				
-			plot_triple_diff, outcomes(``group_vars'_vars') var1(female) var2(lowed) ///
-				time(anio_sem) event_date(`s_date_mvd') city(mvd) city_legend(Montevideo) ///
+			plot_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) ///
+				time(anio_sem) event_date(${s_date_mvd}) city(mvd) city_legend(Montevideo) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
 				
 			/*plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
-				time(anio) event_date(`y_date_mvd') city(mvd) city_legend(Montevideo) ///
+				time(anio) event_date(${y_date_mvd}) city(mvd) city_legend(Montevideo) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
 				
-			reg_triple_diff, outcomes(``group_vars'_vars') var1(female) var2(lowed) city(mvd) ///
-				time(anio_sem) event_date(`s_date_mvd') groups_vars(`group_vars')
+			reg_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) city(mvd) ///
+				time(anio_sem) event_date(${s_date_mvd}) groups_vars(`group_vars')
 				
 			/*reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
-				time(anio) event_date(`y_date_mvd') groups_vars(`group_vars')*/
+				time(anio) event_date(${y_date_mvd}) groups_vars(`group_vars')*/
 		}			
 	}
 end
@@ -41,16 +41,19 @@ program plot_triple_diff
 			local weight pesotri
 			local range "if inrange(`time', tq(`event_date') - 16, tq(`event_date') + 8) "
 			local xtitle "Year-qtr"
+			local vertical = tq(`event_date') - 0.5	
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
 			local range "if inrange(`time', th(`event_date') - 8, th(`event_date') + 4) "
 			local xtitle "Year-half"
+			local vertical = th(`event_date') - 0.5	
 		}
 		else {
 			local weight pesoan
 			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
 			local xtitle "Year"
+			local vertical = `event_date' - 0.5	
 		}	
 		
 	if "`var1'" == "female" | "`var2'" == "female" {
@@ -126,7 +129,7 @@ program plot_triple_diff
                        (scatter `outcome'_diff2 `time', c(l) lc(red)  mc(red)) ///                
                 `range' , ///
                 legend(on order(1 2) label(1 "`diff1'") label(2 "`diff2'") col(1) row(2)) ///
-                tline(`event_date', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
+                tline(`vertical', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
                 xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(large)) ///
 				xlabel(, labs(large)) ylabel(#2, labs(large)) ///
                 graphregion(color(white)) bgcolor(white) name(triple_diff_`outcome', replace)
@@ -154,7 +157,7 @@ program plot_triple_diff
                 `range', ///
                 legend(on order (1 2 3 4) col(2) label(1 "`group_lab1'") label(2 "`group_lab2'") ///
                 label(3 "`group_lab3'") label(4 "`group_lab4'") size(large)) ///
-                tline(`event_date', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
+                tline(`vertical', lc(black) lp(dot)) title("`stub_var'", c(black) size(vlarge)) ///
                 xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(vlarge)) ///
 				xlabel(, labs(large)) ylabel(#2, labs(large)) ///
                 graphregion(color(white)) bgcolor(white) name(triple_diff_`outcome', replace)
