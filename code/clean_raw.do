@@ -72,23 +72,26 @@ program clean_98_00
 		
 		gen married = (pe5==1|pe5==2)
 				
-		keep    c98_* educ_level estudiante ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h  peso* ccz ///
-				pe2 pe3 pobpcoac pf133 pf053 pf37 pf38 pf351 pt1 married ///
-				locech nomlocech ht11 hd21 hd22
+		keep    ident persona pe1  pe1a pe1b pe1c ///
+		        pe1d  pe1e pe1h peso* ccz pe2 pe3 pobpcoac pf133 pf053 pf37 ///
+				pf38 pf351 pt1 married locech nomlocech ht3 ht11 hd21 hd22 ///
+				c98_* estudiante educ_level married
 		
-		rename (ident persona pe1  pe1a pe1b pe1c pe1d    pe1e pe1h locech nomlocech ///
-		        ht11 hd21 hd22) ///
-			   (numero     pers    nper anio semana dpto secc segm estrato loc nomloc ///
-			    y_hogar cantidad_personas cantidad_mayores)
+		rename (ident     persona   pe1        pe1a        pe1b   ///
+		        pe1c      pe1d      pe1e       pe1h        locech ///
+		        nomlocech ht11      hd21       hd22        ht3)   ///
+			   (numero    pers      nper       anio        semana ///
+			    dpto      secc      segm       estrato     loc    ///
+			    nomloc    y_hogar   nbr_people nbr_above14 nbr_under14)
 
-		rename (pe2    pobpcoac               ///
-				pe3  pf053         pf38             pf37             pf351         pt1)  ///
-			   (hombre codigo_actividad    ///
-				edad horas_trabajo meses_trabajando anios_trabajando busca_trabajo ytotal)
+		rename (pe2    pobpcoac          pf37             pf053         ///
+				pe3    pt1               pf38             pf351)        ///
+			   (hombre codigo_actividad  meses_trabajando horas_trabajo ///
+				edad   ytotal            anios_trabajando busca_trabajo)
 
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
 
-		gen trimestre = 1 if inrange(semana, 1, 12)
+		gen     trimestre = 1 if inrange(semana, 1, 12)
 		replace trimestre = 2 if inrange(semana, 13, 24)
 		replace trimestre = 3 if inrange(semana, 25, 36)
 		replace trimestre = 4 if inrange(semana, 37, 48)
@@ -152,21 +155,22 @@ program clean_01_05
 		
 		gen married = (e4==1|e4==2)
 		
-		keep  c98_*  c01_* estudiante educ_level anio correlativ nper dpto  secc segm ccz  /*e11 e13*/ ///
-		    mes estrato pesoan pesosem pesotri e1 e2 e9 f1_1 f17_1 f23 pt1 married ///
-		    locech nomlocech ht11 d14 d16
+		keep anio correlativ nper dpto secc segm ccz  /*e11 e13*/ ///
+		    mes estrato pesoan pesosem pesotri e1 e2 e9 f1_1 f17_1 f23 pt1 ///
+		    locech nomlocech ht3 ht11 d14 d16 ///
+			c98_* c01_* estudiante educ_level married 
 			 
-		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
+		capture gen     trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
 		capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		
-		rename (nper correlativ e1     e2   ///
-				f1_1    f17_1         f23           pt1 locech nomlocech ///
-				ht11 d14 d16) ///
-			   (pers numero     hombre edad ///
-				trabajo horas_trabajo busca_trabajo ytotal loc nomloc ///
-				y_hogar cantidad_mayores cantidad_personas)
+		rename (nper    correlativ  e1         e2     f17_1         ///
+				locech  nomlocech   f1_1       pt1    f23           ///
+				ht11    d14         d16        ht3)                 ///
+			   (pers    numero      hombre     edad   horas_trabajo ///
+				loc     nomloc      trabajo    ytotal busca_trabajo ///
+				y_hogar nbr_above14 nbr_people nbr_under14)
 
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
 
@@ -220,6 +224,7 @@ program clean_06
 		capture rename Estrato estrato
 		capture rename PT1 pt1
 		capture rename HT11 ht11
+		capture rename HT3 ht3
 		
 		gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4>0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
 						   | (e48==2 & (e52_1_1>0|e52_2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
@@ -262,20 +267,22 @@ program clean_06
 		
 		gen married  = (e34==1|e37==2) if e34!=0
 
-		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
-		    trimestre mes estrato pesoano pesosem pesotri married ///
-			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 ///
-			e48 f62 f81 f82_1 f82_2 f102 pt1 locagr ///
-			nom_locagr educ_level ht11 d25 d23 lp_06 li_06
+		keep anio numero nper dpto secc segm ccz region_3 region_4 ///
+		    trimestre mes estrato pesoano pesosem pesotri e38 e39_1 ///
+			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 e48 f62 f81 f82_1 f82_2 ///
+			f102 pt1 locagr nom_locagr ht3 ht11 d25 d23 lp_06 li_06 ///
+			c98_* c01_* c06_* estudiante educ_level married 
 			
 		rename (nper e26    e27  e30_1  e30_2   e30_3  e30_4      e30_5_2 ///
 			    f62              pt1    ht11    locagr nom_locagr pesoano ///
 			    f81              f82_1                 f82_2              ///
-				f102             d23                   d25)               ///
+				f102             d23              d25        ht3          ///
+				e38              e39_1)                                   ///
 			   (pers hombre edad afro   asia    blanco indigena   otro    ///
 			    trabajo          ytotal y_hogar loc    nomloc     pesoan  ///
 			    horas_trabajo    meses_trabajando      anios_trabajando   ///
-				busca_trabajo    cantidad_mayores      cantidad_personas)
+				busca_trabajo    nbr_above14      nbr_people nbr_under14  ///
+				live_births      live_births_nbr)
 
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
 
@@ -305,8 +312,9 @@ program clean_07
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
-		capture rename PT1 pt1
+		capture rename PT1  pt1
 		capture rename HT11 ht11
+		capture rename HT3  ht3
 		
 		gen     primaria   = (e50==1 & (e52_1>0|e52_2>0|e52_3>0|e52_4>0|e52_5>0|e52_6>0|e52_7>0|e52_8>0)) ///
 						   | (e50==2 & (e54_1_1>0|e54_2_1>0|e54_3_1>0|e54_3_3==1|e54_3_3==2|e54_3_3==3))
@@ -349,19 +357,20 @@ program clean_07
 		
 		gen married  = (e37==1|e40==2) if e37!=0
 
-		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
-		    trimestre mes estrato pesoano pesosem pesotri married ///
-			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e50 f68 f88 f89_1 f89_2 f102 pt1 ///
-			loc_agr educ_level ht11 d24 d26 lp_06 li_06
+		keep anio numero nper dpto region_3 region_4 secc segm ccz            ///
+		    trimestre mes estrato pesoano pesosem pesotri                     ///
+			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50             ///
+			f68 f88 f89_1 f89_2 f102 pt1 loc_agr ht3 ht11 d24 d26 lp_06 li_06 ///
+			c98_* c01_* c06_* estudiante educ_level married 
 					
-		rename (nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			f68 f88 f89_1 f89_2 f102 pt1 loc_agr pesoano ///
-			ht11 d24 d26) ///
-			(pers hombre edad afro asia blanco indigena otro ///
-			trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal loc pesoan ///
-			y_hogar cantidad_mayores cantidad_personas)
+		rename (nper    e27     e28      e31_1   f89_1            f88   ///
+		        e31_2   e31_3   e31_4    e31_5_1 f89_2            f102  ///
+			    pt1     loc_agr pesoano  f68     e41              e42_1 ///
+			    ht11    d24              d26                      ht3)  ///
+			   (pers    hombre  edad     afro    meses_trabajando horas_trabajo   ///
+			    asia    blanco  indigena otro    anios_trabajando busca_trabajo   ///
+			    ytotal  loc     pesoan   trabajo live_births      live_births_nbr ///
+			    y_hogar nbr_above14      nbr_people               nbr_under14)
 
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
 
@@ -382,8 +391,9 @@ program clean_08
 		capture rename Dpto dpto
 		capture rename Trimestre trimestre
 		capture rename Estrato estrato
-		capture rename PT1 pt1
+		capture rename PT1  pt1
 		capture rename HT11 ht11
+		capture rename HT3  ht3
 		
 		gen     primaria   = (e52_1>0|e52_2>0|e53_2>0|e52_7_2==3|e52_7_2==2)
 		gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_2==1)|e52_7_2==1)
@@ -423,19 +433,21 @@ program clean_08
 		
 		gen married  = (e37==1|e40==2) if e37!=0
 
-		keep  c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz ///
-		    trimestre mes estrato pesoano pesosem pesotri married ///
-			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			e50 f68 f88_1 f89_1 f89_2 f102 pt1 ///
-			nom_locagr educ_level ht11 d24 d26 lp_06 li_06
+		keep  anio numero nper dpto region_3 region_4 secc segm ccz ///
+		    trimestre mes estrato pesoano pesosem pesotri nom_locagr ///
+			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50 ///
+			f68 f88_1 f89_1 f89_2 f102 pt1 ht3 ht11 d24 d26 lp_06 li_06 ///
+			c98_* c01_* c06_* estudiante educ_level married 
 			
 		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
 			f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ///
-			ht11 d24 d26) ///
+			ht3 ht11 d24 d26 ///
+			e41 e42_1) ///
 			(pers hombre edad afro asia blanco indigena otro ///
 			trabajo horas_trabajo meses_trabajando ///
 			anios_trabajando busca_trabajo ytotal nomloc pesoan ///
-			y_hogar cantidad_mayores cantidad_personas)
+			nbr_under14 y_hogar nbr_above14 nbr_people ///
+			live_births live_births_nbr)
 
 	    bysort numero: egen y_hogar_alt = sum(ytotal) 
 
@@ -464,7 +476,8 @@ program clean_09_16
 		capture rename estratogeo estrato
 		capture rename estred13 estrato
 		capture rename PT1 pt1
-		capture rename HT11 ht11		
+		capture rename HT11 ht11	
+		capture rename HT3 ht3
 		capture rename Loc_agr_13 locagr
 		capture rename Nom_loc_agr_13 nom_locagr
 		capture rename POBPCOAC pobpcoac
@@ -486,6 +499,8 @@ program clean_09_16
 				replace educ_level = 3 if terciaria==1
 				assert e51_1+e51_2+e51_3+e51_4+e51_5+e51_6+e51_7_1+e51_8+e51_9+e51_10+e51_11==0 if educ_level ==.
 				replace educ_level = 1 if educ_level==.	
+				gen live_births     = .
+				gen live_births_nbr = .
 			}
 			else {
 				gen     primaria   = (e193!=3|e197!=3|e201_1==2|e212_1==2)
@@ -497,7 +512,9 @@ program clean_09_16
 				replace educ_level = 3 if terciaria==1
 				assert  e193==3        if educ_level==.
 				assert e197_1+e201_+e212_1+e215_1+e218_1+e218_1+e221_1+e224_1==0 if educ_level==.
-				replace educ_level = 1 if educ_level==. 		    
+				replace educ_level = 1 if educ_level==. 
+				gen live_births     = e185
+				gen live_births_nbr = e186_1 + e186_2 + e186_3 + e186_4 
 		}
 		
 		gen estudiante = (pobpcoac == 7)
@@ -529,16 +546,17 @@ program clean_09_16
 
 		gen married  = (e33==1|e35!=0|e36==3) if e33!=0
 		
-		keep c98_*  c01_* c06_* estudiante anio numero nper dpto region_3 region_4 secc segm ccz* ///
-		    trimestre mes estrato pesoano pesosem pesotri married ///
+		keep anio numero nper dpto region_3 region_4 secc segm ccz* ///
+		    trimestre mes estrato pesoano pesosem pesotri ///
 			e26 e27 e29_6 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
-			locagr nom_locagr educ_level ht11 d23 d25 lp_06 li_06
+			locagr nom_locagr ht3 ht11 d23 d25 lp_06 li_06 ///
+			c98_* c01_* c06_* estudiante educ_level married live_births live_births_nbr
 			
 		rename (nper e26 e27 e29_6 f66 f85 f88_1 f88_2 f99 pt1 locagr ///
-		    nom_locagr pesoano ht11 d23 d25) ///
+		    nom_locagr pesoano ht11 d23 d25 ht3) ///
 			(pers hombre edad ascendencia trabajo ///
 			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
-			ytotal loc nomloc pesoan y_hogar cantidad_mayores cantidad_personas)
+			ytotal loc nomloc pesoan y_hogar nbr_above14 nbr_people nbr_under14)
 		
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
 		

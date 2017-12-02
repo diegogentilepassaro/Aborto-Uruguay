@@ -3,7 +3,7 @@ set more off
 
 program main_scm
     * Definition of research designs
-	local control_vars = "edad married cantidad_personas hay_menores y_hogar"
+	local control_vars = "edad married nbr_people ind_under14 y_hogar"
 	local labor_vars   = "trabajo horas_trabajo"
 	local educ_vars    = "educ_HS_or_more educ_more_HS"
 	local outcome_vars = "`labor_vars' " + "`educ_vars'"

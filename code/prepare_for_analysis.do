@@ -12,17 +12,17 @@ program main_prepare_for_analysis
 	    assert(1 3)keep(3)
 	save ..\temp\clean_loc_1998_2016.dta, replace	
     impute_poverty_lines_pre06
+	gen pobre       = (y_hogar_alt <= lp_06)
+	gen indigente   = (y_hogar_alt <= li_06)
 	
-	gen pobre = (y_hogar_alt <= lp_06)
-	gen indigente = (y_hogar_alt <= li_06)
-	gen hay_menores = (cantidad_personas > cantidad_mayores)
-	gen semestre = 1 if inlist(trimestre, 1, 2)
+	gen ind_under14 = (nbr_people > nbr_above14)
+	
+	gen     semestre = 1 if inlist(trimestre, 1, 2)
 	replace semestre = 2 if inlist(trimestre, 3, 4)
-	gen anio_sem = yh(anio, semestre)
-	format anio_sem %th
-	
-    gen    anio_qtr = yq(anio, trimestre)
-    format anio_qtr %tq
+	gen     anio_sem = yh(anio, semestre)
+	format  anio_sem %th
+	gen     anio_qtr = yq(anio, trimestre)
+    format  anio_qtr %tq
 
 	local outcomes = "trabajo horas_trabajo"
 	deseasonalize, outcomes(`outcomes')
@@ -57,7 +57,7 @@ program impute_poverty_lines_pre06
 	forval year=1998/2005 {
 	    replace anio = `year' 
 	
-	    local by_vars "loc_code cantidad_mayores cantidad_personas"
+	    local by_vars "loc_code nbr_above14 nbr_people"
 	
 	    rename (lp_06 li_06) (lp_06_2 li_06_2)
 	    collapse (mean) lp_06_2 li_06_2, by(`by_vars')

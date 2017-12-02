@@ -250,7 +250,7 @@ program reg_triple_diff
 		local outcome: word `i' of `outcomes'
 		
 		eststo: reg `outcome' `var1' `var2' i.post int_* ///
-					i.`time' cantidad_personas hay_menores edad married ///
+					i.`time' nbr_people ind_under14 edad married ///
 					y_hogar_alt `control_vars' `range' [aw = `weight'], vce(cluster `time')
 		}
 		esttab using ../tables/triple_diff_`city'_`time'_`groups_vars'_`var1'_`var2'.tex, label se ar2 compress ///

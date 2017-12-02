@@ -274,7 +274,7 @@ program reg_diff
 		
 		qui sum `control_vars'		
 		eststo: reg `outcome' i.treatment_`treatment' i.post interaction ///
-					i.`time' cantidad_personas hay_menores edad married ///
+					i.`time' nbr_people ind_under14 edad married ///
 					y_hogar_alt `control_vars' `range' [aw = `weight'], vce(cluster `time')
 		
 		drop interaction post
