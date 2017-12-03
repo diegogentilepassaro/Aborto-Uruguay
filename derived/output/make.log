@@ -1,0 +1,2550 @@
+
+ make.py started: 2017-12-03 13:57:27 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./homogeneize_geo_vars.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./homogeneize_geo_vars.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../library/stata/gslab_misc/ado"
+
+. 
+. program main_homogeneize_geo_vars 
+  1.         use ..\..\base\output\clean_1998_2016, clear
+  2.         
+.         fix_98_05
+  3.         fix_2007
+  4.         fix_2008
+  5.         save ../temp/98_2011_loc_homo.dta, replace
+  6.         
+.         import excel ../../raw/lista_homogen_codes_geo.xlsx, sheet("Sheet1") 
+> ///
+>             cellrange(B1:F100) firstrow clear
+  7.         rename (codigodpto localidad codigo98_2005 codigo_2006_2011 codigo
+> _2012_2014) ///
+>             (dpto nomloc2 loc98_05 loc loc12_14)
+  8.     save ../temp/loc_xwalk.dta, replace
+  9.         
+.     homogeneize_loc_to_2012_2014
+ 10.                 
+.         drop if missing(anio)
+ 11.         
+.         replace ccz = ccz04 if anio == 2012
+ 12.         drop ccz04 ccz10
+ 13.         
+.         tostring dpto, gen(dpto_string)
+ 14.         gen loc_code = dpto_string + loc
+ 15.         drop dpto_string
+ 16.         drop if substr(loc_code, -3,.) == "900" 
+ 17.         
+.         destring loc_code, replace
+ 18.                 
+.         save ..\temp\clean_loc_1998_2016.dta, replace
+ 19. end
+
+. 
+. program fix_98_05
+  1.     * Montevideo
+.         replace loc = "010" if inrange(anio, 1998, 2005) & loc == "0101"
+  2. 
+.         * Artigas
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0201"
+  3.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0202"
+  4.         
+.         * Canelones
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0302"
+  5.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0301"
+  6.         replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0303"  
+>       
+  7.         replace loc = "024" if inrange(anio, 1998, 2005) & loc == "0304"
+  8.         replace loc = "422" if inrange(anio, 1998, 2005) & loc == "0305"
+  9.         
+.         * Cerro Largo
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0401"
+ 10.         replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0402"
+ 11. 
+.     * Colonia
+.         replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0501"
+ 12.         replace loc = "321" if inrange(anio, 1998, 2005) & loc == "0502"
+ 13.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0503"  
+>       
+ 14.         replace loc = "022" if inrange(anio, 1998, 2005) & loc == "0504"
+ 15.         replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0505"
+ 16. 
+.         * Durazno
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0601"
+ 17.         replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0602"
+ 18. 
+.         * Flores
+.         replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0701"
+ 19. 
+.         * Florida
+.         replace loc = "220" if inrange(anio, 1998, 2005) & loc == "0801"
+ 20.         replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0802"
+ 21. 
+.         * Lavalleja
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0901"
+ 22.         replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0902"
+ 23. 
+.     * Maldonado
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1001"
+ 24.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1002"
+ 25.         replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1003"  
+>       
+ 26.         replace loc = "023" if inrange(anio, 1998, 2005) & loc == "1004"
+ 27.         replace loc = "024" if inrange(anio, 1998, 2005) & loc == "1005"
+ 28. 
+.         * Paysandu
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1101"
+ 29.         replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1102"
+ 30. 
+.         * Rio Negro
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1201"
+ 31.         replace loc = "421" if inrange(anio, 1998, 2005) & loc == "1202"
+ 32.         
+.     *Rivera
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1301"
+ 33.         replace loc = "522" if inrange(anio, 1998, 2005) & loc == "1302"
+ 34.         
+.     *Rocha
+.         replace loc = "320" if inrange(anio, 1998, 2005) & loc == "1401"
+ 35.         replace loc = "422" if inrange(anio, 1998, 2005) & loc == "1403"
+ 36.         replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1404"
+ 37.         
+.         * Salto
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1501"
+ 38. 
+.     *San Jose
+.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1601"
+ 39.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1602"
+ 40.         replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1603"
+ 41. 
+.     *Soriano
+.         replace loc = "220" if inrange(anio, 1998, 2005) & loc == "1701"
+ 42.         replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1702"
+ 43. 
+.     *Tacuarembo
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1801"
+ 44.         replace loc = "321" if inrange(anio, 1998, 2005) & loc == "1802"
+ 45. 
+.     *Treinta y Tres
+.         replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1901"
+ 46. end
+
+. 
+. program fix_2007        
+  1.     replace loc = substr(loc, 3, 3) if anio == 2007
+  2.         
+.         * Montevideo
+.         replace loc = "010" if anio == 2007 & loc == "020" & dpto == 1
+  3. 
+.         * Artigas
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 2
+  4.         replace loc = "021" if anio == 2007 & loc == "621" & dpto == 2
+  5.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 2
+  6. 
+.         * Canelones
+.         replace loc = "020" if anio == 2007 & loc == "121" & dpto == 3
+  7.         replace loc = "022" if anio == 2007 & loc == "222" & dpto == 3
+  8.         replace loc = "023" if anio == 2007 & loc == "323" & dpto == 3
+  9.         replace loc = "000" if anio == 2007 & loc == "528" & dpto == 3
+ 10.         
+.         * Cerro Largo
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 4
+ 11.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 4
+ 12. 
+.     * Colonia
+.         replace loc = "021" if anio == 2007 & loc == "421" & dpto == 5
+ 13.         replace loc = "023" if anio == 2007 & loc == "323" & dpto == 5
+ 14.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 5
+ 15.         
+.         * Durazno
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 6
+ 16.         replace loc = "000" if anio == 2007 & loc == "721" & dpto == 6
+ 17. 
+.         * Flores
+.         replace loc = "000" if anio == 2007 & loc == "721" & dpto == 7
+ 18. 
+.         * Florida
+.         replace loc = "000" if anio == 2007 & loc == "622" & dpto == 8
+ 19. 
+.         * Lavalleja
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 9
+ 20.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 9
+ 21. 
+.     * Maldonado
+.         replace loc = "020" if anio == 2007 & loc == "320" & dpto == 10
+ 22.         replace loc = "021" if anio == 2007 & loc == "321" & dpto == 10
+ 23.         replace loc = "023" if anio == 2007 & loc == "523" & dpto == 10
+ 24.         replace loc = "024" if anio == 2007 & loc == "524" & dpto == 10
+ 25.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 10
+ 26. 
+.         * Paysandu
+.         replace loc = "020" if anio == 2007 & loc == "120" & dpto == 11
+ 27.         replace loc = "021" if anio == 2007 & loc == "822" & dpto == 11
+ 28.         replace loc = "000" if anio == 2007 & loc == "621" & dpto == 11
+ 29.         
+.         * Rio Negro
+.         replace loc = "020" if anio == 2007 & loc == "320" & dpto == 12
+ 30.         replace loc = "000" if anio == 2007 & loc == "621" & dpto == 12
+ 31.         
+.     *Rivera
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 13
+ 32.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 13
+ 33.         
+.     *Rocha
+.         replace loc = "000" if anio == 2007 & loc == "722" & dpto == 14
+ 34.         
+.         * Salto
+.         replace loc = "020" if anio == 2007 & loc == "120" & dpto == 15
+ 35.         replace loc = "000" if anio == 2007 & loc == "522" & dpto == 15
+ 36. 
+.     *San Jose
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 16
+ 37.         replace loc = "021" if anio == 2007 & loc == "321" & dpto == 16
+ 38.         replace loc = "022" if anio == 2007 & loc == "421" & dpto == 16
+ 39.         replace loc = "000" if anio == 2007 & loc == "621" & dpto == 16
+ 40. 
+.     *Soriano
+.         replace loc = "021" if anio == 2007 & loc == "321" & dpto == 17
+ 41.         replace loc = "091" if anio == 2007 & loc == "521" & dpto == 17
+ 42.         replace loc = "000" if anio == 2007 & loc == "622" & dpto == 17
+ 43. 
+.     *Tacuarembo
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 18
+ 44.         replace loc = "000" if anio == 2007 & loc == "521" & dpto == 18
+ 45.         
+.     *Treinta y Tres
+.         replace loc = "020" if anio == 2007 & loc == "220" & dpto == 19
+ 46.         replace loc = "000" if anio == 2007 & loc == "790" & dpto == 19
+ 47.         
+.         fill_missing_loc, dest_year(2007) ren_var(nomloc)
+ 48.         
+.         merge m:1 anio dpto loc using ../temp/loc_2006.dta, nogen
+ 49.         
+.         replace nomloc = nomloc2 if anio == 2007
+ 50.         drop nomloc2
+ 51. end
+
+. 
+. program fix_2008
+  1.         fill_missing_loc, dest_year(2008) ren_var(loc)
+  2.         
+.         merge m:1 anio dpto nomloc using ../temp/loc_2006, nogen
+  3.         
+.         replace loc = loc2 if anio == 2008
+  4.         drop loc2
+  5. end
+
+. 
+. program fill_missing_loc
+  1.     syntax, dest_year(str) ren_var(str)
+  2.     
+.         preserve 
+  3.         keep if anio == 2006
+  4.         keep anio dpto loc nomloc
+  5.         duplicates drop anio dpto loc, force
+  6.         replace anio = `dest_year'
+  7.         rename `ren_var' `ren_var'2
+  8.         save ../temp/loc_2006, replace
+  9.         restore
+ 10. end
+
+. 
+. program homogeneize_loc_to_2012_2014
+  1.         use ../temp/98_2011_loc_homo.dta, clear
+  2.         
+.         merge m:1 dpto loc using ../temp/loc_xwalk.dta
+  3.         
+.         replace loc = "000" if missing(loc)
+  4.         
+.         replace loc = loc12_14 if _merge == 3
+  5.         replace nomloc = nomloc2
+  6.         
+.         drop _merge nomloc2 loc12_14 loc98_05
+  7.         
+.         replace loc = "000" if length(loc) < 5
+  8.     
+.     merge m:1 dpto loc using ../temp/loc_xwalk.dta
+  9.     
+.         replace loc = loc12_14 if _merge == 3
+ 10.         replace nomloc = nomloc2
+ 11.         
+.         drop _merge nomloc2 loc12_14 loc98_05
+ 12. end
+
+. 
+. main_homogeneize_geo_vars
+(238,595 real changes made)
+(7,863 real changes made)
+(3,840 real changes made)
+(12,718 real changes made)
+(30,695 real changes made)
+(6,467 real changes made)
+(3,652 real changes made)
+(1,126 real changes made)
+(6,487 real changes made)
+(2,709 real changes made)
+(5,940 real changes made)
+(2,568 real changes made)
+(680 real changes made)
+(431 real changes made)
+(2,116 real changes made)
+(4,603 real changes made)
+(1,235 real changes made)
+(4,025 real changes made)
+(3,824 real changes made)
+(1,478 real changes made)
+(6,127 real changes made)
+(221 real changes made)
+(10,192 real changes made)
+(4,344 real changes made)
+(1,535 real changes made)
+(333 real changes made)
+(167 real changes made)
+(11,982 real changes made)
+(173 real changes made)
+(3,605 real changes made)
+(2,718 real changes made)
+(11,257 real changes made)
+(1,302 real changes made)
+(7,098 real changes made)
+(1,330 real changes made)
+(205 real changes made)
+(12,609 real changes made)
+(5,481 real changes made)
+(3,786 real changes made)
+(1,649 real changes made)
+(6,279 real changes made)
+(2,877 real changes made)
+(7,321 real changes made)
+(1,842 real changes made)
+(5,415 real changes made)
+(143,185 real changes made)
+(57,520 real changes made)
+(1,190 real changes made)
+(452 real changes made)
+(1,293 real changes made)
+(3,155 real changes made)
+(1,816 real changes made)
+(1,171 real changes made)
+(999 real changes made)
+(1,982 real changes made)
+(651 real changes made)
+(774 real changes made)
+(767 real changes made)
+(620 real changes made)
+(1,861 real changes made)
+(555 real changes made)
+(212 real changes made)
+(688 real changes made)
+(2,024 real changes made)
+(272 real changes made)
+(2,508 real changes made)
+(999 real changes made)
+(310 real changes made)
+(437 real changes made)
+(380 real changes made)
+(3,344 real changes made)
+(9 real changes made)
+(553 real changes made)
+(1,295 real changes made)
+(486 real changes made)
+(3,037 real changes made)
+(462 real changes made)
+(651 real changes made)
+(3,667 real changes made)
+(576 real changes made)
+(3,077 real changes made)
+(1,853 real changes made)
+(778 real changes made)
+(482 real changes made)
+(776 real changes made)
+(242 real changes made)
+(408 real changes made)
+(2,404 real changes made)
+(416 real changes made)
+(1,777 real changes made)
+(250 real changes made)
+(1,755,020 observations deleted)
+
+Duplicates in terms of anio dpto loc
+
+(256,765 observations deleted)
+(96 real changes made)
+(note: file ../temp/loc_2006.dta not found)
+file ../temp/loc_2006.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,870,334
+        from master                 1,870,319  
+        from using                         15  
+
+    matched                           141,562  
+    -----------------------------------------
+(141,577 real changes made)
+(1,755,035 observations deleted)
+
+Duplicates in terms of anio dpto loc
+
+(256,765 observations deleted)
+(96 real changes made)
+file ../temp/loc_2006.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,867,335
+        from master                 1,867,320  
+        from using                         15  
+
+    matched                           144,576  
+    -----------------------------------------
+(144,591 real changes made)
+(note: file ../temp/98_2011_loc_homo.dta not found)
+file ../temp/98_2011_loc_homo.dta saved
+(note: file ../temp/loc_xwalk.dta not found)
+file ../temp/loc_xwalk.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       383,151
+        from master                   383,151  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                         1,628,760  (_merge==3)
+    -----------------------------------------
+(358 real changes made)
+(1,628,760 real changes made)
+(838,922 real changes made)
+(2,549 real changes made)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     2,009,090
+        from master                 2,009,004  (_merge==1)
+        from using                         86  (_merge==2)
+
+    matched                             2,907  (_merge==3)
+    -----------------------------------------
+(2,907 real changes made)
+(1,631,753 real changes made)
+(86 observations deleted)
+(120,462 real changes made)
+dpto_string generated as str2
+(128,522 observations deleted)
+loc_code: all characters numeric; replaced as long
+(note: file ..\temp\clean_loc_1998_2016.dta not found)
+file ..\temp\clean_loc_1998_2016.dta saved
+
+. 
+end of do-file
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./prepare_for_analysis.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./prepare_for_analysis.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../library/stata/gslab_misc/ado"
+
+. 
+. program main_prepare_for_analysis 
+  1.         use ..\temp\clean_loc_1998_2016.dta, clear
+  2.         
+.         fix_2012_weights
+  3.         save ..\temp\clean_loc_1998_2016_fixed_weights.dta, replace
+  4.         
+.         import excel ..\..\raw\inflation.xlsx, sheet("Sheet1") firstrow clear
+  5.         merge 1:m anio using ..\temp\clean_loc_1998_2016_fixed_weights.dta
+> , nogen ///
+>             assert(1 3)keep(3)
+  6.         save ..\temp\clean_loc_1998_2016_fixed.dta, replace
+  7. 
+.     impute_poverty_lines_pre06
+  8.         gen pobre       = (y_hogar_alt <= lp_06)
+  9.         gen indigente   = (y_hogar_alt <= li_06)
+ 10.         
+.         gen ind_under14 = (nbr_people > nbr_above14)
+ 11.         
+.         gen     semestre = 1 if inlist(trimestre, 1, 2)
+ 12.         replace semestre = 2 if inlist(trimestre, 3, 4)
+ 13.         gen     anio_sem = yh(anio, semestre)
+ 14.         format  anio_sem %th
+ 15.         gen     anio_qtr = yq(anio, trimestre)
+ 16.     format  anio_qtr %tq
+ 17. 
+.         local outcomes = "trabajo horas_trabajo"
+ 18.         deseasonalize, outcomes(`outcomes')
+ 19.          
+.         label_vars
+ 20.         drop if (missing(numero) | missing(pers) | missing(anio))
+ 21.     save_data ..\output\clean_loc_1998_2016.dta, key(numero pers anio) rep
+> lace  
+ 22. end
+
+. 
+. program fix_2012_weights
+  1.         keep if anio == 2013
+  2.         replace anio = 2012 
+  3.         
+.         local by_vars "loc_code edad hombre estrato"
+  4.         
+.         rename (pesotri pesosem) (pesotri2 pesosem2)
+  5.         collapse (mean) pesotri pesosem, by(`by_vars')
+  6.         
+.         save ..\temp\pesos_2012_imputed.dta, replace
+  7. 
+.         use ..\temp\clean_loc_1998_2016.dta, clear
+  8. 
+.         merge m:1 `by_vars' using ..\temp\pesos_2012_imputed.dta, nogen
+  9.         replace pesotri = pesotri2 if anio == 2012
+ 10.         replace pesosem = pesosem2 if anio == 2012
+ 11.         
+.         drop pesotri2 pesosem2
+ 12. end
+
+. 
+. program impute_poverty_lines_pre06
+  1.         keep if anio == 2006
+  2.         
+.         forval year=1998/2005 {
+  3.             replace anio = `year' 
+  4.         
+.             local by_vars "loc_code nbr_above14 nbr_people"
+  5.         
+.             rename (lp_06 li_06) (lp_06_2 li_06_2)
+  6.             collapse (mean) lp_06_2 li_06_2, by(`by_vars')
+  7.         
+.             save ..\temp\poverty_`year'_imputed.dta, replace
+  8. 
+.             use ..\temp\clean_loc_1998_2016_fixed.dta, clear
+  9. 
+.             merge m:1 `by_vars' using ..\temp\poverty_`year'_imputed.dta, nog
+> en
+ 10.             replace lp_06 = lp_06_2 if anio == `year'
+ 11.             replace li_06 = li_06_2 if anio == `year'
+ 12.         
+.             drop lp_06_2 li_06_2
+ 13.                 replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
+ 14.                 replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
+ 15.             save ..\temp\clean_loc_1998_2016_fixed.dta, replace
+ 16. 
+.         }
+ 17. end
+
+. 
+. program deseasonalize  
+  1.     syntax, outcomes(str)
+  2.         
+.         levelsof dpto, local(dptos)
+  3.         
+.         foreach outcome in `outcomes' {
+  4.                 gen unadj_`outcome' = `outcome'
+  5.         }
+  6.         
+.         foreach dpto of local dptos {
+  7.                 foreach outcome in `outcomes' {
+  8. 
+.                         qui sum unadj_`outcome' if anio < 2004 & dpto == `dpt
+> o' [aw = pesotri]
+  9.                         local mean = r(mean)
+ 10.                         
+.                         reg unadj_`outcome' i.trimestre if anio < 2004 & dpto
+>  == `dpto' [aw = pesotri]
+ 11.                         predict p_`outcome', resid
+ 12.                         
+.                         replace `outcome' = p_`outcome' + `mean' if anio < 20
+> 04 & dpto == `dpto'
+ 13.                         drop p_`outcome'
+ 14.                         
+.                         qui sum unadj_`outcome' if anio >= 2004 & dpto == `dp
+> to' [aw = pesotri]
+ 15.                         local mean = r(mean)
+ 16.                         
+.                         reg unadj_`outcome' i.trimestre if anio >= 2004 & dpt
+> o == `dpto' [aw = pesotri]
+ 17.                         predict p_`outcome', resid
+ 18.                         
+.                         replace `outcome' = p_`outcome' + `mean' if anio >= 2
+> 004 & dpto == `dpto'
+ 19.                         drop p_`outcome'        
+ 20.                 }
+ 21.         }
+ 22. end
+
+. 
+. program label_vars
+  1.     label var trabajo "Employment"
+  2.         label var horas_trabajo "Hours worked"
+  3.         label var  educ_level "Educational attainment"
+  4.         label define educ_level 1 "Primary school" 2 "High school" 3 "Post
+> -secondary"
+  5.         label values educ_level educ_level
+  6.     
+.         gen educ_more_HS = (educ_level == 3)
+  7.         gen educ_HS_or_more = (educ_level == 2 | educ_level == 3 )
+  8.         
+.         label var  educ_more_HS "College"
+  9.         label var educ_HS_or_more "High-school"
+ 10.         label define educ_HS_or_more 0 "HS degree or less" 1 "More than HS
+>  diploma"
+ 11.         label values educ_HS_or_more educ_HS_or_more
+ 12. end
+
+. 
+. main_prepare_for_analysis
+(1,761,666 observations deleted)
+(121,723 real changes made)
+(note: file ..\temp\pesos_2012_imputed.dta not found)
+file ..\temp\pesos_2012_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       513,489
+        from master                   513,489  
+        from using                          0  
+
+    matched                         1,369,900  
+    -----------------------------------------
+variable pesotri was int now float
+(113,170 real changes made)
+variable pesosem was int now float
+(113,170 real changes made)
+(note: file ..\temp\clean_loc_1998_2016_fixed_weights.dta not found)
+file ..\temp\clean_loc_1998_2016_fixed_weights.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(note: file ..\temp\clean_loc_1998_2016_fixed.dta not found)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,673,485 observations deleted)
+(209,904 real changes made)
+(note: file ..\temp\poverty_1998_imputed.dta not found)
+file ..\temp\poverty_1998_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        28,312
+        from master                    28,312  
+        from using                          0  
+
+    matched                         1,855,077  
+    -----------------------------------------
+(55,575 real changes made)
+variable li_06 was int now float
+(55,575 real changes made)
+(55,575 real changes made)
+(55,575 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,715 real changes made)
+(note: file ..\temp\poverty_1999_imputed.dta not found)
+file ..\temp\poverty_1999_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(57,411 real changes made)
+(57,411 real changes made)
+(57,411 real changes made)
+(57,411 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,405 real changes made)
+(note: file ..\temp\poverty_2000_imputed.dta not found)
+file ..\temp\poverty_2000_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(57,665 real changes made)
+(57,665 real changes made)
+(57,665 real changes made)
+(57,665 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,979 real changes made)
+(note: file ..\temp\poverty_2001_imputed.dta not found)
+file ..\temp\poverty_2001_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(57,110 real changes made)
+(57,110 real changes made)
+(57,110 real changes made)
+(57,110 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,827,056 real changes made)
+(note: file ..\temp\poverty_2002_imputed.dta not found)
+file ..\temp\poverty_2002_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(56,007 real changes made)
+(56,007 real changes made)
+(56,007 real changes made)
+(56,007 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,828,020 real changes made)
+(note: file ..\temp\poverty_2003_imputed.dta not found)
+file ..\temp\poverty_2003_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(55,091 real changes made)
+(55,091 real changes made)
+(55,091 real changes made)
+(55,091 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,827,802 real changes made)
+(note: file ..\temp\poverty_2004_imputed.dta not found)
+file ..\temp\poverty_2004_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(55,322 real changes made)
+(55,322 real changes made)
+(55,322 real changes made)
+(55,322 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,829,059 real changes made)
+(note: file ..\temp\poverty_2005_imputed.dta not found)
+file ..\temp\poverty_2005_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,389  
+    -----------------------------------------
+(54,148 real changes made)
+(54,148 real changes made)
+(54,148 real changes made)
+(54,148 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(940,066 missing values generated)
+(940,036 real changes made)
+(30 missing values generated)
+(30 missing values generated)
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+(30 missing values generated)
+(30 missing values generated)
+(sum of wgt is   2.9276e+07)
+
+      Source |       SS           df       MS      Number of obs   =   179,252
+-------------+----------------------------------   F(3, 179248)    =      0.18
+       Model |  .133693007         3  .044564336   Prob > F        =    0.9075
+    Residual |  43462.9829   179,248  .242474019   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |  43463.1166   179,251  .242470707   Root MSE        =    .49242
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0017721   .0032826     0.54   0.589    -.0046617    .0082059
+          3  |   .0020724   .0032869     0.63   0.528    -.0043698    .0085146
+          4  |   .0004886   .0032959     0.15   0.882    -.0059713    .0069485
+             |
+       _cons |   .4121352   .0023236   177.37   0.000      .407581    .4166893
+------------------------------------------------------------------------------
+(30 missing values generated)
+variable trabajo was byte now float
+(179,252 real changes made)
+(sum of wgt is   6.6643e+07)
+
+      Source |       SS           df       MS      Number of obs   =   649,585
+-------------+----------------------------------   F(3, 649581)    =    194.67
+       Model |  144.478193         3  48.1593976   Prob > F        =    0.0000
+    Residual |  160700.212   649,581  .247390567   R-squared       =    0.0009
+-------------+----------------------------------   Adj R-squared   =    0.0009
+       Total |   160844.69   649,584  .247611841   Root MSE        =    .49738
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0307933   .0017444    17.65   0.000     .0273744    .0342123
+          3  |   .0318726    .001744    18.28   0.000     .0284543    .0352909
+          4  |   .0385655   .0017469    22.08   0.000     .0351417    .0419893
+             |
+       _cons |   .4258384   .0012334   345.26   0.000      .423421    .4282558
+------------------------------------------------------------------------------
+(30 missing values generated)
+(649,604 real changes made)
+(sum of wgt is   2.9276e+07)
+
+      Source |       SS           df       MS      Number of obs   =   179,252
+-------------+----------------------------------   F(3, 179248)    =      0.11
+       Model |   172.58754         3  57.5291799   Prob > F        =    0.9554
+    Residual |  95356117.3   179,248  531.978696   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |  95356289.9   179,251  531.970756   Root MSE        =    23.065
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |    .046988   .1537557     0.31   0.760    -.2543696    .3483457
+          3  |  -.0336486   .1539562    -0.22   0.827    -.3353992    .2681021
+          4  |  -.0228274   .1543796    -0.15   0.882     -.325408    .2797532
+             |
+       _cons |   16.99026   .1088356   156.11   0.000     16.77694    17.20357
+------------------------------------------------------------------------------
+(30 missing values generated)
+variable horas_trabajo was byte now float
+(179,252 real changes made)
+(sum of wgt is   6.6643e+07)
+
+      Source |       SS           df       MS      Number of obs   =   649,585
+-------------+----------------------------------   F(3, 649581)    =      6.35
+       Model |  9287.54022         3  3095.84674   Prob > F        =    0.0003
+    Residual |   316621650   649,581  487.424432   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |   316630937   649,584  487.436478   Root MSE        =    22.078
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.1545963   .0774289    -2.00   0.046    -.3063545   -.0028381
+          3  |  -.0754637   .0774139    -0.97   0.330    -.2271924    .0762649
+          4  |   .1692446   .0775386     2.18   0.029     .0172714    .3212178
+             |
+       _cons |   18.58194   .0547471   339.41   0.000     18.47464    18.68924
+------------------------------------------------------------------------------
+(30 missing values generated)
+(649,604 real changes made)
+(sum of wgt is   1.3020e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,878
+-------------+----------------------------------   F(3, 8874)      =      1.89
+       Model |  1.28231942         3  .427439806   Prob > F        =    0.1293
+    Residual |  2009.70409     8,874  .226471049   R-squared       =    0.0006
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  2010.98641     8,877  .226538967   Root MSE        =    .47589
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0165483   .0142774     1.16   0.246    -.0114387    .0445352
+          3  |   .0307331   .0142507     2.16   0.031     .0027984    .0586678
+          4  |   .0272036   .0141795     1.92   0.055    -.0005914    .0549986
+             |
+       _cons |   .3282338   .0099933    32.85   0.000     .3086446    .3478229
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,878 real changes made)
+(sum of wgt is   3.5873e+06)
+
+      Source |       SS           df       MS      Number of obs   =    36,447
+-------------+----------------------------------   F(3, 36443)     =     10.82
+       Model |  7.69737869         3   2.5657929   Prob > F        =    0.0000
+    Residual |  8644.90231    36,443  .237217087   R-squared       =    0.0009
+-------------+----------------------------------   Adj R-squared   =    0.0008
+       Total |  8652.59969    36,446  .237408761   Root MSE        =    .48705
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0276581   .0071704     3.86   0.000      .013604    .0417123
+          3  |   .0284403   .0071773     3.96   0.000     .0143725     .042508
+          4  |   .0387022   .0071616     5.40   0.000     .0246652    .0527392
+             |
+       _cons |   .3643719   .0050011    72.86   0.000     .3545695    .3741743
+------------------------------------------------------------------------------
+(30 missing values generated)
+(36,502 real changes made)
+(sum of wgt is   1.3020e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,878
+-------------+----------------------------------   F(3, 8874)      =      1.79
+       Model |  2919.85609         3  973.285363   Prob > F        =    0.1476
+    Residual |  4837992.23     8,874  545.187314   R-squared       =    0.0006
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  4840912.08     8,877  545.331991   Root MSE        =    23.349
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .4624407   .7005111     0.66   0.509    -.9107232    1.835605
+          3  |   1.549935   .6992029     2.22   0.027     .1793353    2.920534
+          4  |   .9195109   .6957067     1.32   0.186    -.4442353    2.283257
+             |
+       _cons |   14.21184   .4903148    28.99   0.000     13.25071    15.17297
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,878 real changes made)
+(sum of wgt is   3.5873e+06)
+
+      Source |       SS           df       MS      Number of obs   =    36,447
+-------------+----------------------------------   F(3, 36443)     =      3.31
+       Model |  4977.01306         3  1659.00435   Prob > F        =    0.0191
+    Residual |  18244798.6    36,443  500.639316   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  18249775.6    36,446  500.734666   Root MSE        =    22.375
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .1382073   .3294063     0.42   0.675    -.5074386    .7838532
+          3  |   -.141224   .3297246    -0.43   0.668    -.7874939    .5050458
+          4  |   .8245847   .3290041     2.51   0.012     .1797271    1.469442
+             |
+       _cons |   15.73908   .2297517    68.50   0.000     15.28876     16.1894
+------------------------------------------------------------------------------
+(30 missing values generated)
+(36,502 real changes made)
+(sum of wgt is   7.0634e+06)
+
+      Source |       SS           df       MS      Number of obs   =    42,905
+-------------+----------------------------------   F(3, 42901)     =      1.67
+       Model |  1.18285056         3  .394283521   Prob > F        =    0.1716
+    Residual |  10142.7143    42,901  .236421396   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  10143.8972    42,904  .236432435   Root MSE        =    .48623
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0080689    .006622    -1.22   0.223    -.0210481    .0049103
+          3  |  -.0125725   .0066135    -1.90   0.057     -.025535      .00039
+          4  |  -.0130164   .0066317    -1.96   0.050    -.0260145   -.0000182
+             |
+       _cons |   .3918655    .004658    84.13   0.000     .3827358    .4009952
+------------------------------------------------------------------------------
+(30 missing values generated)
+(42,905 real changes made)
+(sum of wgt is   2.1985e+07)
+
+      Source |       SS           df       MS      Number of obs   =   197,944
+-------------+----------------------------------   F(3, 197940)    =     51.13
+       Model |  37.3587988         3  12.4529329   Prob > F        =    0.0000
+    Residual |  48212.2372   197,940  .243569957   R-squared       =    0.0008
+-------------+----------------------------------   Adj R-squared   =    0.0008
+       Total |   48249.596   197,943     .243755   Root MSE        =    .49353
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0296209   .0031333     9.45   0.000     .0234798    .0357621
+          3  |    .026653    .003138     8.49   0.000     .0205025    .0328035
+          4  |   .0359288   .0031359    11.46   0.000     .0297825    .0420752
+             |
+       _cons |   .3979405   .0022148   179.67   0.000     .3935996    .4022815
+------------------------------------------------------------------------------
+(30 missing values generated)
+(198,008 real changes made)
+(sum of wgt is   7.0634e+06)
+
+      Source |       SS           df       MS      Number of obs   =    42,905
+-------------+----------------------------------   F(3, 42901)     =      2.53
+       Model |  4275.26959         3  1425.08986   Prob > F        =    0.0550
+    Residual |  24126883.7    42,901  562.385112   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  24131158.9    42,904  562.445435   Root MSE        =    23.715
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.3590392   .3229697    -1.11   0.266     -.992066    .2739876
+          3  |  -.6715483    .322554    -2.08   0.037     -1.30376   -.0393362
+          4  |  -.8207366   .3234416    -2.54   0.011    -1.454688   -.1867847
+             |
+       _cons |   16.95403     .22718    74.63   0.000     16.50875    17.39931
+------------------------------------------------------------------------------
+(30 missing values generated)
+(42,905 real changes made)
+(sum of wgt is   2.1985e+07)
+
+      Source |       SS           df       MS      Number of obs   =   197,944
+-------------+----------------------------------   F(3, 197940)    =      2.39
+       Model |  3615.36714         3  1205.12238   Prob > F        =    0.0663
+    Residual |  99624131.7   197,940  503.304697   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  99627747.1   197,943  503.315334   Root MSE        =    22.434
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.1138933   .1424303    -0.80   0.424    -.3930533    .1652666
+          3  |  -.2539998   .1426469    -1.78   0.075    -.5335844    .0255848
+          4  |    .110763    .142551     0.78   0.437    -.1686336    .3901595
+             |
+       _cons |    17.8623   .1006787   177.42   0.000     17.66497    18.05963
+------------------------------------------------------------------------------
+(30 missing values generated)
+(198,008 real changes made)
+(sum of wgt is   1.3927e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,911
+-------------+----------------------------------   F(3, 6907)      =      0.81
+       Model |  .571620892         3  .190540297   Prob > F        =    0.4882
+    Residual |  1625.06102     6,907  .235277402   R-squared       =    0.0004
+-------------+----------------------------------   Adj R-squared   =   -0.0001
+       Total |  1625.63264     6,910  .235257979   Root MSE        =    .48505
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0239803   .0167004    -1.44   0.151    -.0567183    .0087577
+          3  |  -.0074998   .0166737    -0.45   0.653    -.0401853    .0251857
+          4  |  -.0037448   .0164372    -0.23   0.820    -.0359666    .0284771
+             |
+       _cons |   .3872082   .0118708    32.62   0.000     .3639377    .4104787
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,911 real changes made)
+(sum of wgt is   3.8220e+06)
+
+      Source |       SS           df       MS      Number of obs   =    38,011
+-------------+----------------------------------   F(3, 38007)     =      7.99
+       Model |   5.6433977         3  1.88113257   Prob > F        =    0.0000
+    Residual |  8944.23819    38,007  .235331339   R-squared       =    0.0006
+-------------+----------------------------------   Adj R-squared   =    0.0006
+       Total |  8949.88159    38,010  .235461236   Root MSE        =    .48511
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0242895   .0070312     3.45   0.001     .0105082    .0380707
+          3  |   .0289047   .0070644     4.09   0.000     .0150583     .042751
+          4  |   .0301831   .0070555     4.28   0.000     .0163541    .0440121
+             |
+       _cons |   .3584938   .0050028    71.66   0.000     .3486882    .3682994
+------------------------------------------------------------------------------
+(30 missing values generated)
+(38,097 real changes made)
+(sum of wgt is   1.3927e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,911
+-------------+----------------------------------   F(3, 6907)      =      1.81
+       Model |  3168.72795         3  1056.24265   Prob > F        =    0.1438
+    Residual |  4040377.37     6,907  584.968491   R-squared       =    0.0008
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  4043546.09     6,910  585.173096   Root MSE        =    24.186
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -1.389718   .8327291    -1.67   0.095    -3.022123     .242687
+          3  |  -1.273317   .8313944    -1.53   0.126    -2.903106    .3564713
+          4  |   .0388029   .8196014     0.05   0.962    -1.567868    1.645474
+             |
+       _cons |   17.14997   .5919126    28.97   0.000     15.98964     18.3103
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,911 real changes made)
+(sum of wgt is   3.8220e+06)
+
+      Source |       SS           df       MS      Number of obs   =    38,011
+-------------+----------------------------------   F(3, 38007)     =      0.04
+       Model |  51.9443343         3  17.3147781   Prob > F        =    0.9893
+    Residual |  16463919.6    38,007  433.181245   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0001
+       Total |  16463971.5    38,010  433.148422   Root MSE        =    20.813
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0763026   .3016625    -0.25   0.800    -.6675691    .5149639
+          3  |  -.0606882   .3030884    -0.20   0.841    -.6547495    .5333732
+          4  |  -.1004218   .3027073    -0.33   0.740    -.6937361    .4928925
+             |
+       _cons |   15.31574   .2146389    71.36   0.000     14.89504    15.73644
+------------------------------------------------------------------------------
+(30 missing values generated)
+(38,097 real changes made)
+(sum of wgt is   1.9386e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,862
+-------------+----------------------------------   F(3, 8858)      =      0.31
+       Model |  .217227059         3   .07240902   Prob > F        =    0.8170
+    Residual |  2058.15428     8,858  .232349772   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  2058.37151     8,861  .232295623   Root MSE        =    .48203
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |    .007304    .014527     0.50   0.615    -.0211722    .0357803
+          3  |  -.0049781   .0143885    -0.35   0.729    -.0331828    .0232266
+          4  |   .0061126   .0144851     0.42   0.673    -.0222817    .0345068
+             |
+       _cons |   .3648041   .0102052    35.75   0.000     .3447995    .3848088
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,862 real changes made)
+(sum of wgt is   5.1351e+06)
+
+      Source |       SS           df       MS      Number of obs   =    50,217
+-------------+----------------------------------   F(3, 50213)     =      6.53
+       Model |  4.82624356         3  1.60874785   Prob > F        =    0.0002
+    Residual |  12375.2491    50,213  .246455084   R-squared       =    0.0004
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  12380.0754    50,216   .24653647   Root MSE        =    .49644
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0229687   .0062772     3.66   0.000     .0106653     .035272
+          3  |   .0183126   .0062326     2.94   0.003     .0060967    .0305285
+          4  |   .0240712   .0061727     3.90   0.000     .0119726    .0361699
+             |
+       _cons |   .4249741    .004344    97.83   0.000     .4164597    .4334885
+------------------------------------------------------------------------------
+(30 missing values generated)
+(50,302 real changes made)
+(sum of wgt is   1.9386e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,862
+-------------+----------------------------------   F(3, 8858)      =      1.56
+       Model |  2468.75006         3  822.916686   Prob > F        =    0.1976
+    Residual |  4681614.97     8,858  528.518285   R-squared       =    0.0005
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  4684083.72     8,861  528.617958   Root MSE        =     22.99
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .1750376   .6928418     0.25   0.801    -1.183093    1.533168
+          3  |  -1.170052   .6862354    -1.71   0.088    -2.515232    .1751286
+          4  |  -.1220064   .6908468    -0.18   0.860    -1.476226    1.232214
+             |
+       _cons |    15.4491   .4867235    31.74   0.000     14.49501    16.40319
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,862 real changes made)
+(sum of wgt is   5.1351e+06)
+
+      Source |       SS           df       MS      Number of obs   =    50,217
+-------------+----------------------------------   F(3, 50213)     =      1.35
+       Model |  2055.19205         3  685.064016   Prob > F        =    0.2574
+    Residual |    25556589    50,213  508.963594   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  25558644.2    50,216  508.974115   Root MSE        =     22.56
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .3672392   .2852588     1.29   0.198    -.1918713    .9263497
+          3  |  -.1495358   .2832313    -0.53   0.598    -.7046723    .4056007
+          4  |   .2561775   .2805129     0.91   0.361    -.2936308    .8059859
+             |
+       _cons |   18.35035   .1974098    92.96   0.000     17.96343    18.73728
+------------------------------------------------------------------------------
+(30 missing values generated)
+(50,302 real changes made)
+(sum of wgt is   8.7270e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,507
+-------------+----------------------------------   F(3, 4503)      =      0.21
+       Model |  .142056041         3  .047352014   Prob > F        =    0.8901
+    Residual |  1019.51916     4,503  .226408874   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0005
+       Total |  1019.66121     4,506  .226289661   Root MSE        =    .47582
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0047291   .0205751     0.23   0.818    -.0356083    .0450665
+          3  |   .0105795   .0198695     0.53   0.594    -.0283745    .0495335
+          4  |  -.0042198   .0197427    -0.21   0.831    -.0429253    .0344857
+             |
+       _cons |   .3431737   .0141607    24.23   0.000     .3154117    .3709357
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,507 real changes made)
+(sum of wgt is   2.5025e+06)
+
+      Source |       SS           df       MS      Number of obs   =    32,502
+-------------+----------------------------------   F(3, 32498)     =     10.66
+       Model |  7.62394727         3  2.54131576   Prob > F        =    0.0000
+    Residual |  7749.18493    32,498  .238451133   R-squared       =    0.0010
+-------------+----------------------------------   Adj R-squared   =    0.0009
+       Total |  7756.80888    32,501  .238663699   Root MSE        =    .48831
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0327372   .0076635     4.27   0.000     .0177164    .0477579
+          3  |   .0302225   .0076846     3.93   0.000     .0151603    .0452846
+          4  |   .0400285   .0076352     5.24   0.000     .0250631    .0549938
+             |
+       _cons |   .3677149   .0054169    67.88   0.000     .3570975    .3783322
+------------------------------------------------------------------------------
+(30 missing values generated)
+(32,595 real changes made)
+(sum of wgt is   8.7270e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,507
+-------------+----------------------------------   F(3, 4503)      =      0.98
+       Model |  1520.32959         3  506.776529   Prob > F        =    0.3993
+    Residual |  2319617.79     4,503  515.127203   R-squared       =    0.0007
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |  2321138.12     4,506  515.121643   Root MSE        =    22.696
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.9516025   .9814165    -0.97   0.332    -2.875661    .9724556
+          3  |   .0071173    .947759     0.01   0.994    -1.850956     1.86519
+          4  |  -1.288958    .941712    -1.37   0.171    -3.135176    .5572601
+             |
+       _cons |   14.63502   .6754548    21.67   0.000     13.31079    15.95924
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,507 real changes made)
+(sum of wgt is   2.5025e+06)
+
+      Source |       SS           df       MS      Number of obs   =    32,502
+-------------+----------------------------------   F(3, 32498)     =      1.55
+       Model |  2297.52168         3  765.840561   Prob > F        =    0.2003
+    Residual |  16097028.9    32,498  495.323678   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  16099326.4    32,501  495.348648   Root MSE        =    22.256
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0854999   .3492792    -0.24   0.807       -.7701    .5991002
+          3  |  -.3235326   .3502416    -0.92   0.356    -1.010019    .3629539
+          4  |   .4120756   .3479908     1.18   0.236    -.2699993    1.094151
+             |
+       _cons |   16.17115   .2468863    65.50   0.000     15.68725    16.65506
+------------------------------------------------------------------------------
+(30 missing values generated)
+(32,595 real changes made)
+(sum of wgt is   4.4542e+05)
+
+      Source |       SS           df       MS      Number of obs   =     3,051
+-------------+----------------------------------   F(3, 3047)      =      1.29
+       Model |  .925089131         3  .308363044   Prob > F        =    0.2772
+    Residual |  730.216926     3,047  .239651108   R-squared       =    0.0013
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  731.142015     3,050  .239718693   Root MSE        =    .48954
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0484169   .0251848    -1.92   0.055    -.0977978    .0009641
+          3  |  -.0158378   .0251914    -0.63   0.530    -.0652317    .0335562
+          4  |  -.0245072    .024845    -0.99   0.324    -.0732218    .0242074
+             |
+       _cons |   .4203447   .0177305    23.71   0.000     .3855796    .4551097
+------------------------------------------------------------------------------
+(30 missing values generated)
+(3,051 real changes made)
+(sum of wgt is   1.0625e+06)
+
+      Source |       SS           df       MS      Number of obs   =    16,530
+-------------+----------------------------------   F(3, 16526)     =      4.59
+       Model |  3.39386547         3  1.13128849   Prob > F        =    0.0032
+    Residual |  4072.32466    16,526  .246419258   R-squared       =    0.0008
+-------------+----------------------------------   Adj R-squared   =    0.0007
+       Total |  4075.71852    16,529  .246579861   Root MSE        =    .49641
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0209646   .0108274     1.94   0.053    -.0002581    .0421874
+          3  |   .0173237   .0109031     1.59   0.112    -.0040474    .0386949
+          4  |   .0403502   .0109191     3.70   0.000     .0189477    .0617528
+             |
+       _cons |   .4219285   .0076401    55.23   0.000     .4069531    .4369038
+------------------------------------------------------------------------------
+(30 missing values generated)
+(16,547 real changes made)
+(sum of wgt is   4.4542e+05)
+
+      Source |       SS           df       MS      Number of obs   =     3,051
+-------------+----------------------------------   F(3, 3047)      =      0.92
+       Model |  1539.76752         3  513.255839   Prob > F        =    0.4314
+    Residual |  1704089.17     3,047  559.267859   R-squared       =    0.0009
+-------------+----------------------------------   Adj R-squared   =   -0.0001
+       Total |  1705628.94     3,050  559.222602   Root MSE        =    23.649
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -1.991581   1.216631    -1.64   0.102    -4.377081    .3939195
+          3  |  -.7656122   1.216951    -0.63   0.529     -3.15174    1.620516
+          4  |  -.7456103   1.200214    -0.62   0.534    -3.098921      1.6077
+             |
+       _cons |   17.62306   .8565292    20.57   0.000     15.94363     19.3025
+------------------------------------------------------------------------------
+(30 missing values generated)
+(3,051 real changes made)
+(sum of wgt is   1.0625e+06)
+
+      Source |       SS           df       MS      Number of obs   =    16,530
+-------------+----------------------------------   F(3, 16526)     =      1.05
+       Model |  1501.37883         3  500.459609   Prob > F        =    0.3710
+    Residual |  7908539.24    16,526  478.551327   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  7910040.62    16,529  478.555304   Root MSE        =    21.876
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0819327   .4771441    -0.17   0.864    -1.017187    .8533211
+          3  |  -.1980252   .4804796    -0.41   0.680    -1.139817    .7437665
+          4  |   .5892744   .4811852     1.22   0.221    -.3539004    1.532449
+             |
+       _cons |   17.50351   .3366853    51.99   0.000     16.84357    18.16345
+------------------------------------------------------------------------------
+(30 missing values generated)
+(16,547 real changes made)
+(sum of wgt is   8.2847e+05)
+
+      Source |       SS           df       MS      Number of obs   =     3,961
+-------------+----------------------------------   F(3, 3957)      =      0.64
+       Model |  .460358547         3  .153452849   Prob > F        =    0.5915
+    Residual |  954.032777     3,957  .241100019   R-squared       =    0.0005
+-------------+----------------------------------   Adj R-squared   =   -0.0003
+       Total |  954.493136     3,960   .24103362   Root MSE        =    .49102
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0245806   .0225417    -1.09   0.276    -.0687751    .0196139
+          3  |  -.0266468   .0219752    -1.21   0.225    -.0697306     .016437
+          4  |  -.0243077   .0222733    -1.09   0.275    -.0679758    .0193604
+             |
+       _cons |    .424199   .0159869    26.53   0.000     .3928557    .4555422
+------------------------------------------------------------------------------
+(30 missing values generated)
+(3,961 real changes made)
+(sum of wgt is   2.8407e+06)
+
+      Source |       SS           df       MS      Number of obs   =    33,605
+-------------+----------------------------------   F(3, 33601)     =      6.73
+       Model |   4.9068781         3  1.63562603   Prob > F        =    0.0002
+    Residual |  8160.95317    33,601  .242878282   R-squared       =    0.0006
+-------------+----------------------------------   Adj R-squared   =    0.0005
+       Total |  8165.86005    33,604   .24300262   Root MSE        =    .49283
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0212315   .0076031     2.79   0.005     .0063292    .0361339
+          3  |   .0184716   .0077138     2.39   0.017     .0033524    .0335909
+          4  |   .0338262   .0075917     4.46   0.000     .0189461    .0487062
+             |
+       _cons |   .3976778    .005441    73.09   0.000     .3870131    .4083424
+------------------------------------------------------------------------------
+(30 missing values generated)
+(33,679 real changes made)
+(sum of wgt is   8.2847e+05)
+
+      Source |       SS           df       MS      Number of obs   =     3,961
+-------------+----------------------------------   F(3, 3957)      =      0.23
+       Model |  378.768058         3  126.256019   Prob > F        =    0.8787
+    Residual |   2214712.3     3,957  559.694794   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0006
+       Total |  2215091.07     3,960  559.366431   Root MSE        =    23.658
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.8930618   1.086087    -0.82   0.411    -3.022404     1.23628
+          3  |  -.4329892   1.058791    -0.41   0.683    -2.508815    1.642837
+          4  |  -.4579875   1.073151    -0.43   0.670    -2.561968    1.645993
+             |
+       _cons |   17.37994   .7702654    22.56   0.000     15.86979     18.8901
+------------------------------------------------------------------------------
+(30 missing values generated)
+(3,961 real changes made)
+(sum of wgt is   2.8407e+06)
+
+      Source |       SS           df       MS      Number of obs   =    33,605
+-------------+----------------------------------   F(3, 33601)     =      0.64
+       Model |  990.281012         3  330.093671   Prob > F        =    0.5907
+    Residual |  17395782.3    33,601  517.716208   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |  17396772.6    33,604  517.699458   Root MSE        =    22.753
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.2720628   .3510278    -0.78   0.438    -.9600894    .4159638
+          3  |  -.1854741   .3561374    -0.52   0.603    -.8835158    .5125675
+          4  |   .1678443   .3505037     0.48   0.632     -.519155    .8548436
+             |
+       _cons |   17.31878   .2512083    68.94   0.000      16.8264    17.81116
+------------------------------------------------------------------------------
+(30 missing values generated)
+(33,679 real changes made)
+(sum of wgt is   9.4384e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,819
+-------------+----------------------------------   F(3, 4815)      =      0.11
+       Model |  .077553159         3  .025851053   Prob > F        =    0.9551
+    Residual |  1146.22382     4,815  .238052714   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0006
+       Total |  1146.30137     4,818  .237920584   Root MSE        =    .48791
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   -.001654   .0197963    -0.08   0.933    -.0404639    .0371559
+          3  |   -.006294   .0197729    -0.32   0.750     -.045058    .0324699
+          4  |   .0049799   .0199776     0.25   0.803    -.0341852    .0441451
+             |
+       _cons |   .3906684   .0139886    27.93   0.000     .3632443    .4180925
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,819 real changes made)
+(sum of wgt is   2.5545e+06)
+
+      Source |       SS           df       MS      Number of obs   =    27,921
+-------------+----------------------------------   F(3, 27917)     =      6.56
+       Model |  4.75545629         3   1.5851521   Prob > F        =    0.0002
+    Residual |  6749.63902    27,917  .241775227   R-squared       =    0.0007
+-------------+----------------------------------   Adj R-squared   =    0.0006
+       Total |  6754.39447    27,920  .241919573   Root MSE        =    .49171
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0247891   .0082186     3.02   0.003     .0086802     .040898
+          3  |    .026301   .0083149     3.16   0.002     .0100035    .0425985
+          4  |    .034677   .0082991     4.18   0.000     .0184104    .0509436
+             |
+       _cons |   .3889034   .0057841    67.24   0.000     .3775664    .4002405
+------------------------------------------------------------------------------
+(30 missing values generated)
+(28,039 real changes made)
+(sum of wgt is   9.4384e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,819
+-------------+----------------------------------   F(3, 4815)      =      0.01
+       Model |  13.3665125         3  4.45550416   Prob > F        =    0.9987
+    Residual |  2215954.79     4,815  460.219063   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0006
+       Total |  2215968.15     4,818  459.935275   Root MSE        =    21.453
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0811858   .8704239     0.09   0.926    -1.625243    1.787614
+          3  |  -.0607597   .8693938    -0.07   0.944    -1.765169    1.643649
+          4  |   .0408452   .8783923     0.05   0.963    -1.681205    1.762895
+             |
+       _cons |   15.69837   .6150654    25.52   0.000     14.49257    16.90418
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,819 real changes made)
+(sum of wgt is   2.5545e+06)
+
+      Source |       SS           df       MS      Number of obs   =    27,921
+-------------+----------------------------------   F(3, 27917)     =      1.13
+       Model |  1577.20863         3  525.736211   Prob > F        =    0.3344
+    Residual |    12962618    27,917  464.327042   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  12964195.3    27,920  464.333641   Root MSE        =    21.548
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.5609976   .3601674    -1.56   0.119    -1.266943    .1449482
+          3  |  -.5839832   .3643853    -1.60   0.109    -1.298196    .1302298
+          4  |  -.3144171    .363694    -0.86   0.387    -1.027275    .3984409
+             |
+       _cons |   16.63893   .2534769    65.64   0.000      16.1421    17.13576
+------------------------------------------------------------------------------
+(30 missing values generated)
+(28,039 real changes made)
+(sum of wgt is   2.5758e+06)
+
+      Source |       SS           df       MS      Number of obs   =    12,670
+-------------+----------------------------------   F(3, 12666)     =      8.31
+       Model |  5.90306186         3  1.96768729   Prob > F        =    0.0000
+    Residual |  3000.01387    12,666  .236855666   R-squared       =    0.0020
+-------------+----------------------------------   Adj R-squared   =    0.0017
+       Total |  3005.91693    12,669  .237265524   Root MSE        =    .48668
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0545346   .0123546    -4.41   0.000    -.0787515   -.0303176
+          3  |    -.04695   .0122472    -3.83   0.000    -.0709563   -.0229437
+          4  |  -.0198994   .0123583    -1.61   0.107    -.0441236    .0043247
+             |
+       _cons |   .4179004    .008832    47.32   0.000     .4005883    .4352124
+------------------------------------------------------------------------------
+(30 missing values generated)
+(12,670 real changes made)
+(sum of wgt is   7.2329e+06)
+
+      Source |       SS           df       MS      Number of obs   =    77,551
+-------------+----------------------------------   F(3, 77547)     =     27.22
+       Model |  20.1820227         3  6.72734091   Prob > F        =    0.0000
+    Residual |  19163.5897    77,547  .247122258   R-squared       =    0.0011
+-------------+----------------------------------   Adj R-squared   =    0.0010
+       Total |  19183.7718    77,550  .247372943   Root MSE        =    .49711
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0391984   .0050663    -7.74   0.000    -.0491283   -.0292686
+          3  |  -.0363137   .0050702    -7.16   0.000    -.0462513   -.0263761
+          4  |  -.0140155   .0050645    -2.77   0.006    -.0239418   -.0040891
+             |
+       _cons |   .4712392   .0036077   130.62   0.000     .4641682    .4783102
+------------------------------------------------------------------------------
+(30 missing values generated)
+(77,628 real changes made)
+(sum of wgt is   2.5758e+06)
+
+      Source |       SS           df       MS      Number of obs   =    12,670
+-------------+----------------------------------   F(3, 12666)     =     19.71
+       Model |  32539.0935         3  10846.3645   Prob > F        =    0.0000
+    Residual |  6971080.44    12,666  550.377423   R-squared       =    0.0046
+-------------+----------------------------------   Adj R-squared   =    0.0044
+       Total |  7003619.53    12,669  552.815497   Root MSE        =     23.46
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -4.045995   .5955505    -6.79   0.000    -5.213364   -2.878625
+          3  |  -3.689852   .5903691    -6.25   0.000    -4.847065   -2.532639
+          4  |  -1.841096   .5957272    -3.09   0.002    -3.008811   -.6733807
+             |
+       _cons |   18.96831   .4257431    44.55   0.000     18.13379    19.80283
+------------------------------------------------------------------------------
+(30 missing values generated)
+(12,670 real changes made)
+(sum of wgt is   7.2329e+06)
+
+      Source |       SS           df       MS      Number of obs   =    77,551
+-------------+----------------------------------   F(3, 77547)     =     87.21
+       Model |  130074.085         3  43358.0284   Prob > F        =    0.0000
+    Residual |  38554712.5    77,547  497.178647   R-squared       =    0.0034
+-------------+----------------------------------   Adj R-squared   =    0.0033
+       Total |  38684786.6    77,550  498.836707   Root MSE        =    22.298
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -3.206285   .2272426   -14.11   0.000    -3.651679    -2.76089
+          3  |  -3.168391   .2274201   -13.93   0.000    -3.614133   -2.722648
+          4  |  -1.995341   .2271609    -8.78   0.000    -2.440575   -1.550107
+             |
+       _cons |   20.94898   .1618181   129.46   0.000     20.63182    21.26615
+------------------------------------------------------------------------------
+(30 missing values generated)
+(77,628 real changes made)
+(sum of wgt is   1.8092e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,237
+-------------+----------------------------------   F(3, 9233)      =      0.50
+       Model |  .337471033         3  .112490344   Prob > F        =    0.6849
+    Residual |    2092.957     9,233  .226682227   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  2093.29447     9,236  .226645135   Root MSE        =    .47611
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0121339   .0138747     0.87   0.382    -.0150635    .0393314
+          3  |   .0006448   .0139463     0.05   0.963     -.026693    .0279826
+          4  |  -.0041747    .013977    -0.30   0.765    -.0315728    .0232234
+             |
+       _cons |   .3449103    .009734    35.43   0.000     .3258294    .3639912
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,237 real changes made)
+(sum of wgt is   5.2768e+06)
+
+      Source |       SS           df       MS      Number of obs   =    50,468
+-------------+----------------------------------   F(3, 50464)     =     10.05
+       Model |  7.14147567         3  2.38049189   Prob > F        =    0.0000
+    Residual |  11957.6809    50,464  .236954678   R-squared       =    0.0006
+-------------+----------------------------------   Adj R-squared   =    0.0005
+       Total |  11964.8223    50,467    .2370821   Root MSE        =    .48678
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |      .0286   .0061374     4.66   0.000     .0165706    .0406293
+          3  |    .027197   .0060873     4.47   0.000     .0152658    .0391281
+          4  |   .0255782   .0060782     4.21   0.000      .013665    .0374915
+             |
+       _cons |   .3661881   .0042725    85.71   0.000      .357814    .3745622
+------------------------------------------------------------------------------
+(30 missing values generated)
+(50,583 real changes made)
+(sum of wgt is   1.8092e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,237
+-------------+----------------------------------   F(3, 9233)      =      0.54
+       Model |  826.292294         3  275.430765   Prob > F        =    0.6528
+    Residual |  4683191.71     9,233  507.223189   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0001
+       Total |     4684018     9,236  507.147899   Root MSE        =    22.522
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.4145951   .6563168    -0.63   0.528    -1.701121    .8719309
+          3  |  -.4088439   .6597044    -0.62   0.535     -1.70201    .8843225
+          4  |  -.8438394   .6611594    -1.28   0.202    -2.139858    .4521792
+             |
+       _cons |   15.36211   .4604519    33.36   0.000     14.45953     16.2647
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,237 real changes made)
+(sum of wgt is   5.2768e+06)
+
+      Source |       SS           df       MS      Number of obs   =    50,468
+-------------+----------------------------------   F(3, 50464)     =      0.20
+       Model |  294.335223         3  98.1117409   Prob > F        =    0.8978
+    Residual |  25004292.7    50,464  495.487727   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |    25004587    50,467  495.464105   Root MSE        =     22.26
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0581242   .2806521    -0.21   0.836    -.6082053    .4919569
+          3  |  -.1850434   .2783606    -0.66   0.506    -.7306332    .3605465
+          4  |  -.1640943   .2779432    -0.59   0.555     -.708866    .3806774
+             |
+       _cons |   16.60239   .1953727    84.98   0.000     16.21946    16.98533
+------------------------------------------------------------------------------
+(30 missing values generated)
+(50,583 real changes made)
+(sum of wgt is   7.5625e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,742
+-------------+----------------------------------   F(3, 4738)      =      2.81
+       Model |  1.87092869         3  .623642895   Prob > F        =    0.0381
+    Residual |  1052.16242     4,738  .222068893   R-squared       =    0.0018
+-------------+----------------------------------   Adj R-squared   =    0.0011
+       Total |  1054.03335     4,741  .222323001   Root MSE        =    .47124
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0137768   .0189938    -0.73   0.468    -.0510136      .02346
+          3  |  -.0513022   .0191706    -2.68   0.007    -.0888855   -.0137189
+          4  |  -.0357624   .0194794    -1.84   0.066     -.073951    .0024261
+             |
+       _cons |   .3580747   .0133588    26.80   0.000     .3318852    .3842642
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,742 real changes made)
+(sum of wgt is   2.2489e+06)
+
+      Source |       SS           df       MS      Number of obs   =    28,410
+-------------+----------------------------------   F(3, 28406)     =     15.89
+       Model |  11.2740668         3  3.75802226   Prob > F        =    0.0000
+    Residual |  6716.62279    28,406  .236450848   R-squared       =    0.0017
+-------------+----------------------------------   Adj R-squared   =    0.0016
+       Total |  6727.89686    28,409  .236822727   Root MSE        =    .48626
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0446039   .0081506     5.47   0.000     .0286284    .0605795
+          3  |    .040159   .0081772     4.91   0.000     .0241312    .0561868
+          4  |   .0501758   .0080938     6.20   0.000     .0343115    .0660401
+             |
+       _cons |   .3515526   .0057274    61.38   0.000     .3403266    .3627785
+------------------------------------------------------------------------------
+(30 missing values generated)
+(28,496 real changes made)
+(sum of wgt is   7.5625e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,742
+-------------+----------------------------------   F(3, 4738)      =      2.90
+       Model |  3861.28636         3  1287.09545   Prob > F        =    0.0339
+    Residual |  2105915.58     4,738  444.473528   R-squared       =    0.0018
+-------------+----------------------------------   Adj R-squared   =    0.0012
+       Total |  2109776.86     4,741  445.006721   Root MSE        =    21.083
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -1.113001   .8497516    -1.31   0.190    -2.778909    .5529069
+          3  |  -2.428889   .8576586    -2.83   0.005    -4.110299   -.7474797
+          4  |  -1.745117   .8714724    -2.00   0.045    -3.453608    -.036626
+             |
+       _cons |   14.95089   .5976504    25.02   0.000     13.77921    16.12256
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,742 real changes made)
+(sum of wgt is   2.2489e+06)
+
+      Source |       SS           df       MS      Number of obs   =    28,410
+-------------+----------------------------------   F(3, 28406)     =      2.43
+       Model |  3579.77726         3  1193.25909   Prob > F        =    0.0629
+    Residual |  13925598.4    28,406  490.234401   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  13929178.2    28,409  490.308641   Root MSE        =    22.141
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .6774004    .371126     1.83   0.068    -.0500242    1.404825
+          3  |   .2012726   .3723382     0.54   0.589     -.528528    .9310732
+          4  |   .8788692   .3685408     2.38   0.017     .1565117    1.601227
+             |
+       _cons |   15.71791   .2607885    60.27   0.000     15.20675    16.22907
+------------------------------------------------------------------------------
+(30 missing values generated)
+(28,496 real changes made)
+(sum of wgt is   1.8326e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,589
+-------------+----------------------------------   F(3, 9585)      =      0.96
+       Model |  .657439882         3  .219146627   Prob > F        =    0.4125
+    Residual |  2197.28631     9,585  .229242181   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =   -0.0000
+       Total |  2197.94375     9,588  .229239022   Root MSE        =    .47879
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0217654   .0138361     1.57   0.116    -.0053563     .048887
+          3  |   .0057662   .0138654     0.42   0.678    -.0214129    .0329454
+          4  |   .0141339   .0141596     1.00   0.318    -.0136219    .0418897
+             |
+       _cons |    .345235   .0100213    34.45   0.000     .3255911    .3648789
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,589 real changes made)
+(sum of wgt is   4.6918e+06)
+
+      Source |       SS           df       MS      Number of obs   =    46,149
+-------------+----------------------------------   F(3, 46145)     =      2.02
+       Model |  1.45378294         3  .484594314   Prob > F        =    0.1082
+    Residual |  11047.7769    46,145  .239414387   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  11049.2307    46,148  .239430325   Root MSE        =     .4893
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0124525   .0064642     1.93   0.054    -.0002175    .0251225
+          3  |   .0100924   .0064517     1.56   0.118     -.002553    .0227377
+          4  |   .0148355    .006476     2.29   0.022     .0021424    .0275286
+             |
+       _cons |    .387769   .0046006    84.29   0.000     .3787518    .3967862
+------------------------------------------------------------------------------
+(30 missing values generated)
+(46,195 real changes made)
+(sum of wgt is   1.8326e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,589
+-------------+----------------------------------   F(3, 9585)      =      0.51
+       Model |  836.424778         3  278.808259   Prob > F        =    0.6763
+    Residual |  5254442.16     9,585  548.194278   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  5255278.58     9,588   548.10999   Root MSE        =    23.414
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .6403534   .6766013     0.95   0.344    -.6859282    1.966635
+          3  |   .1643831   .6780367     0.24   0.808    -1.164712    1.493479
+          4  |   .6900076   .6924213     1.00   0.319    -.6672846      2.0473
+             |
+       _cons |   16.08051   .4900553    32.81   0.000      15.1199    17.04112
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,589 real changes made)
+(sum of wgt is   4.6918e+06)
+
+      Source |       SS           df       MS      Number of obs   =    46,149
+-------------+----------------------------------   F(3, 46145)     =      3.35
+       Model |  5210.45225         3  1736.81742   Prob > F        =    0.0182
+    Residual |  23943924.9    46,145  518.884493   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  23949135.4    46,148  518.963668   Root MSE        =    22.779
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.5826546   .3009384    -1.94   0.053    -1.172499    .0071893
+          3  |  -.9315555   .3003534    -3.10   0.002    -1.520253   -.3428582
+          4  |  -.6316097   .3014871    -2.09   0.036    -1.222529   -.0406903
+             |
+       _cons |   17.34253   .2141767    80.97   0.000     16.92274    17.76232
+------------------------------------------------------------------------------
+(30 missing values generated)
+(46,195 real changes made)
+(sum of wgt is   1.1698e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,536
+-------------+----------------------------------   F(3, 6532)      =      6.11
+       Model |  4.26018842         3  1.42006281   Prob > F        =    0.0004
+    Residual |  1519.26008     6,532  .232587276   R-squared       =    0.0028
+-------------+----------------------------------   Adj R-squared   =    0.0023
+       Total |  1523.52027     6,535  .233132406   Root MSE        =    .48227
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0022389   .0170494     0.13   0.896    -.0311836    .0356614
+          3  |  -.0360674   .0168583    -2.14   0.032    -.0691152   -.0030196
+          4  |  -.0585427   .0168287    -3.48   0.001    -.0915325   -.0255529
+             |
+       _cons |   .3936032   .0120096    32.77   0.000     .3700605    .4171459
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,536 real changes made)
+(sum of wgt is   3.1480e+06)
+
+      Source |       SS           df       MS      Number of obs   =    45,211
+-------------+----------------------------------   F(3, 45207)     =      2.47
+       Model |  1.77967115         3  .593223717   Prob > F        =    0.0597
+    Residual |  10846.0723    45,207  .239920195   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  10847.8519    45,210   .23994364   Root MSE        =    .48982
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0079291   .0066113    -1.20   0.230    -.0208874    .0050292
+          3  |  -.0156398   .0066631    -2.35   0.019    -.0286997     -.00258
+          4  |  -.0007579   .0064675    -0.12   0.907    -.0134343    .0119185
+             |
+       _cons |   .4056434   .0047316    85.73   0.000     .3963694    .4149174
+------------------------------------------------------------------------------
+(30 missing values generated)
+(45,226 real changes made)
+(sum of wgt is   1.1698e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,536
+-------------+----------------------------------   F(3, 6532)      =      8.30
+       Model |  13122.1665         3   4374.0555   Prob > F        =    0.0000
+    Residual |  3442453.25     6,532  527.013664   R-squared       =    0.0038
+-------------+----------------------------------   Adj R-squared   =    0.0033
+       Total |  3455575.42     6,535  528.779712   Root MSE        =    22.957
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -1.283569   .8115741    -1.58   0.114     -2.87452    .3073814
+          3  |  -3.331486   .8024748    -4.15   0.000    -4.904599   -1.758372
+          4  |  -3.318894   .8010676    -4.14   0.000    -4.889248   -1.748539
+             |
+       _cons |   17.41053   .5716709    30.46   0.000     16.28986    18.53119
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,536 real changes made)
+(sum of wgt is   3.1480e+06)
+
+      Source |       SS           df       MS      Number of obs   =    45,211
+-------------+----------------------------------   F(3, 45207)     =     25.16
+       Model |  35990.8449         3  11996.9483   Prob > F        =    0.0000
+    Residual |    21557207    45,207  476.855508   R-squared       =    0.0017
+-------------+----------------------------------   Adj R-squared   =    0.0016
+       Total |  21593197.8    45,210  477.619947   Root MSE        =    21.837
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   -1.78479   .2947467    -6.06   0.000    -2.362499   -1.207082
+          3  |  -2.458761   .2970563    -8.28   0.000    -3.040996   -1.876526
+          4  |  -1.072487   .2883338    -3.72   0.000    -1.637626    -.507348
+             |
+       _cons |   17.49503   .2109443    82.94   0.000     17.08158    17.90849
+------------------------------------------------------------------------------
+(30 missing values generated)
+(45,226 real changes made)
+(sum of wgt is   1.9705e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,416
+-------------+----------------------------------   F(3, 9412)      =      0.02
+       Model |  .013854989         3   .00461833   Prob > F        =    0.9960
+    Residual |  2113.90616     9,412  .224596915   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0003
+       Total |  2113.92002     9,415  .224526821   Root MSE        =    .47392
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.0005226   .0138365    -0.04   0.970    -.0276452       .0266
+          3  |  -.0004369   .0139086    -0.03   0.975    -.0277008     .026827
+          4  |   -.003059   .0137427    -0.22   0.824    -.0299976    .0238797
+             |
+       _cons |   .3413454    .009798    34.84   0.000     .3221392    .3605516
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,416 real changes made)
+(sum of wgt is   5.6162e+06)
+
+      Source |       SS           df       MS      Number of obs   =    52,528
+-------------+----------------------------------   F(3, 52524)     =      9.34
+       Model |  6.69653666         3  2.23217889   Prob > F        =    0.0000
+    Residual |   12558.349    52,524  .239097346   R-squared       =    0.0005
+-------------+----------------------------------   Adj R-squared   =    0.0005
+       Total |  12565.0455    52,527  .239211177   Root MSE        =    .48898
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0226276   .0060489     3.74   0.000     .0107718    .0344835
+          3  |   .0270706   .0060021     4.51   0.000     .0153063    .0388348
+          4  |   .0271057   .0060143     4.51   0.000     .0153176    .0388937
+             |
+       _cons |    .376972   .0042393    88.92   0.000     .3686629    .3852811
+------------------------------------------------------------------------------
+(30 missing values generated)
+(52,588 real changes made)
+(sum of wgt is   1.9705e+06)
+
+      Source |       SS           df       MS      Number of obs   =     9,416
+-------------+----------------------------------   F(3, 9412)      =      0.01
+       Model |  25.5276627         3  8.50922091   Prob > F        =    0.9977
+    Residual |  5723684.38     9,412  608.126262   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0003
+       Total |   5723709.9     9,415    607.9352   Root MSE        =     24.66
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.1094895   .7199827    -0.15   0.879    -1.520811    1.301832
+          3  |   .0303104   .7237335     0.04   0.967    -1.388364    1.448984
+          4  |  -.0384122   .7151004    -0.05   0.957    -1.440164    1.363339
+             |
+       _cons |   16.19551    .509838    31.77   0.000     15.19612     17.1949
+------------------------------------------------------------------------------
+(30 missing values generated)
+(9,416 real changes made)
+(sum of wgt is   5.6162e+06)
+
+      Source |       SS           df       MS      Number of obs   =    52,528
+-------------+----------------------------------   F(3, 52524)     =      1.67
+       Model |  2394.80076         3  798.266922   Prob > F        =    0.1720
+    Residual |  25170017.2    52,524  479.209833   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |    25172412    52,527  479.228055   Root MSE        =    21.891
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   -.357024   .2708015    -1.32   0.187    -.8877974    .1737493
+          3  |  -.0142259   .2687079    -0.05   0.958    -.5408958    .5124439
+          4  |   .2467349   .2692521     0.92   0.359    -.2810016    .7744715
+             |
+       _cons |   16.18461   .1897895    85.28   0.000     15.81262     16.5566
+------------------------------------------------------------------------------
+(30 missing values generated)
+(52,588 real changes made)
+(sum of wgt is   1.4795e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,337
+-------------+----------------------------------   F(3, 8333)      =      0.43
+       Model |  .303953099         3    .1013177   Prob > F        =    0.7316
+    Residual |  1963.96332     8,333  .235685026   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  1964.26727     8,336  .235636669   Root MSE        =    .48547
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0111477   .0151903     0.73   0.463    -.0186292    .0409245
+          3  |  -.0032751   .0149481    -0.22   0.827    -.0325771    .0260268
+          4  |   .0092147   .0148721     0.62   0.536    -.0199385    .0383678
+             |
+       _cons |   .3758518   .0105496    35.63   0.000     .3551721    .3965316
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,337 real changes made)
+(sum of wgt is   4.5327e+06)
+
+      Source |       SS           df       MS      Number of obs   =    47,421
+-------------+----------------------------------   F(3, 47417)     =      2.37
+       Model |  1.74444942         3   .58148314   Prob > F        =    0.0681
+    Residual |  11614.5205    47,417  .244944228   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  11616.2649    47,420  .244965519   Root MSE        =    .49492
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |    .007671   .0064717     1.19   0.236    -.0050136    .0203555
+          3  |   .0141615   .0064209     2.21   0.027     .0015764    .0267466
+          4  |   .0150402   .0063715     2.36   0.018     .0025519    .0275286
+             |
+       _cons |   .4197571   .0045289    92.69   0.000     .4108805    .4286337
+------------------------------------------------------------------------------
+(30 missing values generated)
+(47,492 real changes made)
+(sum of wgt is   1.4795e+06)
+
+      Source |       SS           df       MS      Number of obs   =     8,337
+-------------+----------------------------------   F(3, 8333)      =      1.44
+       Model |  2417.49632         3  805.832106   Prob > F        =    0.2288
+    Residual |  4660902.19     8,333  559.330636   R-squared       =    0.0005
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  4663319.68     8,336  559.419348   Root MSE        =     23.65
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .1305092   .7400073     0.18   0.860    -1.320089    1.581108
+          3  |  -.4219696   .7282039    -0.58   0.562     -1.84943    1.005491
+          4  |   1.039305   .7245061     1.43   0.151    -.3809075    2.459517
+             |
+       _cons |   15.78696   .5139284    30.72   0.000     14.77953    16.79438
+------------------------------------------------------------------------------
+(30 missing values generated)
+(8,337 real changes made)
+(sum of wgt is   4.5327e+06)
+
+      Source |       SS           df       MS      Number of obs   =    47,421
+-------------+----------------------------------   F(3, 47417)     =      1.40
+       Model |  2304.36238         3  768.120793   Prob > F        =    0.2397
+    Residual |  25955763.6    47,417  547.393627   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |    25958068    47,420  547.407592   Root MSE        =    23.396
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.4233984   .3059368    -1.38   0.166    -1.023039    .1762421
+          3  |  -.1536438   .3035392    -0.51   0.613    -.7485849    .4412973
+          4  |   .1796546   .3012041     0.60   0.551    -.4107096    .7700188
+             |
+       _cons |   18.71038    .214094    87.39   0.000     18.29075    19.13001
+------------------------------------------------------------------------------
+(30 missing values generated)
+(47,492 real changes made)
+(sum of wgt is   1.2238e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,878
+-------------+----------------------------------   F(3, 6874)      =      0.63
+       Model |  .426798206         3  .142266069   Prob > F        =    0.5959
+    Residual |  1553.35827     6,874   .22597589   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  1553.78507     6,877  .225939373   Root MSE        =    .47537
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0120225   .0162428     0.74   0.459    -.0198184    .0438634
+          3  |   .0067113    .016416     0.41   0.683    -.0254692    .0388918
+          4  |  -.0088317   .0161526    -0.55   0.585    -.0404957    .0228324
+             |
+       _cons |   .3423942   .0115798    29.57   0.000     .3196941    .3650942
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,878 real changes made)
+(sum of wgt is   3.6781e+06)
+
+      Source |       SS           df       MS      Number of obs   =    37,708
+-------------+----------------------------------   F(3, 37704)     =     13.67
+       Model |  9.99578305         3  3.33192768   Prob > F        =    0.0000
+    Residual |  9189.79782    37,704  .243735355   R-squared       =    0.0011
+-------------+----------------------------------   Adj R-squared   =    0.0010
+       Total |   9199.7936    37,707  .243981054   Root MSE        =     .4937
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0419094   .0072307     5.80   0.000      .027737    .0560819
+          3  |   .0273284   .0072115     3.79   0.000     .0131936    .0414631
+          4  |   .0375982   .0071443     5.26   0.000     .0235952    .0516013
+             |
+       _cons |   .3956363    .005093    77.68   0.000     .3856539    .4056187
+------------------------------------------------------------------------------
+(30 missing values generated)
+(37,826 real changes made)
+(sum of wgt is   1.2238e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,878
+-------------+----------------------------------   F(3, 6874)      =      1.79
+       Model |   2721.3929         3  907.130967   Prob > F        =    0.1477
+    Residual |  3493291.91     6,874  508.189106   R-squared       =    0.0008
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  3496013.31     6,877  508.363139   Root MSE        =    22.543
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -1.056261   .7702696    -1.37   0.170    -2.566228    .4537057
+          3  |   -.730478   .7784842    -0.94   0.348    -2.256548    .7955918
+          4  |  -1.742874   .7659918    -2.28   0.023    -3.244455   -.2412938
+             |
+       _cons |   15.08234   .5491404    27.47   0.000     14.00585    16.15882
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,878 real changes made)
+(sum of wgt is   3.6781e+06)
+
+      Source |       SS           df       MS      Number of obs   =    37,708
+-------------+----------------------------------   F(3, 37704)     =      1.73
+       Model |  2632.82003         3  877.606676   Prob > F        =    0.1592
+    Residual |  19170949.5    37,704  508.459302   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0001
+       Total |  19173582.3    37,707  508.488671   Root MSE        =    22.549
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .3742004   .3302563     1.13   0.257     -.273111    1.021512
+          3  |  -.3168826   .3293786    -0.96   0.336    -.9624736    .3287083
+          4  |   .2555276   .3263094     0.78   0.434    -.3840476    .8951029
+             |
+       _cons |   17.14564   .2326168    73.71   0.000      16.6897    17.60157
+------------------------------------------------------------------------------
+(30 missing values generated)
+(37,826 real changes made)
+(sum of wgt is   1.3278e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,929
+-------------+----------------------------------   F(3, 6925)      =      0.85
+       Model |  .577282659         3  .192427553   Prob > F        =    0.4660
+    Residual |  1566.41096     6,925  .226196528   R-squared       =    0.0004
+-------------+----------------------------------   Adj R-squared   =   -0.0001
+       Total |  1566.98824     6,928  .226181905   Root MSE        =     .4756
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0229784    .016263     1.41   0.158     -.008902    .0548587
+          3  |    .021077   .0161313     1.31   0.191    -.0105452    .0526992
+          4  |   .0108941   .0162651     0.67   0.503    -.0209906    .0427787
+             |
+       _cons |   .3317055   .0115491    28.72   0.000     .3090658    .3543453
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,929 real changes made)
+(sum of wgt is   3.7542e+06)
+
+      Source |       SS           df       MS      Number of obs   =    45,010
+-------------+----------------------------------   F(3, 45006)     =      5.28
+       Model |  3.76914102         3  1.25638034   Prob > F        =    0.0012
+    Residual |  10717.8291    45,006  .238142227   R-squared       =    0.0004
+-------------+----------------------------------   Adj R-squared   =    0.0003
+       Total |  10721.5982    45,009  .238210096   Root MSE        =      .488
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0212432   .0065272     3.25   0.001     .0084498    .0340367
+          3  |   .0132604    .006563     2.02   0.043     .0003969     .026124
+          4  |   .0235114   .0065192     3.61   0.000     .0107336    .0362892
+             |
+       _cons |   .3767216   .0046634    80.78   0.000     .3675813    .3858619
+------------------------------------------------------------------------------
+(30 missing values generated)
+(45,072 real changes made)
+(sum of wgt is   1.3278e+06)
+
+      Source |       SS           df       MS      Number of obs   =     6,929
+-------------+----------------------------------   F(3, 6925)      =      0.27
+       Model |  427.775735         3  142.591912   Prob > F        =    0.8455
+    Residual |  3628735.77     6,925  524.005166   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0003
+       Total |  3629163.55     6,928  523.840004   Root MSE        =    22.891
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.6126961   .7827526    -0.78   0.434    -2.147131     .921739
+          3  |  -.5481267   .7764132    -0.71   0.480    -2.070135    .9738812
+          4  |  -.2158976   .7828565    -0.28   0.783    -1.750536    1.318741
+             |
+       _cons |   15.34077   .5558691    27.60   0.000      14.2511    16.43045
+------------------------------------------------------------------------------
+(30 missing values generated)
+(6,929 real changes made)
+(sum of wgt is   3.7542e+06)
+
+      Source |       SS           df       MS      Number of obs   =    45,010
+-------------+----------------------------------   F(3, 45006)     =      1.43
+       Model |  2100.75774         3  700.252581   Prob > F        =    0.2332
+    Residual |  22110593.9    45,006  491.281027   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =    0.0000
+       Total |  22112694.7    45,009  491.294956   Root MSE        =    22.165
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |  -.3201248    .296466    -1.08   0.280    -.9012032    .2609536
+          3  |  -.5961534    .298091    -2.00   0.046    -1.180417   -.0118902
+          4  |  -.1827515   .2961039    -0.62   0.537    -.7631201    .3976172
+             |
+       _cons |   16.43701   .2118114    77.60   0.000     16.02185    16.85216
+------------------------------------------------------------------------------
+(30 missing values generated)
+(45,072 real changes made)
+(sum of wgt is   7.5648e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,147
+-------------+----------------------------------   F(3, 4143)      =      0.40
+       Model |  .284526327         3  .094842109   Prob > F        =    0.7501
+    Residual |  972.532541     4,143  .234741139   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =   -0.0004
+       Total |  972.817067     4,146   .23463991   Root MSE        =     .4845
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0160595   .0212434     0.76   0.450     -.025589     .057708
+          3  |   .0017912   .0211804     0.08   0.933    -.0397337    .0433162
+          4  |   .0185219   .0211173     0.88   0.380    -.0228793     .059923
+             |
+       _cons |   .3668252   .0148295    24.74   0.000     .3377514     .395899
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,147 real changes made)
+(sum of wgt is   2.0435e+06)
+
+      Source |       SS           df       MS      Number of obs   =    27,212
+-------------+----------------------------------   F(3, 27208)     =      7.20
+       Model |  5.09700574         3  1.69900191   Prob > F        =    0.0001
+    Residual |   6418.2108    27,208  .235894252   R-squared       =    0.0008
+-------------+----------------------------------   Adj R-squared   =    0.0007
+       Total |  6423.30781    27,211  .236055559   Root MSE        =    .48569
+
+------------------------------------------------------------------------------
+unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .0283214   .0083072     3.41   0.001     .0120388    .0446039
+          3  |   .0099293   .0083087     1.20   0.232    -.0063562    .0262147
+          4  |   .0335784   .0082243     4.08   0.000     .0174584    .0496985
+             |
+       _cons |   .3640436   .0057829    62.95   0.000     .3527087    .3753784
+------------------------------------------------------------------------------
+(30 missing values generated)
+(27,253 real changes made)
+(sum of wgt is   7.5648e+05)
+
+      Source |       SS           df       MS      Number of obs   =     4,147
+-------------+----------------------------------   F(3, 4143)      =      0.42
+       Model |  759.169079         3   253.05636   Prob > F        =    0.7389
+    Residual |  2498299.47     4,143  603.017009   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =   -0.0004
+       Total |  2499058.64     4,146  602.763781   Root MSE        =    24.556
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   1.194631     1.0767     1.11   0.267    -.9162787    3.305541
+          3  |   .7219515   1.073505     0.67   0.501    -1.382695    2.826598
+          4  |   .6942546   1.070306     0.65   0.517    -1.404119    2.792628
+             |
+       _cons |   16.20489   .7516173    21.56   0.000     14.73132    17.67846
+------------------------------------------------------------------------------
+(30 missing values generated)
+(4,147 real changes made)
+(sum of wgt is   2.0435e+06)
+
+      Source |       SS           df       MS      Number of obs   =    27,212
+-------------+----------------------------------   F(3, 27208)     =      2.48
+       Model |   3554.8082         3  1184.93607   Prob > F        =    0.0589
+    Residual |  12981480.9    27,208  477.119999   R-squared       =    0.0003
+-------------+----------------------------------   Adj R-squared   =    0.0002
+       Total |  12985035.8    27,211  477.198036   Root MSE        =    21.843
+
+------------------------------------------------------------------------------
+unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   trimestre |
+          2  |   .2967756    .373603     0.79   0.427    -.4355054    1.029057
+          3  |  -.5098966   .3736693    -1.36   0.172    -1.242308    .2225145
+          4  |   .4416964   .3698743     1.19   0.232    -.2832762    1.166669
+             |
+       _cons |   15.72117   .2600784    60.45   0.000      15.2114    16.23093
+------------------------------------------------------------------------------
+(30 missing values generated)
+(27,253 real changes made)
+(30 observations deleted)
+(data now sorted by numero pers anio)
+  variable D was int now byte
+  variable pobre was float now byte
+  variable indigente was float now byte
+  variable ind_under14 was float now byte
+  variable semestre was float now byte
+  variable anio_sem was float now int
+  variable anio_qtr was float now int
+  variable unadj_trabajo was float now byte
+  variable unadj_horas_trabajo was float now byte
+  variable educ_more_HS was float now byte
+  variable educ_HS_or_more was float now byte
+  variable nomloc was str104 now str25
+  (203,402,772 bytes saved)
+===============================================================================
+> ===================
+File: ..\output\clean_loc_1998_2016.dta
+Key: numero pers anio
+===============================================================================
+> ===================
+  1883359:89(28497):503218501:2806165511
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+      numero |  1,883,359    7.60e+08    9.76e+08          1   2.02e+09
+        pers |  1,883,359    2.394438    1.518967          1         27
+        anio |  1,883,359    2008.397    4.955544       1998       2016
+   inflation |  1,883,359    8.059518    3.511445       3.59      25.94
+    cpi_2006 |  1,883,359    127.7388    47.60945   48.00595   217.6432
+-------------+---------------------------------------------------------
+           D |          0
+      semana |    172,515    24.40658    13.83848          1         48
+        dpto |  1,883,359    5.628493    5.786107          1         19
+        secc |  1,730,305    9.574802    16.53152          0         99
+        segm |  1,730,305    61.89583    92.34555          0        845
+-------------+---------------------------------------------------------
+     estrato |  1,883,359    5.493579    2.938851          1         12
+      hombre |  1,883,359    .4683451    .4989971          0          1
+        edad |  1,883,359    36.69205      23.473          0         99
+horas_trab~o |  1,883,359    17.37804    22.41992  -2.432244      100.1
+       pf133 |    172,515    .8011535    .9642651          0          2
+-------------+---------------------------------------------------------
+busca_trab~o |  1,883,359    .0717808    .2581247          0          1
+meses_trab~o |  1,604,330    .9877718    3.921998          0         80
+anios_trab~o |  1,604,330    3.595143    7.810929          0         98
+      ytotal |  1,883,359     8964.04    17117.79          0    7244333
+     pesotri |  1,882,057    112.2817    54.20272          1       1527
+-------------+---------------------------------------------------------
+     pesosem |  1,770,327    55.96034    28.39956          3       1345
+      pesoan |  1,883,359    28.17216    13.90841          1       1323
+         ccz |  1,799,390     4.17659    5.575275          0         18
+         loc |          0
+      nomloc |          0
+-------------+---------------------------------------------------------
+  nbr_people |  1,883,359    3.788646    1.892628          1         27
+ nbr_above14 |  1,883,359     2.79023    1.261887          1         16
+ nbr_under14 |  1,883,359    .9982621    1.287069          0         14
+     y_hogar |  1,883,359    27941.29    35277.56          0    7681180
+  educ_level |  1,883,359    1.300751    .5889926          1          3
+-------------+---------------------------------------------------------
+  estudiante |  1,883,359    .0682754    .2522179          0          1
+c98_resid_~e |  1,883,359    .9953339    .0681495          0          1
+c98_resid_~d |  1,883,359    .6481754    .4775397          0          1
+c98_nbr_ro~s |  1,883,359    3.574185    1.311901          0         80
+c98_nbr_be~s |  1,883,359    2.195518    .8372686          0         40
+-------------+---------------------------------------------------------
+c98_b_pipe~r |  1,883,359     .964987    .1838126          0          1
+c98_hhld_t~t |  1,883,359    .9230901    .2664485          0          1
+c98_b_sewage |  1,883,359    .6018704    .4895126          0          1
+c98_hhld_s~e |  1,883,359    .9487071    .2205946          0          1
+c98_hhld_h~r |  1,883,359    .8767718    .3286991          0          1
+-------------+---------------------------------------------------------
+c98_hhld_r~t |  1,883,359    .8439952      .36286          0          1
+ c98_hhld_tv |  1,883,359    .9618586    .1915377          0          1
+c98_hhld_vcr |  1,883,359    .4869757    .4998305          0          1
+c98_hhld_w~c |  1,883,359    .7094054    .4540369          0          1
+c98_hhld_d~r |  1,883,359    .0426716    .2021158          0          1
+-------------+---------------------------------------------------------
+c98_hhld_m~e |  1,883,359    .4803296    .4996131          0          1
+c98_hhld_car |  1,883,359    .3550953    .4785423          0          1
+     married |  1,593,343    .5195686    .4996171          0          1
+ y_hogar_alt |  1,883,359    28126.23       32692          0    7289481
+   trimestre |  1,883,359    2.497607    1.117068          1          4
+-------------+---------------------------------------------------------
+     trabajo |  1,883,359    .4188746    .4932058  -.0308305   1.034927
+       etnia |  1,431,815    2.291282    .9704217          0          4
+         mes |  1,710,844    6.493153    3.444643          1         12
+          e9 |    279,029    1.656792    .5465739          0          2
+c01_hhld_c~r |  1,710,844    .5257364    .4993373          0          1
+-------------+---------------------------------------------------------
+c01_hhld_i~t |  1,710,844    .3633762     .480972          0          1
+c01_hhld_p~e |  1,710,844    .7214872    .4482673          0          1
+c01_hhld_c~v |  1,710,844    .5669482    .4954978          0          1
+    region_3 |  1,431,815    1.683245    .6382833          1          3
+    region_4 |  1,431,815    1.683762    .6397525          1          4
+-------------+---------------------------------------------------------
+        afro |    475,334     .014413    .1191861          0          1
+        asia |    475,334    .0009278    .0304452          0          1
+      blanco |    475,334    .8583543    .3486867          0          1
+    indigena |    475,334    .0027202    .0520845          0          1
+ live_births |  1,186,134    .7562409      .73836          0          2
+-------------+---------------------------------------------------------
+live_birth~r |  1,186,134    1.054584    1.754446          0         72
+         e48 |    209,904    1.716394      .45077          0          2
+       li_06 |  1,880,144    1618.748    583.4002   365.9022       3021
+       lp_06 |  1,880,144    16983.44    9362.084    1627.14   132026.8
+c06_mat_wa~s |  1,431,815    .9736006    .1603198          0          1
+-------------+---------------------------------------------------------
+c06_mat_roof |  1,431,815    .5676362    .4954044          0          1
+c06_mat_fl~r |  1,431,815    .7911539    .4064844          0          1
+c06_b_electr |  1,431,815    .9961147    .0622108          0          1
+     mestizo |    475,334    .1188638    .3236285          0          1
+        otro |    475,334    .0047209    .0685464          0          1
+-------------+---------------------------------------------------------
+         e50 |    265,430    1.720412    .4487975          1          2
+ ascendencia |    956,481    2.933281    .4111345          1          5
+         e49 |    956,481    1.213831     .410014          0          2
+    loc_code |  1,883,359    574042.5    585552.4     101010    1931000
+       pobre |  1,883,359    .3712733    .4831455          0          1
+-------------+---------------------------------------------------------
+   indigente |  1,883,359    .0102078    .1005168          0          1
+ ind_under14 |  1,883,359    .5157185     .499753          0          1
+    semestre |  1,883,359    1.499127    .4999994          1          2
+    anio_sem |  1,883,359    97.29315    9.924085         76        113
+    anio_qtr |  1,883,359    195.0857    19.85452        152        227
+-------------+---------------------------------------------------------
+unadj_trab~o |  1,883,359    .4188713    .4933744          0          1
+unadj_hora~o |  1,883,359    17.37756    22.42278          0         99
+educ_more_HS |  1,883,359    .0683061    .2522706          0          1
+educ_HS_or~e |  1,883,359    .2324448    .4223912          0          1
+
+
+
+
+(note: file ..\output\clean_loc_1998_2016.dta not found)
+file ..\output\clean_loc_1998_2016.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2017-12-03 14:02:41
