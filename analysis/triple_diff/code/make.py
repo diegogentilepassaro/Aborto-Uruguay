@@ -14,6 +14,14 @@ from gslab_make.make_link_logs import *
 from gslab_make.run_program import *
 from gslab_make.dir_mod import *
 
+stata_exe = os.environ.get('STATAEXE')
+if stata_exe:
+    import copy
+    default_run_stata = copy.copy(run_stata)
+    def run_stata(**kwargs):
+        kwargs['executable'] = stata_exe
+        default_run_stata(**kwargs)
+
 #****************************************************
 # MAKE.PY STARTS
 #****************************************************
