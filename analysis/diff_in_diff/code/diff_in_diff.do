@@ -2,6 +2,7 @@ clear all
 set more off
 
 program main_diff_analysis
+	do ../../globals.do
 	local labor_vars   = "trabajo horas_trabajo"
 	local educ_vars    = "educ_HS_or_more educ_more_HS"
 	local outcome_vars = "`labor_vars' " + "`educ_vars'"
@@ -70,7 +71,7 @@ program plot_diff
         event_date(string) time(string) city_legend(string) ///
 		plot_option(str) [groups_vars(str) restr(string) sample(str)]
 
-   	use  ..\..\..\assign_treatment_output\ech_final_98_2016.dta, clear
+   	use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
 	
 	cap keep if `restr'
 	
@@ -221,7 +222,7 @@ program reg_diff
     syntax, outcomes(string) treatment(string) ///
         event_date(string) event(string) time(string) [groups_vars(str) restr(string) sample(str)]
 		
-   	use  ..\..\..\assign_treatment_output\ech_final_98_2016.dta, clear
+   	use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
     
 	cap keep if `restr'
 

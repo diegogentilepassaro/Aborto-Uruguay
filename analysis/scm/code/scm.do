@@ -2,6 +2,7 @@ clear all
 set more off
 
 program main_scm
+	do ../../globals.do
     * Definition of research designs
 	local control_vars = "edad married nbr_people ind_under14 y_hogar"
 	local labor_vars   = "trabajo horas_trabajo"

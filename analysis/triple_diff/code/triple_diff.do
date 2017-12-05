@@ -2,6 +2,7 @@ clear all
 set more off
 
 program main_triple_diff
+	do ../../globals.do
 	local labor_vars   = "trabajo horas_trabajo"
 	local educ_vars    = "educ_HS_or_more educ_more_HS"  
 	local labor_stubs  = `" "Employment" "Hours-worked" "'

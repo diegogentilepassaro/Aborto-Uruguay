@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-03 14:14:18 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\diff_in_diff\code 
+ make.py started: 2017-12-05 11:29:44 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./diff_in_diff.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./diff_in_diff.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -34,22 +34,24 @@ Notes:
 
 . 
 . program main_diff_analysis
-  1.         local labor_vars   = "trabajo horas_trabajo"
-  2.         local educ_vars    = "educ_HS_or_more educ_more_HS"
-  3.         local outcome_vars = "`labor_vars' " + "`educ_vars'"
-  4.         local labor_stubs  = `" "Employment" "Hours-worked" "'
-  5.         local educ_stubs   = `" "High-school" "Some-college" "'
-  6.         local labor_restr "inrange(edad, 16, 45)"
-  7.         local educ_restr "inrange(edad, 18, 25)"
-  8.         
+  1.         pwd
+  2.         do ../../globals.do
+  3.         local labor_vars   = "trabajo horas_trabajo"
+  4.         local educ_vars    = "educ_HS_or_more educ_more_HS"
+  5.         local outcome_vars = "`labor_vars' " + "`educ_vars'"
+  6.         local labor_stubs  = `" "Employment" "Hours-worked" "'
+  7.         local educ_stubs   = `" "High-school" "Some-college" "'
+  8.         local labor_restr "inrange(edad, 16, 45)"
+  9.         local educ_restr "inrange(edad, 18, 25)"
+ 10.         
 .         local legend_mvd    = "Montevideo"
-  9.         local legend_rivera = "Rivera"
- 10.         local legend_salto  = "Salto"
- 11.         
+ 11.         local legend_rivera = "Rivera"
+ 12.         local legend_salto  = "Salto"
+ 13.         
 .         foreach city in rivera salto {
- 12.                 
+ 14.                 
 .                 foreach group_vars in labor /*educ*/ {
- 13. 
+ 15. 
 .                         plot_diff, outcomes(``group_vars'_vars') treatment(`c
 > ity')  ///
 >                                 time(anio_sem) event_date(${s_date_`city'}) c
@@ -57,7 +59,7 @@ Notes:
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)
- 14. 
+ 16. 
 .                         /*plot_diff, outcomes(``group_vars'_vars') treatment(
 > `city')  ///
 >                                 time(anio) event_date(${y_date_`city'}) city_
@@ -71,19 +73,19 @@ Notes:
 >                                 time(anio_sem) event(`legend_`city'') event_d
 > ate(${s_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')
- 15. 
+ 17. 
 .                         /*reg_diff, outcomes(``group_vars'_vars') treatment(`
 > city')  ///
 >                                 time(anio)     event(`legend_`city'') event_d
 > ate(${y_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')*/
 .                 }
- 16.         }
- 17.         
+ 18.         }
+ 19.         
 .         foreach demo in female single lowed poor { 
- 18.                  
+ 20.                  
 .                 foreach group_vars in labor /*educ*/ {
- 19. 
+ 21. 
 .                         plot_diff, outcomes(``group_vars'_vars') treatment(mv
 > d_`demo')  ///
 >                                 time(anio_sem) event_date(${s_date_mvd}) city
@@ -91,7 +93,7 @@ Notes:
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)
- 20. 
+ 22. 
 .                         /*plot_diff, outcomes(``group_vars'_vars') treatment(
 > `city')  ///
 >                                 time(anio) event_date(${y_date_`city'}) city_
@@ -105,15 +107,15 @@ Notes:
 >                                 time(anio_sem) event(`legend_mvd') event_date
 > (${s_date_mvd}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')
- 21. 
+ 23. 
 .                         /*reg_diff, outcomes(``group_vars'_vars') treatment(`
 > city')  ///
 >                                 time(anio)     event(`legend_`city'') event_d
 > ate(${y_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')*/
 .                 }
- 22.         }
- 23. 
+ 24.         }
+ 25. 
 .         
 . end
 
@@ -123,7 +125,7 @@ Notes:
 >         event_date(string) time(string) city_legend(string) ///
 >                 plot_option(str) [groups_vars(str) restr(string) sample(str)]
   2. 
-.         use  ..\..\..\assign_treatment_output\ech_final_98_2016.dta, clear
+.         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.         
 .         cap keep if `restr'
   4.         
@@ -323,7 +325,7 @@ Notes:
 >         event_date(string) event(string) time(string) [groups_vars(str) restr
 > (string) sample(str)]
   2.                 
-.         use  ..\..\..\assign_treatment_output\ech_final_98_2016.dta, clear
+.         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.     
 .         cap keep if `restr'
   4. 
@@ -397,10 +399,914 @@ Notes:
 
 . 
 . main_diff_analysis
-option event_date() required
-r(198);
+C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code
 
+.         * Dates of treatments
+.         global q_date_mvd    "2004q2"
+
+.         global q_date_rivera "2010q3"
+
+.         global q_date_salto  "2013q1"
+
+.         
+.         global s_date_mvd    "2004h1"
+
+.         global s_date_rivera "2010h2"
+
+.         global s_date_salto  "2013h1"
+
+.         
+.         global y_date_mvd    2004 
+
+.         global y_date_rivera 2010 
+
+.         global y_date_salto  2013 
+
+.         
+. 
+. 
 end of do-file
-r(198);
+(737,671 observations deleted)
+(note: file ..\temp\did_sample.dta not found)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+(note: file ../temp/treat_trabajo_ts.dta not found)
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+(note: file ../temp/control_trabajo_ts.dta not found)
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+(note: file ../temp/treat_horas_trabajo_ts.dta not found)
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+(note: file ../temp/control_horas_trabajo_ts.dta not found)
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_rivera_labor_anio_sem.pdf written in PDF format)
+(737,671 observations deleted)
+(sum of wgt is   3.4924e+05)
+note: 105.anio_sem omitted because of collinearity
 
- make.py ended: 2017-12-03 14:14:19
+Linear regression                               Number of obs     =      6,833
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1234
+                                                Root MSE          =       .469
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~a |  -.0093584   .0096941    -0.97   0.353    -.0304801    .0117632
+      1.post |   -.037985   .0117484    -3.23   0.007    -.0635826   -.0123874
+ interaction |   .0381615   .0145817     2.62   0.023     .0063907    .0699323
+             |
+    anio_sem |
+         94  |    .061044   .0241426     2.53   0.026     .0084418    .1136463
+         95  |   .0621786   .0244083     2.55   0.026     .0089974    .1153597
+         96  |   .0263188   .0248911     1.06   0.311    -.0279144    .0805519
+         97  |   .0785084    .026541     2.96   0.012     .0206805    .1363363
+         98  |   .0238632   .0087594     2.72   0.018     .0047781    .0429483
+         99  |   .0307731   .0086851     3.54   0.004       .01185    .0496962
+        100  |   .0091577   .0101647     0.90   0.385    -.0129894    .0313048
+        101  |   .0302655   .0027226    11.12   0.000     .0243335    .0361975
+        102  |   .0091752    .002765     3.32   0.006     .0031508    .0151996
+        103  |   .0502898   .0030687    16.39   0.000     .0436036    .0569761
+        104  |  -.0446512   .0026569   -16.81   0.000    -.0504401   -.0388622
+        105  |          0  (omitted)
+             |
+  nbr_people |  -.0318016   .0044071    -7.22   0.000    -.0414038   -.0221995
+ ind_under14 |   .0475479   .0152403     3.12   0.009     .0143422    .0807537
+        edad |   .0156159   .0006017    25.95   0.000     .0143049    .0169269
+     married |  -.0204965   .0176153    -1.16   0.267    -.0588769     .017884
+ y_hogar_alt |   2.54e-06   5.46e-07     4.66   0.001     1.35e-06    3.73e-06
+c98_resid_~e |   -.174558   .0244026    -7.15   0.000    -.2277266   -.1213893
+c98_resid_~d |  -.0132837   .0122931    -1.08   0.301    -.0400681    .0135006
+c98_nbr_ro~s |  -.0117541   .0057716    -2.04   0.064    -.0243293    .0008211
+c98_nbr_be~s |  -.0031133   .0091645    -0.34   0.740     -.023081    .0168545
+c98_b_pipe~r |  -.0396155   .0496632    -0.80   0.441    -.1478223    .0685912
+c98_hhld_t~t |   .0071405   .0310767     0.23   0.822    -.0605697    .0748508
+c98_b_sewage |   .0023242   .0162727     0.14   0.889     -.033131    .0377794
+c98_hhld_s~e |   .0169646   .0287171     0.59   0.566    -.0456046    .0795339
+c98_hhld_h~r |    .086714   .0251399     3.45   0.005     .0319389    .1414891
+c98_hhld_r~t |   .0245375   .0296164     0.83   0.424    -.0399911    .0890661
+ c98_hhld_tv |   .0798396   .0323999     2.46   0.030     .0092463    .1504328
+c98_hhld_vcr |  -.0051449   .0119527    -0.43   0.675    -.0311876    .0208977
+c98_hhld_w~c |   -.013327   .0123577    -1.08   0.302     -.040252     .013598
+c98_hhld_d~r |    .008014    .031047     0.26   0.801    -.0596315    .0756595
+c98_hhld_m~e |   .0457409   .0151784     3.01   0.011     .0126701    .0788117
+c98_hhld_car |  -.0383748   .0128791    -2.98   0.011    -.0664359   -.0103136
+c01_hhld_c~r |   .0142661   .0164753     0.87   0.404    -.0216304    .0501627
+c01_hhld_i~t |   .0160809   .0171858     0.94   0.368    -.0213638    .0535256
+c01_hhld_p~e |  -.0287012   .0160332    -1.79   0.099    -.0636344    .0062321
+c01_hhld_c~v |   .0137585   .0171201     0.80   0.437    -.0235431    .0510601
+c06_mat_wa~s |  -.0166031   .0286988    -0.58   0.574    -.0791325    .0459263
+c06_mat_roof |  -.0150315    .019514    -0.77   0.456    -.0575488    .0274858
+c06_mat_fl~r |  -.0104967   .0139801    -0.75   0.467    -.0409567    .0199634
+c06_b_electr |   .0853882   .0944169     0.90   0.384    -.1203286    .2911049
+       _cons |   .1192518   .0983545     1.21   0.249    -.0950443    .3335479
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   3.4924e+05)
+note: 105.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =      6,833
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1236
+                                                Root MSE          =     19.889
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~a |   .7278968   .4039871     1.80   0.097    -.1523155    1.608109
+      1.post |  -3.127589   1.027445    -3.04   0.010    -5.366199   -.8889787
+ interaction |   3.184224   1.366191     2.33   0.038     .2075495    6.160898
+             |
+    anio_sem |
+         94  |   2.732069   1.304543     2.09   0.058     -.110286    5.574425
+         95  |   .8140274   1.361446     0.60   0.561    -2.152309    3.780364
+         96  |  -.3611257   1.367392    -0.26   0.796    -3.340416    2.618165
+         97  |   1.882786   1.369419     1.37   0.194    -1.100923    4.866494
+         98  |   .9971775   .5248993     1.90   0.082    -.1464799    2.140835
+         99  |   .2472506   .5295156     0.47   0.649    -.9064647    1.400966
+        100  |   .0936012   .6280483     0.15   0.884    -1.274798    1.462001
+        101  |   .4632663   .2231105     2.08   0.060    -.0228496    .9493822
+        102  |   2.110104    .180467    11.69   0.000       1.7169    2.503308
+        103  |   3.583069   .1457419    24.59   0.000     3.265525    3.900613
+        104  |  -1.156674   .1417931    -8.16   0.000    -1.465615   -.8477335
+        105  |          0  (omitted)
+             |
+  nbr_people |  -1.378948    .254205    -5.42   0.000    -1.932813   -.8250828
+ ind_under14 |   1.129968   .6727063     1.68   0.119    -.3357329    2.595669
+        edad |   .5820992   .0318386    18.28   0.000     .5127289    .6514695
+     married |  -1.115175   .8881217    -1.26   0.233    -3.050226    .8198759
+ y_hogar_alt |   .0001461    .000026     5.61   0.000     .0000894    .0002028
+c98_resid_~e |   6.718226   .9233051     7.28   0.000     4.706517    8.729935
+c98_resid_~d |   -.223274    .549553    -0.41   0.692    -1.420647    .9740992
+c98_nbr_ro~s |  -.2232569   .3255304    -0.69   0.506    -.9325268     .486013
+c98_nbr_be~s |  -.4588671   .4173449    -1.10   0.293    -1.368184    .4504494
+c98_b_pipe~r |  -1.449093   2.261759    -0.64   0.534    -6.377042    3.478856
+c98_hhld_t~t |   .9876408   1.203944     0.82   0.428    -1.635529     3.61081
+c98_b_sewage |   .6681347   .6240072     1.07   0.305    -.6914602    2.027729
+c98_hhld_s~e |  -.7204935   1.248475    -0.58   0.575    -3.440687      1.9997
+c98_hhld_h~r |   2.403982   1.039015     2.31   0.039      .140163      4.6678
+c98_hhld_r~t |   1.461483    1.57543     0.93   0.372    -1.971083     4.89405
+ c98_hhld_tv |   3.091891   .8542085     3.62   0.004     1.230731    4.953052
+c98_hhld_vcr |   .5259623   .4558519     1.15   0.271    -.4672536    1.519178
+c98_hhld_w~c |  -.4160248   .3616682    -1.15   0.272    -1.204032    .3719824
+c98_hhld_d~r |  -.3960877   1.831001    -0.22   0.832    -4.385495     3.59332
+c98_hhld_m~e |   2.553504    .834268     3.06   0.010     .7357898    4.371217
+c98_hhld_car |  -1.281665   .5929498    -2.16   0.052    -2.573592    .0102614
+c01_hhld_c~r |  -.4487809   .8200694    -0.55   0.594    -2.235559    1.337997
+c01_hhld_i~t |   .7018686    .733303     0.96   0.357    -.8958613    2.299599
+c01_hhld_p~e |  -.4256288   .9174482    -0.46   0.651    -2.424577    1.573319
+c01_hhld_c~v |   .8777554   .4217986     2.08   0.060    -.0412648    1.796775
+c06_mat_wa~s |   .5003651    .827838     0.60   0.557    -1.303339    2.304069
+c06_mat_roof |   -1.42578   .8309519    -1.72   0.112    -3.236269    .3847082
+c06_mat_fl~r |  -.2033315   .9274806    -0.22   0.830    -2.224138    1.817475
+c06_b_electr |   4.587393   3.138308     1.46   0.170    -2.250392    11.42518
+       _cons |  -12.74959   2.372043    -5.37   0.000    -17.91782   -7.581349
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_rivera_labor_anio_sem.tex not found)
+(output written to ../output/did_rivera_labor_anio_sem.tex)
+(729,285 observations deleted)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_salto_labor_anio_sem.pdf written in PDF format)
+(729,285 observations deleted)
+(sum of wgt is   5.7016e+05)
+note: 110.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     10,959
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1612
+                                                Root MSE          =     .45785
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~o |   .0023921   .0149055     0.16   0.875    -.0300842    .0348684
+      1.post |  -.0682696   .0116839    -5.84   0.000    -.0937266   -.0428126
+ interaction |   .0155875    .020926     0.74   0.471    -.0300063    .0611812
+             |
+    anio_sem |
+         99  |   .0253652   .0015933    15.92   0.000     .0218936    .0288367
+        100  |   .0119778   .0023808     5.03   0.000     .0067905    .0171652
+        101  |   .0256144   .0014737    17.38   0.000     .0224033    .0288254
+        102  |   -.010882   .0031709    -3.43   0.005    -.0177908   -.0039733
+        103  |   .0188563   .0024468     7.71   0.000     .0135252    .0241874
+        104  |  -.0342118   .0031947   -10.71   0.000    -.0411724   -.0272512
+        105  |   .0196672   .0031746     6.20   0.000     .0127503    .0265841
+        106  |   .0185293   .0032888     5.63   0.000     .0113636    .0256951
+        107  |   .0087941   .0025261     3.48   0.005     .0032902    .0142981
+        108  |  -.0028465   .0026614    -1.07   0.306    -.0086452    .0029521
+        109  |   .0332898    .001724    19.31   0.000     .0295336     .037046
+        110  |          0  (omitted)
+             |
+  nbr_people |   -.037688    .004749    -7.94   0.000    -.0480351   -.0273409
+ ind_under14 |   .0628127   .0098271     6.39   0.000     .0414012    .0842242
+        edad |   .0193819   .0003827    50.64   0.000      .018548    .0202157
+     married |  -.0505026   .0123154    -4.10   0.001    -.0773356   -.0236697
+ y_hogar_alt |   2.56e-06   2.56e-07     9.99   0.000     2.00e-06    3.12e-06
+c98_resid_~e |   .0340836   .1084118     0.31   0.759    -.2021253    .2702925
+c98_resid_~d |  -.0252656   .0091974    -2.75   0.018    -.0453051   -.0052262
+c98_nbr_ro~s |  -.0195849    .006986    -2.80   0.016    -.0348061   -.0043636
+c98_nbr_be~s |   .0131741   .0096361     1.37   0.197    -.0078211    .0341693
+c98_b_pipe~r |  -.0441913   .0197572    -2.24   0.045    -.0872386   -.0011441
+c98_hhld_t~t |   .0485815   .0212978     2.28   0.042     .0021776    .0949854
+c98_b_sewage |   .0137698   .0090026     1.53   0.152    -.0058451    .0333847
+c98_hhld_s~e |   .0347692   .0260804     1.33   0.207    -.0220552    .0915935
+c98_hhld_h~r |   .0228001   .0161363     1.41   0.183    -.0123578     .057958
+c98_hhld_r~t |   .0694159   .0371358     1.87   0.086     -.011496    .1503279
+ c98_hhld_tv |  -.0245224   .0287453    -0.85   0.410    -.0871531    .0381083
+c98_hhld_vcr |  -.0005547   .0098089    -0.06   0.956    -.0219265    .0208171
+c98_hhld_w~c |   .0010127    .018124     0.06   0.956    -.0384761    .0405016
+c98_hhld_d~r |  -.0485666   .0241732    -2.01   0.068    -.1012355    .0041023
+c98_hhld_m~e |   .0369639   .0120767     3.06   0.010     .0106511    .0632768
+c98_hhld_car |  -.0183181   .0136632    -1.34   0.205    -.0480875    .0114514
+c01_hhld_c~r |  -.0083842   .0126088    -0.66   0.519    -.0358563    .0190879
+c01_hhld_i~t |    .011116   .0156441     0.71   0.491    -.0229695    .0452016
+c01_hhld_p~e |  -.0078622    .013833    -0.57   0.580    -.0380018    .0222774
+c01_hhld_c~v |   .0011914    .012995     0.09   0.928    -.0271224    .0295051
+c06_mat_wa~s |    .003845     .02237     0.17   0.866     -.044895     .052585
+c06_mat_roof |  -.0046449   .0121103    -0.38   0.708    -.0310309    .0217411
+c06_mat_fl~r |   .0110976   .0132879     0.84   0.420    -.0178543    .0400495
+c06_b_electr |   .0909809   .0365202     2.49   0.028     .0114103    .1705516
+       _cons |  -.1629352   .1312916    -1.24   0.238     -.448995    .1231246
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   5.7016e+05)
+note: 110.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     10,959
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1758
+                                                Root MSE          =     18.665
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~o |  -.8675562   .4982762    -1.74   0.107    -1.953207    .2180945
+      1.post |  -3.472744   .3991698    -8.70   0.000     -4.34246   -2.603028
+ interaction |   1.154545   .6878627     1.68   0.119    -.3441788    2.653269
+             |
+    anio_sem |
+         99  |   .4000392   .0571837     7.00   0.000     .2754466    .5246317
+        100  |   1.310459   .0519608    25.22   0.000     1.197247    1.423672
+        101  |    .142708   .0634862     2.25   0.044     .0043835    .2810324
+        102  |  -.1366733    .130488    -1.05   0.316    -.4209823    .1476357
+        103  |   1.471758    .113041    13.02   0.000     1.225463    1.718053
+        104  |  -1.591434   .1300543   -12.24   0.000    -1.874798    -1.30807
+        105  |  -.1465924   .1448703    -1.01   0.332    -.4622378    .1690529
+        106  |   1.071119    .158569     6.75   0.000     .7256272    1.416612
+        107  |   .7930108   .0914402     8.67   0.000     .5937798    .9922418
+        108  |   .6502379   .0734445     8.85   0.000     .4902161    .8102597
+        109  |   .7040572   .0646222    10.89   0.000     .5632576    .8448569
+        110  |          0  (omitted)
+             |
+  nbr_people |  -1.432361   .1834884    -7.81   0.000    -1.832148   -1.032574
+ ind_under14 |   2.345575   .3259519     7.20   0.000     1.635387    3.055763
+        edad |   .8096828   .0210855    38.40   0.000     .7637415     .855624
+     married |  -2.213167   .5287215    -4.19   0.001    -3.365152   -1.061181
+ y_hogar_alt |   .0001433   .0000144     9.96   0.000     .0001119    .0001746
+c98_resid_~e |   3.177306   4.841327     0.66   0.524    -7.371039    13.72565
+c98_resid_~d |  -.6904226   .3217267    -2.15   0.053    -1.391405    .0105597
+c98_nbr_ro~s |  -1.046391   .1699475    -6.16   0.000    -1.416675   -.6761073
+c98_nbr_be~s |   .4226306   .2208385     1.91   0.080    -.0585351    .9037963
+c98_b_pipe~r |  -1.551843    .876418    -1.77   0.102    -3.461394    .3577077
+c98_hhld_t~t |     2.0627   .8917778     2.31   0.039     .1196834    4.005717
+c98_b_sewage |   .7179602   .3699531     1.94   0.076    -.0880984    1.524019
+c98_hhld_s~e |   .8780039   .8054522     1.09   0.297    -.8769257    2.632934
+c98_hhld_h~r |   1.299137   1.064014     1.22   0.246    -1.019151    3.617424
+c98_hhld_r~t |   3.289066   1.150181     2.86   0.014     .7830357    5.795096
+ c98_hhld_tv |  -2.122855   1.062916    -2.00   0.069     -4.43875    .1930396
+c98_hhld_vcr |  -.2541626   .5155068    -0.49   0.631    -1.377355    .8690302
+c98_hhld_w~c |   .5261414   .7861615     0.67   0.516    -1.186757     2.23904
+c98_hhld_d~r |  -2.358393   1.598252    -1.48   0.166    -5.840684    1.123899
+c98_hhld_m~e |    1.47205   .6697794     2.20   0.048     .0127261    2.931374
+c98_hhld_car |  -1.304251   .5486691    -2.38   0.035    -2.499698   -.1088036
+c01_hhld_c~r |  -1.119608   .5551633    -2.02   0.067    -2.329205    .0899885
+c01_hhld_i~t |  -.5958932   .5872598    -1.01   0.330    -1.875423    .6836361
+c01_hhld_p~e |   .3360649   .2240389     1.50   0.159    -.1520739    .8242037
+c01_hhld_c~v |    1.20058   .6667893     1.80   0.097    -.2522291    2.653389
+c06_mat_wa~s |  -.3418409   1.100842    -0.31   0.761     -2.74037    2.056688
+c06_mat_roof |   .2362835   .6753922     0.35   0.733     -1.23527    1.707837
+c06_mat_fl~r |   .6272367   .5024562     1.25   0.236    -.4675213    1.721995
+c06_b_electr |   5.574139   1.967457     2.83   0.015     1.287419    9.860858
+       _cons |  -12.59352   6.426017    -1.96   0.074    -26.59461     1.40757
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_salto_labor_anio_sem.tex not found)
+(output written to ../output/did_salto_labor_anio_sem.tex)
+(413,852 observations deleted)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_mvd_female_labor_anio_sem.pdf written in PDF format)
+(413,852 observations deleted)
+(sum of wgt is   6.3897e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     92,365
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1759
+                                                Root MSE          =     .43968
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatm~ale |  -.1720265   .0035068   -49.06   0.000    -.1796671   -.1643859
+      1.post |  -.0684027   .0025468   -26.86   0.000    -.0739516   -.0628538
+ interaction |  -.0022884   .0057314    -0.40   0.697     -.014776    .0101993
+             |
+    anio_sem |
+         81  |  -.0055392   .0006802    -8.14   0.000    -.0070213   -.0040571
+         82  |  -.0534808   .0008709   -61.41   0.000    -.0553783   -.0515832
+         83  |  -.0585617   .0010266   -57.04   0.000    -.0607985   -.0563248
+         84  |  -.0858583   .0010513   -81.67   0.000    -.0881489   -.0835676
+         85  |  -.1019712   .0010238   -99.60   0.000    -.1042019   -.0997406
+         86  |  -.1114394   .0009357  -119.10   0.000    -.1134781   -.1094007
+         87  |  -.0756502   .0010318   -73.32   0.000    -.0778983    -.073402
+         88  |  -.0077873   .0011114    -7.01   0.000    -.0102089   -.0053656
+         89  |   .0088636   .0011888     7.46   0.000     .0062734    .0114538
+         90  |  -.0004593   .0010327    -0.44   0.664    -.0027093    .0017908
+         91  |   .0059056   .0008408     7.02   0.000     .0040736    .0077375
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.0210567   .0013579   -15.51   0.000    -.0240153   -.0180981
+ ind_under14 |   .0059259   .0045426     1.30   0.217    -.0039716    .0158234
+        edad |   .0171633   .0002053    83.60   0.000      .016716    .0176107
+     married |   .0438631   .0051293     8.55   0.000     .0326874    .0550388
+ y_hogar_alt |   1.64e-06   3.18e-07     5.16   0.000     9.48e-07    2.33e-06
+c98_resid_~e |   .0040934   .0120207     0.34   0.739    -.0220974    .0302843
+c98_resid_~d |   -.036843   .0030474   -12.09   0.000    -.0434827   -.0302033
+c98_nbr_ro~s |   .0003397   .0013761     0.25   0.809    -.0026586     .003338
+c98_nbr_be~s |  -.0267784   .0033298    -8.04   0.000    -.0340333   -.0195234
+c98_b_pipe~r |  -.0028064   .0142876    -0.20   0.848    -.0339365    .0283236
+c98_hhld_t~t |   .0061769   .0098137     0.63   0.541    -.0152054    .0275592
+c98_b_sewage |   .0186567   .0045931     4.06   0.002     .0086492    .0286642
+c98_hhld_s~e |  -.0365082   .0113264    -3.22   0.007    -.0611862   -.0118301
+c98_hhld_h~r |   .0485461   .0081004     5.99   0.000     .0308969    .0661953
+c98_hhld_r~t |  -.0148366   .0107172    -1.38   0.191    -.0381874    .0085143
+ c98_hhld_tv |   .0185473   .0095392     1.94   0.076    -.0022367    .0393314
+c98_hhld_vcr |   .0092286   .0042832     2.15   0.052    -.0001036    .0185609
+c98_hhld_w~c |   .0168294   .0026731     6.30   0.000     .0110053    .0226536
+c98_hhld_d~r |  -.0369561   .0062839    -5.88   0.000    -.0506476   -.0232646
+c98_hhld_m~e |   .0333307   .0046886     7.11   0.000     .0231152    .0435463
+c98_hhld_car |  -.0149502   .0034231    -4.37   0.001    -.0224085    -.007492
+       _cons |   .3189063   .0228501    13.96   0.000     .2691203    .3686923
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   6.3897e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     92,365
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.2095
+                                                Root MSE          =     20.597
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatm~ale |  -12.21212   .4696031   -26.01   0.000     -13.2353   -11.18895
+      1.post |   -2.11366   .2362643    -8.95   0.000    -2.628435   -1.598884
+ interaction |   .3458125   .5056023     0.68   0.507    -.7558002    1.447425
+             |
+    anio_sem |
+         81  |    .388885   .0260948    14.90   0.000     .3320294    .4457407
+         82  |  -.0369904   .0390095    -0.95   0.362    -.1219847    .0480039
+         83  |  -1.293087    .045596   -28.36   0.000    -1.392432   -1.193742
+         84  |  -2.060117   .0488395   -42.18   0.000    -2.166529   -1.953705
+         85  |   -3.54034   .0485213   -72.96   0.000    -3.646059   -3.434621
+         86  |  -4.128924    .045629   -90.49   0.000    -4.228341   -4.029507
+         87  |  -3.703615   .0487919   -75.91   0.000    -3.809924   -3.597307
+         88  |  -.7570742   .0393085   -19.26   0.000      -.84272   -.6714283
+         89  |   .0827636   .0400326     2.07   0.061      -.00446    .1699872
+         90  |  -.0277203   .0373548    -0.74   0.472    -.1091094    .0536687
+         91  |  -.8096966   .0320947   -25.23   0.000     -.879625   -.7397682
+         92  |          0  (omitted)
+             |
+  nbr_people |   -.852636   .0701486   -12.15   0.000    -1.005477   -.6997953
+ ind_under14 |   1.240496   .1492211     8.31   0.000     .9153708     1.56562
+        edad |   .7631529   .0098064    77.82   0.000     .7417866    .7845191
+     married |   3.588932   .1970236    18.22   0.000     3.159654    4.018209
+ y_hogar_alt |   .0000827   .0000122     6.78   0.000     .0000561    .0001093
+c98_resid_~e |  -.0873643   .6101852    -0.14   0.889    -1.416843    1.242115
+c98_resid_~d |  -1.929304   .1662965   -11.60   0.000    -2.291633   -1.566975
+c98_nbr_ro~s |  -.0919978   .0742236    -1.24   0.239    -.2537172    .0697216
+c98_nbr_be~s |  -1.270727   .1248465   -10.18   0.000    -1.542744   -.9987101
+c98_b_pipe~r |  -.6290387   .5277803    -1.19   0.256    -1.778973    .5208958
+c98_hhld_t~t |   1.458634   .5018597     2.91   0.013     .3651759    2.552093
+c98_b_sewage |   .6018811   .1841916     3.27   0.007     .2005621      1.0032
+c98_hhld_s~e |  -1.127612   .4655254    -2.42   0.032    -2.141905   -.1133195
+c98_hhld_h~r |   3.173449   .3785847     8.38   0.000     2.348584    3.998314
+c98_hhld_r~t |  -.3167472   .4305832    -0.74   0.476    -1.254907    .6214131
+ c98_hhld_tv |   1.550733     .51492     3.01   0.011      .428819    2.672647
+c98_hhld_vcr |   .3076946   .1966293     1.56   0.144    -.1207237     .736113
+c98_hhld_w~c |   1.098395   .1458648     7.53   0.000     .7805831    1.416207
+c98_hhld_d~r |  -2.256188   .2884951    -7.82   0.000    -2.884765   -1.627612
+c98_hhld_m~e |   1.241475   .2073647     5.99   0.000     .7896663    1.693284
+c98_hhld_car |  -.8301499   .1893735    -4.38   0.001    -1.242759   -.4175404
+       _cons |   9.963051   1.143554     8.71   0.000     7.471461    12.45464
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_mvd_female_labor_anio_sem.tex not found)
+(output written to ../output/did_mvd_female_labor_anio_sem.tex)
+(576,353 observations deleted)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_mvd_single_labor_anio_sem.pdf written in PDF format)
+(576,353 observations deleted)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+note: married omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1461
+                                                Root MSE          =     .45997
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatm~gle |   .0647847   .0048038    13.49   0.000     .0543181    .0752514
+      1.post |  -.0607026   .0055548   -10.93   0.000    -.0728055   -.0485997
+ interaction |  -.0128989   .0091014    -1.42   0.182    -.0327292    .0069314
+             |
+    anio_sem |
+         81  |  -.0083124   .0005922   -14.04   0.000    -.0096027   -.0070221
+         82  |  -.0597229    .000774   -77.16   0.000    -.0614092   -.0580365
+         83  |  -.0580876   .0010436   -55.66   0.000    -.0603614   -.0558139
+         84  |  -.0856911   .0010793   -79.39   0.000    -.0880428   -.0833395
+         85  |  -.0958599   .0010596   -90.47   0.000    -.0981685   -.0935514
+         86  |   -.109627   .0010594  -103.48   0.000    -.1119352   -.1073187
+         87  |  -.0715081   .0012027   -59.45   0.000    -.0741286   -.0688876
+         88  |  -.0166122   .0010057   -16.52   0.000    -.0188034   -.0144211
+         89  |  -.0060349   .0009773    -6.18   0.000    -.0081643   -.0039056
+         90  |  -.0146648   .0010471   -14.00   0.000    -.0169463   -.0123833
+         91  |   .0012525   .0007986     1.57   0.143    -.0004875    .0029925
+         92  |          0  (omitted)
+             |
+  nbr_people |   -.029762   .0014668   -20.29   0.000    -.0329578   -.0265662
+ ind_under14 |   -.003217   .0050643    -0.64   0.537    -.0142511    .0078171
+        edad |   .0182762   .0002643    69.14   0.000     .0177003    .0188522
+     married |          0  (omitted)
+ y_hogar_alt |   2.32e-06   3.09e-07     7.51   0.000     1.65e-06    2.99e-06
+c98_resid_~e |    .018448   .0217957     0.85   0.414    -.0290408    .0659368
+c98_resid_~d |  -.0316395   .0050502    -6.26   0.000     -.042643    -.020636
+c98_nbr_ro~s |  -.0027892    .002321    -1.20   0.253    -.0078463    .0022679
+c98_nbr_be~s |  -.0234411   .0042827    -5.47   0.000    -.0327724   -.0141099
+c98_b_pipe~r |  -.0130269   .0197079    -0.66   0.521    -.0559667    .0299129
+c98_hhld_t~t |   .0368373   .0173126     2.13   0.055    -.0008837    .0745583
+c98_b_sewage |   .0462141   .0081844     5.65   0.000     .0283818    .0640464
+c98_hhld_s~e |  -.0345441   .0171611    -2.01   0.067    -.0719348    .0028467
+c98_hhld_h~r |   .0706812   .0127192     5.56   0.000     .0429684    .0983941
+c98_hhld_r~t |  -.0021739   .0145656    -0.15   0.884    -.0339096    .0295619
+ c98_hhld_tv |   .0209168   .0140543     1.49   0.162    -.0097049    .0515385
+c98_hhld_vcr |   .0002368    .006492     0.04   0.971    -.0139081    .0143818
+c98_hhld_w~c |   .0266956   .0049357     5.41   0.000     .0159417    .0374495
+c98_hhld_d~r |   -.033951   .0087248    -3.89   0.002    -.0529607   -.0149413
+c98_hhld_m~e |   .0579855   .0066341     8.74   0.000      .043531    .0724399
+c98_hhld_car |  -.0254034   .0055895    -4.54   0.001     -.037582   -.0132248
+       _cons |   .0278799   .0459333     0.61   0.555    -.0722001    .1279599
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+note: married omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1284
+                                                Root MSE          =     19.802
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatm~gle |   3.208263   .3442544     9.32   0.000     2.458197    3.958329
+      1.post |  -.7474991    .261665    -2.86   0.014    -1.317618     -.17738
+ interaction |  -.7243423   .4339533    -1.67   0.121    -1.669845    .2211608
+             |
+    anio_sem |
+         81  |   .4537292   .0233945    19.39   0.000     .4027569    .5047015
+         82  |   -.003465   .0296903    -0.12   0.909    -.0681546    .0612246
+         83  |  -.8756736   .0411214   -21.29   0.000    -.9652694   -.7860778
+         84  |  -1.307692   .0403966   -32.37   0.000    -1.395708   -1.219675
+         85  |  -2.780801   .0468532   -59.35   0.000    -2.882885   -2.678717
+         86  |  -2.747671    .041164   -66.75   0.000    -2.837359   -2.657982
+         87  |  -2.322074   .0499875   -46.45   0.000    -2.430988   -2.213161
+         88  |  -.8157005   .0401601   -20.31   0.000    -.9032019   -.7281991
+         89  |  -.5818394   .0378482   -15.37   0.000    -.6643035   -.4993753
+         90  |  -.5114332   .0457939   -11.17   0.000    -.6112095   -.4116568
+         91  |  -1.138217    .035009   -32.51   0.000    -1.214495   -1.061939
+         92  |          0  (omitted)
+             |
+  nbr_people |  -1.102237   .0767787   -14.36   0.000    -1.269523   -.9349501
+ ind_under14 |  -.0100971   .2002798    -0.05   0.961    -.4464694    .4262752
+        edad |   .7283109   .0137599    52.93   0.000     .6983305    .7582912
+     married |          0  (omitted)
+ y_hogar_alt |   .0001113   .0000131     8.48   0.000     .0000827    .0001399
+c98_resid_~e |   .6605495   .9393291     0.70   0.495    -1.386073    2.707172
+c98_resid_~d |  -1.467985    .278674    -5.27   0.000    -2.075163   -.8608063
+c98_nbr_ro~s |  -.2176837   .1195785    -1.82   0.094    -.4782228    .0428555
+c98_nbr_be~s |  -.9690912   .1661662    -5.83   0.000    -1.331136   -.6070461
+c98_b_pipe~r |  -.4569389    .755146    -0.61   0.556    -2.102261    1.188383
+c98_hhld_t~t |   1.831952   .5501828     3.33   0.006     .6332064    3.030697
+c98_b_sewage |   1.842137   .2993516     6.15   0.000     1.189906    2.494368
+c98_hhld_s~e |  -1.114224   .6978278    -1.60   0.136     -2.63466    .4062125
+c98_hhld_h~r |   3.637023   .6069967     5.99   0.000      2.31449    4.959555
+c98_hhld_r~t |   .3172238    .697763     0.45   0.657    -1.203071    1.837519
+ c98_hhld_tv |   1.340451   .5679899     2.36   0.036     .1029071    2.577994
+c98_hhld_vcr |  -.2889565    .281079    -1.03   0.324    -.9013751     .323462
+c98_hhld_w~c |   1.301697   .2240344     5.81   0.000     .8135679    1.789826
+c98_hhld_d~r |  -2.304022   .4688903    -4.91   0.000    -3.325647   -1.282398
+c98_hhld_m~e |   2.198978   .2302654     9.55   0.000     1.697273    2.700684
+c98_hhld_car |  -1.183023   .2585263    -4.58   0.001    -1.746303   -.6197427
+       _cons |  -4.188543   1.854843    -2.26   0.043    -8.229899   -.1471871
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_mvd_single_labor_anio_sem.tex not found)
+(output written to ../output/did_mvd_single_labor_anio_sem.tex)
+(576,353 observations deleted)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_mvd_lowed_labor_anio_sem.pdf written in PDF format)
+(576,353 observations deleted)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1568
+                                                Root MSE          =     .45708
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~d |  -.1191923   .0075785   -15.73   0.000    -.1357045   -.1026802
+      1.post |  -.0646825   .0069652    -9.29   0.000    -.0798583   -.0495067
+ interaction |  -.0019191   .0128438    -0.15   0.884    -.0299033     .026065
+             |
+    anio_sem |
+         81  |  -.0070423   .0005139   -13.70   0.000    -.0081619   -.0059226
+         82  |  -.0587925   .0007463   -78.77   0.000    -.0604187   -.0571664
+         83  |  -.0559929   .0009767   -57.33   0.000    -.0581209    -.053865
+         84  |    -.08412   .0010401   -80.88   0.000    -.0863863   -.0818538
+         85  |  -.0953413   .0010703   -89.08   0.000    -.0976732   -.0930094
+         86  |  -.1081754    .001099   -98.43   0.000    -.1105699   -.1057809
+         87  |  -.0704926   .0012359   -57.04   0.000    -.0731854   -.0677999
+         88  |  -.0172587   .0009473   -18.22   0.000    -.0193226   -.0151948
+         89  |  -.0064925   .0009062    -7.16   0.000     -.008467   -.0045181
+         90  |  -.0168171   .0010018   -16.79   0.000    -.0189999   -.0146342
+         91  |   .0012879   .0008475     1.52   0.154    -.0005586    .0031345
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.0239399   .0014138   -16.93   0.000    -.0270202   -.0208596
+ ind_under14 |   .0052251   .0044817     1.17   0.266    -.0045397    .0149899
+        edad |   .0175296   .0002576    68.06   0.000     .0169684    .0180908
+     married |  -.0549161   .0052039   -10.55   0.000    -.0662545   -.0435777
+ y_hogar_alt |   1.96e-06   2.48e-07     7.92   0.000     1.42e-06    2.50e-06
+c98_resid_~e |   .0144256    .022154     0.65   0.527    -.0338438    .0626951
+c98_resid_~d |  -.0349811   .0051894    -6.74   0.000    -.0462879   -.0236743
+c98_nbr_ro~s |  -.0050954   .0026679    -1.91   0.080    -.0109083    .0007175
+c98_nbr_be~s |  -.0210198    .004546    -4.62   0.001    -.0309247   -.0111149
+c98_b_pipe~r |  -.0085747   .0197513    -0.43   0.672     -.051609    .0344597
+c98_hhld_t~t |   .0392413   .0179469     2.19   0.049     .0001384    .0783442
+c98_b_sewage |   .0262424   .0076211     3.44   0.005     .0096376    .0428473
+c98_hhld_s~e |  -.0337427   .0183525    -1.84   0.091    -.0737294     .006244
+c98_hhld_h~r |   .0610649   .0126264     4.84   0.000     .0335544    .0885755
+c98_hhld_r~t |  -.0073614   .0154351    -0.48   0.642    -.0409915    .0262687
+ c98_hhld_tv |   .0240194   .0138709     1.73   0.109    -.0062027    .0542414
+c98_hhld_vcr |  -.0075652   .0064213    -1.18   0.262     -.021556    .0064257
+c98_hhld_w~c |   .0247305   .0052851     4.68   0.001     .0132151    .0362458
+c98_hhld_d~r |  -.0411238   .0085324    -4.82   0.000    -.0597142   -.0225334
+c98_hhld_m~e |   .0443965   .0068517     6.48   0.000     .0294678    .0593251
+c98_hhld_car |  -.0354148   .0053491    -6.62   0.000    -.0470695   -.0237602
+       _cons |   .1985712   .0466275     4.26   0.001     .0969786    .3001638
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1323
+                                                Root MSE          =     19.758
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~d |  -3.223756    .218349   -14.76   0.000    -3.699497   -2.748014
+      1.post |  -1.251768   .1767703    -7.08   0.000    -1.636918    -.866619
+ interaction |   .3340365   .3209446     1.04   0.318    -.3652416    1.033315
+             |
+    anio_sem |
+         81  |    .487568   .0219147    22.25   0.000     .4398201     .535316
+         82  |   .0219089   .0283395     0.77   0.454    -.0398377    .0836554
+         83  |  -.8203391   .0400354   -20.49   0.000    -.9075687   -.7331096
+         84  |  -1.268337   .0397538   -31.90   0.000    -1.354953   -1.181721
+         85  |   -2.76573    .046702   -59.22   0.000    -2.867485   -2.663975
+         86  |  -2.707418   .0426001   -63.55   0.000    -2.800236     -2.6146
+         87  |  -2.296214   .0508535   -45.15   0.000    -2.407014   -2.185414
+         88  |  -.8416107   .0404852   -20.79   0.000    -.9298203   -.7534011
+         89  |  -.6025666   .0381265   -15.80   0.000    -.6856371   -.5194962
+         90  |  -.5785096   .0476272   -12.15   0.000    -.6822804   -.4747389
+         91  |  -1.144669   .0364352   -31.42   0.000    -1.224055   -1.065284
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.9517303   .0737392   -12.91   0.000    -1.112394   -.7910665
+ ind_under14 |   .2019994   .1919838     1.05   0.313    -.2162973    .6202961
+        edad |   .7089738   .0145506    48.72   0.000     .6772707    .7406768
+     married |  -2.803418   .3000538    -9.34   0.000    -3.457179   -2.149657
+ y_hogar_alt |   .0001023   .0000118     8.70   0.000     .0000767    .0001279
+c98_resid_~e |   .5547312   .9439137     0.59   0.568     -1.50188    2.611343
+c98_resid_~d |  -1.560043   .2794358    -5.58   0.000    -2.168881   -.9512048
+c98_nbr_ro~s |  -.2774806   .1264032    -2.20   0.049    -.5528896   -.0020716
+c98_nbr_be~s |  -.9071101   .1731318    -5.24   0.000    -1.284332   -.5298883
+c98_b_pipe~r |  -.3523845   .7513871    -0.47   0.647    -1.989516    1.284747
+c98_hhld_t~t |   1.906855    .550883     3.46   0.005     .7065844    3.107126
+c98_b_sewage |   1.318572   .2782788     4.74   0.000     .7122542    1.924889
+c98_hhld_s~e |  -1.039144   .7247042    -1.43   0.177    -2.618139    .5398506
+c98_hhld_h~r |   3.385385   .6043048     5.60   0.000     2.068718    4.702052
+c98_hhld_r~t |   .2110448   .7097923     0.30   0.771     -1.33546    1.757549
+ c98_hhld_tv |   1.432121   .5622404     2.55   0.026     .2071049    2.657138
+c98_hhld_vcr |   -.486427   .2743931    -1.77   0.102    -1.084278    .1114242
+c98_hhld_w~c |   1.249068   .2375156     5.26   0.000     .7315661     1.76657
+c98_hhld_d~r |  -2.490901   .4603279    -5.41   0.000     -3.49387   -1.487933
+c98_hhld_m~e |   1.845456   .2371756     7.78   0.000     1.328695    2.362218
+c98_hhld_car |  -1.441337   .2501792    -5.76   0.000     -1.98643    -.896243
+       _cons |   1.686625   1.857558     0.91   0.382    -2.360646    5.733897
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_mvd_lowed_labor_anio_sem.tex not found)
+(output written to ../output/did_mvd_lowed_labor_anio_sem.tex)
+(576,353 observations deleted)
+file ..\temp\did_sample.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/treat_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= trabajo
+file ../temp/control_trabajo_ts.dta saved
+(36 real changes made)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/treat_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+The smoother applied was
+     (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
+file ../temp/control_horas_trabajo_ts.dta saved
+(36 real changes made)
+(file ../output/did_mvd_poor_labor_anio_sem.pdf written in PDF format)
+(576,353 observations deleted)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1626
+                                                Root MSE          =      .4555
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~r |   -.183197   .0117802   -15.55   0.000    -.2088638   -.1575302
+      1.post |  -.0591206    .004344   -13.61   0.000    -.0685854   -.0496559
+ interaction |   .0266618   .0121769     2.19   0.049     .0001307    .0531929
+             |
+    anio_sem |
+         81  |   -.004285   .0006499    -6.59   0.000     -.005701    -.002869
+         82  |  -.0529877    .000893   -59.34   0.000    -.0549333    -.051042
+         83  |  -.0515288   .0012459   -41.36   0.000    -.0542433   -.0488143
+         84  |  -.0509848   .0027244   -18.71   0.000    -.0569208   -.0450487
+         85  |  -.0592734   .0030993   -19.12   0.000    -.0660263   -.0525206
+         86  |  -.0647807   .0035111   -18.45   0.000    -.0724306   -.0571307
+         87  |  -.0288248   .0034435    -8.37   0.000    -.0363276    -.021322
+         88  |   .0020357   .0012431     1.64   0.127    -.0006727     .004744
+         89  |   .0102323    .001118     9.15   0.000     .0077964    .0126682
+         90  |    .004379   .0014263     3.07   0.010     .0012714    .0074866
+         91  |   .0166249    .001176    14.14   0.000     .0140625    .0191872
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.0210505   .0017032   -12.36   0.000    -.0247615   -.0173394
+ ind_under14 |   .0204273    .004932     4.14   0.001     .0096813    .0311732
+        edad |    .017956   .0002538    70.76   0.000     .0174031    .0185089
+     married |  -.0605314   .0052001   -11.64   0.000    -.0718615   -.0492014
+ y_hogar_alt |   9.73e-07   1.10e-07     8.84   0.000     7.33e-07    1.21e-06
+c98_resid_~e |   .0039678   .0208041     0.19   0.852    -.0413605     .049296
+c98_resid_~d |  -.0310038   .0053184    -5.83   0.000    -.0425916    -.019416
+c98_nbr_ro~s |  -.0039983   .0024729    -1.62   0.132    -.0093862    .0013896
+c98_nbr_be~s |  -.0230053   .0042312    -5.44   0.000    -.0322243   -.0137862
+c98_b_pipe~r |  -.0093077   .0197518    -0.47   0.646    -.0523433    .0337278
+c98_hhld_t~t |   .0424838   .0189517     2.24   0.045     .0011917    .0837759
+c98_b_sewage |   .0250657   .0078549     3.19   0.008     .0079513    .0421801
+c98_hhld_s~e |   -.035898   .0195517    -1.84   0.091    -.0784975    .0067014
+c98_hhld_h~r |   .0626549   .0110577     5.67   0.000     .0385621    .0867476
+c98_hhld_r~t |   .0009896   .0136095     0.07   0.943    -.0286629    .0306421
+ c98_hhld_tv |   .0222519   .0130725     1.70   0.114    -.0062307    .0507344
+c98_hhld_vcr |  -.0143974   .0059127    -2.44   0.031      -.02728   -.0015148
+c98_hhld_w~c |   .0178554   .0049767     3.59   0.004      .007012    .0286988
+c98_hhld_d~r |  -.0371554   .0085966    -4.32   0.001    -.0558856   -.0184251
+c98_hhld_m~e |   .0353757   .0075429     4.69   0.001     .0189412    .0518102
+c98_hhld_car |  -.0467333    .005209    -8.97   0.000    -.0580827    -.035384
+       _cons |   .2106047   .0423525     4.97   0.000     .1183265    .3028828
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1465
+                                                Root MSE          =     19.596
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+1.treatmen~r |  -8.235302   .5374707   -15.32   0.000     -9.40635   -7.064254
+      1.post |  -.8448916   .1641551    -5.15   0.000    -1.202555   -.4872283
+ interaction |   1.404691   .4222157     3.33   0.006     .4847621     2.32462
+             |
+    anio_sem |
+         81  |   .6352006   .0267291    23.76   0.000      .576963    .6934382
+         82  |   .2995999    .037728     7.94   0.000     .2173977    .3818022
+         83  |  -.5805411   .0539158   -10.77   0.000    -.6980135   -.4630688
+         84  |   .2517562   .1295182     1.94   0.076    -.0304397     .533952
+         85  |  -1.134293   .1417836    -8.00   0.000    -1.443213   -.8253734
+         86  |  -.7305823   .1622926    -4.50   0.001    -1.084188   -.3769771
+         87  |  -.4036554   .1612587    -2.50   0.028     -.755008   -.0523028
+         88  |   -.010597   .0461932    -0.23   0.822    -.1112432    .0900493
+         89  |   .1207754    .044749     2.70   0.019     .0232756    .2182751
+         90  |   .3097412   .0554097     5.59   0.000     .1890139    .4304685
+         91  |  -.4734106   .0428479   -11.05   0.000    -.5667681    -.380053
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.7142115    .090356    -7.90   0.000    -.9110802   -.5173428
+ ind_under14 |   1.039785   .1818731     5.72   0.000     .6435175    1.436052
+        edad |    .714013   .0129218    55.26   0.000     .6858587    .7421672
+     married |  -2.961604   .2849667   -10.39   0.000    -3.582493   -2.340715
+ y_hogar_alt |   .0000516   6.14e-06     8.41   0.000     .0000382     .000065
+c98_resid_~e |     .01519   .8898173     0.02   0.987    -1.923555    1.953935
+c98_resid_~d |  -1.442512   .2766899    -5.21   0.000    -2.045367   -.8396564
+c98_nbr_ro~s |  -.2717206    .125838    -2.16   0.052    -.5458981    .0024569
+c98_nbr_be~s |  -.9503683   .1638536    -5.80   0.000    -1.307375    -.593362
+c98_b_pipe~r |  -.3005208   .7270676    -0.41   0.687    -1.884665    1.283623
+c98_hhld_t~t |   2.092073   .6432306     3.25   0.007     .6905938    3.493552
+c98_b_sewage |   .8956952   .3189327     2.81   0.016     .2008005     1.59059
+c98_hhld_s~e |  -1.122386   .7643335    -1.47   0.168    -2.787725     .542954
+c98_hhld_h~r |   3.274464   .5628141     5.82   0.000     2.048197     4.50073
+c98_hhld_r~t |   .4728129    .670996     0.70   0.494    -.9891617    1.934788
+ c98_hhld_tv |   1.408224   .5443201     2.59   0.024     .2222523    2.594196
+c98_hhld_vcr |  -.9394307    .263924    -3.56   0.004    -1.514472   -.3643897
+c98_hhld_w~c |   .9080383   .2649796     3.43   0.005     .3306973    1.485379
+c98_hhld_d~r |  -2.448229   .4627792    -5.29   0.000    -3.456539    -1.43992
+c98_hhld_m~e |   1.192182   .2731693     4.36   0.001     .5969971    1.787366
+c98_hhld_car |  -2.133306      .2261    -9.44   0.000    -2.625936   -1.640677
+       _cons |   4.211297   1.622649     2.60   0.023     .6758491    7.746746
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/did_mvd_poor_labor_anio_sem.tex not found)
+(output written to ../output/did_mvd_poor_labor_anio_sem.tex)
+
+. 
+end of do-file
+
+ make.py ended: 2017-12-05 11:30:25

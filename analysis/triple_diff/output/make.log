@@ -1,0 +1,551 @@
+
+ make.py started: 2017-12-05 13:13:14 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\triple_diff\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./triple_diff.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./triple_diff.do 
+
+. clear all
+
+. set more off
+
+. 
+. program main_triple_diff
+  1.         do ../../globals.do
+  2.         local labor_vars   = "trabajo horas_trabajo"
+  3.         local educ_vars    = "educ_HS_or_more educ_more_HS"  
+  4.         local labor_stubs  = `" "Employment" "Hours-worked" "'
+  5.         local educ_stubs   = `" "High-school" "Some-college" "'
+  6.         
+.         local q_date_mvd "2002q1"
+  7.         local s_date_mvd "2002h1"
+  8.         local y_date_mvd "2002"
+  9.         
+.     foreach group_vars in labor /*educ*/ {
+ 10.         
+.                 foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor
+> _lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
+ 11.                                 
+.                         plot_triple_diff, outcomes(``group_vars'_vars') var1(
+> single) var2(lowed) ///
+>                                 time(anio_sem) event_date(${s_date_mvd}) city
+> (mvd) city_legend(Montevideo) ///
+>                                 stubs(``group_vars'_stubs') groups_vars(`grou
+> p_vars') plot_option(trend)
+ 12.                                 
+.                         /*plot_triple_diff, outcomes(``group_vars'_vars') des
+> ign(`design') ///
+>                                 time(anio) event_date(${y_date_mvd}) city(mvd
+> ) city_legend(Montevideo) ///
+>                                 stubs(``group_vars'_stubs') groups_vars(`grou
+> p_vars') plot_option(trend)*/
+.                                 
+.                         reg_triple_diff, outcomes(``group_vars'_vars') var1(s
+> ingle) var2(lowed) city(mvd) ///
+>                                 time(anio_sem) event_date(${s_date_mvd}) grou
+> ps_vars(`group_vars')
+ 13.                                 
+.                         /*reg_triple_diff, outcomes(``group_vars'_vars') desi
+> gn(`design') city(mvd) ///
+>                                 time(anio) event_date(${y_date_mvd}) groups_v
+> ars(`group_vars')*/
+.                 }                       
+ 14.         }
+ 15. end
+
+. 
+. program plot_triple_diff
+  1.         syntax, outcomes(str) var1(str) var2(str) event_date(str) ///
+>             stubs(str) time(str) city(str) city_legend(str) ///
+>                 groups_vars(str) [plot_option(str) special_legend(str) sample
+> _restr(str)]
+  2.         
+.         if "`time'" == "anio_qtr" {
+  3.                         local weight pesotri
+  4.                         local range "if inrange(`time', tq(`event_date') -
+>  16, tq(`event_date') + 8) "
+  5.                         local xtitle "Year-qtr"
+  6.                         local vertical = tq(`event_date') - 0.5 
+  7.                 }
+  8.                 else if "`time'" == "anio_sem" {
+  9.                         local weight pesosem
+ 10.                         local range "if inrange(`time', th(`event_date') -
+>  8, th(`event_date') + 4) "
+ 11.                         local xtitle "Year-half"
+ 12.                         local vertical = th(`event_date') - 0.5 
+ 13.                 }
+ 14.                 else {
+ 15.                         local weight pesoan
+ 16.                         local range "if inrange(`time', `event_date' - 4, 
+> `event_date' + 2) "
+ 17.                         local xtitle "Year"
+ 18.                         local vertical = `event_date' - 0.5     
+ 19.                 }       
+ 20.                 
+.         if "`var1'" == "female" | "`var2'" == "female" {
+ 21.             local sample = "dpto == 1 "
+ 22.         }
+ 23.         else {
+ 24.             local sample = "dpto == 1 & female == 1 "
+ 25.         }
+ 26.     
+.     forvalues i=1/2 {
+ 27.         if          "`var`i''" == "female" {
+ 28.                 local var`i'lab = "Female"
+ 29.                 local var`i'opp = "Male"
+ 30.             }
+ 31.             else if "`var`i''" == "poor" {
+ 32.                 local var`i'lab = "Poor"
+ 33.                 local var`i'opp = "Rich"
+ 34.             }
+ 35.             else if "`var`i''" == "single" {
+ 36.                 local var`i'lab = "Single"
+ 37.                 local var`i'opp = "Married"                
+ 38.             }
+ 39.             else if "`var`i''" == "lowed" {
+ 40.                 local var`i'lab = "Low-educ"
+ 41.                 local var`i'opp = "High-educ"                
+ 42.             }
+ 43.     }
+ 44.         
+.     local diff1 = "`var1lab': `var2lab' vs `var2opp'"
+ 45.     local diff2 = "`var1opp': `var2lab' vs `var2opp'"
+ 46.     
+.     local group_lab1 = "`var1lab' `var2lab'"
+ 47.     local group_lab2 = "`var1lab' `var2opp'"
+ 48.     local group_lab3 = "`var1opp' `var2lab'" 
+ 49.     local group_lab4 = "`var1opp' `var2opp'"
+ 50.     
+.         local n_outcomes: word count `outcomes'
+ 51.         
+.         forval i = 1/`n_outcomes' {
+ 52.             local outcome : word `i' of `outcomes'
+ 53.             local stub_var: word `i' of `stubs'
+ 54.                 local plots = " `plots' " + "triple_diff_`outcome'"
+ 55.                 
+.                 use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, 
+> clear 
+ 56.         
+.                 gen group1 = (`sample' & `var1'==1 & `var2' ==1)
+ 57.                 gen group2 = (`sample' & `var1'==1 & `var2' ==0)
+ 58.                 gen group3 = (`sample' & `var1'==0 & `var2' ==1)
+ 59.                 gen group4 = (`sample' & `var1'==0 & `var2' ==0)
+ 60.                 
+.                 keep if inrange(edad, 16, 45)
+ 61.                 keep if group1 == 1 | group2 == 1 | group3 == 1 | group4 =
+> = 1   
+ 62.                         
+.             if "`plot_option'" == "diff" {
+ 63.                         forval j = 1/4 {
+ 64.                                 preserve
+ 65.                                         collapse (mean) `outcome' [aw = `w
+> eight'] if group`j' == 1 , by(`time')
+ 66.                                         tsset `time'
+ 67.                                         *tssmooth ma `outcome' = `outcome'
+> , window(1 1 1) replace
+.                                         rename *`outcome' *`outcome'_`j'
+ 68.                                         save ../temp/group`j'_`outcome'_ts
+> .dta, replace
+ 69.                                 restore
+ 70.                         }
+ 71.                         use                    ../temp/group1_`outcome'_ts
+> .dta, clear
+ 72.                         merge 1:1 `time' using ../temp/group2_`outcome'_ts
+> .dta, assert(3) keep(3) nogen
+ 73.                         merge 1:1 `time' using ../temp/group3_`outcome'_ts
+> .dta, assert(3) keep(3) nogen
+ 74.                         merge 1:1 `time' using ../temp/group4_`outcome'_ts
+> .dta, assert(3) keep(3) nogen
+ 75.                         
+.                         gen `outcome'_diff1 = `outcome'_1 - `outcome'_2
+ 76.                         gen `outcome'_diff2 = `outcome'_3 - `outcome'_4
+ 77. 
+.                         qui twoway (scatter `outcome'_diff1 `time', c(l) lc(b
+> lue) mc(blue)) /// 
+>                        (scatter `outcome'_diff2 `time', c(l) lc(red)  mc(red)
+> ) ///                
+>                 `range' , ///
+>                 legend(on order(1 2) label(1 "`diff1'") label(2 "`diff2'") co
+> l(1) row(2)) ///
+>                 tline(`vertical', lc(black) lp(dot)) title("`stub_var'", c(bl
+> ack) size(vlarge)) ///
+>                 xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(la
+> rge)) ///
+>                                 xlabel(, labs(large)) ylabel(#2, labs(large))
+>  ///
+>                 graphregion(color(white)) bgcolor(white) name(triple_diff_`ou
+> tcome', replace)
+ 78.                         
+.                 }
+ 79.                 else {
+ 80.                         forval j = 1/4 {
+ 81.                                 preserve
+ 82.                                         collapse (mean) `outcome' [aw = `w
+> eight'] if group`j' == 1 , by(`time')
+ 83.                                         tsset `time'
+ 84.                                         *tssmooth ma `outcome' = `outcome'
+> , window(1 1 0) replace
+.                                         gen group = `j'
+ 85.                                         save ../temp/group`j'_`outcome'_ts
+> .dta, replace
+ 86.                                 restore
+ 87.                         }
+ 88.                         use          ../temp/group1_`outcome'_ts.dta, clea
+> r
+ 89.                         append using ../temp/group2_`outcome'_ts.dta
+ 90.                         append using ../temp/group3_`outcome'_ts.dta
+ 91.                         append using ../temp/group4_`outcome'_ts.dta      
+>       
+ 92.                                 
+.                          qui twoway (scatter `outcome' `time' if group == 1, 
+> c(l) lc(blue) mc(blue) ms(triangle)) ///
+>                         (scatter `outcome' `time' if group == 2, c(l) lc(red)
+>   mc(red)  ms(triangle)) ///
+>                         (scatter `outcome' `time' if group == 3, c(l) lc(blue
+> ) mc(blue)) ///
+>                         (scatter `outcome' `time' if group == 4, c(l) lc(red)
+>   mc(red)) ///
+>                 `range', ///
+>                 legend(on order (1 2 3 4) col(2) label(1 "`group_lab1'") labe
+> l(2 "`group_lab2'") ///
+>                 label(3 "`group_lab3'") label(4 "`group_lab4'") size(large)) 
+> ///
+>                 tline(`vertical', lc(black) lp(dot)) title("`stub_var'", c(bl
+> ack) size(vlarge)) ///
+>                 xtitle("`xtitle'", size(vlarge)) ytitle("`stub_var'", size(vl
+> arge)) ///
+>                                 xlabel(, labs(large)) ylabel(#2, labs(large))
+>  ///
+>                 graphregion(color(white)) bgcolor(white) name(triple_diff_`ou
+> tcome', replace)
+ 93.                 }
+ 94.         }
+ 95. 
+.         local plot1: word 1 of `plots'  
+ 96.         
+.         grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) c
+> ols(2) /// /* cols(1) or cols(3) */
+>                    graphregion(color(white)) title({bf: `city_legend' `specia
+> l_legend'}, color(black) size(vlarge))
+ 97.         graph display, ysize(3) xsize(7)
+ 98.         graph export ../output/triple_diff_`city'_`time'_`groups_vars'_`de
+> sign'`plot_option'.png, replace
+ 99. end
+
+. 
+. program reg_triple_diff
+  1.     syntax, outcomes(string) var1(str) var2(str) city(str) groups_vars(str
+> ) time(str) event_date(str)
+  2.         
+.         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+  3.         keep if inrange(edad, 16, 45)
+  4.         
+.         if "`time'" == "anio_qtr" {
+  5.                         local weight pesotri
+  6.                         gen post = (`time' >= tq(`event_date'))
+  7.                         local range "if inrange(`time', tq(`event_date') -
+>  12,tq(`event_date') + 12) "
+  8.                         qui sum `time' `range'  
+  9.                         local min_year = year(dofq(r(min)))
+ 10.                 }
+ 11.                 else if "`time'" == "anio_sem" {
+ 12.                         local weight pesosem
+ 13.                         gen post = (`time' >= th(`event_date'))
+ 14.                         local range "if inrange(`time', th(`event_date') -
+>  8,th(`event_date') + 4) "
+ 15.                         qui sum `time' `range'  
+ 16.                         local min_year = year(dofh(r(min)))
+ 17.                 }
+ 18.                 else {
+ 19.                         local weight pesoan
+ 20.                         gen post = (`time' >= `event_date')
+ 21.                         local range "if inrange(`time', `event_date' - 4, 
+> `event_date' + 2) "
+ 22.                         qui sum `time' `range'  
+ 23.                         local min_year = r(min)
+ 24.                 }
+ 25. 
+.         if `min_year' < 2001  {
+ 26.                 local control_vars " c98_* "
+ 27.                 }
+ 28.         else if `min_year' >=2001 & `min_year' < 2006  {
+ 29.                 local control_vars " c98_* c01_* "
+ 30.                 }
+ 31.         else {
+ 32.                 local control_vars " c98_* c01_* c06_* "
+ 33.                 }
+ 34.         
+.         if "`var1'" == "female" | "`var2'" == "female" {
+ 35.             local sample = "dpto == 1 "
+ 36.         }
+ 37.         else {
+ 38.             local sample = "dpto == 1 & female == 1 "
+ 39.         }
+ 40.         
+.         forvalues i=1/2 {
+ 41.         if          "`var`i''" == "female" {
+ 42.                 local var`i'lab = "Female"
+ 43.             }
+ 44.             else if "`var`i''" == "poor" {
+ 45.                 local var`i'lab = "Poor"
+ 46.             }
+ 47.             else if "`var`i''" == "single" {
+ 48.                 local var`i'lab = "Single"             
+ 49.             }
+ 50.             else if "`var`i''" == "lowed" {
+ 51.                 local var`i'lab = "Low-educ"              
+ 52.             }
+ 53.     }
+ 54.         
+.         gen group1 = (`sample' & `var1'==1 & `var2' ==1)
+ 55.         gen group2 = (`sample' & `var1'==1 & `var2' ==0)
+ 56.         gen group3 = (`sample' & `var1'==0 & `var2' ==1)
+ 57.         gen group4 = (`sample' & `var1'==0 & `var2' ==0)
+ 58.         
+.         keep if group1 == 1 | group2 == 1 | group3 == 1 | group4 == 1
+ 59.                 
+.         local event = "`var1lab' x `var2lab'"
+ 60.         gen int_no_post = `var1' * `var2'
+ 61.         gen int_post1   = `var1' * post
+ 62.         gen int_post2   = `var2' * post   
+ 63.         gen int_triple = int_no_post * post
+ 64.  
+.         local n_outcomes: word count `outcomes'
+ 65.         forval i = 1/`n_outcomes' {
+ 66.                 local outcome: word `i' of `outcomes'
+ 67.                 
+.                 eststo: reg `outcome' `var1' `var2' i.post int_* ///
+>                                         i.`time' nbr_people ind_under14 edad 
+> married ///
+>                                         y_hogar_alt `control_vars' `range' [a
+> w = `weight'], vce(cluster `time')
+ 68.                 }
+ 69.                 esttab using ../output/triple_diff_`city'_`time'_`groups_v
+> ars'_`var1'_`var2'.tex, label se ar2 compress ///
+>                         replace nonotes coeflabels(int_triple "`event' x Post
+> ") keep(int_triple) ///
+>                         star(* 0.1 ** 0.05 *** 0.01)
+ 70.                 eststo clear
+ 71. end
+
+. 
+. main_triple_diff
+
+.         * Dates of treatments
+.         global q_date_mvd    "2004q2"
+
+.         global q_date_rivera "2010q3"
+
+.         global q_date_salto  "2013q1"
+
+.         
+.         global s_date_mvd    "2004h1"
+
+.         global s_date_rivera "2010h2"
+
+.         global s_date_salto  "2013h1"
+
+.         
+.         global y_date_mvd    2004 
+
+.         global y_date_rivera 2010 
+
+.         global y_date_salto  2013 
+
+.         
+. 
+. 
+end of do-file
+(1,128,811 observations deleted)
+(576,353 observations deleted)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group1_trabajo_ts.dta not found)
+file ../temp/group1_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group2_trabajo_ts.dta not found)
+file ../temp/group2_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group3_trabajo_ts.dta not found)
+file ../temp/group3_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group4_trabajo_ts.dta not found)
+file ../temp/group4_trabajo_ts.dta saved
+(1,128,811 observations deleted)
+(576,353 observations deleted)
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group1_horas_trabajo_ts.dta not found)
+file ../temp/group1_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group2_horas_trabajo_ts.dta not found)
+file ../temp/group2_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group3_horas_trabajo_ts.dta not found)
+file ../temp/group3_horas_trabajo_ts.dta saved
+        time variable:  anio_sem, 1998h1 to 2015h2
+                delta:  1 halfyear
+(note: file ../temp/group4_horas_trabajo_ts.dta not found)
+file ../temp/group4_horas_trabajo_ts.dta saved
+(note: file ../output/triple_diff_mvd_anio_sem_labor_trend.png not found)
+(file ../output/triple_diff_mvd_anio_sem_labor_trend.png written in PNG format)
+(1,128,811 observations deleted)
+(576,353 observations deleted)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+note: married omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1587
+                                                Root MSE          =     .45658
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      single |   .0075929   .0099041     0.77   0.458    -.0139862     .029172
+       lowed |   -.164971   .0111302   -14.82   0.000    -.1892216   -.1407205
+      1.post |  -.0600442   .0083744    -7.17   0.000    -.0782903    -.041798
+ int_no_post |   .0882062   .0147694     5.97   0.000     .0560264     .120386
+   int_post1 |  -.0084586   .0111806    -0.76   0.464     -.032819    .0159019
+   int_post2 |  -.0017424   .0169513    -0.10   0.920    -.0386761    .0351913
+  int_triple |   -.001058   .0272052    -0.04   0.970    -.0603331    .0582171
+             |
+    anio_sem |
+         81  |  -.0075817   .0005545   -13.67   0.000    -.0087899   -.0063736
+         82  |  -.0585713   .0007063   -82.92   0.000    -.0601102   -.0570323
+         83  |  -.0552032   .0009157   -60.29   0.000    -.0571983   -.0532081
+         84  |  -.0837887   .0010073   -83.18   0.000    -.0859833    -.081594
+         85  |  -.0949083   .0010271   -92.41   0.000    -.0971461   -.0926706
+         86  |  -.1089021     .00109   -99.91   0.000     -.111277   -.1065272
+         87  |  -.0705539   .0012099   -58.31   0.000    -.0731901   -.0679176
+         88  |  -.0176525    .001011   -17.46   0.000    -.0198551   -.0154498
+         89  |  -.0066404    .000953    -6.97   0.000    -.0087168    -.004564
+         90  |  -.0166552   .0010693   -15.58   0.000     -.018985   -.0143254
+         91  |   .0004167   .0009692     0.43   0.675     -.001695    .0025285
+         92  |          0  (omitted)
+             |
+  nbr_people |   -.023881   .0014154   -16.87   0.000    -.0269648   -.0207971
+ ind_under14 |  -.0003324   .0048885    -0.07   0.947    -.0109835    .0103187
+        edad |   .0176512   .0002611    67.59   0.000     .0170822    .0182201
+     married |          0  (omitted)
+ y_hogar_alt |   1.91e-06   2.44e-07     7.84   0.000     1.38e-06    2.44e-06
+c98_resid_~e |   .0112929   .0219241     0.52   0.616    -.0364755    .0590613
+c98_resid_~d |  -.0353657   .0053007    -6.67   0.000     -.046915   -.0238165
+c98_nbr_ro~s |  -.0054444   .0026927    -2.02   0.066    -.0113113    .0004225
+c98_nbr_be~s |  -.0193633   .0044839    -4.32   0.001    -.0291329   -.0095937
+c98_b_pipe~r |  -.0096562   .0196063    -0.49   0.631    -.0523746    .0330623
+c98_hhld_t~t |   .0390003   .0178308     2.19   0.049     .0001502    .0778503
+c98_b_sewage |   .0239519   .0075833     3.16   0.008     .0074293    .0404745
+c98_hhld_s~e |  -.0347288   .0191981    -1.81   0.096    -.0765579    .0071003
+c98_hhld_h~r |   .0622559   .0124079     5.02   0.000     .0352213    .0892904
+c98_hhld_r~t |  -.0073868   .0154046    -0.48   0.640    -.0409505     .026177
+ c98_hhld_tv |   .0248263   .0137764     1.80   0.097    -.0051899    .0548425
+c98_hhld_vcr |  -.0080047   .0064333    -1.24   0.237    -.0220217    .0060124
+c98_hhld_w~c |   .0235992   .0053201     4.44   0.001     .0120076    .0351907
+c98_hhld_d~r |  -.0413226    .008593    -4.81   0.000    -.0600452   -.0226001
+c98_hhld_m~e |   .0435901   .0066526     6.55   0.000     .0290954    .0580849
+c98_hhld_car |  -.0376016   .0052956    -7.10   0.000    -.0491397   -.0260635
+       _cons |   .1745125   .0491025     3.55   0.004     .0675273    .2814977
+------------------------------------------------------------------------------
+(est1 stored)
+(sum of wgt is   3.3373e+06)
+note: 92.anio_sem omitted because of collinearity
+note: married omitted because of collinearity
+
+Linear regression                               Number of obs     =     48,307
+                                                F(11, 12)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.1347
+                                                Root MSE          =      19.73
+
+                              (Std. Err. adjusted for 13 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      single |   .5111849   .4419913     1.16   0.270    -.4518314    1.474201
+       lowed |  -5.482335    .287234   -19.09   0.000    -6.108164   -4.856506
+      1.post |  -1.031865   .3465081    -2.98   0.012    -1.786841   -.2768888
+ int_no_post |   4.357224    .401298    10.86   0.000     3.482871    5.231577
+   int_post1 |  -.4050257   .5385724    -0.75   0.467    -1.578474    .7684227
+   int_post2 |    .459562   .5419395     0.85   0.413    -.7212227    1.640347
+  int_triple |  -.2880059   .8881923    -0.32   0.751    -2.223211    1.647199
+             |
+    anio_sem |
+         81  |   .4609013   .0227831    20.23   0.000     .4112613    .5105413
+         82  |   .0319948   .0272904     1.17   0.264    -.0274658    .0914554
+         83  |  -.7816713   .0391651   -19.96   0.000    -.8670046   -.6963379
+         84  |  -1.252159   .0390492   -32.07   0.000     -1.33724   -1.167078
+         85  |  -2.744786   .0461421   -59.49   0.000    -2.845321   -2.644251
+         86  |  -2.744205   .0418196   -65.62   0.000    -2.835322   -2.653087
+         87  |  -2.299514   .0498155   -46.16   0.000    -2.408053   -2.190975
+         88  |  -.8583012   .0413035   -20.78   0.000    -.9482939   -.7683085
+         89  |  -.6076559   .0374989   -16.20   0.000    -.6893589   -.5259528
+         90  |  -.5676844   .0463822   -12.24   0.000    -.6687425   -.4666263
+         91  |  -1.184604   .0399231   -29.67   0.000    -1.271589   -1.097619
+         92  |          0  (omitted)
+             |
+  nbr_people |  -.9490621   .0734286   -12.92   0.000    -1.109049   -.7890749
+ ind_under14 |  -.0657995   .2033914    -0.32   0.752    -.5089513    .3773524
+        edad |   .7148975   .0144819    49.37   0.000     .6833442    .7464507
+     married |          0  (omitted)
+ y_hogar_alt |   .0000997   .0000115     8.67   0.000     .0000747    .0001248
+c98_resid_~e |   .3981888   .9198835     0.43   0.673    -1.606065    2.402443
+c98_resid_~d |  -1.578757   .2829889    -5.58   0.000    -2.195337   -.9621771
+c98_nbr_ro~s |  -.2946349   .1263117    -2.33   0.038    -.5698444   -.0194253
+c98_nbr_be~s |  -.8262525   .1730477    -4.77   0.000    -1.203291    -.449214
+c98_b_pipe~r |   -.406091   .7424992    -0.55   0.594    -2.023858    1.211676
+c98_hhld_t~t |   1.894619   .5402649     3.51   0.004     .7174826    3.071755
+c98_b_sewage |   1.207551   .2810004     4.30   0.001     .5953042    1.819799
+c98_hhld_s~e |  -1.076367   .7402452    -1.45   0.172    -2.689223    .5364885
+c98_hhld_h~r |   3.443273   .5951186     5.79   0.000     2.146621    4.739925
+c98_hhld_r~t |   .2083456   .6945305     0.30   0.769    -1.304906    1.721598
+ c98_hhld_tv |   1.470756   .5592965     2.63   0.022     .2521533    2.689358
+c98_hhld_vcr |    -.50858     .27315    -1.86   0.087    -1.103723    .0865626
+c98_hhld_w~c |   1.195557    .236242     5.06   0.000     .6808301    1.710284
+c98_hhld_d~r |  -2.500484   .4612657    -5.42   0.000    -3.505495   -1.495472
+c98_hhld_m~e |    1.80707   .2294442     7.88   0.000     1.307154    2.306986
+c98_hhld_car |  -1.547878    .245924    -6.29   0.000    -2.083701   -1.012056
+       _cons |   .3735455   1.882735     0.20   0.846    -3.728582    4.475673
+------------------------------------------------------------------------------
+(est2 stored)
+(note: file ../output/triple_diff_mvd_anio_sem_labor_single_lowed.tex not found
+> )
+(output written to ../output/triple_diff_mvd_anio_sem_labor_single_lowed.tex)
+
+. 
+end of do-file
+
+ make.py ended: 2017-12-05 13:13:25
