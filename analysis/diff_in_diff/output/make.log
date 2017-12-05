@@ -1,5 +1,5 @@
 
- make.py started: 2017-12-05 11:29:44 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
+ make.py started: 2017-12-05 18:43:16 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
 
 
 
@@ -34,88 +34,83 @@ Notes:
 
 . 
 . program main_diff_analysis
-  1.         pwd
-  2.         do ../../globals.do
-  3.         local labor_vars   = "trabajo horas_trabajo"
-  4.         local educ_vars    = "educ_HS_or_more educ_more_HS"
-  5.         local outcome_vars = "`labor_vars' " + "`educ_vars'"
-  6.         local labor_stubs  = `" "Employment" "Hours-worked" "'
-  7.         local educ_stubs   = `" "High-school" "Some-college" "'
-  8.         local labor_restr "inrange(edad, 16, 45)"
-  9.         local educ_restr "inrange(edad, 18, 25)"
- 10.         
-.         local legend_mvd    = "Montevideo"
- 11.         local legend_rivera = "Rivera"
- 12.         local legend_salto  = "Salto"
- 13.         
+  1.         do ../../globals.do
+  2.         local labor_vars   = "trabajo horas_trabajo"
+  3.         local educ_vars    = "educ_HS_or_more educ_more_HS"
+  4.         local outcome_vars = "`labor_vars' " + "`educ_vars'"
+  5.         local labor_stubs  = `" "Employment" "Hours-worked" "'
+  6.         local educ_stubs   = `" "High-school" "Some-college" "'
+  7.         local labor_restr "inrange(edad, 16, 45)"
+  8.         local educ_restr "inrange(edad, 18, 25)"
+  9. 
 .         foreach city in rivera salto {
- 14.                 
+ 10.                 
 .                 foreach group_vars in labor /*educ*/ {
- 15. 
+ 11. 
 .                         plot_diff, outcomes(``group_vars'_vars') treatment(`c
 > ity')  ///
 >                                 time(anio_sem) event_date(${s_date_`city'}) c
-> ity_legend(`legend_`city'') ///
+> ity_legend(${legend_`city'}) ///
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)
- 16. 
+ 12. 
 .                         /*plot_diff, outcomes(``group_vars'_vars') treatment(
 > `city')  ///
 >                                 time(anio) event_date(${y_date_`city'}) city_
-> legend(`legend_`city'') ///
+> legend(${legend_`city'}) ///
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)*/
 . 
 .                         reg_diff, outcomes(``group_vars'_vars') treatment(`ci
 > ty')   ///
->                                 time(anio_sem) event(`legend_`city'') event_d
-> ate(${s_date_`city'}) restr(``group_vars'_restr') ///
+>                                 time(anio_sem) event(${legend_`city'}) event_
+> date(${s_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')
- 17. 
+ 13. 
 .                         /*reg_diff, outcomes(``group_vars'_vars') treatment(`
 > city')  ///
->                                 time(anio)     event(`legend_`city'') event_d
-> ate(${y_date_`city'}) restr(``group_vars'_restr') ///
+>                                 time(anio)     event(${legend_`city'}) event_
+> date(${y_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')*/
 .                 }
- 18.         }
- 19.         
+ 14.         }
+ 15.         
 .         foreach demo in female single lowed poor { 
- 20.                  
+ 16.                  
 .                 foreach group_vars in labor /*educ*/ {
- 21. 
+ 17. 
 .                         plot_diff, outcomes(``group_vars'_vars') treatment(mv
 > d_`demo')  ///
 >                                 time(anio_sem) event_date(${s_date_mvd}) city
-> _legend(`legend_mvd') ///
+> _legend(${legend_mvd}) ///
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)
- 22. 
+ 18. 
 .                         /*plot_diff, outcomes(``group_vars'_vars') treatment(
 > `city')  ///
 >                                 time(anio) event_date(${y_date_`city'}) city_
-> legend(`legend_`city'') ///
+> legend(${legend_`city'}) ///
 >                                 stubs(``group_vars'_stubs') restr(``group_var
 > s'_restr') groups_vars(`group_vars') ///
 >                                 plot_option(trend)*/
 . 
 .                         reg_diff, outcomes(``group_vars'_vars') treatment(mvd
 > _`demo')   ///
->                                 time(anio_sem) event(`legend_mvd') event_date
-> (${s_date_mvd}) restr(``group_vars'_restr') ///
+>                                 time(anio_sem) event(${legend_mvd}) event_dat
+> e(${s_date_mvd}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')
- 23. 
+ 19. 
 .                         /*reg_diff, outcomes(``group_vars'_vars') treatment(`
 > city')  ///
->                                 time(anio)     event(`legend_`city'') event_d
-> ate(${y_date_`city'}) restr(``group_vars'_restr') ///
+>                                 time(anio)     event(${legend_`city'}) event_
+> date(${y_date_`city'}) restr(``group_vars'_restr') ///
 >                                 groups_vars(`group_vars')*/
 .                 }
- 24.         }
- 25. 
+ 20.         }
+ 21. 
 .         
 . end
 
@@ -399,30 +394,36 @@ Notes:
 
 . 
 . main_diff_analysis
-C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code
 
-.         * Dates of treatments
-.         global q_date_mvd    "2004q2"
+.     * Dates of treatments
+.     global q_date_mvd    "2004q2"
 
-.         global q_date_rivera "2010q3"
+.     global q_date_rivera "2010q3"
 
-.         global q_date_salto  "2013q1"
+.     global q_date_salto  "2013q1"
 
-.         
-.         global s_date_mvd    "2004h1"
+.     
+.     global s_date_mvd    "2004h1"
 
-.         global s_date_rivera "2010h2"
+.     global s_date_rivera "2010h2"
 
-.         global s_date_salto  "2013h1"
+.     global s_date_salto  "2013h1"
 
-.         
-.         global y_date_mvd    2004 
+.     
+.     global y_date_mvd    2004 
 
-.         global y_date_rivera 2010 
+.     global y_date_rivera 2010 
 
-.         global y_date_salto  2013 
+.     global y_date_salto  2013 
 
-.         
+. 
+.     * Legends
+.     global legend_mvd    = "Montevideo"
+
+.     global legend_rivera = "Rivera"
+
+.     global legend_salto  = "Salto"
+
 . 
 . 
 end of do-file
@@ -1309,4 +1310,4 @@ c98_hhld_car |  -2.133306      .2261    -9.44   0.000    -2.625936   -1.640677
 . 
 end of do-file
 
- make.py ended: 2017-12-05 11:30:25
+ make.py ended: 2017-12-05 18:43:57

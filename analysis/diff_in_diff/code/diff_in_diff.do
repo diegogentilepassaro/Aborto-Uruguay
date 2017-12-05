@@ -10,31 +10,27 @@ program main_diff_analysis
 	local educ_stubs   = `" "High-school" "Some-college" "'
 	local labor_restr "inrange(edad, 16, 45)"
 	local educ_restr "inrange(edad, 18, 25)"
-	
-	local legend_mvd    = "Montevideo"
-	local legend_rivera = "Rivera"
-	local legend_salto  = "Salto"
-	
+
 	foreach city in rivera salto {
 		
 		foreach group_vars in labor /*educ*/ {
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio_sem) event_date(${s_date_`city'}) city_legend(`legend_`city'') ///
+				time(anio_sem) event_date(${s_date_`city'}) city_legend(${legend_`city'}) ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)
 
 			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio) event_date(${y_date_`city'}) city_legend(`legend_`city'') ///
+				time(anio) event_date(${y_date_`city'}) city_legend(${legend_`city'}) ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
-				time(anio_sem) event(`legend_`city'') event_date(${s_date_`city'}) restr(``group_vars'_restr') ///
+				time(anio_sem) event(${legend_`city'}) event_date(${s_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio)     event(`legend_`city'') event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
+				time(anio)     event(${legend_`city'}) event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')*/
 		}
 	}
@@ -44,21 +40,21 @@ program main_diff_analysis
 		foreach group_vars in labor /*educ*/ {
 
 			plot_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')  ///
-				time(anio_sem) event_date(${s_date_mvd}) city_legend(`legend_mvd') ///
+				time(anio_sem) event_date(${s_date_mvd}) city_legend(${legend_mvd}) ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)
 
 			/*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio) event_date(${y_date_`city'}) city_legend(`legend_`city'') ///
+				time(anio) event_date(${y_date_`city'}) city_legend(${legend_`city'}) ///
 				stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') ///
 				plot_option(trend)*/
 
 			reg_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')   ///
-				time(anio_sem) event(`legend_mvd') event_date(${s_date_mvd}) restr(``group_vars'_restr') ///
+				time(anio_sem) event(${legend_mvd}) event_date(${s_date_mvd}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')
 
 			/*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
-				time(anio)     event(`legend_`city'') event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
+				time(anio)     event(${legend_`city'}) event_date(${y_date_`city'}) restr(``group_vars'_restr') ///
 				groups_vars(`group_vars')*/
 		}
 	}

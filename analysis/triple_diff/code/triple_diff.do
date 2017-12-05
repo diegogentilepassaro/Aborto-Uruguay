@@ -8,20 +8,16 @@ program main_triple_diff
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
 	
-	local q_date_mvd "2002q1"
-	local s_date_mvd "2002h1"
-	local y_date_mvd "2002"
-	
     foreach group_vars in labor /*educ*/ {
 	
 		foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
 				
 			plot_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) ///
-				time(anio_sem) event_date(${s_date_mvd}) city(mvd) city_legend(Montevideo) ///
+				time(anio_sem) event_date(${s_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
 				
 			/*plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
-				time(anio) event_date(${y_date_mvd}) city(mvd) city_legend(Montevideo) ///
+				time(anio) event_date(${y_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
 				
 			reg_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) city(mvd) ///

@@ -1,5 +1,5 @@
 
- make.py started: 2017-12-05 13:13:14 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\triple_diff\code 
+ make.py started: 2017-12-05 18:23:26 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\triple_diff\code 
 
 
 
@@ -40,26 +40,22 @@ Notes:
   4.         local labor_stubs  = `" "Employment" "Hours-worked" "'
   5.         local educ_stubs   = `" "High-school" "Some-college" "'
   6.         
-.         local q_date_mvd "2002q1"
-  7.         local s_date_mvd "2002h1"
-  8.         local y_date_mvd "2002"
-  9.         
 .     foreach group_vars in labor /*educ*/ {
- 10.         
+  7.         
 .                 foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor
 > _lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
- 11.                                 
+  8.                                 
 .                         plot_triple_diff, outcomes(``group_vars'_vars') var1(
 > single) var2(lowed) ///
 >                                 time(anio_sem) event_date(${s_date_mvd}) city
-> (mvd) city_legend(Montevideo) ///
+> (mvd) city_legend(${legend_mvd}) ///
 >                                 stubs(``group_vars'_stubs') groups_vars(`grou
 > p_vars') plot_option(trend)
- 12.                                 
+  9.                                 
 .                         /*plot_triple_diff, outcomes(``group_vars'_vars') des
 > ign(`design') ///
 >                                 time(anio) event_date(${y_date_mvd}) city(mvd
-> ) city_legend(Montevideo) ///
+> ) city_legend(${legend_mvd}) ///
 >                                 stubs(``group_vars'_stubs') groups_vars(`grou
 > p_vars') plot_option(trend)*/
 .                                 
@@ -67,14 +63,14 @@ Notes:
 > ingle) var2(lowed) city(mvd) ///
 >                                 time(anio_sem) event_date(${s_date_mvd}) grou
 > ps_vars(`group_vars')
- 13.                                 
+ 10.                                 
 .                         /*reg_triple_diff, outcomes(``group_vars'_vars') desi
 > gn(`design') city(mvd) ///
 >                                 time(anio) event_date(${y_date_mvd}) groups_v
 > ars(`group_vars')*/
 .                 }                       
- 14.         }
- 15. end
+ 11.         }
+ 12. end
 
 . 
 . program plot_triple_diff
@@ -354,28 +350,35 @@ Notes:
 . 
 . main_triple_diff
 
-.         * Dates of treatments
-.         global q_date_mvd    "2004q2"
+.     * Dates of treatments
+.     global q_date_mvd    "2004q2"
 
-.         global q_date_rivera "2010q3"
+.     global q_date_rivera "2010q3"
 
-.         global q_date_salto  "2013q1"
+.     global q_date_salto  "2013q1"
 
-.         
-.         global s_date_mvd    "2004h1"
+.     
+.     global s_date_mvd    "2004h1"
 
-.         global s_date_rivera "2010h2"
+.     global s_date_rivera "2010h2"
 
-.         global s_date_salto  "2013h1"
+.     global s_date_salto  "2013h1"
 
-.         
-.         global y_date_mvd    2004 
+.     
+.     global y_date_mvd    2004 
 
-.         global y_date_rivera 2010 
+.     global y_date_rivera 2010 
 
-.         global y_date_salto  2013 
+.     global y_date_salto  2013 
 
-.         
+. 
+.     * Legends
+.     global legend_mvd    = "Montevideo"
+
+.     global legend_rivera = "Rivera"
+
+.     global legend_salto  = "Salto"
+
 . 
 . 
 end of do-file
@@ -548,4 +551,4 @@ c98_hhld_car |  -1.547878    .245924    -6.29   0.000    -2.083701   -1.012056
 . 
 end of do-file
 
- make.py ended: 2017-12-05 13:13:25
+ make.py ended: 2017-12-05 18:23:38

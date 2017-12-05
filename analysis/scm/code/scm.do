@@ -10,22 +10,7 @@ program main_scm
 	local outcome_vars = "`labor_vars' " + "`educ_vars'"
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
-	
-	local legend_rivera = "Rivera"
-	local legend_salto  = "Salto"
-	
-	local q_date_is_chpr  "2002q1"
-	local q_date_rivera  "2010q3"
-	local q_date_salto "2013q1"
-	
-	local s_date_is_chpr "2002h1"
-	local s_date_rivera "2010h2"
-	local s_date_salto "2013h1"
-	
-	local y_date_is_chpr 2002 
-	local y_date_rivera 2010 
-	local y_date_salto 2013 
-	
+		
 	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
 	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
 	
@@ -52,7 +37,7 @@ program main_scm
 					}
 				}
 					
-			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`s_date_`city'') ///
+			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(${s_date_`city'}) ///
 				time(anio_sem) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
 				sample_restr(`sample_restr')
 				
@@ -60,12 +45,12 @@ program main_scm
 				time(anio)     controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
 				sample_restr(`sample_restr')*/
 			
-			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`s_date_`city'') ///
-				time(anio_sem) groups_vars(`group_vars') city_legend(`legend_`city'')           ///
+			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(${s_date_`city'}) ///
+				time(anio_sem) groups_vars(`group_vars') city_legend(${legend_`city'})           ///
 				stub_list(``group_vars'_stubs') special_legend(`special_legend')
 
 			/*plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`y_date_`city'') ///
-				time(anio)     groups_vars(`group_vars') city_legend(`legend_`city'')         ///
+				time(anio)     groups_vars(`group_vars') city_legend(${legend_`city'})         ///
 				stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
 
