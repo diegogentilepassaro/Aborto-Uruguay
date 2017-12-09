@@ -1,0 +1,84 @@
+
+ make.py started: 2017-12-09 18:54:52 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./mortality.do 
+
+. clear all
+
+. set more off
+
+. 
+. program main
+  1.         import excel using "..\..\..\raw\Cuadro 7. Mortalidad Materna 1900
+> -2015.xlsx", clear cellrange(a9:h125) firstrow
+  2.         rename Año year
+  3.         label var year "Year"
+  4.         keep if year>=1985
+  5.         tsset year
+  6.         gen ratio1 = Cifras/Muertesdemujeres
+  7. 
+.         tssmooth ma ma_muertes = MuertesMaternas, window(3 1 0) //5-year aver
+> age
+  8.         tssmooth ma ma_razon   = Raz, window(3 1 0) //5-year average
+  9.         tssmooth ma ma_ratio1 = ratio1, window(3 1 0)
+ 10.         
+.         label var ma_ratio1 "Maternal mortality over fertile women's mortalit
+> y"
+ 11.         
+.         plot_ratio, var_ratio(ratio1) start_yr(2000) end_yr(2014) tline(2004)
+ 12. end
+
+. 
+. program plot_ratio, 
+  1. syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
+  2.         local var_ratio ma_ratio1
+  3.         local start_yr 2000
+  4.         local end_yr 2014 
+  5.         local tline 2004 2012
+  6.         tsline `var_ratio' if inrange(year,`start_yr',`end_yr'), tline(`tl
+> ine') tlab(2000(4)2014)
+  7.         graph export ../output/mortality_`var_ratio'.pdf, replace
+  8. end
+
+. 
+. main
+(85 observations deleted)
+        time variable:  year, 1985 to 2015
+                delta:  1 unit
+The smoother applied was
+     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= MuertesMaternas
+The smoother applied was
+     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= Raz
+The smoother applied was
+     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= ratio1
+(file ../output/mortality_ma_ratio1.pdf written in PDF format)
+
+. 
+end of do-file
+
+ make.py ended: 2017-12-09 18:54:54
