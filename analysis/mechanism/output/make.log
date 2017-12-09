@@ -1,0 +1,328 @@
+
+ make.py started: 2017-12-09 16:44:57 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\mechanism\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./births.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./births.do 
+
+. clear all
+
+. set more off
+
+. 
+. program main
+  1.         clean_data
+  2.          plot_natality, rescale(1000)
+  3. end
+
+. 
+. program clean_data
+  1.         import excel using "..\..\..\raw\Cuadro 5. Tasas Brutas de Mortali
+> dad y Natalidad. Uruguay, 1996-2015.xlsx" ///
+>                   , clear cellrange(a39:bi62)
+  2. 
+.         local i = 0
+  3.         foreach x of varlist * {
+  4.            rename `x' var`i'
+  5.            local i = `i' + 1
+  6.         }
+  7. 
+.         rename var0 dpto
+  8. 
+.         local j1 = 2
+  9.         forvalues year = 1996/2015 {
+ 10.                 local j0 = `j1' - 1
+ 11.                 local j2 = `j1' + 1
+ 12.                 replace var`j1' = "`year'" if mi(var`j1') in 1
+ 13.                 replace var`j2' = "`year'" if mi(var`j2') in 1
+ 14.                 assert var`j0'[1] == var`j1'[1] & var`j1'[1] == var`j2'[1]
+ 15.                 rename var`j0' nat_level`year'
+ 16.                 rename var`j1' population`year'
+ 17.                 rename var`j2' nat_rate`year'
+ 18.                 local j1 = `j1' + 3
+ 19.         }
+ 20. 
+.         drop in 22/23
+ 21.         drop in 1/2 
+ 22. 
+.         destring , replace
+ 23.         local nn=_N+1
+ 24.         set obs `nn'
+ 25.         replace dpto = "Area Metropolitana" in `nn'
+ 26.         forvalues year = 1996/2015 {
+ 27.                 replace nat_level`year' = nat_level`year'[2] + nat_level`y
+> ear'[10] in `nn'
+ 28.                 replace population`year' = population`year'[2] + populatio
+> n`year'[10] in `nn'
+ 29.         }
+ 30. 
+.         foreach var in nat_level nat_rate population {
+ 31.                 preserve 
+ 32.                         keep    dpto `var'*
+ 33.                         reshape long `var', i(dpto) j(year)
+ 34.                         tempfile     `var'
+ 35.                         save        ``var''
+ 36.                 restore
+ 37.         }
+ 38. 
+.         use `nat_level', clear
+ 39.         merge 1:1 dpto year using `nat_rate'  , nogen assert(3)
+ 40.         merge 1:1 dpto year using `population', nogen assert(3)
+ 41. 
+.         encode dpto, g(dpto_num)
+ 42.         xtset  dpto_num year
+ 43.         gen nat_rate2 = nat_level/population*1000
+ 44. end
+
+. 
+. program plot_natality
+  1. syntax, rescale(int)
+  2.         gen nat_level_`rescale'= nat_level/`rescale'
+  3.         label var nat_level_`rescale' "Births (`rescale's)"
+  4.         xtline nat_level_`rescale' if (dpto=="Montevideo") & inrange(year,
+> 2000,2006) ///
+>                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2004
+> ) name(mvd, replace) ///
+>                 ylab(#3) legend(on rows(1))
+  5.         xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & i
+> nrange(year,2006,2012) ///
+>                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2010
+> ) name(rivera, replace) ///
+>                 ylab(#3) legend(rows(1))
+  6.         xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & i
+> nrange(year,2008,2014) ///
+>                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2012
+> ) name(salto, replace) ///
+>                 ylab(#3) legend(rows(1))
+  7.         graph combine mvd rivera salto, cols(1) ysize(7) xsize(6) graphreg
+> ion(fcolor(white))
+  8.         graph export ../output/natality_`rescale'.pdf, replace
+  9. end
+
+. 
+. main
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(2 observations deleted)
+(2 observations deleted)
+dpto: contains nonnumeric characters; no replace
+nat_level1996: all characters numeric; replaced as long
+population1996: all characters numeric; replaced as double
+nat_rate1996: all characters numeric; replaced as double
+nat_level1997: all characters numeric; replaced as long
+population1997: all characters numeric; replaced as double
+nat_rate1997: all characters numeric; replaced as double
+nat_level1998: all characters numeric; replaced as long
+population1998: all characters numeric; replaced as double
+nat_rate1998: all characters numeric; replaced as double
+nat_level1999: all characters numeric; replaced as long
+population1999: all characters numeric; replaced as double
+nat_rate1999: all characters numeric; replaced as double
+nat_level2000: all characters numeric; replaced as long
+population2000: all characters numeric; replaced as double
+nat_rate2000: all characters numeric; replaced as double
+nat_level2001: all characters numeric; replaced as long
+population2001: all characters numeric; replaced as double
+nat_rate2001: all characters numeric; replaced as double
+nat_level2002: all characters numeric; replaced as long
+population2002: all characters numeric; replaced as double
+nat_rate2002: all characters numeric; replaced as double
+nat_level2003: all characters numeric; replaced as long
+population2003: all characters numeric; replaced as double
+nat_rate2003: all characters numeric; replaced as double
+nat_level2004: all characters numeric; replaced as long
+population2004: all characters numeric; replaced as double
+nat_rate2004: all characters numeric; replaced as double
+nat_level2005: all characters numeric; replaced as long
+population2005: all characters numeric; replaced as double
+nat_rate2005: all characters numeric; replaced as double
+nat_level2006: all characters numeric; replaced as long
+population2006: all characters numeric; replaced as double
+nat_rate2006: all characters numeric; replaced as double
+nat_level2007: all characters numeric; replaced as long
+population2007: all characters numeric; replaced as double
+nat_rate2007: all characters numeric; replaced as double
+nat_level2008: all characters numeric; replaced as long
+population2008: all characters numeric; replaced as double
+nat_rate2008: all characters numeric; replaced as double
+nat_level2009: all characters numeric; replaced as long
+population2009: all characters numeric; replaced as double
+nat_rate2009: all characters numeric; replaced as double
+nat_level2010: all characters numeric; replaced as long
+population2010: all characters numeric; replaced as double
+nat_rate2010: all characters numeric; replaced as double
+nat_level2011: all characters numeric; replaced as long
+population2011: all characters numeric; replaced as double
+nat_rate2011: all characters numeric; replaced as double
+nat_level2012: all characters numeric; replaced as long
+population2012: all characters numeric; replaced as double
+nat_rate2012: all characters numeric; replaced as double
+nat_level2013: all characters numeric; replaced as long
+population2013: all characters numeric; replaced as double
+nat_rate2013: all characters numeric; replaced as double
+nat_level2014: all characters numeric; replaced as long
+population2014: all characters numeric; replaced as double
+nat_rate2014: all characters numeric; replaced as double
+nat_level2015: all characters numeric; replaced as long
+population2015: all characters numeric; replaced as double
+nat_rate2015: all characters numeric; replaced as double
+number of observations (_N) was 20, now 21
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(1 real change made)
+(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
+> 9 2010 2011 2012 2013 2014 2015)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                       21   ->     420
+Number of variables                  21   ->       3
+j variable (20 values)                    ->   year
+xij variables:
+nat_level1996 nat_level1997 ... nat_level2015->nat_level
+-----------------------------------------------------------------------------
+file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000002.tmp saved
+(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
+> 9 2010 2011 2012 2013 2014 2015)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                       21   ->     420
+Number of variables                  21   ->       3
+j variable (20 values)                    ->   year
+xij variables:
+nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
+-----------------------------------------------------------------------------
+file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000004.tmp saved
+(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
+> 9 2010 2011 2012 2013 2014 2015)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                       21   ->     420
+Number of variables                  21   ->       3
+j variable (20 values)                    ->   year
+xij variables:
+population1996 population1997 ... population2015->population
+-----------------------------------------------------------------------------
+file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000006.tmp saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               420  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               420  
+    -----------------------------------------
+       panel variable:  dpto_num (strongly balanced)
+        time variable:  year, 1996 to 2015
+                delta:  1 unit
+(file ../output/natality_1000.pdf written in PDF format)
+
+. 
+end of do-file
+
+ make.py ended: 2017-12-09 16:45:03
