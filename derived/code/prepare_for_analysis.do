@@ -14,7 +14,7 @@ program main_prepare_for_analysis
 	save ..\temp\clean_loc_1998_2016_fixed.dta, replace
 
     impute_poverty_lines_pre06
-	gen pobre       = (y_hogar_alt <= lp_06)
+	gen poor       = (y_hogar_alt <= lp_06)
 	gen indigente   = (y_hogar_alt <= li_06)
 	
 	gen ind_under14 = (nbr_people > nbr_above14)
@@ -60,7 +60,7 @@ program impute_poverty_lines_pre06
 	forval year=1998/2005 {
 	    replace anio = `year' 
 	
-	    local by_vars "loc_code nbr_above14 nbr_people"
+	    local by_vars " trimestre loc_code nbr_above14 nbr_people"
 	
 	    rename (lp_06 li_06) (lp_06_2 li_06_2)
 	    collapse (mean) lp_06_2 li_06_2, by(`by_vars')
@@ -77,7 +77,6 @@ program impute_poverty_lines_pre06
 		replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
 		replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
 	    save ..\temp\clean_loc_1998_2016_fixed.dta, replace
-
 	}
 end
 

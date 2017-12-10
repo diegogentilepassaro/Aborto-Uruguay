@@ -1,10 +1,10 @@
 
- make.py started: 2017-12-05 18:26:45 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
+ make.py started: 2017-12-07 16:30:29 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\scm\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./scm.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./scm.do"
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
       0 | 7.37e+001 | 1.61e-008 | -4.09e+002 | -7.09e+002 |  0.136 | 0.0000 | 1.00e+002
@@ -132,7 +132,7 @@ optimization converged
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -141,8 +141,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -605,4 +605,4 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2017-12-05 18:27:04
+ make.py ended: 2017-12-07 16:31:01

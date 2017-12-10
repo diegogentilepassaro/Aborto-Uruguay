@@ -10,9 +10,9 @@ program main_triple_diff
 	
     foreach group_vars in labor /*educ*/ {
 	
-		foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
+		foreach design in young_poor  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
 				
-			plot_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) ///
+			plot_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(kids) ///
 				time(anio_sem) event_date(${s_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
 				
@@ -20,7 +20,7 @@ program main_triple_diff
 				time(anio) event_date(${y_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
 				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
 				
-			reg_triple_diff, outcomes(``group_vars'_vars') var1(single) var2(lowed) city(mvd) ///
+			reg_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(kids) city(mvd) ///
 				time(anio_sem) event_date(${s_date_mvd}) groups_vars(`group_vars')
 				
 			/*reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///

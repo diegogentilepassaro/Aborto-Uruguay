@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-05 18:23:26 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\triple_diff\code 
+ make.py started: 2017-12-07 19:35:06 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\triple_diff\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./triple_diff.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./triple_diff.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -551,4 +551,4 @@ c98_hhld_car |  -1.547878    .245924    -6.29   0.000    -2.083701   -1.012056
 . 
 end of do-file
 
- make.py ended: 2017-12-05 18:23:38
+ make.py ended: 2017-12-07 19:35:36

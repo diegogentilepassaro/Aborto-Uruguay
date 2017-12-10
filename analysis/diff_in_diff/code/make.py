@@ -3,10 +3,10 @@
 # GET LIBRARY
 #****************************************************
 import subprocess, shutil, os
-# gslab_make_path = os.getenv('local_make_path')
-# gslab_fill_path = os.getenv('local_fill_path')
 from distutils.dir_util import copy_tree
 copy_tree("../../../library/python/gslab_make", "./gslab_make") # Copy from gslab tools stored locally
+copy_tree("../../../library/python/gslab_fill", "./gslab_fill") # Copy from gslab tools stored locally
+
 from gslab_make.get_externals import *
 from gslab_make.make_log import *
 from gslab_make.make_links import *
@@ -34,6 +34,27 @@ delete_files('../output/*')
 start_make_logging()
 
 run_stata(program = 'diff_in_diff.do')
+
+from gslab_fill.tablefill import tablefill
+from gslab_fill.textfill import textfill
+
+tablefill(
+	input = ('../output/tables.txt'),
+	template = '../source/table_rivera.lyx',
+	output = '../output/table_rivera_filled.lyx'
+	)
+
+tablefill(
+	input = ('../output/tables.txt'),
+	template = '../source/table_salto.lyx',
+	output = '../output/table_salto_filled.lyx'
+	)
+
+run_lyx(program = '../output/table_rivera_filled.lyx')
+run_lyx(program = '../output/table_salto_filled.lyx')
+
+os.rename('../output/table_rivera_filled.pdf', '../output/table_rivera.pdf')
+os.rename('../output/table_salto_filled.pdf', '../output/table_salto.pdf')
 
 end_make_logging()
 
