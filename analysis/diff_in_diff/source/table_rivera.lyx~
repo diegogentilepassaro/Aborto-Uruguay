@@ -1408,7 +1408,8 @@ Notes: The table reports the interaction coefficients from a difference
  in differences regression model.
  We control for time fixed effects, age, marital status, number of people
  in the household, child presence, household income, and other housing indicator
-s (number of rooms, having sewage, refrigerator, internet and other alike).
+s (number of rooms, having sewage, hot water, refrigerator, internet and
+ other alike).
  Standard errors are clustered at the semester level.
  The unit of observation is the individual-semester.
  Our baseline sample is individuals between 16 and 45 years old.

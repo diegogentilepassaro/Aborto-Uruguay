@@ -10,7 +10,7 @@ program assign_treatment
     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
 
 	* Variables for the triple diff
-	gen fertile_age = (inrange(edad, 14, 45)) if inrange(edad,14,60)
+	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
 	gen female      = (hombre==0)             if !mi(hombre)
 	gen single      = (married==0)            if !mi(married)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
@@ -37,10 +37,10 @@ program assign_treatment
     gen control_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 0)
     gen control_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 0)
 
-	gen treatment_placebo_rivera   = (loc_code == 1313020 & hombre == 1)
-    gen treatment_placebo_salto    = (loc_code == 1515020 & hombre == 1)
-    gen control_placebo_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 1)
-    gen control_placebo_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 1)	
+	gen treatment_placebo_rivera   = (loc_code == 1313020 & hombre == 0 & fertile_age == 0)
+    gen treatment_placebo_salto    = (loc_code == 1515020 & hombre == 0 & fertile_age == 0)
+    gen control_placebo_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 0 & fertile_age == 0)
+    gen control_placebo_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 0 & fertile_age == 0)	
 
 
 	*rio branco 431050

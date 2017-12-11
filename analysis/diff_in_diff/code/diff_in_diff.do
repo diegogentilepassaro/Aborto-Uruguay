@@ -228,7 +228,7 @@ program reg_diff
         
            use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
         
-        cap keep if `restr'
+        *cap keep if `restr'
         
         if "`time'" == "anio_qtr" {
                 local weight pesotri
@@ -274,14 +274,14 @@ program reg_diff
                     gen post = (`time' >= `event_date')
                 }
            
-		    foreach cond in "" "& kids == 1" "& kids == 0" "& single == 0" "& single == 1" "& young == 0" "& young == 1" {
+		    foreach cond in "" "& kids == 1" "& kids == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
             gen interaction         = treatment_`treatment' * post
 
             reg `outcome' i.treatment_`treatment' i.post interaction ///
                         i.`time' nbr_people ind_under14 edad married ///
                         y_hogar_alt `control_vars' `range' & ///
 						(treatment_`treatment'==1 | control_`treatment'==1) ///
-						`cond' [aw = `weight'], vce(cluster `time')
+						`cond' & `restr' [aw = `weight'], vce(cluster `time')
 			
 			matrix COLUMN_TREAT = ((_b[interaction] \ _se[interaction]) \ e(N))
             drop interaction

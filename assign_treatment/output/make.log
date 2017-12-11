@@ -1,5 +1,5 @@
 
- make.py started: 2017-12-10 16:38:06 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2017-12-10 20:22:07 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -51,7 +51,7 @@ Notes:
   1.     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
   2. 
 .         * Variables for the triple diff
-.         gen fertile_age = (inrange(edad, 14, 45)) if inrange(edad,14,60)
+.         gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
   3.         gen female      = (hombre==0)             if !mi(hombre)
   4.         gen single      = (married==0)            if !mi(married)
   5.         gen lowed       = (educ_level==1)         if !mi(educ_level)
@@ -80,12 +80,14 @@ Notes:
  20.     gen control_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hom
 > bre == 0)
  21. 
-.         gen treatment_placebo_rivera   = (loc_code == 1313020 & hombre == 1)
- 22.     gen treatment_placebo_salto    = (loc_code == 1515020 & hombre == 1)
+.         gen treatment_placebo_rivera   = (loc_code == 1313020 & hombre == 0 &
+>  fertile_age == 0)
+ 22.     gen treatment_placebo_salto    = (loc_code == 1515020 & hombre == 0 & 
+> fertile_age == 0)
  23.     gen control_placebo_rivera  = ((loc_code == 431050 | loc_code == 20202
-> 0) & hombre == 1)
+> 0) & hombre == 0 & fertile_age == 0)
  24.     gen control_placebo_salto   = ((loc_code == 1111020 |loc_code ==121202
-> 0) & hombre == 1)     
+> 0) & hombre == 0 & fertile_age == 0)  
  25. 
 . 
 .         *rio branco 431050
@@ -245,7 +247,7 @@ Notes:
 
 . 
 . main_assign_treatment
-(741,859 missing values generated)
+(803,973 missing values generated)
 (290,016 missing values generated)
 (1,128,811 missing values generated)
 (data already sorted by numero pers anio)
@@ -300,7 +302,7 @@ File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883359:133(54025):1409566520:1967579737
+  1883359:133(54025):3147763937:1279384093
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -410,7 +412,7 @@ unadj_trab~o |  1,883,359    .4188713    .4933744          0          1
 unadj_hora~o |  1,883,359    17.37756    22.42278          0         99
 educ_more_HS |  1,883,359    .0683061    .2522706          0          1
 educ_HS_or~e |  1,883,359    .2324448    .4223912          0          1
- fertile_age |  1,141,500    .7154288    .4512102          0          1
+ fertile_age |  1,079,386     .699053    .4586699          0          1
 -------------+---------------------------------------------------------
       female |  1,883,359    .5316549    .4989971          0          1
       single |  1,593,343    .4804314    .4996171          0          1
@@ -422,15 +424,15 @@ tre~t_rivera |  1,883,359    .0126051    .1115628          0          1
 trea~t_salto |  1,883,359    .0155047     .123549          0          1
 control_ri~a |  1,883,359    .0101542    .1002552          0          1
 control_sa~o |  1,883,359    .0195178     .138336          0          1
-tre~o_rivera |  1,883,359    .0111588    .1050441          0          1
+tre~o_rivera |  1,883,359    .0021446    .0462599          0          1
 -------------+---------------------------------------------------------
-trea~o_salto |  1,883,359    .0138683    .1169444          0          1
-control_pl~a |  1,883,359    .0093291    .0961356          0          1
-control_pl~o |  1,883,359    .0175368    .1312601          0          1
+trea~o_salto |  1,883,359    .0026501    .0514104          0          1
+control_pl~a |  1,883,359    .0018053    .0424503          0          1
+control_pl~o |  1,883,359    .0033053    .0573964          0          1
 treatmen~ale |  1,883,359    .2381336    .4259414          0          1
 treatment_~r |  1,883,359    .0908733    .2874289          0          1
 -------------+---------------------------------------------------------
-treatmen~ile |  1,883,359    .1008841    .3011753          0          1
+treatmen~ile |  1,883,359    .0946155    .2926832          0          1
 treatment_~s |  1,883,359    .1088629    .3114673          0          1
 treatment_~d |  1,883,359    .1596769    .3663063          0          1
 treatmen~gle |  1,883,359    .1125139    .3159977          0          1
@@ -473,4 +475,4 @@ file ..\output\ech_final_98_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2017-12-10 16:39:05
+ make.py ended: 2017-12-10 20:23:04
