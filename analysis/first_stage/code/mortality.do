@@ -24,7 +24,8 @@ syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
 	local start_yr 2000
 	local end_yr 2014 
 	local tline 2004 2012
-	tsline `var_ratio' if inrange(year,`start_yr',`end_yr'), tline(`tline') tlab(2000(4)2014)
+	tsline `var_ratio' if inrange(year,`start_yr',`end_yr'), tline(`tline') ///
+	    tlab(2000(4)2014) graphregion(fcolor(white) lcolor(white))
 	graph export ../output/mortality_`var_ratio'.pdf, replace
 end
 

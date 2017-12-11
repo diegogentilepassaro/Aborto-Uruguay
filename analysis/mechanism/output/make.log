@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-09 16:44:57 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\mechanism\code 
+ make.py started: 2017-12-10 20:01:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\mechanism\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./births.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -102,25 +102,30 @@ Notes:
   1. syntax, rescale(int)
   2.         gen nat_level_`rescale'= nat_level/`rescale'
   3.         label var nat_level_`rescale' "Births (`rescale's)"
-  4.         xtline nat_level_`rescale' if (dpto=="Montevideo") & inrange(year,
-> 2000,2006) ///
+  4.         xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") &
+>  inrange(year,2000,2006) ///
 >                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2004
+> ) name(tot, replace) ///
+>                 ylab(20(20)60) legend(on rows(1))
+  5.         xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") &
+>  inrange(year,2008,2014) ///
+>                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2012
 > ) name(mvd, replace) ///
->                 ylab(#3) legend(on rows(1))
-  5.         xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & i
+>                 ylab(20(20)60) legend(on rows(1))
+  6.         xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & i
 > nrange(year,2006,2012) ///
 >                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2010
 > ) name(rivera, replace) ///
 >                 ylab(#3) legend(rows(1))
-  6.         xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & i
+  7.         xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & i
 > nrange(year,2008,2014) ///
 >                 , overlay graphregion(fcolor(white) lcolor(white)) tline(2012
 > ) name(salto, replace) ///
 >                 ylab(#3) legend(rows(1))
-  7.         graph combine mvd rivera salto, cols(1) ysize(7) xsize(6) graphreg
-> ion(fcolor(white))
-  8.         graph export ../output/natality_`rescale'.pdf, replace
-  9. end
+  8.         graph combine tot mvd rivera salto, cols(2) ysize(7) xsize(10) gra
+> phregion(fcolor(white))
+  9.         graph export ../output/natality_`rescale'.pdf, replace
+ 10. end
 
 . 
 . main
@@ -280,7 +285,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_06000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -292,7 +297,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_06000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -304,7 +309,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_06000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -325,4 +330,4 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_243c_000006.tmp saved
 . 
 end of do-file
 
- make.py ended: 2017-12-09 16:45:03
+ make.py ended: 2017-12-10 20:01:57

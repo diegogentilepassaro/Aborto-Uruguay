@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-09 18:54:52 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2017-12-10 19:51:19 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -61,7 +61,8 @@ Notes:
   4.         local end_yr 2014 
   5.         local tline 2004 2012
   6.         tsline `var_ratio' if inrange(year,`start_yr',`end_yr'), tline(`tl
-> ine') tlab(2000(4)2014)
+> ine') ///
+>             tlab(2000(4)2014) graphregion(fcolor(white) lcolor(white))
   7.         graph export ../output/mortality_`var_ratio'.pdf, replace
   8. end
 
@@ -81,4 +82,4 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2017-12-09 18:54:54
+ make.py ended: 2017-12-10 19:51:25

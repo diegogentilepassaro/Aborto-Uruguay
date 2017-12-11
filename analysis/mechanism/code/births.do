@@ -65,16 +65,19 @@ program plot_natality
 syntax, rescale(int)
 	gen nat_level_`rescale'= nat_level/`rescale'
 	label var nat_level_`rescale' "Births (`rescale's)"
-	xtline nat_level_`rescale' if (dpto=="Montevideo") & inrange(year,2000,2006) ///
-		, overlay graphregion(fcolor(white) lcolor(white)) tline(2004) name(mvd, replace) ///
-		ylab(#3) legend(on rows(1))
+	xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & inrange(year,2000,2006) ///
+		, overlay graphregion(fcolor(white) lcolor(white)) tline(2004) name(tot, replace) ///
+		ylab(20(20)60) legend(on rows(1))
+	xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & inrange(year,2008,2014) ///
+		, overlay graphregion(fcolor(white) lcolor(white)) tline(2012) name(mvd, replace) ///
+		ylab(20(20)60) legend(on rows(1))
 	xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & inrange(year,2006,2012) ///
 		, overlay graphregion(fcolor(white) lcolor(white)) tline(2010) name(rivera, replace) ///
 		ylab(#3) legend(rows(1))
 	xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & inrange(year,2008,2014) ///
 		, overlay graphregion(fcolor(white) lcolor(white)) tline(2012) name(salto, replace) ///
 		ylab(#3) legend(rows(1))
-	graph combine mvd rivera salto, cols(1) ysize(7) xsize(6) graphregion(fcolor(white))
+	graph combine tot mvd rivera salto, cols(2) ysize(7) xsize(10) graphregion(fcolor(white))
 	graph export ../output/natality_`rescale'.pdf, replace
 end
 
