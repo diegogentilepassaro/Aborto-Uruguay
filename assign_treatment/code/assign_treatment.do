@@ -8,14 +8,6 @@ end
 
 program assign_treatment
     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
-
-	* Variables for the triple diff
-	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
-	gen female      = (hombre==0)             if !mi(hombre)
-	gen single      = (married==0)            if !mi(married)
-	gen lowed       = (educ_level==1)         if !mi(educ_level)
-	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
-	gen kids        = (ind_under14 == 1)
 	
 	* Dates of treatments
 	global q_date_mvd    "2004q2"
@@ -29,6 +21,21 @@ program assign_treatment
 	global y_date_mvd    2004 
 	global y_date_rivera 2010 
 	global y_date_salto  2013 
+
+	* Variables for the triple diff
+	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
+	gen female      = (hombre==0)             if !mi(hombre)
+	gen single      = (married==0)            if !mi(married)
+	gen lowed       = (educ_level==1)         if !mi(educ_level)
+	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
+	
+	gen yob = anio-edad
+	foreach city in rivera salto {
+		gen age_`city'     = ${y_date_`city'} - yob
+		gen under14_`city' = (inrange(age_`city',0,14))
+		bys anio numero: egen nbr_under14_`city' = total(under14_`city')
+		gen kids_`city' = (nbr_under14_`city' > 0)
+	}
 	
 	* Diff in Diff Rivera y Salto
 	gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
@@ -139,10 +146,10 @@ program assign_treatment
 	gen mvd_old_nopoor      = (loc_code == 101010 & female == 0 & young == 0 & ind_under14 == 0)	
 
 	* Design: poor_kids (women)
-	gen mvd_poor_kids      = (loc_code == 101010 & female == 1 & poor == 1 & ind_under14 == 1)
-	gen mvd_poor_nokids    = (loc_code == 101010 & female == 1 & poor == 1 & ind_under14 == 0)
-	gen mvd_nonpoor_kids        = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 1)
-	gen mvd_nonpoor_nokids      = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 0)
+	gen mvd_poor_kids       = (loc_code == 101010 & female == 1 & poor == 1 & ind_under14 == 1)
+	gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor == 1 & ind_under14 == 0)
+	gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 1)
+	gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 0)
     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
 end
 

@@ -1,5 +1,5 @@
 
- make.py started: 2017-12-04 20:15:41 C:\Users\cravizza\GitHub\Aborto-Uruguay\base\code 
+ make.py started: 2018-02-04 19:53:18 C:\Users\cravizza\GitHub\Aborto-Uruguay\base\code 
 
 
 
@@ -730,17 +730,17 @@ Notes:
 
 . 
 . main_clean_raw
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -750,7 +750,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -760,20 +760,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000006.tmp saved
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_p.dta not found)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_h.dta not found)
 file ..\temp\preclean_1998_h.dta saved
@@ -785,8 +785,8 @@ file ..\temp\preclean_1998_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1998.dta not found)
 file ..\temp\preclean_1998.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -795,9 +795,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -805,7 +805,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -815,20 +815,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000i.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1999_p.dta not found)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000j.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000l.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000m.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000o.tmp saved
 (note: file ..\temp\preclean_1999_h.dta not found)
 file ..\temp\preclean_1999_h.dta saved
 
@@ -839,8 +839,8 @@ file ..\temp\preclean_1999_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1999.dta not found)
 file ..\temp\preclean_1999.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000p.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -850,9 +850,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000r.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000s.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -860,7 +860,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -872,20 +872,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000u.tmp saved
 (note: variable pg132 was byte, now int to accommodate using data's values)
 (note: file ..\temp\preclean_2000_p.dta not found)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000v.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_00000x.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000010.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000011.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000010.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_c24_000012.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_920_000012.tmp saved
 (note: file ..\temp\preclean_2000_h.dta not found)
 file ..\temp\preclean_2000_h.dta saved
 
@@ -1655,4 +1655,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2017-12-05 10:51:33
+ make.py ended: 2018-02-04 20:03:17

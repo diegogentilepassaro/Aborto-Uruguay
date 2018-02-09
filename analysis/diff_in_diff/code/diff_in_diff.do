@@ -274,7 +274,7 @@ program reg_diff
                     gen post = (`time' >= `event_date')
                 }
            
-		    foreach cond in "" "& kids == 1" "& kids == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
+		    foreach cond in "" "& kids_`treatment' == 1" "& kids_`treatment' == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
             gen interaction         = treatment_`treatment' * post
 
             reg `outcome' i.treatment_`treatment' i.post interaction ///

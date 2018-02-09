@@ -17,7 +17,7 @@ program main_prepare_for_analysis
 	gen poor       = (y_hogar_alt <= lp_06)
 	gen indigente   = (y_hogar_alt <= li_06)
 	
-	gen ind_under14 = (nbr_people > nbr_above14)
+	gen ind_under14 = (nbr_under14>0)
 	
 	gen     semestre = 1 if inlist(trimestre, 1, 2)
 	replace semestre = 2 if inlist(trimestre, 3, 4)
