@@ -226,7 +226,7 @@ program reg_diff
     syntax, outcomes(string) treatment(string) ///
         event_date(string) event(string) time(string) [groups_vars(str) restr(string) sample(str)]
         
-           use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+        use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
         
         *cap keep if `restr'
         
@@ -275,37 +275,33 @@ program reg_diff
                 }
            
 		    foreach cond in "" "& kids_`treatment' == 1" "& kids_`treatment' == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
-            gen interaction         = treatment_`treatment' * post
+                
+                foreach age_group in "_young" "_adult" "_placebo" {
 
-            reg `outcome' i.treatment_`treatment' i.post interaction ///
-                        i.`time' nbr_people ind_under14 edad married ///
-                        y_hogar_alt `control_vars' `range' & ///
-						(treatment_`treatment'==1 | control_`treatment'==1) ///
-						`cond' & `restr' [aw = `weight'], vce(cluster `time')
+                    gen interaction = treatment`age_group'_`treatment' * post
+
+                    reg `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
+                        i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
+                        `range' `cond' & ///
+                        (treatment`age_group'_`treatment'==1 | control`age_group'_`treatment'==1) ///
+						[aw = `weight'], vce(cluster `time')
 			
-			matrix COLUMN_TREAT = ((_b[interaction] \ _se[interaction]) \ e(N))
-            drop interaction
-			gen interaction = treatment_placebo_`treatment' * post
-
-            reg `outcome' i.treatment_placebo_`treatment' i.post interaction ///
-                        i.`time' nbr_people ind_under14 edad married ///
-                        y_hogar_alt `control_vars' `range' & ///
-						(treatment_placebo_`treatment'==1 | control_placebo_`treatment'==1) ///
-                        `cond' [aw = `weight'], vce(cluster `time')
-
-            matrix COLUMN_PLACEBO = ((_b[interaction] \ _se[interaction]) \ e(N))
-            drop interaction
-			
-			matrix COLUMN = (COLUMN_TREAT , COLUMN_PLACEBO)
-            matrix ROW = (nullmat(ROW) \ COLUMN)
+                    matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
+            
+                    drop interaction
+                }
+    			
+                matrix COLUMN = (COLUMN_young , COLUMN_adult, COLUMN_placebo)
+                matrix ROW = (nullmat(ROW) \ COLUMN)
 			}
-			matrix TABLE = (nullmat(TABLE) , ROW)
+			
+            matrix TABLE = (nullmat(TABLE) , ROW)
 			matrix drop ROW
 			drop post
-            }
+        }
 			
-			matrix_to_txt, matrix(TABLE) saving("../output/tables.txt") append ///
-			    title(<tab:did_`treatment'>)
+		matrix_to_txt, matrix(TABLE) saving("../output/tables.txt") append ///
+			 title(<tab:did_`treatment'>)
         
 //         esttab using ../output/did_`treatment'_`groups_vars'_`time'.tex, label se ar2 compress ///
 //             replace nonotes coeflabels(interaction "`event' x Post") ///

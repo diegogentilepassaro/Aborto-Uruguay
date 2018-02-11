@@ -38,17 +38,18 @@ program assign_treatment
 	}
 	
 	* Diff in Diff Rivera y Salto
-	gen treatment_rivera = (loc_code == 1313020 & hombre == 0)
-    gen treatment_salto  = (loc_code == 1515020 & hombre == 0)
+	local restr         ""
+	local restr_young   " & inrange(edad, 16, 30)"
+	local restr_adult   " & inrange(edad, 31, 45)"
+	local restr_placebo " & inrange(edad, 46, 60)"
 
-    gen control_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 0)
-    gen control_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 0)
+	foreach age_group in "" "_young" "_adult" "_placebo" {
+		gen treatment`age_group'_rivera = (loc_code == 1313020 & hombre == 0 `restr`age_group'')
+		gen treatment`age_group'_salto  = (loc_code == 1515020 & hombre == 0 `restr`age_group'')
+		gen control`age_group'_rivera  = ((loc_code == 431050 |loc_code == 202020) & hombre == 0 `restr`age_group'')
+		gen control`age_group'_salto   = ((loc_code == 1111020|loc_code ==1212020) & hombre == 0 `restr`age_group'')
 
-	gen treatment_placebo_rivera   = (loc_code == 1313020 & hombre == 0 & fertile_age == 0)
-    gen treatment_placebo_salto    = (loc_code == 1515020 & hombre == 0 & fertile_age == 0)
-    gen control_placebo_rivera  = ((loc_code == 431050 | loc_code == 202020) & hombre == 0 & fertile_age == 0)
-    gen control_placebo_salto   = ((loc_code == 1111020 |loc_code ==1212020) & hombre == 0 & fertile_age == 0)	
-
+	}
 
 	*rio branco 431050
 	*artigas    202020
