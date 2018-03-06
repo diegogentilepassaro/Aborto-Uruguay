@@ -35,6 +35,7 @@ start_make_logging()
 
 run_stata(program = 'homogeneize_geo_vars.do')
 run_stata(program = 'prepare_for_analysis.do')
+run_stata(program = 'vital_records.do')
 
 end_make_logging()
 

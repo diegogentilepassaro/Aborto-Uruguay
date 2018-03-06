@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-10 19:51:19 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-03-06 15:25:28 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -82,4 +82,331 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2017-12-10 19:51:25
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./vital_records.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main    
+  1.         *global y_date_rivera = 2010
+.         do ../../globals.do
+  2.         
+.         foreach var in no_partner not_married first_pregnancy age_young high_
+> school recomm_prenatal_numvisits {
+  3.                 plot_births, treatment(rivera) by_vars(`var') time(anio_mo
+> n)
+  4.                 plot_births, treatment(rivera) by_vars(`var') time(anio_se
+> m)
+  5.                 plot_births, treatment(rivera) by_vars(`var') time(anio_qt
+> r)
+  6.                 plot_births, treatment(rivera) by_vars(`var') time(anio)
+  7.         }
+  8. 
+. end
+
+. 
+. capture program drop plot_births
+
+. program plot_births
+  1. syntax, by_vars(string) treatment(string) time(string) 
+  2.         
+.         use "..\..\..\derived\output\births.dta", clear
+  3. 
+.         if "`time'" == "anio_mon" {
+  4.         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pr
+> e},tm(${m_date_`treatment'}) + ${m_post}) "
+  5.         local xtitle "Year-month"
+  6.         local vertical = tm(${m_date_`treatment'}) - 0.5    
+  7.     }
+  8.         else if "`time'" == "anio_qtr" {
+  9.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+> e},tq(${q_date_`treatment'}) + ${q_post}) "
+ 10.         local xtitle "Year-quarter"
+ 11.         local vertical = tq(${q_date_`treatment'}) - 0.5    
+ 12.     }
+ 13.     else if "`time'" == "anio_sem" {
+ 14.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+> e},th(${s_date_`treatment'}) + ${s_post}) "
+ 15.         local xtitle "Year-half"
+ 16.         local vertical = th(${s_date_`treatment'}) - 0.5    
+ 17.     }
+ 18.     else {
+ 19.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+> ${y_date_`treatment'} + ${y_post}) "
+ 20.         local xtitle "Year"
+ 21.         local vertical = ${y_date_`treatment'} - 0.5    
+ 22.     }
+ 23.         
+.         collapse (count) births=edadm , by(`time' treatment_`treatment' `by_v
+> ars')
+ 24.         
+.         keep if !mi(treatment)
+ 25.         gen Treatment = births if treatment_`treatment'==1
+ 26.         gen Control   = births if treatment_`treatment'==0
+ 27.         
+.         tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) /
+> //
+>            (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) //
+> /
+>            ,  by(`by_vars', title(${legend_`treatment'}))  ///
+>            tline(`vertical', lcolor(black) lpattern(dot)) ///
+>            xtitle("`xtitle'") xsize(8) ///
+>            scheme(s1color) 
+ 28. 
+.         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
+> lace
+ 29. end
+
+. 
+. capture program drop diff_in_diff
+
+. program diff_in_diff
+  1. syntax, by_vars(string) treatment(string) time(string)
+  2.         
+.         use "..\..\..\derived\output\births.dta", clear
+  3. 
+.         local treatment rivera
+  4.         local time anio
+  5.         local by_vars first_pregancy
+  6. 
+.         if "`time'" == "anio_mon" {
+  7.         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pr
+> e},tm(${m_date_`treatment'}) + ${m_post}) "
+  8.         local event_date         ${m_date_`treatment'}   
+  9.         gen post = (`time' >= tm(${m_date_`treatment'})) 
+ 10.     }
+ 11.         else if "`time'" == "anio_qtr" {
+ 12.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+> e},tq(${q_date_`treatment'}) + ${q_post}) "
+ 13.         local event_date         ${q_date_`treatment'}  
+ 14.         gen post = (`time' >= tq(${q_date_`treatment'}))  
+ 15.     }
+ 16.     else if "`time'" == "anio_sem" {
+ 17.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+> e},th(${s_date_`treatment'}) + ${s_post}) "
+ 18.         local event_date         ${s_date_`treatment'}  
+ 19.         gen post = (`time' >= th(${s_date_`treatment'}))   
+ 20.     }
+ 21.     else {
+ 22.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+> ${y_date_`treatment'} + ${y_post}) "
+ 23.         local event_date ${y_date_`treatment'}  
+ 24.         gen post = (`time' >=  ${y_date_`treatment'})  
+ 25.     }
+ 26.         
+.         keep if !mi(treatment_`treatment')
+ 27.         
+.         reg edadm post##treatment_`treatment'
+ 28. 
+.         collapse (count) births=edadm , by(anio treatment_`treatment' first_p
+> regancy not_married) //`by_vars')
+ 29.                 
+.                 gen post = (anio>`event_date')
+ 30.                 gen interaction = post * treatment_`treatment'
+ 31.                 gen log_births = log(births)
+ 32.                 
+.                 reg log_births post##treatment_`treatment'##first_pregancy##n
+> ot_married
+ 33. end
+
+. 
+. main
+
+.     * Dates of treatments
+.     global m_date_mvd    "2004m4"
+
+.     global m_date_rivera "2010m6"
+
+.     global m_date_salto  "2013m1"
+
+.     
+.     global q_date_mvd    "2004q2"
+
+.     global q_date_rivera "2010q3"
+
+.     global q_date_salto  "2013q1"
+
+.     
+.     global s_date_mvd    "2004h1"
+
+.     global s_date_rivera "2010h2"
+
+.     global s_date_salto  "2013h1"
+
+.     
+.     global y_date_mvd    2004 
+
+.     global y_date_rivera 2010 
+
+.     global y_date_salto  2013 
+
+. 
+.     * Ranges
+.     global m_pre  48
+
+.     global m_post 24
+
+.     global q_pre  16
+
+.     global q_post 12
+
+.     global s_pre  8
+
+.     global s_post 4
+
+.     global y_pre  4
+
+.     global y_post 2
+
+. 
+.     * Legends
+.     global legend_mvd    = "Montevideo"
+
+.     global legend_rivera = "Rivera"
+
+.     global legend_salto  = "Salto"
+
+. 
+end of do-file
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_no_partner.pdf written in PDF format)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_no_partner.pdf written in PDF format)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_no_partner.pdf written in PDF format)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_no_partner.pdf written in PDF format)
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_not_married.pdf written in PDF format)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_not_married.pdf written in PDF format)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_not_married.pdf written in PDF format)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_not_married.pdf written in PDF format)
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_first_pregnancy.pdf written in PDF forma
+> t)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_first_pregnancy.pdf written in PDF forma
+> t)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_first_pregnancy.pdf written in PDF forma
+> t)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_first_pregnancy.pdf written in PDF format)
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_age_young.pdf written in PDF format)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_age_young.pdf written in PDF format)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_age_young.pdf written in PDF format)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_age_young.pdf written in PDF format)
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_high_school.pdf written in PDF format)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_high_school.pdf written in PDF format)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_high_school.pdf written in PDF format)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_high_school.pdf written in PDF format)
+(410 observations deleted)
+(408 missing values generated)
+(409 missing values generated)
+(file ..\output\births_rivera_anio_mon_recomm_prenatal_numvisits.pdf written in
+>  PDF format)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(file ..\output\births_rivera_anio_sem_recomm_prenatal_numvisits.pdf written in
+>  PDF format)
+(138 observations deleted)
+(136 missing values generated)
+(137 missing values generated)
+(file ..\output\births_rivera_anio_qtr_recomm_prenatal_numvisits.pdf written in
+>  PDF format)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(file ..\output\births_rivera_anio_recomm_prenatal_numvisits.pdf written in PDF
+>  format)
+
+. 
+end of do-file
+
+ make.py ended: 2018-03-06 15:26:43

@@ -1,5 +1,5 @@
 
- make.py started: 2018-02-09 12:17:07 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
+ make.py started: 2018-03-05 11:21:46 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
 
 
 
@@ -2544,4 +2544,220 @@ file ..\output\clean_loc_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-02-09 12:20:29
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./vital_records.do 
+
+. clear all
+
+. set more off
+
+. 
+. program main    
+  1.         append_data
+  2.         derived_data
+  3. end
+
+. 
+. program append_data
+  1.         * Note: there is no 1998 data, but there is data for 1996 and 1997
+.         forvalues year = 1999/2015 {
+  2.                 capture import delimited "..\..\raw\vital_records\Natalida
+> d `year'_p.csv", delim(";") clear
+  3.                 
+.                 *capture rename (civilm  civilp  instm   instp) (mestciv pest
+> civ mademay pademay)
+.                                                  
+.                 qui destring , replace
+  4.                 
+.                 tempfile temp_`year'
+  5.                 save `temp_`year''
+  6.         }
+  7. 
+.         forvalues year = 1999/2014 {
+  8.                 append using `temp_`year''
+  9.         }
+ 10. 
+.         keep if inrange(anio_parto,1999,2015) //note some births in 2015 are 
+> recorded in 2016
+ 11.         assert !mi(edadm)
+ 12.         keep if inrange(edadm,16,45)
+ 13.         
+.         save "..\temp\births_append.dta", replace
+ 14. end
+
+. 
+. program derived_data
+  1.         use "..\temp\births_append.dta", clear
+  2.         rename anio_parto anio
+  3. 
+.         * Assert that corresponding variables are not used at the same time &
+>  Gen harmonized vars
+.         * Note: issue with mademay == 4 : table anio madeult if mademay == 4
+.         assert (mi(civilm) & !mi(mestciv) & !mi(tunion)) | (!mi(civilm) & mi(
+> mestciv) & mi(tunion))
+  4.         assert (mi(instm) & !mi(mademay) & !mi(madecur) & !mi(madeult)) | 
+> (!mi(instm) & mi(mademay) & mi(madecur) & mi(madeult))
+  5.         gen married = (civilm==2 | mestciv==2)
+  6.         gen not_married = (married==0)
+  7.         gen partner = (civilm==2|civilm==3|mestciv==2|(convpad==1 & (tunio
+> n==1|tunion==2)))
+  8.         gen no_partner = (partner==0)
+  9.         gen prim_school = (instm==2 | ((mademay==2 & madeult==6) | (madema
+> y==4 & madeult<3) | mademay==3))
+ 10.         gen high_school = (instm==3 | ((mademay==4 & madeult==3) | (madema
+> y==5 & madeult==1)))
+ 11.         replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & 
+> madeult==6
+ 12.         
+.         * Birth date
+.         replace fecparto = "jan" + substr(fecparto,4, .) if substr(fecparto, 
+> 1, 3) == "ene"
+ 13.         replace fecparto = "apr" + substr(fecparto,4, .) if substr(fecpart
+> o, 1, 3) == "abr"
+ 14.         replace fecparto = "aug" + substr(fecparto,4, .) if substr(fecpart
+> o, 1, 3) == "ago"
+ 15.         replace fecparto = "dec" + substr(fecparto,4, .) if substr(fecpart
+> o, 1, 3) == "dic"
+ 16.         gen     anio_mon = monthly(fecparto, "MY")
+ 17.         replace anio_mon = monthly(fecparto, "M20Y")
+ 18.         assert !mi(anio_mon) if !mi(fecparto)
+ 19.         format  anio_mon %tm 
+ 20.         gen     anio_qtr = qofd(dofm(anio_mon))
+ 21.     format  anio_qtr %tq
+ 22.         gen     anio_sem = hofd(dofm(anio_mon))
+ 23.         format  anio_sem %th
+ 24.         
+.         * Pregnancy vars
+.         gen recomm_prenatal_numvisits = (totcons>5 & totcon!=99)
+ 25.         gen recomm_prenatal_1stvisit  = (semprim<13 & semprim!=97 & sempri
+> m!=99)
+ 26.         gen no_prenatal_care          = (totcons==0 | totcon==99 | semprim
+> ==97 | semprim==99)
+ 27.         gen first_pregnancy           = (numemban==0)
+ 28.         
+.         * Age vars
+.         assert !mi(edadm)
+ 29.         egen age_group = cut(edadm) ,at(16(5)50)
+ 30.         replace age_group = age_group+2
+ 31.         gen yobm = anio - edadm
+ 32.         gen age_young = inrange(edadm,16,30)
+ 33.         
+.         * TC groups
+.         local restr         ""
+ 34.         local restr_young   " & age_young==1"
+ 35.         local restr_adult   " & age_young==0"
+ 36.         foreach age_group in "" "_young" "_adult" {
+ 37.                 gen treatment_rivera`age_group' =  (depar == 13 `restr`age
+> _group'') if inlist(depar,13,1,3)
+ 38.                 gen treatment_salto`age_group'  =  (depar == 15 `restr`age
+> _group'') if inlist(depar,15,11,12)
+ 39.                 lab define treatment_rivera`age_group' 0 "Control`age_grou
+> p'" 1 "Rivera`age_group'" 
+ 40.                 lab define treatment_salto`age_group' 0 "Control`age_group
+> '" 1 "Salto`age_group'" 
+ 41.         }
+ 42. 
+.         * Labelling
+.         lab def not_married               0 "Married"                1 "Not m
+> arried"
+ 43.         lab val not_married               not_married
+ 44.         lab def no_partner                0 "With partner"           1 "Wi
+> thout partner"
+ 45.         lab val no_partner                no_partner
+ 46.         lab def prim_school               0 "Less than PS"           1 "PS
+>  or more"
+ 47.         lab val prim_school               prim_school
+ 48.         lab def high_school               0 "Less than HS"           1 "HS
+>  or more"
+ 49.         lab val high_school               high_school
+ 50.         lab def age_young                 0 "Age: 31-45"             1 "Ag
+> e: 16-30"
+ 51.         lab val age_young                 age_young 
+ 52.         lab def no_prenatal_care          0 "No prenatal care"       1 "Pr
+> enatal care"
+ 53.         lab val no_prenatal_care          no_prenatal_care
+ 54.         lab def first_pregnancy           0 "Not first pregnancy"    1 "Fi
+> rst pregnancy"
+ 55.         lab val first_pregnancy           first_pregnancy
+ 56.         lab def recomm_prenatal_numvisits 0 "5 or less"              1 "Mo
+> re than 5"
+ 57.         lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
+ 58.         lab def recomm_prenatal_1stvisit  0 "1st visit by 14+ weeks" 1 "1s
+> t visit by 13 weeks"
+ 59.         lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
+ 60. 
+.         save "..\output\births.dta", replace
+ 61. end
+
+. 
+. main
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000h.tmp saved
+(note: variable fecparto was str6, now str7 to accommodate using data's
+       values)
+(note: variable fecparto was str7, now str8 to accommodate using data's
+       values)
+(1,247 observations deleted)
+(21,056 observations deleted)
+(note: file ..\temp\births_append.dta not found)
+file ..\temp\births_append.dta saved
+(2,632 real changes made)
+(32,043 real changes made)
+(31,154 real changes made)
+(30,853 real changes made)
+(32,170 real changes made)
+(279,932 missing values generated)
+(279,904 real changes made)
+(28 missing values generated)
+(28 missing values generated)
+(813,617 real changes made)
+(742,045 missing values generated)
+(729,926 missing values generated)
+(742,045 missing values generated)
+(729,926 missing values generated)
+(742,045 missing values generated)
+(729,926 missing values generated)
+(note: file ..\output\births.dta not found)
+file ..\output\births.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2018-03-05 11:25:56

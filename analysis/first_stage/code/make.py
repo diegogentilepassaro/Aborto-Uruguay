@@ -34,6 +34,7 @@ delete_files('../output/*')
 start_make_logging()
 
 run_stata(program = 'mortality.do')
+run_stata(program = 'vital_records.do')
 
 end_make_logging()
 
