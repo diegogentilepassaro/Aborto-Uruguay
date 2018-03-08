@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-05 11:21:46 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
+ make.py started: 2018-03-08 12:00:57 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
 
 
 
@@ -2545,6 +2545,673 @@ file ..\output\clean_loc_1998_2016.dta saved
 end of do-file
 
 
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./population.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./population.do 
+
+. * Note: since the locals created in the beginning are used several times in t
+> he 
+. * code, I did not create different programs (alternative: create globals?)
+. 
+. * Setting up locals that describe the 6 tables in each worksheet
+. local S_all   = 0
+
+. local S_men   = 22
+
+. local S_women = 44
+
+. 
+. * Create the cell range for each of the 6 tables in each worksheet
+. foreach gender in all men women {
+  2.         local S0_`gender' = 8 + `S_`gender''
+  3.         local S1_`gender' = `S0_`gender''+2
+  4.         local E1_`gender' = `S0_`gender''+2+18
+  5.         local cr1_`gender' = "A`S0_`gender'':Z`S0_`gender''"
+  6.         local cr2_`gender' = "A`S1_`gender'':Z`E1_`gender''"
+  7. }
+
+. 
+. * Get names and number of worksheets to be later used as indicators
+. import excel "..\..\raw\Departamentos_poblacion_por_sexo_y_edad_1996-2025.xls
+> " , describe
+
+                Sheet | Range
+  --------------------+--------------------
+                 Nota | A1:L35
+  Sexo y Departamento | A1:AE74
+           Montevideo | A1:BD76
+              Artigas | A1:BD76
+            Canelones | A1:BD76
+          Cerro Largo | A1:BD76
+              Colonia | A1:BD76
+              Durazno | A1:BD76
+               Flores | A1:BD76
+              Florida | A1:BD76
+            Lavalleja | A1:BD76
+            Maldonado | A1:BD76
+            Paysandú | A1:BD76
+           Río Negro | A1:BD76
+               Rivera | A1:BD76
+                Rocha | A1:BD76
+                Salto | A1:BD76
+            San José | A1:BD76
+              Soriano | A1:BD76
+          Tacuarembó | A1:BD76
+       Treinta y Tres | A1:BD76
+               Hoja21 | 
+
+. local ws_N = `r(N_worksheet)'-1
+
+. local ws_1 = 3
+
+. 
+. forvalues ws = `ws_1'/`ws_N' {
+  2.         local ws_`ws'_name = "`r(worksheet_`ws')'"
+  3.         local ws_`ws'_nbr  = `ws'
+  4.         if `ws'==3 {
+  5.                 local ws_`ws'_dpto = 10 //Mvd
+  6.         }
+  7.         else if inrange(`ws',4,12) { 
+  8.                 local ws_`ws'_dpto = `ws'-3 // Alphabetically prior to Mvd
+  9.         }
+ 10.         else {
+ 11.                 local ws_`ws'_dpto = `ws'-2
+ 12.         }
+ 13.         *I wanted to create a label for depar with the local below, but it
+> 's hard to add the double quotes
+.         *local depar = " `depar' " + " `ws_`ws'_dpto' " + `" `=char(34)' "' +
+>  "`ws_`ws'_name'" //+ "`ws_`ws'_name'" 
+. }
+
+. 
+. * Import the 6 tables from each worksheet and create the relevant variables 
+. forvalues ws = `ws_1'/`ws_N' {
+  2.         foreach gender in all men women {
+  3.                 foreach cr in 1 2 {
+  4.                         import excel "..\..\raw\Departamentos_poblacion_po
+> r_sexo_y_edad_1996-2025.xls" ///
+>                          , clear sheet("`ws_`ws'_name'") cellrange(`cr`cr'_`g
+> ender'')
+  5.                         
+.                         gen depar = `ws_`ws'_dpto'
+  6.                         gen gender_all = "`gender'"
+  7.                         
+.                         if "`cr'" == "1" {
+  8.                                 gen age_min    = 0
+  9.                                 gen age_max    = 99
+ 10.                                 gen all_ages   = 1
+ 11.                         }
+ 12.                         else {          
+ 13.                                 qui replace A="90-99" if A=="90 y más"
+ 14.                                 gen splitat    = strpos(A,"-")  
+ 15.                                 gen age_min    = substr(A,1,splitat-1)
+ 16.                                 gen age_max    = substr(A,splitat+1,.)
+ 17.                                 qui destring age_min age_max, replace
+ 18.                                 drop splitat
+ 19.                                 gen all_ages   = 0
+ 20.                         }
+ 21.                         
+.                         tempfile pop_`ws_`ws'_nbr'_`gender'_`cr'
+ 22.                         save `pop_`ws_`ws'_nbr'_`gender'_`cr''
+ 23.                         
+.                         di "*******"
+ 24.                         di "pop_`ws_`ws'_nbr'_`gender'_`cr'"
+ 25.                         di "*******"
+ 26.                 }
+ 27.         }
+ 28. }
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000001.tmp saved
+*******
+pop_3_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000002.tmp saved
+*******
+pop_3_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000003.tmp saved
+*******
+pop_3_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000004.tmp saved
+*******
+pop_3_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000005.tmp saved
+*******
+pop_3_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000006.tmp saved
+*******
+pop_3_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000007.tmp saved
+*******
+pop_4_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000008.tmp saved
+*******
+pop_4_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000009.tmp saved
+*******
+pop_4_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000a.tmp saved
+*******
+pop_4_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000b.tmp saved
+*******
+pop_4_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000c.tmp saved
+*******
+pop_4_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000d.tmp saved
+*******
+pop_5_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000e.tmp saved
+*******
+pop_5_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000f.tmp saved
+*******
+pop_5_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000g.tmp saved
+*******
+pop_5_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000h.tmp saved
+*******
+pop_5_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000i.tmp saved
+*******
+pop_5_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000j.tmp saved
+*******
+pop_6_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000k.tmp saved
+*******
+pop_6_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000l.tmp saved
+*******
+pop_6_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000m.tmp saved
+*******
+pop_6_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000n.tmp saved
+*******
+pop_6_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000o.tmp saved
+*******
+pop_6_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000p.tmp saved
+*******
+pop_7_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000q.tmp saved
+*******
+pop_7_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000r.tmp saved
+*******
+pop_7_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000s.tmp saved
+*******
+pop_7_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000t.tmp saved
+*******
+pop_7_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000u.tmp saved
+*******
+pop_7_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000v.tmp saved
+*******
+pop_8_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000w.tmp saved
+*******
+pop_8_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00000x.tmp saved
+*******
+pop_8_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000010.tmp saved
+*******
+pop_8_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000011.tmp saved
+*******
+pop_8_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000012.tmp saved
+*******
+pop_8_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000013.tmp saved
+*******
+pop_9_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000014.tmp saved
+*******
+pop_9_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000015.tmp saved
+*******
+pop_9_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000016.tmp saved
+*******
+pop_9_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000017.tmp saved
+*******
+pop_9_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000018.tmp saved
+*******
+pop_9_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000019.tmp saved
+*******
+pop_10_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001a.tmp saved
+*******
+pop_10_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001b.tmp saved
+*******
+pop_10_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001c.tmp saved
+*******
+pop_10_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001d.tmp saved
+*******
+pop_10_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001e.tmp saved
+*******
+pop_10_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001f.tmp saved
+*******
+pop_11_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001g.tmp saved
+*******
+pop_11_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001h.tmp saved
+*******
+pop_11_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001i.tmp saved
+*******
+pop_11_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001j.tmp saved
+*******
+pop_11_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001k.tmp saved
+*******
+pop_11_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001l.tmp saved
+*******
+pop_12_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001m.tmp saved
+*******
+pop_12_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001n.tmp saved
+*******
+pop_12_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001o.tmp saved
+*******
+pop_12_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001p.tmp saved
+*******
+pop_12_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001q.tmp saved
+*******
+pop_12_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001r.tmp saved
+*******
+pop_13_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001s.tmp saved
+*******
+pop_13_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001t.tmp saved
+*******
+pop_13_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001u.tmp saved
+*******
+pop_13_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001v.tmp saved
+*******
+pop_13_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001w.tmp saved
+*******
+pop_13_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00001x.tmp saved
+*******
+pop_14_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000020.tmp saved
+*******
+pop_14_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000021.tmp saved
+*******
+pop_14_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000022.tmp saved
+*******
+pop_14_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000023.tmp saved
+*******
+pop_14_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000024.tmp saved
+*******
+pop_14_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000025.tmp saved
+*******
+pop_15_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000026.tmp saved
+*******
+pop_15_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000027.tmp saved
+*******
+pop_15_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000028.tmp saved
+*******
+pop_15_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000029.tmp saved
+*******
+pop_15_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002a.tmp saved
+*******
+pop_15_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002b.tmp saved
+*******
+pop_16_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002c.tmp saved
+*******
+pop_16_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002d.tmp saved
+*******
+pop_16_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002e.tmp saved
+*******
+pop_16_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002f.tmp saved
+*******
+pop_16_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002g.tmp saved
+*******
+pop_16_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002h.tmp saved
+*******
+pop_17_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002i.tmp saved
+*******
+pop_17_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002j.tmp saved
+*******
+pop_17_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002k.tmp saved
+*******
+pop_17_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002l.tmp saved
+*******
+pop_17_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002m.tmp saved
+*******
+pop_17_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002n.tmp saved
+*******
+pop_18_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002o.tmp saved
+*******
+pop_18_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002p.tmp saved
+*******
+pop_18_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002q.tmp saved
+*******
+pop_18_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002r.tmp saved
+*******
+pop_18_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002s.tmp saved
+*******
+pop_18_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002t.tmp saved
+*******
+pop_19_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002u.tmp saved
+*******
+pop_19_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002v.tmp saved
+*******
+pop_19_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002w.tmp saved
+*******
+pop_19_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00002x.tmp saved
+*******
+pop_19_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000030.tmp saved
+*******
+pop_19_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000031.tmp saved
+*******
+pop_20_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000032.tmp saved
+*******
+pop_20_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000033.tmp saved
+*******
+pop_20_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000034.tmp saved
+*******
+pop_20_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000035.tmp saved
+*******
+pop_20_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000036.tmp saved
+*******
+pop_20_women_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000037.tmp saved
+*******
+pop_21_all_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000038.tmp saved
+*******
+pop_21_all_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_000039.tmp saved
+*******
+pop_21_men_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00003a.tmp saved
+*******
+pop_21_men_2
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00003b.tmp saved
+*******
+pop_21_women_1
+*******
+file C:\Users\cravizza\AppData\Local\Temp\ST_ecc_00003c.tmp saved
+*******
+pop_21_women_2
+*******
+
+. 
+. * Append all tables
+. use `pop_`ws_1'_all_1', clear
+
+. forvalues ws = `ws_1'/`ws_N' {
+  2.         foreach gender in all men women {
+  3.                 foreach cr in 1 2 {
+  4.                         if "`ws_`ws'_nbr'_`gender'_`cr'" == "`ws_1'_all_1"
+>  {
+  5.                                 continue
+  6.                         }
+  7.                         else {
+  8.                                 append using `pop_`ws_`ws'_nbr'_`gender'_`
+> cr''
+  9.                         }
+ 10.                 }
+ 11.         }
+ 12. }
+(note: variable gender_all was str3, now str5 to accommodate using data's
+       values)
+
+. 
+. * Check and rename year variables
+. isid depar gender_all age_min age_max
+
+. drop A
+
+. local year = 1996
+
+. foreach k in `c(ALPHA)' {
+  2.         if "`k'" == "A" {
+  3.                 continue
+  4.         }
+  5.         else {
+  6.                 rename `k' pop`year'
+  7.                 local year = `year' + 1
+  8.         }
+  9. }
+
+. 
+. * Reshape, aggregate dy depto, and save table
+. reshape long pop, i(depar gender_all age_min age_max) j(anio)
+(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
+> 9 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     1140   ->   28500
+Number of variables                  30   ->       7
+j variable (25 values)                    ->   anio
+xij variables:
+            pop1996 pop1997 ... pop2020   ->   pop
+-----------------------------------------------------------------------------
+
+. save "..\output\population.dta", replace
+(note: file ..\output\population.dta not found)
+file ..\output\population.dta saved
+
+. 
+. * Collapse to women of fertile age and save table
+. gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages=
+> =0)
+
+. collapse (sum) pop if all_ages==0 & fertile_age==1, by(depar anio age_min age
+> _max)
+
+. 
+. save "..\output\population_fertile_age.dta", replace
+(note: file ..\output\population_fertile_age.dta not found)
+file ..\output\population_fertile_age.dta saved
+
+. 
+end of do-file
+
+
 Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
@@ -2602,10 +3269,10 @@ Notes:
 .         keep if inrange(anio_parto,1999,2015) //note some births in 2015 are 
 > recorded in 2016
  11.         assert !mi(edadm)
- 12.         keep if inrange(edadm,16,45)
- 13.         
+ 12.         *keep if inrange(edadm,16,45)
+.         
 .         save "..\temp\births_append.dta", replace
- 14. end
+ 13. end
 
 . 
 . program derived_data
@@ -2708,56 +3375,73 @@ Notes:
 > t visit by 13 weeks"
  59.         lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
  60. 
-.         save "..\output\births.dta", replace
- 61. end
+.         preserve
+ 61.                 replace edadm = 15 if inrange(edadm,0,14)
+ 62.                 replace edadm = 49 if inrange(edadm,50,99)
+ 63.                 keep if inrange(edadm,15,49) 
+ 64.                 egen age_group15 = cut(edadm) ,at(15(5)50)
+ 65.                 bys age_group15: egen age_min = min(edadm)
+ 66.                 bys age_group15: egen age_max = max(edadm)
+ 67.                 save "..\output\births15.dta", replace
+ 68.         restore
+ 69. 
+.         keep if inrange(edadm,16,45)
+ 70.         save "..\output\births.dta", replace
+ 71. end
 
 . 
 . main
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000002.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000005.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000006.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000008.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000b.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000c.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000e.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_8a4_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_ebc_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
        values)
 (1,247 observations deleted)
-(21,056 observations deleted)
 (note: file ..\temp\births_append.dta not found)
 file ..\temp\births_append.dta saved
-(2,632 real changes made)
-(32,043 real changes made)
-(31,154 real changes made)
-(30,853 real changes made)
-(32,170 real changes made)
-(279,932 missing values generated)
-(279,904 real changes made)
+(2,651 real changes made)
+(32,731 real changes made)
+(31,821 real changes made)
+(31,505 real changes made)
+(32,843 real changes made)
+(286,006 missing values generated)
+(285,978 real changes made)
 (28 missing values generated)
 (28 missing values generated)
+(21056 missing values generated)
 (813,617 real changes made)
-(742,045 missing values generated)
-(729,926 missing values generated)
-(742,045 missing values generated)
-(729,926 missing values generated)
-(742,045 missing values generated)
-(729,926 missing values generated)
+(760,421 missing values generated)
+(748,345 missing values generated)
+(760,421 missing values generated)
+(748,345 missing values generated)
+(760,421 missing values generated)
+(748,345 missing values generated)
+(3,259 real changes made)
+(7,855 real changes made)
+(0 observations deleted)
+(note: file ..\output\births15.dta not found)
+file ..\output\births15.dta saved
+(21,056 observations deleted)
 (note: file ..\output\births.dta not found)
 file ..\output\births.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2018-03-05 11:25:56
+ make.py ended: 2018-03-08 12:04:54

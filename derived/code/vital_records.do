@@ -25,7 +25,7 @@ program append_data
 
 	keep if inrange(anio_parto,1999,2015) //note some births in 2015 are recorded in 2016
 	assert !mi(edadm)
-	keep if inrange(edadm,16,45)
+	*keep if inrange(edadm,16,45)
 	
 	save "..\temp\births_append.dta", replace
 end
@@ -104,6 +104,17 @@ program derived_data
 	lab def recomm_prenatal_1stvisit  0 "1st visit by 14+ weeks" 1 "1st visit by 13 weeks"
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
 
+	preserve
+		replace edadm = 15 if inrange(edadm,0,14)
+		replace edadm = 49 if inrange(edadm,50,99)
+		keep if inrange(edadm,15,49) 
+		egen age_group15 = cut(edadm) ,at(15(5)50)
+		bys age_group15: egen age_min = min(edadm)
+		bys age_group15: egen age_max = max(edadm)
+		save "..\output\births15.dta", replace
+	restore
+
+	keep if inrange(edadm,16,45)
 	save "..\output\births.dta", replace
 end
 
