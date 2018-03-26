@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-06 15:25:28 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-03-13 19:28:33 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -151,45 +151,49 @@ Notes:
 > e},tm(${m_date_`treatment'}) + ${m_post}) "
   5.         local xtitle "Year-month"
   6.         local vertical = tm(${m_date_`treatment'}) - 0.5    
-  7.     }
-  8.         else if "`time'" == "anio_qtr" {
-  9.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+  7.         local vertical2= tm(${m_date_`treatment'}) - 6.5 
+  8.     }
+  9.         else if "`time'" == "anio_qtr" {
+ 10.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
 > e},tq(${q_date_`treatment'}) + ${q_post}) "
- 10.         local xtitle "Year-quarter"
- 11.         local vertical = tq(${q_date_`treatment'}) - 0.5    
- 12.     }
- 13.     else if "`time'" == "anio_sem" {
- 14.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+ 11.         local xtitle "Year-quarter"
+ 12.         local vertical = tq(${q_date_`treatment'}) - 0.5 
+ 13.         local vertical2= tq(${q_date_`treatment'}) + 2.5    
+ 14.     }
+ 15.     else if "`time'" == "anio_sem" {
+ 16.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
 > e},th(${s_date_`treatment'}) + ${s_post}) "
- 15.         local xtitle "Year-half"
- 16.         local vertical = th(${s_date_`treatment'}) - 0.5    
- 17.     }
- 18.     else {
- 19.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+ 17.         local xtitle "Year-half"
+ 18.         local vertical = th(${s_date_`treatment'}) - 0.5   
+ 19.         local vertical2= th(${s_date_`treatment'}) + 1.5 
+ 20.     }
+ 21.     else {
+ 22.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
 > ${y_date_`treatment'} + ${y_post}) "
- 20.         local xtitle "Year"
- 21.         local vertical = ${y_date_`treatment'} - 0.5    
- 22.     }
- 23.         
+ 23.         local xtitle "Year"
+ 24.         local vertical = ${y_date_`treatment'} - 0.5  
+ 25.         local vertical2= ${y_date_`treatment'} + 0.5
+ 26.     }
+ 27.         
 .         collapse (count) births=edadm , by(`time' treatment_`treatment' `by_v
 > ars')
- 24.         
+ 28.         
 .         keep if !mi(treatment)
- 25.         gen Treatment = births if treatment_`treatment'==1
- 26.         gen Control   = births if treatment_`treatment'==0
- 27.         
+ 29.         gen Treatment = births if treatment_`treatment'==1
+ 30.         gen Control   = births if treatment_`treatment'==0
+ 31.         
 .         tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) /
 > //
 >            (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) //
 > /
 >            ,  by(`by_vars', title(${legend_`treatment'}))  ///
->            tline(`vertical', lcolor(black) lpattern(dot)) ///
+>            tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
 >            xtitle("`xtitle'") xsize(8) ///
 >            scheme(s1color) 
- 28. 
+ 32. 
 .         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
 > lace
- 29. end
+ 33. end
 
 . 
 . capture program drop diff_in_diff
@@ -409,4 +413,4 @@ end of do-file
 . 
 end of do-file
 
- make.py ended: 2018-03-06 15:26:43
+ make.py ended: 2018-03-13 19:29:36

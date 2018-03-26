@@ -25,21 +25,25 @@ syntax, by_vars(string) treatment(string) time(string)
         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pre},tm(${m_date_`treatment'}) + ${m_post}) "
         local xtitle "Year-month"
         local vertical = tm(${m_date_`treatment'}) - 0.5    
+        local vertical2= tm(${m_date_`treatment'}) - 6.5 
     }
 	else if "`time'" == "anio_qtr" {
         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
         local xtitle "Year-quarter"
-        local vertical = tq(${q_date_`treatment'}) - 0.5    
+        local vertical = tq(${q_date_`treatment'}) - 0.5 
+        local vertical2= tq(${q_date_`treatment'}) + 2.5    
     }
     else if "`time'" == "anio_sem" {
         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
         local xtitle "Year-half"
-        local vertical = th(${s_date_`treatment'}) - 0.5    
+        local vertical = th(${s_date_`treatment'}) - 0.5   
+        local vertical2= th(${s_date_`treatment'}) + 1.5 
     }
     else {
         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, ${y_date_`treatment'} + ${y_post}) "
         local xtitle "Year"
-        local vertical = ${y_date_`treatment'} - 0.5    
+        local vertical = ${y_date_`treatment'} - 0.5  
+        local vertical2= ${y_date_`treatment'} + 0.5
     }
 	
 	collapse (count) births=edadm , by(`time' treatment_`treatment' `by_vars')
@@ -51,7 +55,7 @@ syntax, by_vars(string) treatment(string) time(string)
 	tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) ///
 	   (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) ///
 	   ,  by(`by_vars', title(${legend_`treatment'}))  ///
-	   tline(`vertical', lcolor(black) lpattern(dot)) ///
+	   tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
 	   xtitle("`xtitle'") xsize(8) ///
 	   scheme(s1color) 
 
