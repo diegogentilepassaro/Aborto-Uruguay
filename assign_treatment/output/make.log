@@ -1,5 +1,5 @@
 
- make.py started: 2018-02-10 12:00:32 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-03-26 19:28:51 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -86,17 +86,30 @@ Notes:
  26.         local restr_placebo " & inrange(edad, 46, 60)"
  27. 
 .         foreach age_group in "" "_young" "_adult" "_placebo" {
- 28.                 gen treatment`age_group'_rivera = (loc_code == 1313020 & h
-> ombre == 0 `restr`age_group'')
- 29.                 gen treatment`age_group'_salto  = (loc_code == 1515020 & h
-> ombre == 0 `restr`age_group'')
- 30.                 gen control`age_group'_rivera  = ((loc_code == 431050 |loc
-> _code == 202020) & hombre == 0 `restr`age_group'')
- 31.                 gen control`age_group'_salto   = ((loc_code == 1111020|loc
-> _code ==1212020) & hombre == 0 `restr`age_group'')
- 32. 
-.         }
- 33. 
+ 28.                 local value = 0
+ 29.                 foreach var in treatment placebo {
+ 30.                         if "`var'"=="placebo" & inlist("`age_group'","_you
+> ng","_adult","_placebo") {
+ 31.                                 continue
+ 32.                         }
+ 33.                         else {
+ 34.                                 gen `var'`age_group'_rivera = (loc_code ==
+>  1313020) ///
+>                                         if (inlist(loc_code,1313020,431050,20
+> 2020)   & hombre == `value'  `restr`age_group'')
+ 35.                                 gen `var'`age_group'_salto  = (loc_code ==
+>  1515020) ///
+>                                         if (inlist(loc_code,1515020,1111020,1
+> 212020) & hombre == `value'  `restr`age_group'')
+ 36.                                 gen `var'`age_group'_florida = (loc_code =
+> = 808220) ///
+>                                         if (inlist(loc_code,808220,1111020,12
+> 12020)  & hombre == `value'  `restr`age_group'')
+ 37.                         }
+ 38.                         local value = 1
+ 39.                 }
+ 40.         }
+ 41. 
 .         *rio branco 431050
 .         *artigas    202020
 .         
@@ -114,28 +127,28 @@ Notes:
 . 
 .         * Diff in Diff Montevideo
 .         gen treatment_mvd_female  = (dpto == 1 & female == 1)
- 34.         gen treatment_mvd_poor    = (dpto == 1 & female == 1 & poor == 1)
- 35.         gen treatment_mvd_fertile = (dpto == 1 & female == 1 & fertile_age
+ 42.         gen treatment_mvd_poor    = (dpto == 1 & female == 1 & poor == 1)
+ 43.         gen treatment_mvd_fertile = (dpto == 1 & female == 1 & fertile_age
 >  == 1)
- 36.         gen treatment_mvd_kids    = (dpto == 1 & female == 1 & ind_under14
+ 44.         gen treatment_mvd_kids    = (dpto == 1 & female == 1 & ind_under14
 >  == 1)        
- 37.         gen treatment_mvd_lowed   = (dpto == 1 & female == 1 & lowed == 1)
- 38.         gen treatment_mvd_single  = (dpto == 1 & female == 1 & single == 1
+ 45.         gen treatment_mvd_lowed   = (dpto == 1 & female == 1 & lowed == 1)
+ 46.         gen treatment_mvd_single  = (dpto == 1 & female == 1 & single == 1
 > )
- 39.         gen treatment_mvd_student = (dpto == 1 & female == 1 & estudiante 
+ 47.         gen treatment_mvd_student = (dpto == 1 & female == 1 & estudiante 
 > == 1)
- 40. 
+ 48. 
 .         gen control_mvd_female    = (dpto == 1 & female == 0)
- 41.         gen control_mvd_poor      = (dpto == 1 & female == 1 & poor == 0)
- 42.         gen control_mvd_fertile   = (dpto == 1 & female == 1 & fertile_age
+ 49.         gen control_mvd_poor      = (dpto == 1 & female == 1 & poor == 0)
+ 50.         gen control_mvd_fertile   = (dpto == 1 & female == 1 & fertile_age
 >  == 0)
- 43.         gen control_mvd_kids      = (dpto == 1 & female == 1 & ind_under14
+ 51.         gen control_mvd_kids      = (dpto == 1 & female == 1 & ind_under14
 >  == 0)                
- 44.         gen control_mvd_lowed     = (dpto == 1 & female == 1 & lowed == 0)
- 45.     gen control_mvd_single    = (dpto == 1 & female == 1 & single == 0)
- 46.         gen control_mvd_student   = (dpto == 1 & female == 1 & estudiante 
+ 52.         gen control_mvd_lowed     = (dpto == 1 & female == 1 & lowed == 0)
+ 53.     gen control_mvd_single    = (dpto == 1 & female == 1 & single == 0)
+ 54.         gen control_mvd_student   = (dpto == 1 & female == 1 & estudiante 
 > == 0)
- 47.         
+ 55.         
 .         * Triple Diff
 .         
 .         /** Design 2: income_fertility (only women)
@@ -172,13 +185,13 @@ Notes:
 .         * Design: female_single
 .         gen mvd_female_single     = (loc_code == 101010 & female == 1 & singl
 > e == 1)
- 48.         gen mvd_female_married    = (loc_code == 101010 & female == 1 & si
+ 56.         gen mvd_female_married    = (loc_code == 101010 & female == 1 & si
 > ngle == 0)
- 49.         gen mvd_male_single       = (loc_code == 101010 & female == 0 & si
+ 57.         gen mvd_male_single       = (loc_code == 101010 & female == 0 & si
 > ngle == 1)
- 50.         gen mvd_male_married      = (loc_code == 101010 & female == 0 & si
+ 58.         gen mvd_male_married      = (loc_code == 101010 & female == 0 & si
 > ngle == 0)
- 51.         
+ 59.         
 .         /* Design: female_lowed
 >         gen mvd_female_lowed      = (loc_code == 101010 & female == 1 & lowed
 >  == 1)
@@ -222,41 +235,56 @@ Notes:
 .         * Design: young_kids (women)
 .         gen mvd_young_kids      = (loc_code == 101010 & female == 1 & young =
 > = 1 & ind_under14 == 1)
- 52.         gen mvd_young_nokids    = (loc_code == 101010 & female == 1 & youn
+ 60.         gen mvd_young_nokids    = (loc_code == 101010 & female == 1 & youn
 > g == 1 & ind_under14 == 0)
- 53.         gen mvd_old_kids        = (loc_code == 101010 & female == 0 & youn
+ 61.         gen mvd_old_kids        = (loc_code == 101010 & female == 0 & youn
 > g == 0 & ind_under14 == 1)
- 54.         gen mvd_old_nokids      = (loc_code == 101010 & female == 0 & youn
+ 62.         gen mvd_old_nokids      = (loc_code == 101010 & female == 0 & youn
 > g == 0 & ind_under14 == 0)    
- 55. 
+ 63. 
 .         * Design: young_poor (women)
 .         gen mvd_young_poor      = (loc_code == 101010 & female == 1 & young =
 > = 1 & ind_under14 == 1)
- 56.         gen mvd_young_nopoor    = (loc_code == 101010 & female == 1 & youn
+ 64.         gen mvd_young_nopoor    = (loc_code == 101010 & female == 1 & youn
 > g == 1 & ind_under14 == 0)
- 57.         gen mvd_old_poor        = (loc_code == 101010 & female == 0 & youn
+ 65.         gen mvd_old_poor        = (loc_code == 101010 & female == 0 & youn
 > g == 0 & ind_under14 == 1)
- 58.         gen mvd_old_nopoor      = (loc_code == 101010 & female == 0 & youn
+ 66.         gen mvd_old_nopoor      = (loc_code == 101010 & female == 0 & youn
 > g == 0 & ind_under14 == 0)    
- 59. 
+ 67. 
 .         * Design: poor_kids (women)
 .         gen mvd_poor_kids       = (loc_code == 101010 & female == 1 & poor ==
 >  1 & ind_under14 == 1)
- 60.         gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor
+ 68.         gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor
 >  == 1 & ind_under14 == 0)
- 61.         gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor
+ 69.         gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor
 >  == 0 & ind_under14 == 1)
- 62.         gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor
+ 70.         gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor
 >  == 0 & ind_under14 == 0)
- 63.     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) repla
+ 71.     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) repla
 > ce 
- 64. end
+ 72. end
 
 . 
 . main_assign_treatment
 (803,973 missing values generated)
 (290,016 missing values generated)
 (1,128,811 missing values generated)
+(1,840,495 missing values generated)
+(1,817,399 missing values generated)
+(1,835,468 missing values generated)
+(1,844,773 missing values generated)
+(1,824,212 missing values generated)
+(1,840,509 missing values generated)
+(1,874,692 missing values generated)
+(1,869,881 missing values generated)
+(1,873,769 missing values generated)
+(1,875,149 missing values generated)
+(1,871,574 missing values generated)
+(1,874,682 missing values generated)
+(1,875,920 missing values generated)
+(1,872,143 missing values generated)
+(1,875,162 missing values generated)
 (data now sorted by numero pers anio)
   variable fertile_age was float now byte
   variable female was float now byte
@@ -274,20 +302,19 @@ Notes:
   variable kids_salto was float now byte
   variable treatment_rivera was float now byte
   variable treatment_salto was float now byte
-  variable control_rivera was float now byte
-  variable control_salto was float now byte
+  variable treatment_florida was float now byte
+  variable placebo_rivera was float now byte
+  variable placebo_salto was float now byte
+  variable placebo_florida was float now byte
   variable treatment_young_rivera was float now byte
   variable treatment_young_salto was float now byte
-  variable control_young_rivera was float now byte
-  variable control_young_salto was float now byte
+  variable treatment_young_florida was float now byte
   variable treatment_adult_rivera was float now byte
   variable treatment_adult_salto was float now byte
-  variable control_adult_rivera was float now byte
-  variable control_adult_salto was float now byte
+  variable treatment_adult_florida was float now byte
   variable treatment_placebo_rivera was float now byte
   variable treatment_placebo_salto was float now byte
-  variable control_placebo_rivera was float now byte
-  variable control_placebo_salto was float now byte
+  variable treatment_placebo_florida was float now byte
   variable treatment_mvd_female was float now byte
   variable treatment_mvd_poor was float now byte
   variable treatment_mvd_fertile was float now byte
@@ -318,14 +345,14 @@ Notes:
   variable mvd_poor_nokids was float now byte
   variable mvd_nonpoor_kids was float now byte
   variable mvd_nonpoor_nokids was float now byte
-  (333,354,543 bytes saved)
+  (327,704,466 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883359:148(59587):3938614408:2909503180
+  1883359:147(71955):3534494856:3077332552
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -451,59 +478,58 @@ under14_sa~o |  1,883,359    .1400524    .3470415          0          1
 -------------+---------------------------------------------------------
 nbr_under1~o |  1,883,359    .6696413    1.042191          0         11
   kids_salto |  1,883,359    .3909982    .4879741          0          1
-tr~nt_rivera |  1,883,359    .0126051    .1115628          0          1
-tre~nt_salto |  1,883,359    .0155047     .123549          0          1
-control_ri~a |  1,883,359    .0101542    .1002552          0          1
+tr~nt_rivera |     42,864    .5538447    .4970981          0          1
+tre~nt_salto |     65,960    .4427077    .4967105          0          1
+t~nt_florida |     47,891    .2324445    .4223953          0          1
 -------------+---------------------------------------------------------
-control_sa~o |  1,883,359    .0195178     .138336          0          1
-tre~g_rivera |  1,883,359    .0024924    .0498613          0          1
-trea~g_salto |  1,883,359    .0032676    .0570692          0          1
-control_yo~a |  1,883,359    .0021095    .0458811          0          1
-control_yo~o |  1,883,359    .0038888    .0622389          0          1
+placebo_ri~a |     38,586    .5446535    .4980085          0          1
+placebo_sa~o |     59,147    .4415947    .4965813          0          1
+placebo_fl~a |     42,850    .2292182    .4203348          0          1
+tre~g_rivera |      8,667    .5415946    .4982956          0          1
+trea~g_salto |     13,478    .4565959     .498131          0          1
 -------------+---------------------------------------------------------
-tr~lt_rivera |  1,883,359    .0024456    .0493928          0          1
-tre~lt_salto |  1,883,359    .0027334    .0522106          0          1
-control_ad~a |  1,883,359    .0019136    .0437029          0          1
-control_ad~o |  1,883,359     .003524    .0592588          0          1
-tre~o_rivera |  1,883,359    .0021446    .0462599          0          1
+tr~g_florida |      9,590    .2362878    .4248231          0          1
+tr~lt_rivera |      8,210    .5610231    .4962924          0          1
+tre~lt_salto |     11,785    .4368265    .4960141          0          1
+t~lt_florida |      8,677    .2351043    .4240884          0          1
+tre~o_rivera |      7,439    .5429493    .4981854          0          1
 -------------+---------------------------------------------------------
-trea~o_salto |  1,883,359    .0026501    .0514104          0          1
-control_pl~a |  1,883,359    .0018053    .0424503          0          1
-control_pl~o |  1,883,359    .0033053    .0573964          0          1
+trea~o_salto |     11,216    .4449893    .4969868          0          1
+tr~o_florida |      8,197    .2405758    .4274592          0          1
 treatmen~ale |  1,883,359    .2381336    .4259414          0          1
 treatment_~r |  1,883,359    .0908733    .2874289          0          1
--------------+---------------------------------------------------------
 treatmen~ile |  1,883,359    .0946155    .2926832          0          1
+-------------+---------------------------------------------------------
 treatment_~s |  1,883,359    .1088624    .3114666          0          1
 treatment_~d |  1,883,359    .1596769    .3663063          0          1
 treatmen~gle |  1,883,359    .1125139    .3159977          0          1
 treatment_~t |  1,883,359    .0155207    .1236114          0          1
--------------+---------------------------------------------------------
 control_~ale |  1,883,359     .201961    .4014633          0          1
+-------------+---------------------------------------------------------
 control_mv~r |  1,883,359    .1472603    .3543653          0          1
 control_~ile |  1,883,359    .0427614    .2023187          0          1
 control_mv~s |  1,883,359    .1292712    .3354999          0          1
 control_mv~d |  1,883,359    .0784566    .2688889          0          1
--------------+---------------------------------------------------------
 control_~gle |  1,883,359    .0974004    .2965023          0          1
+-------------+---------------------------------------------------------
 control_mv~t |  1,883,359    .2226129    .4160006          0          1
 mvd_female~e |  1,883,359    .1125139    .3159977          0          1
 mvd_female~d |  1,883,359    .0974004    .2965023          0          1
 mvd_male_s~e |  1,883,359    .0775158    .2674081          0          1
--------------+---------------------------------------------------------
 mvd_male_m~d |  1,883,359     .095087    .2933352          0          1
+-------------+---------------------------------------------------------
 mvd_yo~_kids |  1,883,359    .0216788    .1456326          0          1
 mvd_yo~okids |  1,883,359    .0276304    .1639115          0          1
 mvd_old_kids |  1,883,359    .0230625    .1501021          0          1
 mvd_old_no~s |  1,883,359    .0160872    .1258111          0          1
--------------+---------------------------------------------------------
 mvd_yo~_poor |  1,883,359    .0216788    .1456326          0          1
+-------------+---------------------------------------------------------
 mvd_yo~opoor |  1,883,359    .0276304    .1639115          0          1
 mvd_old_poor |  1,883,359    .0230625    .1501021          0          1
 mvd_old_no~r |  1,883,359    .0160872    .1258111          0          1
 mvd_poor_k~s |  1,883,359    .0586994    .2350612          0          1
--------------+---------------------------------------------------------
 mvd_poor_n~s |  1,883,359    .0321739    .1764618          0          1
+-------------+---------------------------------------------------------
 mvd_no~_kids |  1,883,359    .0456748    .2087789          0          1
 mvd_no~okids |  1,883,359    .0795536    .2706009          0          1
 
@@ -516,4 +542,4 @@ file ..\output\ech_final_98_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-02-10 12:01:40
+ make.py ended: 2018-03-26 19:30:02

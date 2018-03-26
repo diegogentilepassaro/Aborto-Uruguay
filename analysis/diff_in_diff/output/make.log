@@ -1,5 +1,5 @@
 
- make.py started: 2018-02-11 13:35:12 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
+ make.py started: 2018-03-26 18:24:30 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
 
 
 
@@ -126,7 +126,7 @@ Notes:
   3.     
 .     cap keep if `restr'
   4.     
-.     keep if treatment_`treatment'==1 | control_`treatment'==1
+.     keep if !mi(treatment_`treatment')
   5.     
 .     if "`time'" == "anio_qtr" {
   6.         local weight pesotri
@@ -172,7 +172,7 @@ Notes:
  35.             
 .             collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n
 > _`outcome' = `outcome' ///
->                 [aw = `weight'] if control_`treatment' == 1 , by(`time')
+>                 [aw = `weight'] if treatment_`treatment' == 0 , by(`time')
  36.             rename *`outcome' *`outcome'_c
  37.             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
 >                 assert(3) keep(3) nogen
@@ -212,7 +212,7 @@ Notes:
  52.             restore
  53.             
 .             collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `wei
-> ght'] if control_`treatment' == 1 , by(`time')
+> ght'] if treatment_`treatment' == 0 , by(`time')
  54.             tsset `time'
  55.             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
  56.             save ../temp/control_`outcome'_ts.dta, replace
@@ -378,9 +378,8 @@ Notes:
 > nteraction ///
 >                         i.`time' nbr_people ind_under14 edad married y_hogar_
 > alt `control_vars' ///
->                         `range' `cond' & ///
->                         (treatment`age_group'_`treatment'==1 | control`age_gr
-> oup'_`treatment'==1) ///
+>                         `range' `cond' & !mi(treatment`age_group'_`treatment'
+> ) ///
 >                                                 [aw = `weight'], vce(cluster 
 > `time')
  47.                         
@@ -416,6 +415,13 @@ Notes:
 . main_diff_analysis
 
 .     * Dates of treatments
+.     global m_date_mvd    "2004m4"
+
+.     global m_date_rivera "2010m6"
+
+.     global m_date_salto  "2013m1"
+
+.     
 .     global q_date_mvd    "2004q2"
 
 .     global q_date_rivera "2010q3"
@@ -435,6 +441,24 @@ Notes:
 .     global y_date_rivera 2010 
 
 .     global y_date_salto  2013 
+
+. 
+.     * Ranges
+.     global m_pre  48
+
+.     global m_post 24
+
+.     global q_pre  16
+
+.     global q_post 12
+
+.     global s_pre  8
+
+.     global s_post 4
+
+.     global y_pre  4
+
+.     global y_post 2
 
 . 
 .     * Legends
@@ -476,6 +500,7 @@ The smoother applied was
 file ../temp/control_horas_trabajo_ts.dta saved
 (36 real changes made)
 (file ../output/did_rivera_labor_anio_sem.pdf written in PDF format)
+(1,874,692 missing values generated)
 (sum of wgt is   1.7838e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -539,6 +564,7 @@ c06_mat_fl~r |   .0040321   .0286386     0.14   0.890    -.0583661    .0664304
 c06_b_electr |   .0608202     .05129     1.19   0.259    -.0509311    .1725714
        _cons |  -.6064762    .090171    -6.73   0.000    -.8029419   -.4100105
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.7086e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -553,7 +579,7 @@ Linear regression                               Number of obs     =      3,336
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |  -.0054481   .0201623    -0.27   0.792    -.0493779    .0384818
+1.~lt_rivera |  -.0054481   .0201623    -0.27   0.792    -.0493779    .0384818
       1.post |  -.0740523   .0306117    -2.42   0.032    -.1407494   -.0073552
  interaction |    .005888   .0429099     0.14   0.893    -.0876047    .0993807
              |
@@ -602,6 +628,7 @@ c06_mat_fl~r |  -.0495768   .0267324    -1.85   0.088    -.1078216     .008668
 c06_b_electr |   .1601623   .1868641     0.86   0.408    -.2469796    .5673041
        _cons |   .9173378   .1945261     4.72   0.001     .4935019    1.341174
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.5408e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -665,6 +692,7 @@ c06_mat_fl~r |   .0508328   .0211015     2.41   0.033     .0048566    .0968091
 c06_b_electr |  -.0267059   .1452441    -0.18   0.857    -.3431656    .2897538
        _cons |   1.740014   .2478194     7.02   0.000     1.200062    2.279966
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   1.1584e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -728,6 +756,7 @@ c06_mat_fl~r |   .0043113   .0318305     0.14   0.895    -.0650414    .0736639
 c06_b_electr |   .0392641   .0573517     0.68   0.507    -.0856945    .1642226
        _cons |  -.6468826   .1183378    -5.47   0.000    -.9047184   -.3890468
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.2486e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -742,7 +771,7 @@ Linear regression                               Number of obs     =      2,404
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |  -.0078132   .0224202    -0.35   0.734    -.0566626    .0410362
+1.~lt_rivera |  -.0078132   .0224202    -0.35   0.734    -.0566626    .0410362
       1.post |  -.0359419   .0382468    -0.94   0.366    -.1192745    .0473907
  interaction |   .0096672   .0450167     0.21   0.834    -.0884159    .1077502
              |
@@ -791,6 +820,7 @@ c06_mat_fl~r |  -.0683467   .0292215    -2.34   0.037    -.1320149   -.0046786
 c06_b_electr |    .002174   .2094762     0.01   0.992    -.4542355    .4585835
        _cons |    .952317   .2060295     4.62   0.001     .5034173    1.401217
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   5.1905e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -855,6 +885,7 @@ c06_mat_fl~r |    .099846   .0347453     2.87   0.014     .0241425    .1755495
 c06_b_electr |  -.0571179   .2702474    -0.21   0.836    -.6459364    .5317006
        _cons |   1.667014   .3435966     4.85   0.000     .9183809    2.415646
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   6.2539e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -919,6 +950,7 @@ c06_mat_fl~r |  -.0159718   .0487622    -0.33   0.749    -.1222155    .0902718
 c06_b_electr |   .0848441   .0902469     0.94   0.366    -.1117871    .2814752
        _cons |  -.7108855   .1458548    -4.87   0.000    -1.028676   -.3930952
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   4.5999e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -934,7 +966,7 @@ Linear regression                               Number of obs     =        932
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |    .009908   .0379467     0.26   0.798    -.0727707    .0925867
+1.~lt_rivera |    .009908   .0379467     0.26   0.798    -.0727707    .0925867
       1.post |  -.1139947   .0462542    -2.46   0.030    -.2147739   -.0132155
  interaction |  -.0235563   .0724067    -0.33   0.751     -.181317    .1342044
              |
@@ -983,6 +1015,7 @@ c06_mat_fl~r |   .0000853   .0339911     0.00   0.998    -.0739749    .0741454
 c06_b_electr |   .3622818   .2415147     1.50   0.159    -.1639336    .8884972
        _cons |   .4728917   .2892147     1.64   0.128     -.157253    1.103036
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.0217e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1046,6 +1079,7 @@ c06_mat_fl~r |   .0116992   .0383916     0.30   0.766    -.0719489    .0953473
 c06_b_electr |  -.0165247   .1582247    -0.10   0.919    -.3612667    .3282173
        _cons |   1.679667   .2470105     6.80   0.000     1.141477    2.217857
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   6.9888e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1110,6 +1144,7 @@ c06_mat_fl~r |   .0425099   .0438745     0.97   0.352    -.0530844    .1381042
 c06_b_electr |   .0030738   .1669151     0.02   0.986    -.3606029    .3667505
        _cons |  -.0078283   .1607696    -0.05   0.962    -.3581152    .3424587
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.2980e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1125,7 +1160,7 @@ Linear regression                               Number of obs     =      2,522
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |  -.0199806   .0235876    -0.85   0.414    -.0713735    .0314123
+1.~lt_rivera |  -.0199806   .0235876    -0.85   0.414    -.0713735    .0314123
       1.post |  -.0544054   .0339943    -1.60   0.135    -.1284726    .0196618
  interaction |   .0116669   .0455575     0.26   0.802    -.0875943    .1109282
              |
@@ -1174,6 +1209,7 @@ c06_mat_fl~r |  -.0523881   .0349826    -1.50   0.160    -.1286086    .0238324
 c06_b_electr |   .3572674   .2170069     1.65   0.126      -.11555    .8300848
        _cons |   .6494417   .2196032     2.96   0.012     .1709675    1.127916
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.0721e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1239,6 +1275,7 @@ c06_mat_fl~r |   .1126343   .0251951     4.47   0.001     .0577388    .1675298
 c06_b_electr |  -.0723542   .1866461    -0.39   0.705    -.4790212    .3343127
        _cons |    1.31901    .242035     5.45   0.000     .7916607    1.846359
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   1.0849e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1304,6 +1341,7 @@ c06_mat_fl~r |  -.0284191    .035832    -0.79   0.443    -.1064904    .0496522
 c06_b_electr |   .0597441   .1020812     0.59   0.569    -.1626717    .2821599
        _cons |  -.6965671   .1148067    -6.07   0.000    -.9467094   -.4464249
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   4.1054e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1320,7 +1358,7 @@ Linear regression                               Number of obs     =        814
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .0461099   .0437226     1.05   0.312    -.0491535    .1413733
+1.~lt_rivera |   .0461099   .0437226     1.05   0.312    -.0491535    .1413733
       1.post |  -.0897903   .0653868    -1.37   0.195    -.2322559    .0526752
  interaction |  -.0279247    .074653    -0.37   0.715    -.1905796    .1347301
              |
@@ -1369,6 +1407,7 @@ c06_mat_fl~r |  -.0368058   .0395056    -0.93   0.370    -.1228811    .0492694
 c06_b_electr |  -.2736062    .097339    -2.81   0.016    -.4856896   -.0615227
        _cons |   .9037333   .2428232     3.72   0.003      .374667      1.4328
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   4.6867e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -1433,6 +1472,7 @@ c06_mat_fl~r |  -.0834289   .0547279    -1.52   0.153    -.2026707    .0358129
 c06_b_electr |   .0505523   .1695935     0.30   0.771    -.3189602    .4200649
        _cons |   1.934962   .3888618     4.98   0.000     1.087705    2.782219
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   1.7838e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1496,6 +1536,7 @@ c06_mat_fl~r |    .603943   1.396054     0.43   0.673    -2.437798    3.645684
 c06_b_electr |   3.096042    1.75318     1.77   0.103    -.7238093    6.915894
        _cons |  -23.72068   2.222541   -10.67   0.000    -28.56319   -18.87818
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.7086e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1510,7 +1551,7 @@ Linear regression                               Number of obs     =      3,336
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   1.503972   .8535494     1.76   0.103    -.3557523    3.363697
+1.~lt_rivera |   1.503972   .8535494     1.76   0.103    -.3557523    3.363697
       1.post |  -4.627106   1.635306    -2.83   0.015    -8.190133    -1.06408
  interaction |   1.403825   2.037479     0.69   0.504    -3.035459     5.84311
              |
@@ -1559,6 +1600,7 @@ c06_mat_fl~r |  -2.034894     1.2694    -1.60   0.135    -4.800678      .73089
 c06_b_electr |    8.17779   6.172231     1.32   0.210    -5.270345    21.62593
        _cons |   8.503636   6.529909     1.30   0.217    -5.723813    22.73108
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.5408e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1622,6 +1664,7 @@ c06_mat_fl~r |   1.538651   1.079294     1.43   0.179     -.812928     3.89023
 c06_b_electr |  -.6617458   4.867996    -0.14   0.894     -11.2682    9.944706
        _cons |   62.14917   7.499113     8.29   0.000     45.81001    78.48834
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   1.1584e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1685,6 +1728,7 @@ c06_mat_fl~r |    .897631   1.607831     0.56   0.587    -2.605533    4.400795
 c06_b_electr |   1.286711   2.079228     0.62   0.548    -3.243539     5.81696
        _cons |  -22.33173   5.882186    -3.80   0.003    -35.14791   -9.515548
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.2486e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -1699,7 +1743,7 @@ Linear regression                               Number of obs     =      2,404
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .5591498   .8398903     0.67   0.518    -1.270814    2.389114
+1.~lt_rivera |   .5591498   .8398903     0.67   0.518    -1.270814    2.389114
       1.post |  -4.724192    1.32473    -3.57   0.004     -7.61053   -1.837853
  interaction |   2.687375   1.592735     1.69   0.117    -.7828967    6.157646
              |
@@ -1748,6 +1792,7 @@ c06_mat_fl~r |  -2.737538   1.433203    -1.91   0.080     -5.86022    .3851427
 c06_b_electr |  -1.882122   7.148308    -0.26   0.797    -17.45695     13.6927
        _cons |   14.65758   8.620275     1.70   0.115    -4.124384    33.43955
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   5.1905e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -1812,6 +1857,7 @@ c06_mat_fl~r |   2.081912   2.016454     1.03   0.322    -2.311563    6.475388
 c06_b_electr |   .3153704   9.452517     0.03   0.974    -20.27989    20.91063
        _cons |   53.09025   13.40401     3.96   0.002     23.88543    82.29507
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   6.2539e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -1876,6 +1922,7 @@ c06_mat_fl~r |  -1.347489   1.954631    -0.69   0.504    -5.606264    2.911285
 c06_b_electr |    4.16667   5.269997     0.79   0.444    -7.315668    15.64901
        _cons |  -31.63667   6.790625    -4.66   0.001    -46.43217   -16.84117
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   4.5999e+04)
 note: 105.anio_sem omitted because of collinearity
 note: c98_resid_house omitted because of collinearity
@@ -1891,7 +1938,7 @@ Linear regression                               Number of obs     =        932
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   4.368434   1.484338     2.94   0.012     1.134339    7.602529
+1.~lt_rivera |   4.368434   1.484338     2.94   0.012     1.134339    7.602529
       1.post |  -1.497263   2.508447    -0.60   0.562    -6.962699    3.968172
  interaction |  -3.029403   3.345486    -0.91   0.383    -10.31859    4.259785
              |
@@ -1940,6 +1987,7 @@ c06_mat_fl~r |   .5883923   2.486025     0.24   0.817    -4.828192    6.004976
 c06_b_electr |   22.25221   6.567701     3.39   0.005     7.942418      36.562
        _cons |   11.51576   10.13718     1.14   0.278    -10.57126    33.60277
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.0217e+05)
 note: 105.anio_sem omitted because of collinearity
 
@@ -2003,6 +2051,7 @@ c06_mat_fl~r |   1.359707   2.013762     0.68   0.512    -3.027903    5.747318
 c06_b_electr |  -1.335905   6.857143    -0.19   0.849    -16.27634    13.60453
        _cons |   62.27383   7.901736     7.88   0.000     45.05742    79.49023
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   6.9888e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2067,6 +2116,7 @@ c06_mat_fl~r |   2.263454   1.917663     1.18   0.261    -1.914774    6.441683
 c06_b_electr |  -.1005795   3.860905    -0.03   0.980    -8.512768    8.311609
        _cons |  -2.335889   5.885178    -0.40   0.698    -15.15859    10.48681
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   1.2980e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2082,7 +2132,7 @@ Linear regression                               Number of obs     =      2,522
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   1.078758   .9561186     1.13   0.281    -1.004446    3.161961
+1.~lt_rivera |   1.078758   .9561186     1.13   0.281    -1.004446    3.161961
       1.post |  -4.814518   1.526999    -3.15   0.008    -8.141564   -1.487472
  interaction |   2.408768   2.044086     1.18   0.261    -2.044913    6.862448
              |
@@ -2131,6 +2181,7 @@ c06_mat_fl~r |  -2.928784   1.450246    -2.02   0.066    -6.088599    .2310312
 c06_b_electr |   10.93795   8.495881     1.29   0.222    -7.572987    29.44888
        _cons |   5.483308   8.328268     0.66   0.523    -12.66243    23.62904
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   1.0721e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2196,6 +2247,7 @@ c06_mat_fl~r |   3.395991   1.458794     2.33   0.038     .2175521    6.574429
 c06_b_electr |   .6611419    5.78398     0.11   0.911    -11.94107    13.26335
        _cons |   36.41376   6.610472     5.51   0.000     22.01078    50.81674
 ------------------------------------------------------------------------------
+(1,874,692 missing values generated)
 (sum of wgt is   1.0849e+05)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2261,6 +2313,7 @@ c06_mat_fl~r |  -.7658847   1.502537    -0.51   0.619    -4.039631    2.507861
 c06_b_electr |   3.058179   3.484215     0.88   0.397    -4.533274    10.64963
        _cons |  -29.96679   3.994096    -7.50   0.000    -38.66918    -21.2644
 ------------------------------------------------------------------------------
+(1,875,149 missing values generated)
 (sum of wgt is   4.1054e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2277,7 +2330,7 @@ Linear regression                               Number of obs     =        814
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   2.774104   1.507857     1.84   0.091    -.5112347    6.059442
+1.~lt_rivera |   2.774104   1.507857     1.84   0.091    -.5112347    6.059442
       1.post |  -4.423025   3.401977    -1.30   0.218     -11.8353    2.989247
  interaction |  -1.203438   2.919125    -0.41   0.687    -7.563665    5.156788
              |
@@ -2326,6 +2379,7 @@ c06_mat_fl~r |   .1013569   1.855338     0.05   0.957    -3.941078    4.143792
 c06_b_electr |   .6445911   4.188288     0.15   0.880    -8.480904    9.770087
        _cons |   19.15305   11.34401     1.69   0.117    -5.563435    43.86953
 ------------------------------------------------------------------------------
+(1,875,920 missing values generated)
 (sum of wgt is   4.6867e+04)
 note: 105.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -2416,6 +2470,7 @@ The smoother applied was
 file ../temp/control_horas_trabajo_ts.dta saved
 (36 real changes made)
 (file ../output/did_salto_labor_anio_sem.pdf written in PDF format)
+(1,869,881 missing values generated)
 (sum of wgt is   3.0111e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2479,6 +2534,7 @@ c06_mat_fl~r |  -.0279851   .0110066    -2.54   0.026    -.0519664   -.0040038
 c06_b_electr |   .0792991   .0842957     0.94   0.365    -.1043654    .2629637
        _cons |  -.5774259   .1211731    -4.77   0.000    -.8414395   -.3134123
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   2.6905e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2542,6 +2598,7 @@ c06_mat_fl~r |   .0462606   .0230431     2.01   0.068    -.0039459    .0964672
 c06_b_electr |  -.0170085    .111016    -0.15   0.881    -.2588915    .2248746
        _cons |   .1487071   .4415774     0.34   0.742    -.8134073    1.110822
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   2.4494e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2605,6 +2662,7 @@ c06_mat_fl~r |  -.0031044   .0225988    -0.14   0.893    -.0523431    .0461342
 c06_b_electr |   .1936306   .1062255     1.82   0.093     -.037815    .4250762
        _cons |    .866917   .2382057     3.64   0.003     .3479113    1.385923
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.7595e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2668,6 +2726,7 @@ c06_mat_fl~r |    -.01996   .0219421    -0.91   0.381    -.0677678    .0278478
 c06_b_electr |  -.0051816   .0678817    -0.08   0.940     -.153083    .1427199
        _cons |    -.70723   .0897159    -7.88   0.000    -.9027043   -.5117558
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   1.9215e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2731,6 +2790,7 @@ c06_mat_fl~r |   .0355745   .0237377     1.50   0.160    -.0161455    .0872944
 c06_b_electr |  -.0310408   .1369639    -0.23   0.825    -.3294596    .2673779
        _cons |    .430906   .5560301     0.77   0.453    -.7805796    1.642392
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   6.8784e+04)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2794,6 +2854,7 @@ c06_mat_fl~r |  -.0285589   .0331659    -0.86   0.406    -.1008213    .0437034
 c06_b_electr |   .3067481   .2414651     1.27   0.228    -.2193592    .8328553
        _cons |   .2956179   .2849239     1.04   0.320     -.325178    .9164138
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.2516e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2857,6 +2918,7 @@ c06_mat_fl~r |  -.0756467   .0365464    -2.07   0.061    -.1552745    .0039812
 c06_b_electr |   .4164612   .2671653     1.56   0.145     -.165642    .9985644
        _cons |   -.796361    .312617    -2.55   0.026    -1.477495   -.1152271
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   7.6893e+04)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2920,6 +2982,7 @@ c06_mat_fl~r |   .0701561   .0585795     1.20   0.254    -.0574777    .1977899
 c06_b_electr |  -.0429652   .0820286    -0.52   0.610    -.2216901    .1357598
        _cons |  -.2533412   .2073069    -1.22   0.245    -.7050241    .1983417
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   1.7615e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -2983,6 +3046,7 @@ c06_mat_fl~r |   .0181428   .0338838     0.54   0.602    -.0556836    .0919692
 c06_b_electr |   .0982407   .1324806     0.74   0.473    -.1904097    .3868911
        _cons |   1.160649   .2687244     4.32   0.001     .5751494     1.74615
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.0877e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3047,6 +3111,7 @@ c06_mat_fl~r |    .007745   .0260163     0.30   0.771    -.0489397    .0644297
 c06_b_electr |   .1460751   .1443576     1.01   0.332    -.1684532    .4606034
        _cons |  -.1727001   .1546777    -1.12   0.286    -.5097139    .1643136
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   2.0291e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3111,6 +3176,7 @@ c06_mat_fl~r |   .0386743    .028286     1.37   0.197    -.0229555    .1003042
 c06_b_electr |  -.0477174   .1448092    -0.33   0.747    -.3632294    .2677947
        _cons |   .4053832   .6036109     0.67   0.515    -.9097721    1.720538
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   1.7850e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3175,6 +3241,7 @@ c06_mat_fl~r |   .0080058   .0331511     0.24   0.813    -.0642243    .0802358
 c06_b_electr |   .0332967   .1162271     0.29   0.779    -.2199404    .2865339
        _cons |    .783747   .3021841     2.59   0.024     .1253445    1.442149
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.9234e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3239,6 +3306,7 @@ c06_mat_fl~r |   -.051803   .0198989    -2.60   0.023     -.095159   -.0084471
 c06_b_electr |   .0100212   .1064454     0.09   0.927    -.2219034    .2419458
        _cons |  -.5281549   .3864534    -1.37   0.197    -1.370165    .3138548
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   6.6134e+04)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3303,6 +3371,7 @@ c06_mat_fl~r |   .0641313   .0345977     1.85   0.089    -.0112505    .1395131
 c06_b_electr |   .0889169   .1483234     0.60   0.560     -.234252    .4120859
        _cons |  -.5625702    .208206    -2.70   0.019    -1.016212   -.1089284
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   6.6435e+04)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3367,6 +3436,7 @@ c06_mat_fl~r |  -.0384426   .0412376    -0.93   0.370    -.1282916    .0514063
 c06_b_electr |    .422865   .1702016     2.48   0.029     .0520275    .7937026
        _cons |   .6935188   .5153209     1.35   0.203     -.429269    1.816307
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   3.0111e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3430,6 +3500,7 @@ c06_mat_fl~r |  -.3106394   .5621689    -0.55   0.591      -1.5355    .9142214
 c06_b_electr |   3.125705   3.886935     0.80   0.437    -5.343198    11.59461
        _cons |  -24.14203   7.263372    -3.32   0.006    -39.96756   -8.316506
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   2.6905e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3493,6 +3564,7 @@ c06_mat_fl~r |   1.301396   .7685927     1.69   0.116    -.3732233    2.976016
 c06_b_electr |   2.850796   2.659542     1.07   0.305    -2.943848     8.64544
        _cons |  -6.550921   10.42256    -0.63   0.541    -29.25972    16.15788
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   2.4494e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3556,6 +3628,7 @@ c06_mat_fl~r |   .7487988   1.084926     0.69   0.503    -1.615052     3.11265
 c06_b_electr |   8.008254    4.98642     1.61   0.134    -2.856221    18.87273
        _cons |   43.83534   10.85386     4.04   0.002     20.18681    67.48387
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.7595e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3619,6 +3692,7 @@ c06_mat_fl~r |  -.7963139   .9479403    -0.84   0.417    -2.861698    1.269071
 c06_b_electr |   .1420037   2.832472     0.05   0.961    -6.029422     6.31343
        _cons |  -32.54668   4.645607    -7.01   0.000    -42.66859   -22.42477
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   1.9215e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3682,6 +3756,7 @@ c06_mat_fl~r |   .5588769   1.158574     0.48   0.638     -1.96544    3.083194
 c06_b_electr |   .0073959   4.117709     0.00   0.999    -8.964321    8.979113
        _cons |   -4.25816   13.80598    -0.31   0.763     -34.3388    25.82248
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   6.8784e+04)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3745,6 +3820,7 @@ c06_mat_fl~r |  -1.939057   1.427011    -1.36   0.199    -5.048246    1.170133
 c06_b_electr |   9.323765   8.497318     1.10   0.294    -9.190299    27.83783
        _cons |   10.97181   13.19103     0.83   0.422    -17.76898    39.71259
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.2516e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3808,6 +3884,7 @@ c06_mat_fl~r |  -.2211821   1.578203    -0.14   0.891     -3.65979    3.217426
 c06_b_electr |   15.61431   10.41294     1.50   0.160    -7.073534    38.30216
        _cons |  -28.41235   13.64611    -2.08   0.059    -58.14467    1.319969
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   7.6893e+04)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3871,6 +3948,7 @@ c06_mat_fl~r |   2.858836   1.584136     1.80   0.096    -.5927006    6.310373
 c06_b_electr |    6.80651   4.352826     1.56   0.144    -2.677484     16.2905
        _cons |  -14.22071   9.946413    -1.43   0.178    -35.89208    7.450665
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   1.7615e+05)
 note: 110.anio_sem omitted because of collinearity
 
@@ -3934,6 +4012,7 @@ c06_mat_fl~r |   2.415469    1.27886     1.89   0.083    -.3709269    5.201864
 c06_b_electr |   5.371374   6.112659     0.88   0.397    -7.946967    18.68971
        _cons |   57.05344   13.07307     4.36   0.001     28.56967    85.53722
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.0877e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -3998,6 +4077,7 @@ c06_mat_fl~r |   .3185018   1.182601     0.27   0.792    -2.258165    2.895168
 c06_b_electr |   4.593788   6.637416     0.69   0.502      -9.8679    19.05548
        _cons |  -5.225595   7.000197    -0.75   0.470    -20.47771    10.02652
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   2.0291e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -4062,6 +4142,7 @@ c06_mat_fl~r |   1.201562   .9948075     1.21   0.250    -.9659371    3.369061
 c06_b_electr |   3.604798   3.633494     0.99   0.341    -4.311906     11.5215
        _cons |   -1.81592   12.17985    -0.15   0.884    -28.35353    24.72169
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   1.7850e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -4126,6 +4207,7 @@ c06_mat_fl~r |   .9933229   1.417374     0.70   0.497    -2.094869    4.081515
 c06_b_electr |   .4642445   5.422835     0.09   0.933     -11.3511    12.27959
        _cons |    41.9473   11.91877     3.52   0.004     15.97853    67.91606
 ------------------------------------------------------------------------------
+(1,869,881 missing values generated)
 (sum of wgt is   1.9234e+05)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -4190,6 +4272,7 @@ c06_mat_fl~r |  -.7839672   .6334062    -1.24   0.239    -2.164041    .5961063
 c06_b_electr |   1.191848   2.297197     0.52   0.613    -3.813315    6.197011
        _cons |  -29.34491   16.79683    -1.75   0.106    -65.94207    7.252238
 ------------------------------------------------------------------------------
+(1,871,574 missing values generated)
 (sum of wgt is   6.6134e+04)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity
@@ -4254,6 +4337,7 @@ c06_mat_fl~r |   1.797426   1.149592     1.56   0.144    -.7073199    4.302171
 c06_b_electr |   4.705552   5.759216     0.82   0.430    -7.842702    17.25381
        _cons |  -22.26627   8.910167    -2.50   0.028    -41.67986   -2.852689
 ------------------------------------------------------------------------------
+(1,872,143 missing values generated)
 (sum of wgt is   6.6435e+04)
 note: 110.anio_sem omitted because of collinearity
 note: married omitted because of collinearity

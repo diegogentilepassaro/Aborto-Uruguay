@@ -71,7 +71,7 @@ program plot_diff
     
     cap keep if `restr'
     
-    keep if treatment_`treatment'==1 | control_`treatment'==1
+    keep if !mi(treatment_`treatment')
     
     if "`time'" == "anio_qtr" {
         local weight pesotri
@@ -111,7 +111,7 @@ program plot_diff
             restore
             
             collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n_`outcome' = `outcome' ///
-                [aw = `weight'] if control_`treatment' == 1 , by(`time')
+                [aw = `weight'] if treatment_`treatment' == 0 , by(`time')
             rename *`outcome' *`outcome'_c
             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
                 assert(3) keep(3) nogen
@@ -141,7 +141,7 @@ program plot_diff
                 save ../temp/treat_`outcome'_ts.dta, replace
             restore
             
-            collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if control_`treatment' == 1 , by(`time')
+            collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `weight'] if treatment_`treatment' == 0 , by(`time')
             tsset `time'
             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
             save ../temp/control_`outcome'_ts.dta, replace
@@ -282,8 +282,7 @@ program reg_diff
 
                     reg `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
                         i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
-                        `range' `cond' & ///
-                        (treatment`age_group'_`treatment'==1 | control`age_group'_`treatment'==1) ///
+                        `range' `cond' & !mi(treatment`age_group'_`treatment') ///
 						[aw = `weight'], vce(cluster `time')
 			
                     matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))

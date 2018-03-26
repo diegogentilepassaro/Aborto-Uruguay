@@ -117,8 +117,10 @@ program build_synth_control
 		}
 		
 	* Get identifier of treated unit, and collapse data by time and loc_code
-	qui sum loc_code if treatment_`city'==1 | placebo_`city'
+	qui sum loc_code if treatment_`city'==1 | placebo_`city'==1
 	local trunit = r(mean)
+	replace treatment_`city'=0 if treatment_`city'!=1 //to include all locations, not just the DiD controls
+	replace   placebo_`city'=0 if   placebo_`city'!=1 
 	collapse (mean) `controls' `control_vars' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' loc_code)
 		
 	* Check the panel is balanced, this is for the synthetic control to work

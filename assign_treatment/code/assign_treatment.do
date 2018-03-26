@@ -44,11 +44,21 @@ program assign_treatment
 	local restr_placebo " & inrange(edad, 46, 60)"
 
 	foreach age_group in "" "_young" "_adult" "_placebo" {
-		gen treatment`age_group'_rivera = (loc_code == 1313020 & hombre == 0 `restr`age_group'')
-		gen treatment`age_group'_salto  = (loc_code == 1515020 & hombre == 0 `restr`age_group'')
-		gen control`age_group'_rivera  = ((loc_code == 431050 |loc_code == 202020) & hombre == 0 `restr`age_group'')
-		gen control`age_group'_salto   = ((loc_code == 1111020|loc_code ==1212020) & hombre == 0 `restr`age_group'')
-
+		local value = 0
+		foreach var in treatment placebo {
+			if "`var'"=="placebo" & inlist("`age_group'","_young","_adult","_placebo") {
+				continue
+			}
+			else {
+				gen `var'`age_group'_rivera = (loc_code == 1313020) ///
+					if (inlist(loc_code,1313020,431050,202020)   & hombre == `value'  `restr`age_group'')
+				gen `var'`age_group'_salto  = (loc_code == 1515020) ///
+					if (inlist(loc_code,1515020,1111020,1212020) & hombre == `value'  `restr`age_group'')
+				gen `var'`age_group'_florida = (loc_code == 808220) ///
+					if (inlist(loc_code,808220,1111020,1212020)  & hombre == `value'  `restr`age_group'')
+			}
+			local value = 1
+		}
 	}
 
 	*rio branco 431050

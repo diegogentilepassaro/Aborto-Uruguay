@@ -1,39 +1,39 @@
 
- make.py started: 2017-12-07 16:30:29 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\scm\code 
+ make.py started: 2018-03-26 19:36:10 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./scm.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./scm.do"
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 7.37e+001 | 1.61e-008 | -4.09e+002 | -7.09e+002 |  0.136 | 0.0000 | 1.00e+002
-      1 | 4.12e-001 | 9.01e-011 | -4.09e+002 | -9.54e+002 |  0.000 | 0.9944 | 2.59e-005
-      2 | 2.59e-003 | 5.66e-013 | -4.09e+002 | -4.21e+002 |  1.516 | 0.9937 | 3.29e-006
-      3 | 1.11e-004 | 2.43e-014 | -4.09e+002 | -4.09e+002 |  2.883 | 0.9571 | 3.21e-006
-      4 | 2.94e-005 | 6.42e-015 | -4.09e+002 | -4.09e+002 |  3.410 | 0.7356 | 5.43e-006
-      5 | 6.14e-006 | 1.34e-015 | -4.09e+002 | -4.09e+002 |  4.036 | 0.7908 | 9.99e-007
-      6 | 1.45e-007 | 3.18e-017 | -4.09e+002 | -4.09e+002 |  5.289 | 0.9764 | 2.92e-009
-      7 | 6.28e-009 | 1.36e-018 | -4.09e+002 | -4.09e+002 |  6.407 | 0.9568 | 5.46e-010
-      8 | 7.95e-011 | 4.51e-020 | -4.09e+002 | -4.09e+002 |  7.592 | 0.9873 | 3.55e-012
-      9 | 4.64e-013 | 3.53e-020 | -4.09e+002 | -4.09e+002 |  8.912 | 0.9942 | 4.93e-014
-     10 | 2.61e-015 | 4.40e-020 | -4.09e+002 | -4.09e+002 | 10.666 | 0.9947 | 1.97e-015
-     11 | 5.80e-016 | 4.15e-020 | -4.09e+002 | -4.09e+002 | 12.964 | 0.9950 | 3.05e-017
+      0 | 7.37e+001 | 1.60e-008 | -4.09e+002 | -7.09e+002 |  0.136 | 0.0000 | 1.00e+002
+      1 | 4.06e-001 | 8.83e-011 | -4.09e+002 | -9.54e+002 |  0.000 | 0.9945 | 2.52e-005
+      2 | 2.56e-003 | 5.56e-013 | -4.09e+002 | -4.21e+002 |  1.521 | 0.9937 | 3.30e-006
+      3 | 1.11e-004 | 2.41e-014 | -4.09e+002 | -4.10e+002 |  2.883 | 0.9567 | 3.24e-006
+      4 | 2.94e-005 | 6.38e-015 | -4.09e+002 | -4.09e+002 |  3.409 | 0.7349 | 5.46e-006
+      5 | 6.39e-006 | 1.39e-015 | -4.09e+002 | -4.09e+002 |  4.022 | 0.7825 | 1.08e-006
+      6 | 1.34e-007 | 2.92e-017 | -4.09e+002 | -4.09e+002 |  5.287 | 0.9790 | 2.38e-009
+      7 | 7.26e-009 | 1.57e-018 | -4.09e+002 | -4.09e+002 |  6.367 | 0.9459 | 8.62e-010
+      8 | 8.67e-011 | 5.28e-020 | -4.09e+002 | -4.09e+002 |  7.612 | 0.9881 | 3.47e-012
+      9 | 4.67e-013 | 3.49e-020 | -4.09e+002 | -4.09e+002 |  9.297 | 0.9946 | 4.01e-014
+     10 | 2.33e-015 | 5.14e-020 | -4.09e+002 | -4.09e+002 | 11.596 | 0.9950 | 7.13e-016
+     11 | 5.57e-016 | 3.68e-020 | -4.09e+002 | -4.09e+002 | 13.904 | 0.9950 | 3.59e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 7.37e+001 | 4.83e-008 | -2.45e+002 | -5.45e+002 |  0.000 | 0.0000 | 1.00e+002
-      1 | 4.08e-001 | 2.68e-010 | -2.45e+002 | -7.91e+002 |  0.000 | 0.9945 | 2.54e-005
-      2 | 2.18e-003 | 1.43e-012 | -2.45e+002 | -2.57e+002 |  1.317 | 0.9947 | 2.37e-006
-      3 | 6.48e-005 | 4.25e-014 | -2.45e+002 | -2.46e+002 |  2.842 | 0.9702 | 1.47e-006
-      4 | 2.21e-005 | 1.45e-014 | -2.45e+002 | -2.46e+002 |  3.282 | 0.6586 | 6.06e-006
-      5 | 3.09e-006 | 2.02e-015 | -2.45e+002 | -2.45e+002 |  4.057 | 0.8605 | 3.54e-007
-      6 | 3.91e-007 | 2.56e-016 | -2.45e+002 | -2.45e+002 |  4.932 | 0.8734 | 4.88e-008
-      7 | 3.57e-009 | 2.34e-018 | -2.45e+002 | -2.45e+002 |  6.760 | 0.9909 | 3.32e-011
-      8 | 1.79e-011 | 6.39e-020 | -2.45e+002 | -2.45e+002 |  9.018 | 0.9950 | 1.48e-013
-      9 | 8.93e-014 | 6.40e-020 | -2.45e+002 | -2.45e+002 | 11.315 | 0.9950 | 8.16e-016
-     10 | 7.46e-016 | 6.02e-020 | -2.45e+002 | -2.45e+002 | 13.622 | 0.9950 | 4.11e-018
+      0 | 7.37e+001 | 4.62e-008 | -2.51e+002 | -5.51e+002 |  0.000 | 0.0000 | 1.00e+002
+      1 | 4.03e-001 | 2.53e-010 | -2.51e+002 | -7.96e+002 |  0.000 | 0.9945 | 2.48e-005
+      2 | 2.10e-003 | 1.31e-012 | -2.51e+002 | -2.62e+002 |  1.332 | 0.9948 | 2.25e-006
+      3 | 5.97e-005 | 3.74e-014 | -2.51e+002 | -2.51e+002 |  2.876 | 0.9715 | 1.33e-006
+      4 | 1.50e-005 | 9.39e-015 | -2.51e+002 | -2.51e+002 |  3.415 | 0.7490 | 3.04e-006
+      5 | 2.77e-006 | 1.74e-015 | -2.51e+002 | -2.51e+002 |  4.113 | 0.8153 | 4.70e-007
+      6 | 3.12e-007 | 1.96e-016 | -2.51e+002 | -2.51e+002 |  5.031 | 0.8872 | 3.47e-008
+      7 | 1.76e-009 | 1.10e-018 | -2.51e+002 | -2.51e+002 |  7.021 | 0.9944 | 1.02e-011
+      8 | 8.79e-012 | 5.65e-020 | -2.51e+002 | -2.51e+002 |  9.310 | 0.9950 | 8.26e-014
+      9 | 4.39e-014 | 6.85e-020 | -2.51e+002 | -2.51e+002 | 11.607 | 0.9950 | 4.25e-016
+     10 | 5.45e-016 | 8.01e-020 | -2.51e+002 | -2.51e+002 | 13.883 | 0.9950 | 2.14e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -86,17 +86,17 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 7.24e+001 | 1.15e-008 | -5.17e+002 | -8.07e+002 |  0.252 | 0.0000 | 1.00e+002
-      1 | 4.09e-001 | 6.50e-011 | -5.17e+002 | -1.04e+003 |  0.000 | 0.9944 | 2.63e-005
-      2 | 2.57e-003 | 4.08e-013 | -5.17e+002 | -5.29e+002 |  1.627 | 0.9937 | 3.30e-006
-      3 | 1.06e-004 | 1.68e-014 | -5.17e+002 | -5.17e+002 |  3.011 | 0.9588 | 3.00e-006
-      4 | 2.95e-005 | 4.69e-015 | -5.17e+002 | -5.17e+002 |  3.552 | 0.7212 | 5.88e-006
-      5 | 4.66e-006 | 7.41e-016 | -5.17e+002 | -5.17e+002 |  4.294 | 0.8419 | 5.33e-007
-      6 | 3.92e-007 | 6.23e-017 | -5.17e+002 | -5.17e+002 |  5.309 | 0.9160 | 2.69e-008
-      7 | 4.66e-009 | 7.51e-019 | -5.17e+002 | -5.17e+002 |  7.088 | 0.9881 | 5.14e-011
-      8 | 2.73e-011 | 4.35e-020 | -5.17e+002 | -5.17e+002 |  9.099 | 0.9941 | 2.07e-013
-      9 | 1.37e-013 | 5.10e-020 | -5.17e+002 | -5.17e+002 | 11.398 | 0.9950 | 1.47e-015
-     10 | 9.03e-016 | 4.68e-020 | -5.17e+002 | -5.17e+002 | 13.714 | 0.9950 | 7.39e-018
+      0 | 7.24e+001 | 1.15e-008 | -5.18e+002 | -8.08e+002 |  0.253 | 0.0000 | 1.00e+002
+      1 | 4.14e-001 | 6.57e-011 | -5.18e+002 | -1.05e+003 |  0.000 | 0.9943 | 2.70e-005
+      2 | 2.63e-003 | 4.18e-013 | -5.18e+002 | -5.30e+002 |  1.623 | 0.9936 | 3.38e-006
+      3 | 1.10e-004 | 1.74e-014 | -5.18e+002 | -5.19e+002 |  3.002 | 0.9583 | 3.11e-006
+      4 | 3.07e-005 | 4.87e-015 | -5.18e+002 | -5.18e+002 |  3.541 | 0.7203 | 6.06e-006
+      5 | 4.70e-006 | 7.47e-016 | -5.18e+002 | -5.18e+002 |  4.295 | 0.8467 | 5.14e-007
+      6 | 3.71e-007 | 5.89e-017 | -5.18e+002 | -5.18e+002 |  5.331 | 0.9211 | 2.37e-008
+      7 | 4.54e-009 | 7.26e-019 | -5.18e+002 | -5.18e+002 |  7.114 | 0.9877 | 5.19e-011
+      8 | 2.52e-011 | 4.43e-020 | -5.18e+002 | -5.18e+002 |  9.211 | 0.9944 | 1.75e-013
+      9 | 1.26e-013 | 5.45e-020 | -5.18e+002 | -5.18e+002 | 11.510 | 0.9950 | 1.14e-015
+     10 | 9.38e-016 | 4.21e-020 | -5.18e+002 | -5.18e+002 | 13.860 | 0.9950 | 5.73e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -132,7 +132,7 @@ optimization converged
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -141,8 +141,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -302,78 +302,81 @@ Notes:
  40.                 
 .         * Get identifier of treated unit, and collapse data by time and loc_c
 > ode
-.         qui sum loc_code if treatment_`city'==1 | placebo_`city'
+.         qui sum loc_code if treatment_`city'==1 | placebo_`city'==1
  41.         local trunit = r(mean)
- 42.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
+ 42.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
+>  locations, not just the DiD controls
+ 43.         replace   placebo_`city'=0 if   placebo_`city'!=1 
+ 44.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
 > ty' `if' [aw = `weight'], by(`time' loc_code)
- 43.                 
+ 45.                 
 .         * Check the panel is balanced, this is for the synthetic control to w
 > ork
 .         xtset loc_code `time'
- 44.         local num_`time's = r(tmax) - r(tmin) + 1
- 45.         bysort loc_code: gen num_`time' = _N
- 46.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
+ 46.         local num_`time's = r(tmax) - r(tmin) + 1
+ 47.         bysort loc_code: gen num_`time' = _N
+ 48.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
 > ould be an assertion*/
- 47. 
+ 49. 
 .         * Check the panel is balanced against missing values
 .         local n_outcomes: word count `outcomes'
- 48.         forval i = 1/`n_outcomes' {
- 49.                 local outcome_var: word `i' of `outcomes' 
- 50.                 drop if `outcome_var'==.
- 51.         }
- 52.         bysort loc_code: replace num_`time' = _N
- 53.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
+ 50.         forval i = 1/`n_outcomes' {
+ 51.                 local outcome_var: word `i' of `outcomes' 
+ 52.                 drop if `outcome_var'==.
+ 53.         }
+ 54.         bysort loc_code: replace num_`time' = _N
+ 55.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
 > uld be an assertion*/
- 54. 
+ 56. 
 .         save "../temp/donorpool_`city'_`time'`special_legend'.dta", replace
- 55.         
+ 57.         
 .         * Create the synth control for each outcome
 .         forval i = 1/`n_outcomes' {
- 56.                 local var: word `i' of `outcomes'
- 57.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
+ 58.                 local var: word `i' of `outcomes'
+ 59.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
 >  clear
- 58.                 
+ 60.                 
 .                 * Create lags of current outcome
 .                 local lags "" // so that we do not add lags of other outcomes
- 59.                 local i=1
- 60.                 foreach j of numlist `lag_list' {
- 61.                         local lag`i' = `event_date' - `j'
- 62.                         local lags  = "`lags'" + " `var'(`lag`i'') "
- 63.                         local i = `i'+1
- 64.                 }
- 65.                 * We need unabbreviated variables for the synth
+ 61.                 local i=1
+ 62.                 foreach j of numlist `lag_list' {
+ 63.                         local lag`i' = `event_date' - `j'
+ 64.                         local lags  = "`lags'" + " `var'(`lag`i'') "
+ 65.                         local i = `i'+1
+ 66.                 }
+ 67.                 * We need unabbreviated variables for the synth
 .                 qui desc `control_vars', f varlist
- 66.                 local control_vars_exp `r(varlist)'
- 67. 
+ 68.                 local control_vars_exp `r(varlist)'
+ 69. 
 .                 * Run SCM, save data for this outcome, and rename vars
 .                 qui synth `var' `controls' `control_vars_exp' `lags', ///
 >                         trunit(`trunit') trperiod(`event_date') ///
 >                         keep("../temp/synth_`city'_`var'`special_legend'.dta"
 > , replace) 
- 68. 
+ 70. 
 .                 use "../temp/synth_`city'_`var'`special_legend'.dta", clear
- 69.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
+ 71.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
 >                         (geocode `time' `city'_`var'`special_legend' s_`city'
 > _`var'`special_legend')
- 70.                 drop if `time'==.
- 71.                 drop geocode _W_Weight
- 72.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
+ 72.                 drop if `time'==.
+ 73.                 drop geocode _W_Weight
+ 74.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
 > lace
- 73.         }
- 74. 
+ 75.         }
+ 76. 
 .         * Construct dataset with all outcomes for a given research design: ci
 > ty-time
 .         local outcome_var: word 1 of `outcomes' 
- 75.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
- 76. 
+ 77.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
+ 78. 
 .         forval i = 2/`n_outcomes' {
- 77.                 local outcome_var: word `i' of `outcomes' 
- 78.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
+ 79.                 local outcome_var: word `i' of `outcomes' 
+ 80.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
 > `special_legend'", nogen
- 79.         }
- 80.         save "../temp/controltrends_`city'_`time'`special_legend'.dta", re
+ 81.         }
+ 82.         save "../temp/controltrends_`city'_`time'`special_legend'.dta", re
 > place
- 81. end
+ 83. end
 
 . 
 . program plot_scm
@@ -462,6 +465,13 @@ Notes:
 . main_scm
 
 .     * Dates of treatments
+.     global m_date_mvd    "2004m4"
+
+.     global m_date_rivera "2010m6"
+
+.     global m_date_salto  "2013m1"
+
+.     
 .     global q_date_mvd    "2004q2"
 
 .     global q_date_rivera "2010q3"
@@ -483,6 +493,24 @@ Notes:
 .     global y_date_salto  2013 
 
 . 
+.     * Ranges
+.     global m_pre  48
+
+.     global m_post 24
+
+.     global q_pre  16
+
+.     global q_post 12
+
+.     global s_pre  8
+
+.     global s_post 4
+
+.     global y_pre  4
+
+.     global y_post 2
+
+. 
 .     * Legends
 .     global legend_mvd    = "Montevideo"
 
@@ -491,10 +519,11 @@ Notes:
 .     global legend_salto  = "Salto"
 
 . 
-. 
 end of do-file
 (1,490,121 observations deleted)
 (129,998 observations deleted)
+(105,544 real changes made)
+(116,432 real changes made)
        panel variable:  loc_code (unbalanced)
         time variable:  anio_sem, 2000h2 to 2012h2, but with gaps
                 delta:  1 halfyear
@@ -549,6 +578,8 @@ The smoother applied was
 (file ../output/scm_rivera_labor_anio_sem.pdf written in PDF format)
 (1,490,121 observations deleted)
 (96,121 observations deleted)
+(109,503 real changes made)
+(128,770 real changes made)
        panel variable:  loc_code (unbalanced)
         time variable:  anio_sem, 2003h1 to 2015h1, but with gaps
                 delta:  1 halfyear
@@ -605,4 +636,4 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2017-12-07 16:31:01
+ make.py ended: 2018-03-26 19:36:32
