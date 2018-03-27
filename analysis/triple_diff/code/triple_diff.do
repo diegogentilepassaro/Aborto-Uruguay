@@ -2,6 +2,7 @@ clear all
 set more off
 
 program main_triple_diff
+	* var1 and var2 can be: female, poor, single, lowed
 	do ../../globals.do
 	local labor_vars   = "trabajo horas_trabajo"
 	local educ_vars    = "educ_HS_or_more educ_more_HS"  
@@ -10,47 +11,35 @@ program main_triple_diff
 	
     foreach group_vars in labor /*educ*/ {
 	
-		foreach design in young_poor  /*OK: poor_single*/ /*Opp: poor_lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
+		plot_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(female) city(mvd)  ///
+			time(anio_sem) groups_vars(`group_vars') stubs(``group_vars'_stubs') plot_option(trend)
 				
-			plot_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(kids) ///
-				time(anio_sem) event_date(${s_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
-				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)
-				
-			/*plot_triple_diff, outcomes(``group_vars'_vars') design(`design') ///
-				time(anio) event_date(${y_date_mvd}) city(mvd) city_legend(${legend_mvd}) ///
-				stubs(``group_vars'_stubs') groups_vars(`group_vars') plot_option(trend)*/
-				
-			reg_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(kids) city(mvd) ///
-				time(anio_sem) event_date(${s_date_mvd}) groups_vars(`group_vars')
-				
-			/*reg_triple_diff, outcomes(``group_vars'_vars') design(`design') city(mvd) ///
-				time(anio) event_date(${y_date_mvd}) groups_vars(`group_vars')*/
-		}			
+		reg_triple_diff, outcomes(``group_vars'_vars') var1(poor) var2(female) city(mvd) ///
+			time(anio_sem) groups_vars(`group_vars')				
 	}
 end
 
 program plot_triple_diff
-	syntax, outcomes(str) var1(str) var2(str) event_date(str) ///
-	    stubs(str) time(str) city(str) city_legend(str) ///
+	syntax, outcomes(str) var1(str) var2(str) stubs(str) time(str) city(str)  ///
 		groups_vars(str) [plot_option(str) special_legend(str) sample_restr(str)]
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local range "if inrange(`time', tq(`event_date') - 16, tq(`event_date') + 8) "
+			local range "if inrange(`time', tq(${q_date_`city'}) - ${q_pre}, tq(${q_date_`city'}) + ${q_post}) "
 			local xtitle "Year-qtr"
-			local vertical = tq(`event_date') - 0.5	
+			local vertical = tq(${q_date_`city'}) - 0.5	
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local range "if inrange(`time', th(`event_date') - 8, th(`event_date') + 4) "
+			local range "if inrange(`time', th(${s_date_`city'}) - ${s_pre}, th(${s_date_`city'}) + ${s_post}) "
 			local xtitle "Year-half"
-			local vertical = th(`event_date') - 0.5	
+			local vertical = th(${s_date_`city'}) - 0.5	
 		}
 		else {
 			local weight pesoan
-			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
+			local range "if inrange(`time', ${y_date_`city'} - ${y_pre}, ${y_date_`city'} + ${y_post}) "
 			local xtitle "Year"
-			local vertical = `event_date' - 0.5	
+			local vertical = ${y_date_`city'} - 0.5	
 		}	
 		
 	if "`var1'" == "female" | "`var2'" == "female" {
@@ -164,35 +153,35 @@ program plot_triple_diff
 	local plot1: word 1 of `plots' 	
 	
 	grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) cols(2) /// /* cols(1) or cols(3) */
-		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(vlarge))
+		   graphregion(color(white)) title({bf: ${legend_`city'} `special_legend'}, color(black) size(vlarge))
 	graph display, ysize(3) xsize(7)
 	graph export ../output/triple_diff_`city'_`time'_`groups_vars'_`design'`plot_option'.png, replace
 end
 
 program reg_triple_diff
-    syntax, outcomes(string) var1(str) var2(str) city(str) groups_vars(str) time(str) event_date(str)
+    syntax, outcomes(string) var1(str) var2(str) city(str) groups_vars(str) time(str)
 	
 	use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
 	keep if inrange(edad, 16, 45)
 	
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			gen post = (`time' >= tq(`event_date'))
-			local range "if inrange(`time', tq(`event_date') - 12,tq(`event_date') + 12) "
+			gen post = (`time' >= tq(${q_date_`city'}))
+			local range "if inrange(`time', tq(${q_date_`city'}) - ${q_pre},tq(${q_date_`city'}) + ${q_post}) "
 			qui sum `time' `range'	
 			local min_year = year(dofq(r(min)))
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			gen post = (`time' >= th(`event_date'))
-			local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
+			gen post = (`time' >= th(${s_date_`city'}))
+			local range "if inrange(`time', th(${s_date_`city'}) - ${s_pre},th(${s_date_`city'}) + ${s_post}) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
 		}
 		else {
 			local weight pesoan
-			gen post = (`time' >= `event_date')
-			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
+			gen post = (`time' >= ${y_date_`city'})
+			local range "if inrange(`time', ${y_date_`city'} - ${y_pre}, ${y_date_`city'} + ${y_post}) "
 			qui sum `time' `range'	
 			local min_year = r(min)
 		}

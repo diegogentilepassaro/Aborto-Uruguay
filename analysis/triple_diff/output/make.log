@@ -1,14 +1,14 @@
 
- make.py started: 2017-12-07 19:35:06 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\triple_diff\code 
+ make.py started: 2018-03-27 16:03:38 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\triple_diff\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./triple_diff.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./triple_diff.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -34,7 +34,8 @@ Notes:
 
 . 
 . program main_triple_diff
-  1.         do ../../globals.do
+  1.         * var1 and var2 can be: female, poor, single, lowed
+.         do ../../globals.do
   2.         local labor_vars   = "trabajo horas_trabajo"
   3.         local educ_vars    = "educ_HS_or_more educ_more_HS"  
   4.         local labor_stubs  = `" "Employment" "Hours-worked" "'
@@ -42,63 +43,45 @@ Notes:
   6.         
 .     foreach group_vars in labor /*educ*/ {
   7.         
-.                 foreach design in poor_lowed  /*OK: poor_single*/ /*Opp: poor
-> _lowed female_lowed female_single*/ /*NOT: lowed_single female_poor*/ {
+.                 plot_triple_diff, outcomes(``group_vars'_vars') var1(poor) va
+> r2(female) city(mvd)  ///
+>                         time(anio_sem) groups_vars(`group_vars') stubs(``grou
+> p_vars'_stubs') plot_option(trend)
   8.                                 
-.                         plot_triple_diff, outcomes(``group_vars'_vars') var1(
-> single) var2(lowed) ///
->                                 time(anio_sem) event_date(${s_date_mvd}) city
-> (mvd) city_legend(${legend_mvd}) ///
->                                 stubs(``group_vars'_stubs') groups_vars(`grou
-> p_vars') plot_option(trend)
-  9.                                 
-.                         /*plot_triple_diff, outcomes(``group_vars'_vars') des
-> ign(`design') ///
->                                 time(anio) event_date(${y_date_mvd}) city(mvd
-> ) city_legend(${legend_mvd}) ///
->                                 stubs(``group_vars'_stubs') groups_vars(`grou
-> p_vars') plot_option(trend)*/
-.                                 
-.                         reg_triple_diff, outcomes(``group_vars'_vars') var1(s
-> ingle) var2(lowed) city(mvd) ///
->                                 time(anio_sem) event_date(${s_date_mvd}) grou
-> ps_vars(`group_vars')
- 10.                                 
-.                         /*reg_triple_diff, outcomes(``group_vars'_vars') desi
-> gn(`design') city(mvd) ///
->                                 time(anio) event_date(${y_date_mvd}) groups_v
-> ars(`group_vars')*/
-.                 }                       
- 11.         }
- 12. end
+.                 reg_triple_diff, outcomes(``group_vars'_vars') var1(poor) var
+> 2(female) city(mvd) ///
+>                         time(anio_sem) groups_vars(`group_vars')             
+>                    
+  9.         }
+ 10. end
 
 . 
 . program plot_triple_diff
-  1.         syntax, outcomes(str) var1(str) var2(str) event_date(str) ///
->             stubs(str) time(str) city(str) city_legend(str) ///
+  1.         syntax, outcomes(str) var1(str) var2(str) stubs(str) time(str) cit
+> y(str)  ///
 >                 groups_vars(str) [plot_option(str) special_legend(str) sample
 > _restr(str)]
   2.         
 .         if "`time'" == "anio_qtr" {
   3.                         local weight pesotri
-  4.                         local range "if inrange(`time', tq(`event_date') -
->  16, tq(`event_date') + 8) "
+  4.                         local range "if inrange(`time', tq(${q_date_`city'
+> }) - ${q_pre}, tq(${q_date_`city'}) + ${q_post}) "
   5.                         local xtitle "Year-qtr"
-  6.                         local vertical = tq(`event_date') - 0.5 
+  6.                         local vertical = tq(${q_date_`city'}) - 0.5     
   7.                 }
   8.                 else if "`time'" == "anio_sem" {
   9.                         local weight pesosem
- 10.                         local range "if inrange(`time', th(`event_date') -
->  8, th(`event_date') + 4) "
+ 10.                         local range "if inrange(`time', th(${s_date_`city'
+> }) - ${s_pre}, th(${s_date_`city'}) + ${s_post}) "
  11.                         local xtitle "Year-half"
- 12.                         local vertical = th(`event_date') - 0.5 
+ 12.                         local vertical = th(${s_date_`city'}) - 0.5     
  13.                 }
  14.                 else {
  15.                         local weight pesoan
- 16.                         local range "if inrange(`time', `event_date' - 4, 
-> `event_date' + 2) "
+ 16.                         local range "if inrange(`time', ${y_date_`city'} -
+>  ${y_pre}, ${y_date_`city'} + ${y_post}) "
  17.                         local xtitle "Year"
- 18.                         local vertical = `event_date' - 0.5     
+ 18.                         local vertical = ${y_date_`city'} - 0.5 
  19.                 }       
  20.                 
 .         if "`var1'" == "female" | "`var2'" == "female" {
@@ -244,8 +227,8 @@ Notes:
  96.         
 .         grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) c
 > ols(2) /// /* cols(1) or cols(3) */
->                    graphregion(color(white)) title({bf: `city_legend' `specia
-> l_legend'}, color(black) size(vlarge))
+>                    graphregion(color(white)) title({bf: ${legend_`city'} `spe
+> cial_legend'}, color(black) size(vlarge))
  97.         graph display, ysize(3) xsize(7)
  98.         graph export ../output/triple_diff_`city'_`time'_`groups_vars'_`de
 > sign'`plot_option'.png, replace
@@ -254,32 +237,32 @@ Notes:
 . 
 . program reg_triple_diff
   1.     syntax, outcomes(string) var1(str) var2(str) city(str) groups_vars(str
-> ) time(str) event_date(str)
+> ) time(str)
   2.         
 .         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.         keep if inrange(edad, 16, 45)
   4.         
 .         if "`time'" == "anio_qtr" {
   5.                         local weight pesotri
-  6.                         gen post = (`time' >= tq(`event_date'))
-  7.                         local range "if inrange(`time', tq(`event_date') -
->  12,tq(`event_date') + 12) "
+  6.                         gen post = (`time' >= tq(${q_date_`city'}))
+  7.                         local range "if inrange(`time', tq(${q_date_`city'
+> }) - ${q_pre},tq(${q_date_`city'}) + ${q_post}) "
   8.                         qui sum `time' `range'  
   9.                         local min_year = year(dofq(r(min)))
  10.                 }
  11.                 else if "`time'" == "anio_sem" {
  12.                         local weight pesosem
- 13.                         gen post = (`time' >= th(`event_date'))
- 14.                         local range "if inrange(`time', th(`event_date') -
->  8,th(`event_date') + 4) "
+ 13.                         gen post = (`time' >= th(${s_date_`city'}))
+ 14.                         local range "if inrange(`time', th(${s_date_`city'
+> }) - ${s_pre},th(${s_date_`city'}) + ${s_post}) "
  15.                         qui sum `time' `range'  
  16.                         local min_year = year(dofh(r(min)))
  17.                 }
  18.                 else {
  19.                         local weight pesoan
- 20.                         gen post = (`time' >= `event_date')
- 21.                         local range "if inrange(`time', `event_date' - 4, 
-> `event_date' + 2) "
+ 20.                         gen post = (`time' >= ${y_date_`city'})
+ 21.                         local range "if inrange(`time', ${y_date_`city'} -
+>  ${y_pre}, ${y_date_`city'} + ${y_post}) "
  22.                         qui sum `time' `range'  
  23.                         local min_year = r(min)
  24.                 }
@@ -351,6 +334,13 @@ Notes:
 . main_triple_diff
 
 .     * Dates of treatments
+.     global m_date_mvd    "2004m4"
+
+.     global m_date_rivera "2010m6"
+
+.     global m_date_salto  "2013m1"
+
+.     
 .     global q_date_mvd    "2004q2"
 
 .     global q_date_rivera "2010q3"
@@ -372,6 +362,24 @@ Notes:
 .     global y_date_salto  2013 
 
 . 
+.     * Ranges
+.     global m_pre  48
+
+.     global m_post 24
+
+.     global q_pre  16
+
+.     global q_post 12
+
+.     global s_pre  8
+
+.     global s_post 4
+
+.     global y_pre  4
+
+.     global y_post 2
+
+. 
 .     * Legends
 .     global legend_mvd    = "Montevideo"
 
@@ -380,10 +388,9 @@ Notes:
 .     global legend_salto  = "Salto"
 
 . 
-. 
 end of do-file
 (1,128,811 observations deleted)
-(576,353 observations deleted)
+(413,852 observations deleted)
         time variable:  anio_sem, 1998h1 to 2015h2
                 delta:  1 halfyear
 (note: file ../temp/group1_trabajo_ts.dta not found)
@@ -401,7 +408,7 @@ file ../temp/group3_trabajo_ts.dta saved
 (note: file ../temp/group4_trabajo_ts.dta not found)
 file ../temp/group4_trabajo_ts.dta saved
 (1,128,811 observations deleted)
-(576,353 observations deleted)
+(413,852 observations deleted)
         time variable:  anio_sem, 1998h1 to 2015h2
                 delta:  1 halfyear
 (note: file ../temp/group1_horas_trabajo_ts.dta not found)
@@ -421,134 +428,131 @@ file ../temp/group4_horas_trabajo_ts.dta saved
 (note: file ../output/triple_diff_mvd_anio_sem_labor_trend.png not found)
 (file ../output/triple_diff_mvd_anio_sem_labor_trend.png written in PNG format)
 (1,128,811 observations deleted)
-(576,353 observations deleted)
-(sum of wgt is   3.3373e+06)
+(413,852 observations deleted)
+(sum of wgt is   6.3897e+06)
 note: 92.anio_sem omitted because of collinearity
-note: married omitted because of collinearity
 
-Linear regression                               Number of obs     =     48,307
+Linear regression                               Number of obs     =     92,365
                                                 F(11, 12)         =          .
                                                 Prob > F          =          .
-                                                R-squared         =     0.1587
-                                                Root MSE          =     .45658
+                                                R-squared         =     0.1925
+                                                Root MSE          =     .43535
 
                               (Std. Err. adjusted for 13 clusters in anio_sem)
 ------------------------------------------------------------------------------
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-      single |   .0075929   .0099041     0.77   0.458    -.0139862     .029172
-       lowed |   -.164971   .0111302   -14.82   0.000    -.1892216   -.1407205
-      1.post |  -.0600442   .0083744    -7.17   0.000    -.0782903    -.041798
- int_no_post |   .0882062   .0147694     5.97   0.000     .0560264     .120386
-   int_post1 |  -.0084586   .0111806    -0.76   0.464     -.032819    .0159019
-   int_post2 |  -.0017424   .0169513    -0.10   0.920    -.0386761    .0351913
-  int_triple |   -.001058   .0272052    -0.04   0.970    -.0603331    .0582171
+        poor |  -.0953174   .0067943   -14.03   0.000    -.1101209   -.0805139
+      female |   -.111613   .0046983   -23.76   0.000    -.1218496   -.1013764
+      1.post |  -.0854742   .0054292   -15.74   0.000    -.0973035   -.0736449
+ int_no_post |  -.1163802   .0078228   -14.88   0.000    -.1334246   -.0993358
+   int_post1 |   .0479596   .0098444     4.87   0.000     .0265105    .0694087
+   int_post2 |   .0167643   .0089817     1.87   0.087    -.0028052    .0363338
+  int_triple |  -.0237007   .0121628    -1.95   0.075    -.0502012    .0027998
              |
     anio_sem |
-         81  |  -.0075817   .0005545   -13.67   0.000    -.0087899   -.0063736
-         82  |  -.0585713   .0007063   -82.92   0.000    -.0601102   -.0570323
-         83  |  -.0552032   .0009157   -60.29   0.000    -.0571983   -.0532081
-         84  |  -.0837887   .0010073   -83.18   0.000    -.0859833    -.081594
-         85  |  -.0949083   .0010271   -92.41   0.000    -.0971461   -.0926706
-         86  |  -.1089021     .00109   -99.91   0.000     -.111277   -.1065272
-         87  |  -.0705539   .0012099   -58.31   0.000    -.0731901   -.0679176
-         88  |  -.0176525    .001011   -17.46   0.000    -.0198551   -.0154498
-         89  |  -.0066404    .000953    -6.97   0.000    -.0087168    -.004564
-         90  |  -.0166552   .0010693   -15.58   0.000     -.018985   -.0143254
-         91  |   .0004167   .0009692     0.43   0.675     -.001695    .0025285
+         81  |   .0010285   .0006683     1.54   0.150    -.0004276    .0024847
+         82  |  -.0479665   .0007962   -60.25   0.000    -.0497012   -.0462319
+         83  |  -.0489429   .0011056   -44.27   0.000    -.0513519   -.0465339
+         84  |  -.0559973   .0020604   -27.18   0.000    -.0604865    -.051508
+         85  |  -.0677239    .002323   -29.15   0.000    -.0727852   -.0626626
+         86  |  -.0735627   .0025618   -28.71   0.000    -.0791445    -.067981
+         87  |  -.0354067   .0027186   -13.02   0.000      -.04133   -.0294834
+         88  |   .0056888   .0009553     5.95   0.000     .0036073    .0077703
+         89  |   .0424533   .0010716    39.62   0.000     .0401186     .044788
+         90  |   .0125464   .0010481    11.97   0.000     .0102627    .0148301
+         91  |   .0382496   .0009944    38.46   0.000     .0360829    .0404162
          92  |          0  (omitted)
              |
-  nbr_people |   -.023881   .0014154   -16.87   0.000    -.0269648   -.0207971
- ind_under14 |  -.0003324   .0048885    -0.07   0.947    -.0109835    .0103187
-        edad |   .0176512   .0002611    67.59   0.000     .0170822    .0182201
-     married |          0  (omitted)
- y_hogar_alt |   1.91e-06   2.44e-07     7.84   0.000     1.38e-06    2.44e-06
-c98_resid_~e |   .0112929   .0219241     0.52   0.616    -.0364755    .0590613
-c98_resid_~d |  -.0353657   .0053007    -6.67   0.000     -.046915   -.0238165
-c98_nbr_ro~s |  -.0054444   .0026927    -2.02   0.066    -.0113113    .0004225
-c98_nbr_be~s |  -.0193633   .0044839    -4.32   0.001    -.0291329   -.0095937
-c98_b_pipe~r |  -.0096562   .0196063    -0.49   0.631    -.0523746    .0330623
-c98_hhld_t~t |   .0390003   .0178308     2.19   0.049     .0001502    .0778503
-c98_b_sewage |   .0239519   .0075833     3.16   0.008     .0074293    .0404745
-c98_hhld_s~e |  -.0347288   .0191981    -1.81   0.096    -.0765579    .0071003
-c98_hhld_h~r |   .0622559   .0124079     5.02   0.000     .0352213    .0892904
-c98_hhld_r~t |  -.0073868   .0154046    -0.48   0.640    -.0409505     .026177
- c98_hhld_tv |   .0248263   .0137764     1.80   0.097    -.0051899    .0548425
-c98_hhld_vcr |  -.0080047   .0064333    -1.24   0.237    -.0220217    .0060124
-c98_hhld_w~c |   .0235992   .0053201     4.44   0.001     .0120076    .0351907
-c98_hhld_d~r |  -.0413226    .008593    -4.81   0.000    -.0600452   -.0226001
-c98_hhld_m~e |   .0435901   .0066526     6.55   0.000     .0290954    .0580849
-c98_hhld_car |  -.0376016   .0052956    -7.10   0.000    -.0491397   -.0260635
-       _cons |   .1745125   .0491025     3.55   0.004     .0675273    .2814977
+  nbr_people |  -.0140629   .0014791    -9.51   0.000    -.0172855   -.0108403
+ ind_under14 |   .0265118   .0044518     5.96   0.000     .0168123    .0362114
+        edad |   .0168493   .0002088    80.69   0.000     .0163943    .0173043
+     married |   .0428021   .0048939     8.75   0.000     .0321392    .0534649
+ y_hogar_alt |   5.92e-07   1.18e-07     5.03   0.000     3.36e-07    8.49e-07
+c98_resid_~e |  -.0072785    .011968    -0.61   0.554    -.0333546    .0187976
+c98_resid_~d |    -.03707   .0031325   -11.83   0.000    -.0438951   -.0302449
+c98_nbr_ro~s |  -.0011065   .0014688    -0.75   0.466    -.0043066    .0020937
+c98_nbr_be~s |   -.026531   .0031163    -8.51   0.000    -.0333208   -.0197412
+c98_b_pipe~r |  -.0000986   .0140398    -0.01   0.995    -.0306886    .0304914
+c98_hhld_t~t |   .0104452   .0107945     0.97   0.352     -.013074    .0339644
+c98_b_sewage |   .0018051    .004496     0.40   0.695    -.0079907     .011601
+c98_hhld_s~e |   -.032018   .0114987    -2.78   0.017    -.0570715   -.0069644
+c98_hhld_h~r |   .0415823   .0077892     5.34   0.000     .0246111    .0585534
+c98_hhld_r~t |  -.0123091   .0105673    -1.16   0.267    -.0353332     .010715
+ c98_hhld_tv |   .0185465   .0087431     2.12   0.055     -.000503     .037596
+c98_hhld_vcr |    -.00276   .0035173    -0.78   0.448    -.0104236    .0049036
+c98_hhld_w~c |   .0096156   .0025969     3.70   0.003     .0039574    .0152738
+c98_hhld_d~r |  -.0400461   .0056861    -7.04   0.000     -.052435   -.0276572
+c98_hhld_m~e |   .0142358   .0053688     2.65   0.021     .0025381    .0259334
+c98_hhld_car |  -.0323427   .0031009   -10.43   0.000    -.0390989   -.0255865
+       _cons |   .3857723    .020596    18.73   0.000     .3408974    .4306472
 ------------------------------------------------------------------------------
 (est1 stored)
-(sum of wgt is   3.3373e+06)
+(sum of wgt is   6.3897e+06)
 note: 92.anio_sem omitted because of collinearity
-note: married omitted because of collinearity
 
-Linear regression                               Number of obs     =     48,307
+Linear regression                               Number of obs     =     92,365
                                                 F(11, 12)         =          .
                                                 Prob > F          =          .
-                                                R-squared         =     0.1347
-                                                Root MSE          =      19.73
+                                                R-squared         =     0.2241
+                                                Root MSE          =     20.406
 
                               (Std. Err. adjusted for 13 clusters in anio_sem)
 ------------------------------------------------------------------------------
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-      single |   .5111849   .4419913     1.16   0.270    -.4518314    1.474201
-       lowed |  -5.482335    .287234   -19.09   0.000    -6.108164   -4.856506
-      1.post |  -1.031865   .3465081    -2.98   0.012    -1.786841   -.2768888
- int_no_post |   4.357224    .401298    10.86   0.000     3.482871    5.231577
-   int_post1 |  -.4050257   .5385724    -0.75   0.467    -1.578474    .7684227
-   int_post2 |    .459562   .5419395     0.85   0.413    -.7212227    1.640347
-  int_triple |  -.2880059   .8881923    -0.32   0.751    -2.223211    1.647199
+        poor |  -5.325321   .4666788   -11.41   0.000    -6.342127   -4.308515
+      female |  -10.08379   .5590238   -18.04   0.000     -11.3018    -8.86578
+      1.post |  -2.560613   .4052689    -6.32   0.000    -3.443618   -1.677608
+ int_no_post |  -4.085378   .3117381   -13.11   0.000    -4.764597   -3.406159
+   int_post1 |    2.36815   .4280713     5.53   0.000     1.435462    3.300837
+   int_post2 |   1.268714   .6243021     2.03   0.065    -.0915232    2.628952
+  int_triple |  -1.288701   .4418388    -2.92   0.013    -2.251385    -.326017
              |
     anio_sem |
-         81  |   .4609013   .0227831    20.23   0.000     .4112613    .5105413
-         82  |   .0319948   .0272904     1.17   0.264    -.0274658    .0914554
-         83  |  -.7816713   .0391651   -19.96   0.000    -.8670046   -.6963379
-         84  |  -1.252159   .0390492   -32.07   0.000     -1.33724   -1.167078
-         85  |  -2.744786   .0461421   -59.49   0.000    -2.845321   -2.644251
-         86  |  -2.744205   .0418196   -65.62   0.000    -2.835322   -2.653087
-         87  |  -2.299514   .0498155   -46.16   0.000    -2.408053   -2.190975
-         88  |  -.8583012   .0413035   -20.78   0.000    -.9482939   -.7683085
-         89  |  -.6076559   .0374989   -16.20   0.000    -.6893589   -.5259528
-         90  |  -.5676844   .0463822   -12.24   0.000    -.6687425   -.4666263
-         91  |  -1.184604   .0399231   -29.67   0.000    -1.271589   -1.097619
+         81  |   .6306059   .0361085    17.46   0.000     .5519323    .7092795
+         82  |   .2292248   .0444383     5.16   0.000      .132402    .3260476
+         83  |  -.8981319   .0656729   -13.68   0.000    -1.041221   -.7550429
+         84  |  -.6312472   .1292531    -4.88   0.000    -.9128655   -.3496288
+         85  |  -1.973113   .1410887   -13.98   0.000    -2.280519   -1.665707
+         86  |  -2.322394   .1533206   -15.15   0.000     -2.65645   -1.988337
+         87  |  -1.844255   .1580251   -11.67   0.000    -2.188562   -1.499948
+         88  |  -.1135914    .062048    -1.83   0.092    -.2487824    .0215996
+         89  |   .8717973   .0712924    12.23   0.000     .7164645     1.02713
+         90  |   .5873187   .0646961     9.08   0.000     .4463581    .7282792
+         91  |  -.0812497   .0625306    -1.30   0.218    -.2174922    .0549929
          92  |          0  (omitted)
              |
-  nbr_people |  -.9490621   .0734286   -12.92   0.000    -1.109049   -.7890749
- ind_under14 |  -.0657995   .2033914    -0.32   0.752    -.5089513    .3773524
-        edad |   .7148975   .0144819    49.37   0.000     .6833442    .7464507
-     married |          0  (omitted)
- y_hogar_alt |   .0000997   .0000115     8.67   0.000     .0000747    .0001248
-c98_resid_~e |   .3981888   .9198835     0.43   0.673    -1.606065    2.402443
-c98_resid_~d |  -1.578757   .2829889    -5.58   0.000    -2.195337   -.9621771
-c98_nbr_ro~s |  -.2946349   .1263117    -2.33   0.038    -.5698444   -.0194253
-c98_nbr_be~s |  -.8262525   .1730477    -4.77   0.000    -1.203291    -.449214
-c98_b_pipe~r |   -.406091   .7424992    -0.55   0.594    -2.023858    1.211676
-c98_hhld_t~t |   1.894619   .5402649     3.51   0.004     .7174826    3.071755
-c98_b_sewage |   1.207551   .2810004     4.30   0.001     .5953042    1.819799
-c98_hhld_s~e |  -1.076367   .7402452    -1.45   0.172    -2.689223    .5364885
-c98_hhld_h~r |   3.443273   .5951186     5.79   0.000     2.146621    4.739925
-c98_hhld_r~t |   .2083456   .6945305     0.30   0.769    -1.304906    1.721598
- c98_hhld_tv |   1.470756   .5592965     2.63   0.022     .2521533    2.689358
-c98_hhld_vcr |    -.50858     .27315    -1.86   0.087    -1.103723    .0865626
-c98_hhld_w~c |   1.195557    .236242     5.06   0.000     .6808301    1.710284
-c98_hhld_d~r |  -2.500484   .4612657    -5.42   0.000    -3.505495   -1.495472
-c98_hhld_m~e |    1.80707   .2294442     7.88   0.000     1.307154    2.306986
-c98_hhld_car |  -1.547878    .245924    -6.29   0.000    -2.083701   -1.012056
-       _cons |   .3735455   1.882735     0.20   0.846    -3.728582    4.475673
+  nbr_people |  -.5176858   .0774396    -6.69   0.000    -.6864121   -.3489595
+ ind_under14 |   2.216034   .1503304    14.74   0.000     1.888492    2.543575
+        edad |   .7481596   .0088834    84.22   0.000     .7288044    .7675148
+     married |   3.556474   .1864173    19.08   0.000     3.150305    3.962642
+ y_hogar_alt |   .0000331   3.93e-06     8.42   0.000     .0000246    .0000417
+c98_resid_~e |  -.6178507    .622624    -0.99   0.341    -1.974432    .7387306
+c98_resid_~d |  -1.930125   .1580555   -12.21   0.000    -2.274498   -1.585751
+c98_nbr_ro~s |  -.1526803   .0774052    -1.97   0.072    -.3213317    .0159712
+c98_nbr_be~s |  -1.261795   .1164415   -10.84   0.000    -1.515499   -1.008091
+c98_b_pipe~r |  -.5085714   .5238551    -0.97   0.351    -1.649954    .6328109
+c98_hhld_t~t |   1.625604   .5746848     2.83   0.015     .3734731    2.877734
+c98_b_sewage |  -.2030824   .2384978    -0.85   0.411    -.7227244    .3165596
+c98_hhld_s~e |  -.8844114   .5671829    -1.56   0.145    -2.120197     .351374
+c98_hhld_h~r |   2.831122   .3934066     7.20   0.000     1.973963    3.688282
+c98_hhld_r~t |  -.1750806   .4499767    -0.39   0.704    -1.155496    .8053344
+ c98_hhld_tv |   1.539441   .4969357     3.10   0.009      .456711    2.622171
+c98_hhld_vcr |  -.2630031   .1671265    -1.57   0.142    -.6271405    .1011343
+c98_hhld_w~c |   .7499157   .1768547     4.24   0.001     .3645824    1.135249
+c98_hhld_d~r |  -2.421025   .2556491    -9.47   0.000    -2.978037   -1.864014
+c98_hhld_m~e |   .3224046    .235116     1.37   0.195    -.1898692    .8346784
+c98_hhld_car |  -1.669592   .1712517    -9.75   0.000    -2.042717   -1.296466
+       _cons |   13.54953   1.103614    12.28   0.000     11.14496     15.9541
 ------------------------------------------------------------------------------
 (est2 stored)
-(note: file ../output/triple_diff_mvd_anio_sem_labor_single_lowed.tex not found
-> )
-(output written to ../output/triple_diff_mvd_anio_sem_labor_single_lowed.tex)
+(note: file ../output/triple_diff_mvd_anio_sem_labor_poor_female.tex not found)
+(output written to ../output/triple_diff_mvd_anio_sem_labor_poor_female.tex)
 
 . 
 end of do-file
 
- make.py ended: 2017-12-07 19:35:36
+ make.py ended: 2018-03-27 16:03:55
