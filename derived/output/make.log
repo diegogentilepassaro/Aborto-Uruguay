@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-13 18:02:11 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
+ make.py started: 2018-03-27 15:12:36 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
 
 
 
@@ -602,34 +602,34 @@ Notes:
 .         levelsof dpto, local(dptos)
   3.         
 .         foreach outcome in `outcomes' {
-  4.                 gen unadj_`outcome' = `outcome'
+  4.                 gen `outcome'_des = `outcome'
   5.         }
   6.         
 .         foreach dpto of local dptos {
   7.                 foreach outcome in `outcomes' {
   8. 
-.                         qui sum unadj_`outcome' if anio < 2004 & dpto == `dpt
-> o' [aw = pesotri]
+.                         qui sum `outcome' if anio < 2004 & dpto == `dpto' [aw
+>  = pesotri]
   9.                         local mean = r(mean)
  10.                         
-.                         reg unadj_`outcome' i.trimestre if anio < 2004 & dpto
->  == `dpto' [aw = pesotri]
+.                         reg `outcome' i.trimestre if anio < 2004 & dpto == `d
+> pto' [aw = pesotri]
  11.                         predict p_`outcome', resid
  12.                         
-.                         replace `outcome' = p_`outcome' + `mean' if anio < 20
-> 04 & dpto == `dpto'
+.                         replace `outcome'_des = p_`outcome' + `mean' if anio 
+> < 2004 & dpto == `dpto'
  13.                         drop p_`outcome'
  14.                         
-.                         qui sum unadj_`outcome' if anio >= 2004 & dpto == `dp
-> to' [aw = pesotri]
+.                         qui sum `outcome' if anio >= 2004 & dpto == `dpto' [a
+> w = pesotri]
  15.                         local mean = r(mean)
  16.                         
-.                         reg unadj_`outcome' i.trimestre if anio >= 2004 & dpt
-> o == `dpto' [aw = pesotri]
+.                         reg `outcome' i.trimestre if anio >= 2004 & dpto == `
+> dpto' [aw = pesotri]
  17.                         predict p_`outcome', resid
  18.                         
-.                         replace `outcome' = p_`outcome' + `mean' if anio >= 2
-> 004 & dpto == `dpto'
+.                         replace `outcome'_des = p_`outcome' + `mean' if anio 
+> >= 2004 & dpto == `dpto'
  19.                         drop p_`outcome'        
  20.                 }
  21.         }
@@ -817,7 +817,7 @@ file ..\temp\clean_loc_1998_2016_fixed.dta saved
        Total |  43463.1166   179,251  .242470707   Root MSE        =    .49242
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0017721   .0032826     0.54   0.589    -.0046617    .0082059
@@ -827,7 +827,6 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        _cons |   .4121352   .0023236   177.37   0.000      .407581    .4166893
 ------------------------------------------------------------------------------
 (30 missing values generated)
-variable trabajo was byte now float
 (179,252 real changes made)
 (sum of wgt is   6.6643e+07)
 
@@ -839,7 +838,7 @@ variable trabajo was byte now float
        Total |   160844.69   649,584  .247611841   Root MSE        =    .49738
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0307933   .0017444    17.65   0.000     .0273744    .0342123
@@ -860,7 +859,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  95356289.9   179,251  531.970756   Root MSE        =    23.065
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |    .046988   .1537557     0.31   0.760    -.2543696    .3483457
@@ -870,7 +869,6 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        _cons |   16.99026   .1088356   156.11   0.000     16.77694    17.20357
 ------------------------------------------------------------------------------
 (30 missing values generated)
-variable horas_trabajo was byte now float
 (179,252 real changes made)
 (sum of wgt is   6.6643e+07)
 
@@ -882,7 +880,7 @@ variable horas_trabajo was byte now float
        Total |   316630937   649,584  487.436478   Root MSE        =    22.078
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.1545963   .0774289    -2.00   0.046    -.3063545   -.0028381
@@ -903,7 +901,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2010.98641     8,877  .226538967   Root MSE        =    .47589
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0165483   .0142774     1.16   0.246    -.0114387    .0445352
@@ -924,7 +922,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  8652.59969    36,446  .237408761   Root MSE        =    .48705
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0276581   .0071704     3.86   0.000      .013604    .0417123
@@ -945,7 +943,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  4840912.08     8,877  545.331991   Root MSE        =    23.349
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .4624407   .7005111     0.66   0.509    -.9107232    1.835605
@@ -966,7 +964,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  18249775.6    36,446  500.734666   Root MSE        =    22.375
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .1382073   .3294063     0.42   0.675    -.5074386    .7838532
@@ -987,7 +985,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  10143.8972    42,904  .236432435   Root MSE        =    .48623
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0080689    .006622    -1.22   0.223    -.0210481    .0049103
@@ -1008,7 +1006,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |   48249.596   197,943     .243755   Root MSE        =    .49353
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0296209   .0031333     9.45   0.000     .0234798    .0357621
@@ -1029,7 +1027,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  24131158.9    42,904  562.445435   Root MSE        =    23.715
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.3590392   .3229697    -1.11   0.266     -.992066    .2739876
@@ -1050,7 +1048,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  99627747.1   197,943  503.315334   Root MSE        =    22.434
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.1138933   .1424303    -0.80   0.424    -.3930533    .1652666
@@ -1071,7 +1069,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1625.63264     6,910  .235257979   Root MSE        =    .48505
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0239803   .0167004    -1.44   0.151    -.0567183    .0087577
@@ -1092,7 +1090,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  8949.88159    38,010  .235461236   Root MSE        =    .48511
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0242895   .0070312     3.45   0.001     .0105082    .0380707
@@ -1113,7 +1111,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  4043546.09     6,910  585.173096   Root MSE        =    24.186
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -1.389718   .8327291    -1.67   0.095    -3.022123     .242687
@@ -1134,7 +1132,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  16463971.5    38,010  433.148422   Root MSE        =    20.813
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0763026   .3016625    -0.25   0.800    -.6675691    .5149639
@@ -1155,7 +1153,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2058.37151     8,861  .232295623   Root MSE        =    .48203
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |    .007304    .014527     0.50   0.615    -.0211722    .0357803
@@ -1176,7 +1174,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  12380.0754    50,216   .24653647   Root MSE        =    .49644
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0229687   .0062772     3.66   0.000     .0106653     .035272
@@ -1197,7 +1195,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  4684083.72     8,861  528.617958   Root MSE        =     22.99
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .1750376   .6928418     0.25   0.801    -1.183093    1.533168
@@ -1218,7 +1216,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  25558644.2    50,216  508.974115   Root MSE        =     22.56
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .3672392   .2852588     1.29   0.198    -.1918713    .9263497
@@ -1239,7 +1237,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1019.66121     4,506  .226289661   Root MSE        =    .47582
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0047291   .0205751     0.23   0.818    -.0356083    .0450665
@@ -1260,7 +1258,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  7756.80888    32,501  .238663699   Root MSE        =    .48831
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0327372   .0076635     4.27   0.000     .0177164    .0477579
@@ -1281,7 +1279,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2321138.12     4,506  515.121643   Root MSE        =    22.696
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.9516025   .9814165    -0.97   0.332    -2.875661    .9724556
@@ -1302,7 +1300,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  16099326.4    32,501  495.348648   Root MSE        =    22.256
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0854999   .3492792    -0.24   0.807       -.7701    .5991002
@@ -1323,7 +1321,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  731.142015     3,050  .239718693   Root MSE        =    .48954
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0484169   .0251848    -1.92   0.055    -.0977978    .0009641
@@ -1344,7 +1342,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  4075.71852    16,529  .246579861   Root MSE        =    .49641
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0209646   .0108274     1.94   0.053    -.0002581    .0421874
@@ -1365,7 +1363,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1705628.94     3,050  559.222602   Root MSE        =    23.649
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -1.991581   1.216631    -1.64   0.102    -4.377081    .3939195
@@ -1386,7 +1384,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  7910040.62    16,529  478.555304   Root MSE        =    21.876
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0819327   .4771441    -0.17   0.864    -1.017187    .8533211
@@ -1407,7 +1405,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  954.493136     3,960   .24103362   Root MSE        =    .49102
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0245806   .0225417    -1.09   0.276    -.0687751    .0196139
@@ -1428,7 +1426,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  8165.86005    33,604   .24300262   Root MSE        =    .49283
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0212315   .0076031     2.79   0.005     .0063292    .0361339
@@ -1449,7 +1447,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2215091.07     3,960  559.366431   Root MSE        =    23.658
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.8930618   1.086087    -0.82   0.411    -3.022404     1.23628
@@ -1470,7 +1468,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  17396772.6    33,604  517.699458   Root MSE        =    22.753
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.2720628   .3510278    -0.78   0.438    -.9600894    .4159638
@@ -1491,7 +1489,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1146.30137     4,818  .237920584   Root MSE        =    .48791
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   -.001654   .0197963    -0.08   0.933    -.0404639    .0371559
@@ -1512,7 +1510,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  6754.39447    27,920  .241919573   Root MSE        =    .49171
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0247891   .0082186     3.02   0.003     .0086802     .040898
@@ -1533,7 +1531,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2215968.15     4,818  459.935275   Root MSE        =    21.453
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0811858   .8704239     0.09   0.926    -1.625243    1.787614
@@ -1554,7 +1552,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  12964195.3    27,920  464.333641   Root MSE        =    21.548
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.5609976   .3601674    -1.56   0.119    -1.266943    .1449482
@@ -1575,7 +1573,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  3005.91693    12,669  .237265524   Root MSE        =    .48668
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0545346   .0123546    -4.41   0.000    -.0787515   -.0303176
@@ -1596,7 +1594,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  19183.7718    77,550  .247372943   Root MSE        =    .49711
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0391984   .0050663    -7.74   0.000    -.0491283   -.0292686
@@ -1617,7 +1615,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  7003619.53    12,669  552.815497   Root MSE        =     23.46
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -4.045995   .5955505    -6.79   0.000    -5.213364   -2.878625
@@ -1638,7 +1636,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  38684786.6    77,550  498.836707   Root MSE        =    22.298
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -3.206285   .2272426   -14.11   0.000    -3.651679    -2.76089
@@ -1659,7 +1657,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2093.29447     9,236  .226645135   Root MSE        =    .47611
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0121339   .0138747     0.87   0.382    -.0150635    .0393314
@@ -1680,7 +1678,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  11964.8223    50,467    .2370821   Root MSE        =    .48678
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |      .0286   .0061374     4.66   0.000     .0165706    .0406293
@@ -1701,7 +1699,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |     4684018     9,236  507.147899   Root MSE        =    22.522
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.4145951   .6563168    -0.63   0.528    -1.701121    .8719309
@@ -1722,7 +1720,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |    25004587    50,467  495.464105   Root MSE        =     22.26
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0581242   .2806521    -0.21   0.836    -.6082053    .4919569
@@ -1743,7 +1741,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1054.03335     4,741  .222323001   Root MSE        =    .47124
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0137768   .0189938    -0.73   0.468    -.0510136      .02346
@@ -1764,7 +1762,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  6727.89686    28,409  .236822727   Root MSE        =    .48626
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0446039   .0081506     5.47   0.000     .0286284    .0605795
@@ -1785,7 +1783,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2109776.86     4,741  445.006721   Root MSE        =    21.083
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -1.113001   .8497516    -1.31   0.190    -2.778909    .5529069
@@ -1806,7 +1804,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  13929178.2    28,409  490.308641   Root MSE        =    22.141
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .6774004    .371126     1.83   0.068    -.0500242    1.404825
@@ -1827,7 +1825,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2197.94375     9,588  .229239022   Root MSE        =    .47879
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0217654   .0138361     1.57   0.116    -.0053563     .048887
@@ -1848,7 +1846,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  11049.2307    46,148  .239430325   Root MSE        =     .4893
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0124525   .0064642     1.93   0.054    -.0002175    .0251225
@@ -1869,7 +1867,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  5255278.58     9,588   548.10999   Root MSE        =    23.414
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .6403534   .6766013     0.95   0.344    -.6859282    1.966635
@@ -1890,7 +1888,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  23949135.4    46,148  518.963668   Root MSE        =    22.779
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.5826546   .3009384    -1.94   0.053    -1.172499    .0071893
@@ -1911,7 +1909,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1523.52027     6,535  .233132406   Root MSE        =    .48227
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0022389   .0170494     0.13   0.896    -.0311836    .0356614
@@ -1932,7 +1930,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  10847.8519    45,210   .23994364   Root MSE        =    .48982
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0079291   .0066113    -1.20   0.230    -.0208874    .0050292
@@ -1953,7 +1951,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  3455575.42     6,535  528.779712   Root MSE        =    22.957
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -1.283569   .8115741    -1.58   0.114     -2.87452    .3073814
@@ -1974,7 +1972,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  21593197.8    45,210  477.619947   Root MSE        =    21.837
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   -1.78479   .2947467    -6.06   0.000    -2.362499   -1.207082
@@ -1995,7 +1993,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2113.92002     9,415  .224526821   Root MSE        =    .47392
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.0005226   .0138365    -0.04   0.970    -.0276452       .0266
@@ -2016,7 +2014,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  12565.0455    52,527  .239211177   Root MSE        =    .48898
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0226276   .0060489     3.74   0.000     .0107718    .0344835
@@ -2037,7 +2035,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |   5723709.9     9,415    607.9352   Root MSE        =     24.66
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.1094895   .7199827    -0.15   0.879    -1.520811    1.301832
@@ -2058,7 +2056,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |    25172412    52,527  479.228055   Root MSE        =    21.891
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   -.357024   .2708015    -1.32   0.187    -.8877974    .1737493
@@ -2079,7 +2077,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1964.26727     8,336  .235636669   Root MSE        =    .48547
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0111477   .0151903     0.73   0.463    -.0186292    .0409245
@@ -2100,7 +2098,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  11616.2649    47,420  .244965519   Root MSE        =    .49492
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |    .007671   .0064717     1.19   0.236    -.0050136    .0203555
@@ -2121,7 +2119,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  4663319.68     8,336  559.419348   Root MSE        =     23.65
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .1305092   .7400073     0.18   0.860    -1.320089    1.581108
@@ -2142,7 +2140,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |    25958068    47,420  547.407592   Root MSE        =    23.396
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.4233984   .3059368    -1.38   0.166    -1.023039    .1762421
@@ -2163,7 +2161,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1553.78507     6,877  .225939373   Root MSE        =    .47537
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0120225   .0162428     0.74   0.459    -.0198184    .0438634
@@ -2184,7 +2182,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |   9199.7936    37,707  .243981054   Root MSE        =     .4937
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0419094   .0072307     5.80   0.000      .027737    .0560819
@@ -2205,7 +2203,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  3496013.31     6,877  508.363139   Root MSE        =    22.543
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -1.056261   .7702696    -1.37   0.170    -2.566228    .4537057
@@ -2226,7 +2224,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  19173582.3    37,707  508.488671   Root MSE        =    22.549
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .3742004   .3302563     1.13   0.257     -.273111    1.021512
@@ -2247,7 +2245,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  1566.98824     6,928  .226181905   Root MSE        =     .4756
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0229784    .016263     1.41   0.158     -.008902    .0548587
@@ -2268,7 +2266,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  10721.5982    45,009  .238210096   Root MSE        =      .488
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0212432   .0065272     3.25   0.001     .0084498    .0340367
@@ -2289,7 +2287,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  3629163.55     6,928  523.840004   Root MSE        =    22.891
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.6126961   .7827526    -0.78   0.434    -2.147131     .921739
@@ -2310,7 +2308,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  22112694.7    45,009  491.294956   Root MSE        =    22.165
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |  -.3201248    .296466    -1.08   0.280    -.9012032    .2609536
@@ -2331,7 +2329,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  972.817067     4,146   .23463991   Root MSE        =     .4845
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0160595   .0212434     0.76   0.450     -.025589     .057708
@@ -2352,7 +2350,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  6423.30781    27,211  .236055559   Root MSE        =    .48569
 
 ------------------------------------------------------------------------------
-unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .0283214   .0083072     3.41   0.001     .0120388    .0446039
@@ -2373,7 +2371,7 @@ unadj_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  2499058.64     4,146  602.763781   Root MSE        =    24.556
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   1.194631     1.0767     1.11   0.267    -.9162787    3.305541
@@ -2394,7 +2392,7 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
        Total |  12985035.8    27,211  477.198036   Root MSE        =    21.843
 
 ------------------------------------------------------------------------------
-unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
    trimestre |
           2  |   .2967756    .373603     0.79   0.427    -.4355054    1.029057
@@ -2413,19 +2411,17 @@ unadj_hora~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
   variable semestre was float now byte
   variable anio_sem was float now int
   variable anio_qtr was float now int
-  variable unadj_trabajo was float now byte
-  variable unadj_horas_trabajo was float now byte
   variable educ_more_HS was float now byte
   variable educ_HS_or_more was float now byte
   variable nomloc was str104 now str25
-  (201,519,413 bytes saved)
+  (190,219,259 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\clean_loc_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883359:88(44662):2736350837:4106893688
+  1883359:88(37089):533740207:2691152956
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2443,7 +2439,7 @@ Key: numero pers anio
 -------------+---------------------------------------------------------
       hombre |  1,883,359    .4683451    .4989971          0          1
         edad |  1,883,359    36.69205      23.473          0         99
-horas_trab~o |  1,883,359    17.37804    22.41992  -2.432244      100.1
+horas_trab~o |  1,883,359    17.37756    22.42278          0         99
        pf133 |    172,515    .8011535    .9642651          0          2
 busca_trab~o |  1,883,359    .0717808    .2581247          0          1
 -------------+---------------------------------------------------------
@@ -2487,7 +2483,7 @@ c98_hhld_car |  1,883,359    .3550953    .4785423          0          1
      married |  1,593,343    .5195686    .4996171          0          1
  y_hogar_alt |  1,883,359    28126.23       32692          0    7289481
    trimestre |  1,883,359    2.497607    1.117068          1          4
-     trabajo |  1,883,359    .4188746    .4932058  -.0308305   1.034927
+     trabajo |  1,883,359    .4188713    .4933744          0          1
 -------------+---------------------------------------------------------
        etnia |  1,431,815    2.291282    .9704217          0          4
          mes |  1,710,844    6.493153    3.444643          1         12
@@ -2529,9 +2525,9 @@ c06_b_electr |  1,431,815    .9961147    .0622108          0          1
     semestre |  1,883,359    1.499127    .4999994          1          2
     anio_sem |  1,883,359    97.29315    9.924085         76        113
     anio_qtr |  1,883,359    195.0857    19.85452        152        227
-unadj_trab~o |  1,883,359    .4188713    .4933744          0          1
+ trabajo_des |  1,883,359    .4188746    .4932058  -.0308305   1.034927
 -------------+---------------------------------------------------------
-unadj_hora~o |  1,883,359    17.37756    22.42278          0         99
+horas_trab~s |  1,883,359    17.37804    22.41992  -2.432244      100.1
 educ_more_HS |  1,883,359    .0683061    .2522706          0          1
 educ_HS_or~e |  1,883,359    .2324448    .4223912          0          1
 
@@ -2680,459 +2676,459 @@ Notes:
  26.                 }
  27.         }
  28. }
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00000x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000010.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000011.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000012.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000013.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000014.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000015.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000016.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000017.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000018.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000019.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00001x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000020.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000021.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000022.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000023.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000024.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000025.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000026.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000027.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000028.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000029.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00002x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000030.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000031.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000032.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000033.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000034.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000035.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000036.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000037.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000038.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_000039.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00003a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00003b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_3310_00003c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_349c_00003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -3391,23 +3387,23 @@ Notes:
 
 . 
 . main
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000002.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000005.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000006.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000008.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000b.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000c.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000e.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_37f8_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1428_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -3444,4 +3440,4 @@ file ..\output\births.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-03-13 18:06:21
+ make.py ended: 2018-03-27 15:17:24

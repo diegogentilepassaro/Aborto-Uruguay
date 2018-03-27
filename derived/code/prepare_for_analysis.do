@@ -86,28 +86,28 @@ program deseasonalize
 	levelsof dpto, local(dptos)
 	
 	foreach outcome in `outcomes' {
-		gen unadj_`outcome' = `outcome'
+		gen `outcome'_des = `outcome'
 	}
 	
 	foreach dpto of local dptos {
 		foreach outcome in `outcomes' {
 
-			qui sum unadj_`outcome' if anio < 2004 & dpto == `dpto' [aw = pesotri]
+			qui sum `outcome' if anio < 2004 & dpto == `dpto' [aw = pesotri]
 			local mean = r(mean)
 			
-			reg unadj_`outcome' i.trimestre if anio < 2004 & dpto == `dpto' [aw = pesotri]
+			reg `outcome' i.trimestre if anio < 2004 & dpto == `dpto' [aw = pesotri]
 			predict p_`outcome', resid
 			
-			replace `outcome' = p_`outcome' + `mean' if anio < 2004 & dpto == `dpto'
+			replace `outcome'_des = p_`outcome' + `mean' if anio < 2004 & dpto == `dpto'
 			drop p_`outcome'
 			
-			qui sum unadj_`outcome' if anio >= 2004 & dpto == `dpto' [aw = pesotri]
+			qui sum `outcome' if anio >= 2004 & dpto == `dpto' [aw = pesotri]
 			local mean = r(mean)
 			
-			reg unadj_`outcome' i.trimestre if anio >= 2004 & dpto == `dpto' [aw = pesotri]
+			reg `outcome' i.trimestre if anio >= 2004 & dpto == `dpto' [aw = pesotri]
 			predict p_`outcome', resid
 			
-			replace `outcome' = p_`outcome' + `mean' if anio >= 2004 & dpto == `dpto'
+			replace `outcome'_des = p_`outcome' + `mean' if anio >= 2004 & dpto == `dpto'
 			drop p_`outcome'	
 		}
 	}
