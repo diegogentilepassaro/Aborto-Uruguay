@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-26 18:24:30 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
+ make.py started: 2018-03-27 11:06:27 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
 
 
 
@@ -57,29 +57,23 @@ Notes:
  11.         
 .         foreach group_vars in labor /*educ*/ {
  12. 
-.             plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
->                 time(anio_sem) event_date(${s_date_`city'}) city_legend(${leg
-> end_`city'}) ///
+.             plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(a
+> nio_sem) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') ///
->                 plot_option(trend)
+> s_vars(`group_vars') 
  13. 
-.             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
->                 time(anio) event_date(${y_date_`city'}) city_legend(${legend_
-> `city'}) ///
+.             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city') time
+> (anio) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') ///
->                 plot_option(trend)*/
+> s_vars(`group_vars') */
 . 
-.             reg_diff, outcomes(``group_vars'_vars') treatment(`city')   ///
->                 time(anio_sem) event(${legend_`city'}) event_date(${s_date_`c
-> ity'}) restr(``group_vars'_restr') ///
->                 groups_vars(`group_vars')
+.             reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(an
+> io_sem) ///
+>                 restr(``group_vars'_restr') groups_vars(`group_vars')
  14. 
-.             /*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
->                 time(anio)     event(${legend_`city'}) event_date(${y_date_`c
-> ity'}) restr(``group_vars'_restr') ///
->                 groups_vars(`group_vars')*/
+.             /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(
+> anio) ///
+>                 restr(``group_vars'_restr') groups_vars(`group_vars')*/
 .         }
  15.     }
  16. 
@@ -87,40 +81,32 @@ Notes:
 >          
 >         foreach group_vars in labor /*educ*/ {
 > 
->             plot_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')  /
-> //
->                 time(anio_sem) event_date(${s_date_mvd}) city_legend(${legend
-> _mvd}) ///
+>             plot_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo') ti
+> me(anio_sem) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') ///
->                 plot_option(trend)
+> s_vars(`group_vars') 
 > 
->             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
->                 time(anio) event_date(${y_date_`city'}) city_legend(${legend_
-> `city'}) ///
+>             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city') time
+> (anio) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') ///
->                 plot_option(trend)*/
+> s_vars(`group_vars') */
 > 
->             reg_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo')   /
-> //
->                 time(anio_sem) event(${legend_mvd}) event_date(${s_date_mvd})
->  restr(``group_vars'_restr') ///
->                 groups_vars(`group_vars')
+>             reg_diff, outcomes(``group_vars'_vars') treatment(mvd_`demo') tim
+> e(anio_sem)   ///
+>                 restr(``group_vars'_restr') groups_vars(`group_vars')
 > 
->             /*reg_diff, outcomes(``group_vars'_vars') treatment(`city')  ///
->                 time(anio)     event(${legend_`city'}) event_date(${y_date_`c
-> ity'}) restr(``group_vars'_restr') ///
->                 groups_vars(`group_vars')*/
+>             /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(
+> anio)  ///
+>                 restr(``group_vars'_restr') groups_vars(`group_vars')*/
 >         }
 >     }*/
 . end
 
 . 
 . program plot_diff
-  1.     syntax , outcomes(string) stubs(string) treatment(string)  ///
->         event_date(string) time(string) city_legend(string) ///
->         plot_option(str) [groups_vars(str) restr(string) sample(str)]
+  1.     syntax , outcomes(string) stubs(string) treatment(string) time(string)
+>  plot_option(str) ///
+>          [groups_vars(str) restr(string) sample(str)]
   2. 
 .        use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.     
@@ -130,132 +116,136 @@ Notes:
   5.     
 .     if "`time'" == "anio_qtr" {
   6.         local weight pesotri
-  7.         local range "if inrange(`time', tq(`event_date') - 12,tq(`event_da
-> te') + 12) "
+  7.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+> e},tq(${q_date_`treatment'}) + ${q_post}) "
   8.         local xtitle "Year-qtr"
-  9.         local vertical = tq(`event_date') - 0.5    
- 10.     }
- 11.     else if "`time'" == "anio_sem" {
- 12.         local weight pesosem
- 13.         local range "if inrange(`time', th(`event_date') -8,th(`event_date
-> ') + 4) "
- 14.         local xtitle "Year-half"
- 15.         local vertical = th(`event_date') - 0.5    
- 16.     }
- 17.     else {
- 18.         local weight pesoan
- 19.         local range "if inrange(`time', `event_date' - 4, `event_date' + 2
-> ) "
- 20.         local xtitle "Year"
- 21.         local vertical = `event_date' - 0.5    
- 22.     }
- 23.     
+  9.         local vertical = tq(${q_date_`treatment'}) - 0.5
+ 10.         local vertical2= tq(${q_date_`treatment'}) + 2.5  
+ 11.     }
+ 12.     else if "`time'" == "anio_sem" {
+ 13.         local weight pesosem
+ 14.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+> e},th(${s_date_`treatment'}) + ${s_post}) "
+ 15.         local xtitle "Year-half"
+ 16.         local vertical = th(${s_date_`treatment'}) - 0.5
+ 17.         local vertical2= th(${s_date_`treatment'}) + 1.5     
+ 18.     }
+ 19.     else {
+ 20.         local weight pesoan
+ 21.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+> ${y_date_`treatment'} + ${y_post}) "
+ 22.         local xtitle "Year"
+ 23.         local vertical = ${y_date_`treatment'} - 0.5
+ 24.         local vertical2= ${y_date_`treatment'} + 0.5   
+ 25.     }
+ 26.     
 .     save ..\temp\did_sample.dta, replace
- 24.             
+ 27.             
 .     local n_outcomes: word count `outcomes'
- 25.     
+ 28.     
 .     forval i = 1/`n_outcomes' {
- 26.         local outcome: word `i' of `outcomes'
- 27.         local stub_var: word `i' of `stubs'
- 28. 
+ 29.         local outcome: word `i' of `outcomes'
+ 30.         local stub_var: word `i' of `stubs'
+ 31. 
 .         use ..\temp\did_sample.dta, clear
- 29.         
+ 32.         
 .         if "`plot_option'" == "diff" {
- 30.             preserve
- 31.                 collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (c
+ 33.             preserve
+ 34.                 collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (c
 > ount) n_`outcome' = `outcome' ///
 >                     [aw = `weight'] if treatment_`treatment' == 1 , by(`time'
 > )
- 32.                 rename *`outcome' *`outcome'_t
- 33.                 save ../temp/treat_`outcome'_ts.dta, replace            
- 34.             restore
- 35.             
+ 35.                 rename *`outcome' *`outcome'_t
+ 36.                 save ../temp/treat_`outcome'_ts.dta, replace            
+ 37.             restore
+ 38.             
 .             collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n
 > _`outcome' = `outcome' ///
 >                 [aw = `weight'] if treatment_`treatment' == 0 , by(`time')
- 36.             rename *`outcome' *`outcome'_c
- 37.             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
+ 39.             rename *`outcome' *`outcome'_c
+ 40.             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
 >                 assert(3) keep(3) nogen
- 38.                 
+ 41.                 
 .             gen `outcome'_diff = `outcome'_t - `outcome'_c
- 39.             gen `outcome'_diff_se = sqrt((sd_`outcome'_t^2/n_`outcome'_t)+
+ 42.             gen `outcome'_diff_se = sqrt((sd_`outcome'_t^2/n_`outcome'_t)+
 > (sd_`outcome'_c^2/n_`outcome'_c))
- 40.         
+ 43.         
 .             gen `outcome'_diff_ci_p = `outcome'_diff + 1.96 * `outcome'_diff_
 > se
- 41.             gen `outcome'_diff_ci_n = `outcome'_diff - 1.96 * `outcome'_di
+ 44.             gen `outcome'_diff_ci_n = `outcome'_diff - 1.96 * `outcome'_di
 > ff_se            
- 42.         
+ 45.         
 .             qui twoway (rarea `outcome'_diff_ci_p  `outcome'_diff_ci_n `time'
 >  `range', fc(green)  lc(bg)    fin(inten20)) ///
 >                        (line  `outcome'_diff                      `time' `ran
 > ge', lc(green)  lp(solid) lw(medthick)), ///
 >                 legend(on order(2) label(2 "Difference between treatment and 
 > control")) ///
->                 tline(`vertical', lcolor(black) lpattern(dot)) ///
+>                 tline(`vertical'  `vertical2', lcolor(black) lpattern(dot)) /
+> //
 >                 graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") /
 > //
 >                 ytitle("`stub_var'") name(diff_`outcome'_`treatment', replace
 > ) ///
 >                 title("`stub_var'", color(black) size(medium)) ylabel()
- 43.                 
+ 46.                 
 .                 local diff_stub "diff_"
- 44.         }
- 45.         else {    
- 46.             preserve
- 47.                 collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw
+ 47.         }
+ 48.         else {    
+ 49.             preserve
+ 50.                 collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw
 >  = `weight'] if treatment_`treatment' == 1 , by(`time')
- 48.                 tsset `time'
- 49.                 tssmooth ma `outcome' = `outcome', window(1 1 0) replace
- 50.                 gen treat = 1
- 51.                 save ../temp/treat_`outcome'_ts.dta, replace
- 52.             restore
- 53.             
+ 51.                 tsset `time'
+ 52.                 tssmooth ma `outcome' = `outcome', window(1 1 0) replace
+ 53.                 gen treat = 1
+ 54.                 save ../temp/treat_`outcome'_ts.dta, replace
+ 55.             restore
+ 56.             
 .             collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `wei
 > ght'] if treatment_`treatment' == 0 , by(`time')
- 54.             tsset `time'
- 55.             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
- 56.             save ../temp/control_`outcome'_ts.dta, replace
- 57.             append using ../temp/treat_`outcome'_ts.dta
- 58.             replace treat = 0 if missing(treat)
- 59. 
+ 57.             tsset `time'
+ 58.             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
+ 59.             save ../temp/control_`outcome'_ts.dta, replace
+ 60.             append using ../temp/treat_`outcome'_ts.dta
+ 61.             replace treat = 0 if missing(treat)
+ 62. 
 .             gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
- 60.             gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
- 61.             
+ 63.             gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
+ 64.             
 .             if "`treatment'" == "mvd_female" {
- 62.                 if "`outcome'" == "trabajo" {
- 63.                     local ylabel "0.5 (0.1) 0.8"
- 64.                 }
- 65.                 else if "`outcome'" == "horas_trabajo" {
- 66.                     local ylabel "16 (8) 40"
- 67.                 }            
- 68.             }
- 69.             else if "`treatment'" == "mvd_single" | "`treatment'" == "mvd_
+ 65.                 if "`outcome'" == "trabajo" {
+ 66.                     local ylabel "0.5 (0.1) 0.8"
+ 67.                 }
+ 68.                 else if "`outcome'" == "horas_trabajo" {
+ 69.                     local ylabel "16 (8) 40"
+ 70.                 }            
+ 71.             }
+ 72.             else if "`treatment'" == "mvd_single" | "`treatment'" == "mvd_
 > lowed" | "`treatment'" == "mvd_poor" {
- 70.                 if "`outcome'" == "trabajo" {
- 71.                     local ylabel "0.4 (0.2) 0.8"
- 72.                 }
- 73.                 else if "`outcome'" == "horas_trabajo" {
- 74.                     local ylabel "12 (8) 28"
- 75.                 }            
- 76.             }
- 77.             else if "`treatment'" == "placebo_rivera" {
- 78.                 if "`outcome'" == "trabajo" {
- 79.                     local ylabel "0.65 (0.2) 0.85"
- 80.                 }
- 81.                 else if "`outcome'" == "horas_trabajo" {
- 82.                     local ylabel "30 (8) 38"
- 83.                 }            
- 84.             }
- 85.             else {
- 86.                 if "`outcome'" == "trabajo" {
- 87.                     local ylabel "0.4 (0.1) 0.6"
- 88.                 }
- 89.                 else if "`outcome'" == "horas_trabajo" {
- 90.                     local ylabel "12 (8) 28"
+ 73.                 if "`outcome'" == "trabajo" {
+ 74.                     local ylabel "0.4 (0.2) 0.8"
+ 75.                 }
+ 76.                 else if "`outcome'" == "horas_trabajo" {
+ 77.                     local ylabel "12 (8) 28"
+ 78.                 }            
+ 79.             }
+ 80.             else if "`treatment'" == "placebo_rivera" {
+ 81.                 if "`outcome'" == "trabajo" {
+ 82.                     local ylabel "0.65 (0.2) 0.85"
+ 83.                 }
+ 84.                 else if "`outcome'" == "horas_trabajo" {
+ 85.                     local ylabel "30 (8) 38"
+ 86.                 }            
+ 87.             }
+ 88.             else {
+ 89.                 if "`outcome'" == "trabajo" {
+ 90.                     local ylabel "0.4 (0.1) 0.6"
  91.                 }
- 92.             }
- 93.             
+ 92.                 else if "`outcome'" == "horas_trabajo" {
+ 93.                     local ylabel "12 (8) 28"
+ 94.                 }
+ 95.             }
+ 96.             
 .             qui twoway (scatter  `outcome' `time' `range' & treat == 1, mc(bl
 > ue) lp(solid) lw(medthick)) ///
 >                        (scatter  `outcome' `time' `range' & treat == 0, mc(re
@@ -266,54 +256,39 @@ Notes:
 > d)  lp(solid) lw(thin)) ///
 >                 ,legend(on order(1 2) label(1 "Treatment") label(2 "Control")
 >  size(vlarge) width(90) forcesize) ///
->                 tline(`vertical', lcolor(black) lpattern(dot)) ///
+>                 tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) //
+> /
 >                 graphregion(color(white)) bgcolor(white) xtitle("`xtitle'", s
 > ize(vlarge)) ///
 >                 ytitle("`stub_var'", size(vlarge)) name(`outcome'_`treatment'
 > , replace) ///
 >                 title("`stub_var'", color(black) size(vlarge)) ylabel(`ylabel
 > ', labs(large)) ///
->                 xlabel(#7, labs(large)) xtitle(, size(vlarge))
- 94.                 
-.         /* (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' & treat == 1,
->  fc(red)  lc(bg)    fin(inten20)) ///
->                        (rarea `outcome'_ci_p  `outcome'_ci_n `time' `range' &
->  treat == 0, fc(blue) lc(bg)    fin(inten10)) /// */        
-.         
-.         /*qui twoway (line `outcome' `time' if treat == 1) ///
->                (line `outcome' `time' if treat == 0) `range', /// 
->                legend(label(1 "Treatment") label(2 "Control")) ///
->                tline(`event_date', lcolor(black) lpattern(dot)) ///
->                graphregion(color(white)) bgcolor(white) xtitle("`xtitle'") //
-> /
->                ytitle("`stub_var'") name(`outcome'_`treatment', replace) ///
->                title("`stub_var'", color(black) size(medium)) ylabel(#2)*/   
->         
-.         }
- 95.         }
- 96.         
+>                 xlabel(#7, labs(large)) xtitle(, size(vlarge))         
+ 97.         }
+ 98.         }
+ 99.         
 .         forval i = 1/`n_outcomes' {
- 97.             local outcome: word `i' of `outcomes'
- 98.             local plots = "`plots' " + "`diff_stub'`outcome'_`treatment'"
- 99.         }
-100.             
+100.             local outcome: word `i' of `outcomes'
+101.             local plots = "`plots' " + "`diff_stub'`outcome'_`treatment'"
+102.         }
+103.             
 .         local plot1: word 1 of `plots'     
-101.         
+104.         
 .         grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) c
 > ols(2) /// /* cols(1) or cols(3) */
->                graphregion(color(white)) title({bf: `city_legend' `special_le
-> gend'}, color(black) size(vlarge))
-102.         graph display, ysize(3) xsize(7)
-103.         graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`t
+>                graphregion(color(white)) title({bf: ${legend_`treatment'} `sp
+> ecial_legend'}, color(black) size(vlarge))
+105.         graph display, ysize(3) xsize(7)
+106.         graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`t
 > ime'.pdf, replace            
-104.         
+107.         
 . end
 
 . 
 . program reg_diff
-  1.     syntax, outcomes(string) treatment(string) ///
->         event_date(string) event(string) time(string) [groups_vars(str) restr
-> (string) sample(str)]
+  1.     syntax, outcomes(string) treatment(string) time(string) [groups_vars(s
+> tr) restr(string) sample(str)]
   2.         
 .         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.         
@@ -321,22 +296,22 @@ Notes:
 .         
 .         if "`time'" == "anio_qtr" {
   4.                 local weight pesotri
-  5.                 local range "if inrange(`time', tq(`event_date') - 12,tq(`
-> event_date') + 12) "
+  5.                 local range "if inrange(`time', tq(${q_date_`treatment'}) 
+> - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
   6.                 qui sum `time' `range'
   7.                 local min_year = year(dofq(r(min)))
   8.             }
   9.             else if "`time'" == "anio_sem" {
  10.                 local weight pesosem
- 11.                 local range "if inrange(`time', th(`event_date') - 8,th(`e
-> vent_date') + 4) "
+ 11.                 local range "if inrange(`time', th(${s_date_`treatment'}) 
+> - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
  12.                 qui sum `time' `range'
  13.                 local min_year = year(dofh(r(min)))
  14.             }
  15.             else {
  16.                 local weight pesoan
- 17.                 local range "if inrange(`time', `event_date' - 4, `event_d
-> ate' + 2) "
+ 17.                 local range "if inrange(`time', ${y_date_`treatment'} - ${
+> y_pre}, ${y_date_`treatment'} + ${y_post}) "
  18.                 qui sum `time' `range'    
  19.                 local min_year = r(min)
  20.             }
@@ -357,13 +332,13 @@ Notes:
  33.             local outcome: word `i' of `outcomes'
  34.             
 .             if "`time'" == "anio_qtr" {
- 35.                     gen post = (`time' >= tq(`event_date'))
+ 35.                     gen post = (`time' >= tq(${q_date_`treatment'}))
  36.                 } 
  37.                 else if "`time'" == "anio_sem" {
- 38.                     gen post = (`time' >= th(`event_date'))
+ 38.                     gen post = (`time' >= th(${s_date_`treatment'}))
  39.                 }
  40.                 else {
- 41.                     gen post = (`time' >= `event_date')
+ 41.                     gen post = (`time' >= ${y_date_`treatment'})
  42.                 }
  43.            
 .                     foreach cond in "" "& kids_`treatment' == 1" "& kids_`tre
@@ -404,7 +379,8 @@ Notes:
  58.         
 . //         esttab using ../output/did_`treatment'_`groups_vars'_`time'.tex, l
 > abel se ar2 compress ///
-. //             replace nonotes coeflabels(interaction "`event' x Post") ///
+. //             replace nonotes coeflabels(interaction "${legend_`treatment'} 
+> x Post") ///
 . //                      keep(interaction) star(* 0.1 ** 0.05 *** 0.01) ///
 . //                      mtitles("Employment women" "Employment men" "Hours wo
 > rked women" "Hours worked men")
