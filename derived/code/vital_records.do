@@ -118,4 +118,28 @@ program derived_data
 	save "..\output\births.dta", replace
 end
 
+program label_depar
+	label var    depar "Mother's residential state"
+	label define depar  1 "ARTIGAS" ///
+						2 "CANELONES" ///
+						3 "CERRO LARGO" ///
+						4 "COLONIA" ///
+						5 "DURAZNO" ///
+						6 "FLORES" ///
+						7 "FLORIDA" ///
+						8 "LAVALLEJA" ///
+						9 "MALDONADO" ///
+						10 "MONTEVIDEO" ///
+						11 "PAYSANDU" ///
+						12 "RÍO NEGRO" ///
+						13 "RIVERA" ///
+						14 "ROCHA" ///
+						15 "SALTO" ///
+						16 "SAN JOSÉ" ///
+						17 "SORIANO" ///
+						18 "TACUAREMBÓ" ///
+						19 "TREINTA Y TRES"
+	label values depar depar
+end
+
 main
