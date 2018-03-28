@@ -50,11 +50,19 @@ tablefill(
 	output = '../output/table_salto_filled.lyx'
 	)
 
+tablefill(
+	input = ('../output/tables.txt'),
+	template = '../source/table_florida.lyx',
+	output = '../output/table_florida_filled.lyx'
+	)
+
 run_lyx(program = '../output/table_rivera_filled.lyx')
 run_lyx(program = '../output/table_salto_filled.lyx')
+run_lyx(program = '../output/table_florida_filled.lyx')
 
 os.rename('../output/table_rivera_filled.pdf', '../output/table_rivera.pdf')
 os.rename('../output/table_salto_filled.pdf', '../output/table_salto.pdf')
+os.rename('../output/table_florida_filled.pdf', '../output/table_florida.pdf')
 
 end_make_logging()
 

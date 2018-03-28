@@ -33,3 +33,4 @@
     global legend_mvd    = "Montevideo"
     global legend_rivera = "Rivera"
     global legend_salto  = "Salto"
+    global legend_salto  = "Florida"

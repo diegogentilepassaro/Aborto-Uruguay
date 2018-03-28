@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-28 17:08:02 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-03-28 17:47:41 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -112,7 +112,7 @@ Notes:
 > = 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*pay
 > sandu 1111020  *fray bentos 1212020
  29.                                 gen `var'`age_group'_florida = (loc_code =
-> = 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+> = 808220)  if (inlist(loc_code,808220,1919020)   & `subsample')
  30. 
 .                                 gen `var'_c`age_group'_rivera  = (loc_code ==
 >  1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio 
@@ -121,14 +121,14 @@ Notes:
 >  == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*p
 > aysandu 1111020  *fray bentos 1212020
  32.                                 gen `var'_c`age_group'_florida = (loc_code
->  == 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+>  == 808220)  if (inlist(loc_code,808220,1919020)   & `subsample')
  33. 
 .                                 gen `var'_d`age_group'_rivera  = (dpto == 13)
 >  if (inlist(dpto,13,4,2)   & `subsample')
  34.                                 gen `var'_d`age_group'_salto   = (dpto == 
 > 15) if (inlist(dpto,15,11,12) & `subsample')
  35.                                 gen `var'_d`age_group'_florida = (dpto == 
-> 8)  if (inlist(dpto,8,4,19)   & `subsample')
+> 8)  if (inlist(dpto,8,19)   & `subsample')
  36.                         }
  37.                         local value = 1
  38.                 }
@@ -144,7 +144,7 @@ Notes:
 Duplicates in terms of all variables
 
 (5 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_1964_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3290_000001.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -342,6 +342,8 @@ file ..\temp\clean_loc_1998_2016_impl_date.dta saved
 
 .     global legend_salto  = "Salto"
 
+.     global legend_salto  = "Florida"
+
 . 
 end of do-file
 (803,973 missing values generated)
@@ -349,49 +351,49 @@ end of do-file
 (1,128,811 missing values generated)
 (1,866,482 missing values generated)
 (1,858,096 missing values generated)
-(1,871,996 missing values generated)
+(1,873,737 missing values generated)
 (1,866,482 missing values generated)
 (1,858,096 missing values generated)
-(1,871,996 missing values generated)
+(1,873,737 missing values generated)
 (1,853,374 missing values generated)
 (1,852,229 missing values generated)
-(1,860,400 missing values generated)
+(1,869,493 missing values generated)
 (1,868,381 missing values generated)
 (1,859,977 missing values generated)
-(1,873,320 missing values generated)
+(1,874,888 missing values generated)
 (1,868,381 missing values generated)
 (1,859,977 missing values generated)
-(1,873,320 missing values generated)
+(1,874,888 missing values generated)
 (1,856,535 missing values generated)
 (1,854,250 missing values generated)
-(1,862,789 missing values generated)
+(1,870,935 missing values generated)
 (1,874,692 missing values generated)
 (1,869,881 missing values generated)
-(1,877,426 missing values generated)
+(1,878,320 missing values generated)
 (1,874,692 missing values generated)
 (1,869,881 missing values generated)
-(1,877,426 missing values generated)
+(1,878,320 missing values generated)
 (1,867,896 missing values generated)
 (1,866,744 missing values generated)
-(1,871,585 missing values generated)
+(1,876,202 missing values generated)
 (1,875,149 missing values generated)
 (1,871,574 missing values generated)
-(1,877,929 missing values generated)
+(1,878,776 missing values generated)
 (1,875,149 missing values generated)
 (1,871,574 missing values generated)
-(1,877,929 missing values generated)
+(1,878,776 missing values generated)
 (1,868,837 missing values generated)
 (1,868,844 missing values generated)
-(1,872,174 missing values generated)
+(1,876,650 missing values generated)
 (1,875,920 missing values generated)
 (1,872,143 missing values generated)
-(1,878,212 missing values generated)
+(1,879,001 missing values generated)
 (1,875,920 missing values generated)
 (1,872,143 missing values generated)
-(1,878,212 missing values generated)
+(1,879,001 missing values generated)
 (1,870,257 missing values generated)
 (1,869,761 missing values generated)
-(1,872,945 missing values generated)
+(1,877,056 missing values generated)
 (data now sorted by numero pers anio)
   variable fertile_age was float now byte
   variable female was float now byte
@@ -463,7 +465,7 @@ File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883359:152(99555):1481189844:1460099072
+  1883359:152(99555):2095856647:1393451153
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -597,58 +599,58 @@ nbr_under~da |  1,883,359    .9564236    1.256639          0         14
 kids_florida |  1,883,359      .50243    .4999942          0          1
 tr~nt_rivera |     16,877    .5510458    .4974022          0          1
 tre~nt_salto |     25,263    .4473736    .4972326          0          1
-t~nt_florida |     11,363    .3789492    .4851468          0          1
+t~nt_florida |      9,622    .4475161    .4972637          0          1
 -------------+---------------------------------------------------------
 tre~c_rivera |     16,877    .5510458    .4974022          0          1
 trea~c_salto |     25,263    .4473736    .4972326          0          1
-tr~c_florida |     11,363    .3789492    .4851468          0          1
+tr~c_florida |      9,622    .4475161    .4972637          0          1
 tre~d_rivera |     29,985    .3838919    .4863402          0          1
 trea~d_salto |     31,130    .4058143    .4910568          0          1
 -------------+---------------------------------------------------------
-tr~d_florida |     22,959    .3223572    .4673891          0          1
+tr~d_florida |     13,866    .5337516    .4988775          0          1
 placebo_ri~a |     14,978    .5478034    .4977262          0          1
 placebo_sa~o |     23,382    .4444872    .4969194          0          1
-placebo_fl~a |     10,039    .3877876      .48727          0          1
+placebo_fl~a |      8,471    .4595679     .498392          0          1
 placebo_c~ra |     14,978    .5478034    .4977262          0          1
 -------------+---------------------------------------------------------
 placebo_c_~o |     23,382    .4444872    .4969194          0          1
-placebo_c~da |     10,039    .3877876      .48727          0          1
+placebo_c~da |      8,471    .4595679     .498392          0          1
 placebo_d~ra |     26,824    .3826424    .4860412          0          1
 placebo_d_~o |     29,109    .3997389     .489853          0          1
-placebo_d~da |     20,570    .3308216    .4705204          0          1
+placebo_d~da |     12,424    .5477302    .4977366          0          1
 -------------+---------------------------------------------------------
 treatment_.. |      8,667    .5415946    .4982956          0          1
 treatment_.. |     13,478    .4565959     .498131          0          1
-treatment_.. |      5,933    .3819316    .4859009          0          1
+treatment_.. |      5,039    .4496924    .4975121          0          1
 treatment_.. |      8,667    .5415946    .4982956          0          1
 treatment_.. |     13,478    .4565959     .498131          0          1
 -------------+---------------------------------------------------------
-treatment_.. |      5,933    .3819316    .4859009          0          1
+treatment_.. |      5,039    .4496924    .4975121          0          1
 treatment_.. |     15,463    .3795512     .485291          0          1
 treatment_.. |     16,615    .4142642    .4926094          0          1
-treatment_.. |     11,774     .324019     .468027          0          1
+treatment_.. |      7,157    .5330446    .4989417          0          1
 treatment_.. |      8,210    .5610231    .4962924          0          1
 -------------+---------------------------------------------------------
 treatment_.. |     11,785    .4368265    .4960141          0          1
-treatment_.. |      5,430    .3756906    .4843453          0          1
+treatment_.. |      4,583    .4451233    .4970337          0          1
 treatment_.. |      8,210    .5610231    .4962924          0          1
 treatment_.. |     11,785    .4368265    .4960141          0          1
-treatment_.. |      5,430    .3756906    .4843453          0          1
+treatment_.. |      4,583    .4451233    .4970337          0          1
 -------------+---------------------------------------------------------
 treatment_.. |     14,522     .388514    .4874292          0          1
 treatment_.. |     14,515    .3961419    .4891114          0          1
-treatment_.. |     11,185     .320608    .4667312          0          1
+treatment_.. |      6,709    .5345059    .4988451          0          1
 treatment_.. |      7,439    .5429493    .4981854          0          1
 treatment_.. |     11,216    .4449893    .4969868          0          1
 -------------+---------------------------------------------------------
-treatment_.. |      5,147    .3831358    .4861982          0          1
+treatment_.. |      4,358    .4525011    .4977959          0          1
 treatment_.. |      7,439    .5429493    .4981854          0          1
 treatment_.. |     11,216    .4449893    .4969868          0          1
-treatment_.. |      5,147    .3831358    .4861982          0          1
+treatment_.. |      4,358    .4525011    .4977959          0          1
 treatment_.. |     13,102    .3785682    .4850487          0          1
 -------------+---------------------------------------------------------
 treatment_.. |     13,598    .4046919    .4908504          0          1
-treatment_.. |     10,414    .3291723    .4699352          0          1
+treatment_.. |      6,303     .543868    .4981114          0          1
 
 
 
@@ -798,4 +800,4 @@ file ..\output\ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2018-03-28 17:09:53
+ make.py ended: 2018-03-28 17:49:21

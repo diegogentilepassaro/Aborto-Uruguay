@@ -60,15 +60,15 @@ program assign_treatment
 				local subsample " hombre == `value'  `restr`age_group''"
 				gen `var'`age_group'_rivera  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
 				gen `var'`age_group'_salto   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
-				gen `var'`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+				gen `var'`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,1919020)   & `subsample')
 
 				gen `var'_c`age_group'_rivera  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
 				gen `var'_c`age_group'_salto   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
-				gen `var'_c`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+				gen `var'_c`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,1919020)   & `subsample')
 
 				gen `var'_d`age_group'_rivera  = (dpto == 13) if (inlist(dpto,13,4,2)   & `subsample')
 				gen `var'_d`age_group'_salto   = (dpto == 15) if (inlist(dpto,15,11,12) & `subsample')
-				gen `var'_d`age_group'_florida = (dpto == 8)  if (inlist(dpto,8,4,19)   & `subsample')
+				gen `var'_d`age_group'_florida = (dpto == 8)  if (inlist(dpto,8,19)   & `subsample')
 			}
 			local value = 1
 		}

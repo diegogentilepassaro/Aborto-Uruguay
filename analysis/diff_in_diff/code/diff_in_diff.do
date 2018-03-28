@@ -13,7 +13,7 @@ program main_diff_analysis
     local labor_restr_mvd "inrange(edad, 16, 45)"    
     local educ_restr "inrange(edad, 18, 25)"
 
-    foreach city in rivera salto {
+    foreach city in rivera salto florida {
         
         foreach group_vars in labor /*educ*/ {
 
