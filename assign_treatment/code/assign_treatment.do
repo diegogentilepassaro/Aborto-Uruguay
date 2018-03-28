@@ -3,11 +3,28 @@ set more off
 adopath + ../../library/stata/gslab_misc/ado
 
 program main_assign_treatment
+    add_impl_date
     assign_treatment
 end
 
+program add_impl_date
+	import excel ..\..\raw\timeline_implementation.xlsx, clear firstrow cellrange(D1:E14)
+	keep if !mi(impl_date)
+	bys dpto: egen impl_date_dpto = min(impl_date)
+	format %td impl_date_dpto
+	keep *dpto
+	duplicates drop
+	isid dpto
+	tempfile impl_date_dpto
+	save `impl_date_dpto'
+
+	use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
+	merge m:1 dpto using `impl_date_dpto', assert(1 3) nogen
+    save_data ..\temp\clean_loc_1998_2016_impl_date.dta, key(numero pers anio) replace 
+end
+
 program assign_treatment
-    use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
+    use ..\temp\clean_loc_1998_2016_impl_date.dta, clear 
 	
 	* Dates of treatments
 	do ../../analysis/globals.do
