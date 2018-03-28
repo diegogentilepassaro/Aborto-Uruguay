@@ -10,17 +10,7 @@ program assign_treatment
     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
 	
 	* Dates of treatments
-	global q_date_mvd    "2004q2"
-	global q_date_rivera "2010q3"
-	global q_date_salto  "2013q1"
-	
-	global s_date_mvd    "2004h1"
-	global s_date_rivera "2010h2"
-	global s_date_salto  "2013h1"
-	
-	global y_date_mvd    2004 
-	global y_date_rivera 2010 
-	global y_date_salto  2013 
+	do ../../analysis/globals.do
 
 	* Variables for the triple diff
 	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
@@ -30,15 +20,15 @@ program assign_treatment
 	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
 	
 	gen yob = anio-edad
-	foreach city in rivera salto {
+	foreach city in rivera salto florida {
 		gen age_`city'     = ${y_date_`city'} - yob
 		gen under14_`city' = (inrange(age_`city',0,14))
 		bys anio numero: egen nbr_under14_`city' = total(under14_`city')
 		gen kids_`city' = (nbr_under14_`city' > 0)
 	}
 	
-	* Diff in Diff Rivera y Salto
-	local restr         ""
+	* Diff in Diff Rivera , Salto , Florida
+	local restr         " & inrange(edad, 16, 45)"
 	local restr_young   " & inrange(edad, 16, 30)"
 	local restr_adult   " & inrange(edad, 31, 45)"
 	local restr_placebo " & inrange(edad, 46, 60)"
@@ -50,32 +40,29 @@ program assign_treatment
 				continue
 			}
 			else {
-				gen `var'`age_group'_rivera = (loc_code == 1313020) ///
-					if (inlist(loc_code,1313020,431050,202020)   & hombre == `value'  `restr`age_group'')
-				gen `var'`age_group'_salto  = (loc_code == 1515020) ///
-					if (inlist(loc_code,1515020,1111020,1212020) & hombre == `value'  `restr`age_group'')
-				gen `var'`age_group'_florida = (loc_code == 808220) ///
-					if (inlist(loc_code,808220,1111020,1212020)  & hombre == `value'  `restr`age_group'')
+				local subsample " hombre == `value'  `restr`age_group''"
+				gen `var'`age_group'_rivera  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
+				gen `var'`age_group'_salto   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
+				gen `var'`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+
+				gen `var'_c`age_group'_rivera  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
+				gen `var'_c`age_group'_salto   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
+				gen `var'_c`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,431050,1919020)   & `subsample')
+
+				gen `var'_d`age_group'_rivera  = (dpto == 13) if (inlist(dpto,13,4,2)   & `subsample')
+				gen `var'_d`age_group'_salto   = (dpto == 15) if (inlist(dpto,15,11,12) & `subsample')
+				gen `var'_d`age_group'_florida = (dpto == 8)  if (inlist(dpto,8,4,19)   & `subsample')
 			}
 			local value = 1
 		}
 	}
 
-	*rio branco 431050
-	*artigas    202020
-	
-	*paysandu 1111020
-	*fray bentos 1212020
-	
-	/*gen treatment_rivera = (dpto == 13 & hombre == 0)
-    gen treatment_salto  = (dpto == 15 & hombre == 0)
+    save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
+end
 
-	gen placebo_rivera   = (dpto == 13 & hombre == 1)
-    gen placebo_salto    = (dpto == 15 & hombre == 1)
-	
-    gen control_rivera   = ((dpto == 2 | dpto == 4 )& hombre == 0)
-    gen control_salto    = (dpto == 11  & hombre == 0)*/
+main_assign_treatment
 
+/*
 	* Diff in Diff Montevideo
 	gen treatment_mvd_female  = (dpto == 1 & female == 1)
 	gen treatment_mvd_poor    = (dpto == 1 & female == 1 & poor == 1)
@@ -161,7 +148,5 @@ program assign_treatment
 	gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor == 1 & ind_under14 == 0)
 	gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 1)
 	gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor == 0 & ind_under14 == 0)
-    save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
-end
 
-main_assign_treatment
+
