@@ -13,8 +13,10 @@ program main_scm
 		
 	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
 	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
-	
-	foreach city in rivera salto {
+	local restr_florida "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 834050))"
+
+
+	foreach city in rivera salto florida {
 	    foreach group_vars in /*educ*/ labor {
 			
 			foreach special_legend in "" /*"placebo"*/ {
