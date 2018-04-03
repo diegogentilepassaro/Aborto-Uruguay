@@ -11,8 +11,8 @@ program main_scm
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
 		
-	local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
-	local restr_salto "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
+	local restr_rivera  "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
+	local restr_salto   "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
 	local restr_florida "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 834050))"
 
 
