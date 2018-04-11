@@ -29,6 +29,19 @@
     global y_pre  4
     global y_post 2
 
+    * Ranges SCM (to build synth control)
+    global q_scm_pre  30
+    global q_scm_post 16
+    global s_scm_pre  20
+    global s_scm_post 8
+    global y_scm_pre  10
+    global y_scm_post 4
+
+    *Lag list (related to Ranges SCM)
+    global q_lag_list " 8 9 10 11 12 13 14 15 16" //`" 1 3 5 7 "'
+    global s_lag_list " 8 9 10 11 12 13 14 15 16 17 18 19 20 " //`" 5 6 7 8 9 10 11 12 "'
+    global y_lag_list " 2 3 4 5 6 7 " //`" 3 4 5 6 "'
+
     * Legends
     global legend_mvd    = "Montevideo"
     global legend_rivera = "Rivera"

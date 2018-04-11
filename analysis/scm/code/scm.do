@@ -4,7 +4,7 @@ set more off
 program main_scm
 	do ../../globals.do
     * Definition of research designs
-	local control_vars = "edad married nbr_people ind_under14 y_hogar"
+	local add_control_vars = "edad married nbr_people ind_under14 y_hogar"
 	local labor_vars   = "trabajo horas_trabajo"
 	local educ_vars    = "educ_HS_or_more educ_more_HS"
 	local outcome_vars = "`labor_vars' " + "`educ_vars'"
@@ -39,21 +39,19 @@ program main_scm
 					}
 				}
 					
-			build_synth_control, outcomes(`outcome_vars') city(`city') event_date(${s_date_`city'}) ///
-				time(anio_sem) controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
+			build_synth_control, outcomes(`outcome_vars') city(`city') time(anio_sem)  ///
+				controls(`add_control_vars') `restr_`city'' special_legend(`special_legend') ///
 				sample_restr(`sample_restr')
 				
-			/*build_synth_control, outcomes(`outcome_vars') city(`city') event_date(`y_date_`city'') ///
-				time(anio)     controls(`control_vars') `restr_`city'' special_legend(`special_legend') ///
+			/*build_synth_control, outcomes(`outcome_vars') city(`city') time(anio)  ///
+				controls(`add_control_vars') `restr_`city'' special_legend(`special_legend') ///
 				sample_restr(`sample_restr')*/
 			
-			plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(${s_date_`city'}) ///
-				time(anio_sem) groups_vars(`group_vars') city_legend(${legend_`city'})           ///
-				stub_list(``group_vars'_stubs') special_legend(`special_legend')
+			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') ///
+				time(anio_sem) stub_list(``group_vars'_stubs') special_legend(`special_legend')
 
-			/*plot_scm, outcomes(``group_vars'_vars') city(`city') event_date(`y_date_`city'') ///
-				time(anio)     groups_vars(`group_vars') city_legend(${legend_`city'})         ///
-				stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
+			/*plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') ///
+				time(anio) stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
 
 	/*grc1leg scm_`city'_`group_vars'_anio_sem scm_`city'_`group_vars'_anio_semplacebo, cols(2) ///
@@ -72,7 +70,7 @@ program main_scm
 end
 
 program build_synth_control
-	syntax [if], outcomes(string) controls(string) city(string) event_date(string) ///
+	syntax [if], outcomes(string) controls(string) city(string) ///
 	    time(str) sample_restr(str) [special_legend(string) restr(string)]
 
     use "..\..\..\assign_treatment\output\ech_final_98_2016.dta", clear
@@ -81,31 +79,30 @@ program build_synth_control
 	* Setup time settings by: qtr, sem, yr
 	if "`time'" == "anio_qtr" {
 			local weight pesotri
-			local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28"' //`" 1 3 5 7 "'
-			local range "if inrange(`time', tq(`event_date') - 28,tq(`event_date') + 8) "
+			local lag_list `" ${q_lag_list} "' 
+			local range "if inrange(`time', tq(${q_date_`city'}) - ${q_scm_pre},tq(${q_date_`city'}) + ${q_scm_post}) "
 			qui sum `time' `range'	
 			local min_year = year(dofq(r(min)))
-			qui sum `time'  if  `time' == tq(`event_date')
+			local event_date = tq(${q_date_`city'})
 		}
 		else if "`time'" == "anio_sem" {
 			local weight pesosem
-			local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 19 20 "' //`" 5 6 7 8 9 10 11 12 "'
-			local range "if inrange(`time', th(`event_date') - 20,th(`event_date') + 4) "
+			local lag_list `" ${s_lag_list} "'
+			local range "if inrange(`time', th(${s_date_`city'}) - ${s_scm_pre},th(${s_date_`city'}) + ${s_scm_post}) "
 			qui sum `time' `range'	
 			local min_year = year(dofh(r(min)))
-			qui sum `time'  if  `time' == th(`event_date')		
+			local event_date = th(${s_date_`city'})		
 		}
 		else {
 			local weight pesoan
-			local lag_list `" 2 3 4 5 6 7 "' //`" 3 4 5 6 "'
-			local range "if inrange(`time', `event_date' - 4, `event_date' + 2) "
+			local lag_list `" ${y_lag_list} "' 
+			local range "if inrange(`time', ${y_date_`city'} - ${y_scm_pre}, ${y_date_`city'} + ${y_scm_post}) "
 			qui sum `time' `range'	
 			local min_year = r(min)
-			qui sum `time'  if  `time' == `event_date'	
-		}
-	local event_date = r(mean)		
+			local event_date = ${y_date_`city'}	
+		}		
 	keep `range'
-	cap drop if `restr'
+	cap drop if `restr' //
 
 	* Setup the controls to be used depending on the period
 	if `min_year' < 2001  {
@@ -184,25 +181,28 @@ program build_synth_control
 end
 
 program plot_scm
-    syntax, outcomes(string) city(string) city_legend(string) event_date(string) ///
-	    stub_list(string) time(str) groups_vars(str) [special_legend(string)]
+    syntax, outcomes(string) city(string) time(str) groups_vars(str) ///
+	    stub_list(string) [special_legend(string)]
 	
 	use "../temp/controltrends_`city'_`time'`special_legend'.dta", clear
 
 	* Setup time settings by: qtr, sem, yr
     if "`time'" == "anio_qtr" {
 	    format `time' %tq 
-		local vertical = tq(`event_date') + 0.5
+		local range "if inrange(`time', tq(${q_date_`city'}) - ${q_pre},tq(${q_date_`city'}) + ${q_post}) "
+		local vertical = tq(${q_date_`city'}) + 0.5
 		local xtitle "Year-qtr"
 		}
 		else if "`time'" == "anio_sem" {
 		format `time' %th
-		local vertical = th(`event_date') + 0.5
+		local range "if inrange(`time', th(${s_date_`city'}) - ${s_pre},th(${s_date_`city'}) + ${s_post}) "
+		local vertical = th(${s_date_`city'}) + 0.5
 		local xtitle "Year-half"		
 		}
 		else {
 		format `time' %ty
-		local vertical = `event_date' + 0.5
+		local range "if inrange(`time', ${y_date_`city'} - ${y_pre}, ${y_date_`city'} + ${y_post}) "
+		local vertical = ${y_date_`city'} + 0.5
 		local xtitle "Year"	
 		}
 	local number_outcomes: word count `outcomes'
@@ -215,8 +215,6 @@ program plot_scm
 		local outcome_var: word `i' of `outcomes'
 	    local stub_var: word `i' of `stub_list'
 		
-		local range "if inrange(`time', th(`event_date') - 8,th(`event_date') + 4) "
-
 		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 0) replace
 		tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 0) replace
 		 if "`outcome_var'" == "trabajo" {
@@ -229,7 +227,7 @@ program plot_scm
 		qui twoway (line `city'_`outcome_var' `time' `range', lcolor(navy) lwidth(thick)) ///
 			   (line s_`city'_`outcome_var' `time' `range', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
 			   ytitle("`stub_var'", size(vlarge)) xline(`vertical', lcolor(black) lpattern(dot)) ///
-			   legend(label(1 `city_legend') label(2 "Synthetic `city_legend'")  size(vlarge) width(100) forcesize) ///
+			   legend(label(1 ${legend_`city'}) label(2 "Synthetic `city_legend'")  size(vlarge) width(100) forcesize) ///
 			   title(`stub_var', color(black) size(vlarge))  xtitle(, size(vlarge)) ///
 			   ylabel(`ylabel', labs(large)) xlabel(#7, labs(large)) graphregion(color(white)) bgcolor(white) ///
 			   name(`city'_`outcome_var'`special_legend', replace)
@@ -243,7 +241,7 @@ program plot_scm
 	local plot1: word 1 of `plots' 	
 	
 	qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') position(6) cols(2) ///
-		   graphregion(color(white)) title({bf: `city_legend' `special_legend'}, color(black) size(vlarge)) ///
+		   graphregion(color(white)) title({bf: ${legend_`city'} `special_legend'}, color(black) size(vlarge)) ///
 		   name(scm_`city'_`groups_vars'_`time'`special_legend')
     graph display, ysize(5) xsize(12)
 	graph export ../output/scm_`city'_`groups_vars'_`time'`special_legend'.pdf, replace    

@@ -1,5 +1,5 @@
 
- make.py started: 2018-03-29 17:48:37 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
+ make.py started: 2018-04-05 17:32:15 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
 
 
 
@@ -14,10 +14,10 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       4 | 3.07e-005 | 7.08e-015 | -4.14e+002 | -4.14e+002 |  3.417 | 0.6610 | 7.59e-006
       5 | 3.74e-006 | 8.62e-016 | -4.14e+002 | -4.14e+002 |  4.183 | 0.8782 | 3.32e-007
       6 | 1.39e-007 | 3.20e-017 | -4.14e+002 | -4.14e+002 |  5.398 | 0.9628 | 5.22e-009
-      7 | 1.06e-009 | 2.52e-019 | -4.14e+002 | -4.14e+002 |  7.160 | 0.9924 | 1.34e-011
-      8 | 5.34e-012 | 3.22e-020 | -4.14e+002 | -4.14e+002 |  9.370 | 0.9950 | 1.00e-013
-      9 | 2.65e-014 | 3.91e-020 | -4.14e+002 | -4.14e+002 | 11.668 | 0.9950 | 6.11e-016
-     10 | 5.96e-016 | 3.12e-020 | -4.14e+002 | -4.14e+002 | 13.994 | 0.9950 | 3.07e-018
+      7 | 1.06e-009 | 2.47e-019 | -4.14e+002 | -4.14e+002 |  7.160 | 0.9924 | 1.34e-011
+      8 | 5.34e-012 | 4.35e-020 | -4.14e+002 | -4.14e+002 |  9.370 | 0.9950 | 1.00e-013
+      9 | 2.67e-014 | 4.74e-020 | -4.14e+002 | -4.14e+002 | 11.668 | 0.9950 | 6.11e-016
+     10 | 4.78e-016 | 4.30e-020 | -4.14e+002 | -4.14e+002 | 14.000 | 0.9950 | 3.07e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -28,10 +28,10 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       3 | 5.57e-005 | 4.31e-014 | -2.27e+002 | -2.27e+002 |  2.849 | 0.9720 | 1.26e-006
       4 | 1.84e-006 | 1.43e-015 | -2.27e+002 | -2.27e+002 |  3.719 | 0.9669 | 4.89e-008
       5 | 2.87e-007 | 2.22e-016 | -2.27e+002 | -2.27e+002 |  4.475 | 0.8443 | 1.50e-007
-      6 | 9.15e-009 | 7.06e-018 | -2.27e+002 | -2.27e+002 |  5.825 | 0.9681 | 1.07e-009
-      7 | 6.55e-011 | 6.18e-020 | -2.27e+002 | -2.27e+002 |  7.625 | 0.9928 | 2.41e-012
-      8 | 3.28e-013 | 5.62e-020 | -2.27e+002 | -2.27e+002 |  9.797 | 0.9950 | 1.87e-014
-      9 | 1.79e-015 | 7.18e-020 | -2.27e+002 | -2.27e+002 | 12.095 | 0.9950 | 1.25e-016
+      6 | 9.15e-009 | 7.07e-018 | -2.27e+002 | -2.27e+002 |  5.825 | 0.9681 | 1.07e-009
+      7 | 6.55e-011 | 8.27e-020 | -2.27e+002 | -2.27e+002 |  7.625 | 0.9928 | 2.41e-012
+      8 | 3.28e-013 | 6.84e-020 | -2.27e+002 | -2.27e+002 |  9.797 | 0.9950 | 1.87e-014
+      9 | 1.72e-015 | 9.28e-020 | -2.27e+002 | -2.27e+002 | 12.095 | 0.9950 | 1.25e-016
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -60,10 +60,10 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       4 | 3.95e-005 | 1.24e-014 | -3.48e+002 | -3.48e+002 |  3.262 | 0.7709 | 5.61e-006
       5 | 1.42e-005 | 4.44e-015 | -3.48e+002 | -3.48e+002 |  3.709 | 0.6414 | 3.61e-006
       6 | 2.16e-007 | 6.76e-017 | -3.48e+002 | -3.48e+002 |  4.865 | 0.9848 | 2.19e-009
-      7 | 1.34e-008 | 4.21e-018 | -3.48e+002 | -3.48e+002 |  5.908 | 0.9381 | 2.55e-009
-      8 | 8.38e-011 | 5.47e-020 | -3.48e+002 | -3.48e+002 |  7.562 | 0.9937 | 2.34e-012
-      9 | 4.28e-013 | 5.28e-020 | -3.48e+002 | -3.48e+002 |  9.775 | 0.9949 | 3.46e-014
-     10 | 2.15e-015 | 5.87e-020 | -3.48e+002 | -3.48e+002 | 12.073 | 0.9950 | 2.02e-016
+      7 | 1.34e-008 | 4.19e-018 | -3.48e+002 | -3.48e+002 |  5.908 | 0.9381 | 2.55e-009
+      8 | 8.38e-011 | 6.73e-020 | -3.48e+002 | -3.48e+002 |  7.562 | 0.9937 | 2.34e-012
+      9 | 4.28e-013 | 5.42e-020 | -3.48e+002 | -3.48e+002 |  9.775 | 0.9949 | 3.46e-014
+     10 | 2.26e-015 | 6.12e-020 | -3.48e+002 | -3.48e+002 | 12.073 | 0.9950 | 2.02e-016
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -106,9 +106,9 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       5 | 1.06e-005 | 2.66e-015 | -4.38e+002 | -4.38e+002 |  3.974 | 0.8725 | 7.50e-007
       6 | 2.70e-006 | 6.76e-016 | -4.38e+002 | -4.38e+002 |  4.570 | 0.7460 | 4.49e-007
       7 | 8.45e-008 | 2.12e-017 | -4.38e+002 | -4.38e+002 |  5.969 | 0.9687 | 1.66e-009
-      8 | 4.84e-010 | 1.25e-019 | -4.38e+002 | -4.38e+002 |  8.144 | 0.9943 | 2.21e-012
-      9 | 2.42e-012 | 4.95e-020 | -4.38e+002 | -4.38e+002 | 10.441 | 0.9950 | 1.12e-014
-     10 | 1.21e-014 | 5.76e-020 | -4.38e+002 | -4.38e+002 | 12.738 | 0.9950 | 5.66e-017
+      8 | 4.84e-010 | 1.40e-019 | -4.38e+002 | -4.38e+002 |  8.144 | 0.9943 | 2.21e-012
+      9 | 2.42e-012 | 6.11e-020 | -4.38e+002 | -4.38e+002 | 10.441 | 0.9950 | 1.12e-014
+     10 | 1.21e-014 | 4.60e-020 | -4.38e+002 | -4.38e+002 | 12.738 | 0.9950 | 5.66e-017
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -135,10 +135,10 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       4 | 9.01e-006 | 1.29e-014 | -1.89e+002 | -1.89e+002 |  3.065 | 0.9702 | 1.34e-007
       5 | 1.91e-006 | 2.75e-015 | -1.89e+002 | -1.89e+002 |  3.647 | 0.7878 | 1.06e-006
       6 | 2.35e-007 | 3.38e-016 | -1.89e+002 | -1.89e+002 |  4.505 | 0.8770 | 9.15e-008
-      7 | 2.11e-009 | 3.00e-018 | -1.89e+002 | -1.89e+002 |  6.275 | 0.9910 | 6.60e-011
-      8 | 1.05e-011 | 1.23e-019 | -1.89e+002 | -1.89e+002 |  8.567 | 0.9950 | 3.49e-013
-      9 | 5.29e-014 | 1.23e-019 | -1.89e+002 | -1.89e+002 | 10.865 | 0.9950 | 1.78e-015
-     10 | 4.43e-016 | 1.13e-019 | -1.89e+002 | -1.89e+002 | 13.164 | 0.9950 | 8.96e-018
+      7 | 2.11e-009 | 3.03e-018 | -1.89e+002 | -1.89e+002 |  6.275 | 0.9910 | 6.60e-011
+      8 | 1.05e-011 | 1.22e-019 | -1.89e+002 | -1.89e+002 |  8.567 | 0.9950 | 3.49e-013
+      9 | 5.28e-014 | 1.06e-019 | -1.89e+002 | -1.89e+002 | 10.865 | 0.9950 | 1.78e-015
+     10 | 5.54e-016 | 8.79e-020 | -1.89e+002 | -1.89e+002 | 13.168 | 0.9950 | 8.96e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -167,9 +167,9 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       5 | 3.27e-006 | 2.75e-015 | -2.40e+002 | -2.40e+002 |  3.633 | 0.8301 | 1.09e-006
       6 | 8.49e-008 | 7.14e-017 | -2.40e+002 | -2.40e+002 |  4.812 | 0.9740 | 5.24e-009
       7 | 1.60e-008 | 1.35e-017 | -2.40e+002 | -2.40e+002 |  5.552 | 0.8111 | 1.89e-008
-      8 | 8.19e-011 | 1.18e-019 | -2.40e+002 | -2.40e+002 |  7.593 | 0.9949 | 2.43e-012
-      9 | 4.10e-013 | 1.18e-019 | -2.40e+002 | -2.40e+002 |  9.889 | 0.9950 | 2.12e-014
-     10 | 2.20e-015 | 9.24e-020 | -2.40e+002 | -2.40e+002 | 12.186 | 0.9950 | 1.07e-016
+      8 | 8.19e-011 | 1.08e-019 | -2.40e+002 | -2.40e+002 |  7.593 | 0.9949 | 2.43e-012
+      9 | 4.10e-013 | 9.58e-020 | -2.40e+002 | -2.40e+002 |  9.889 | 0.9950 | 2.12e-014
+     10 | 2.11e-015 | 7.49e-020 | -2.40e+002 | -2.40e+002 | 12.186 | 0.9950 | 1.07e-016
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -181,13 +181,13 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
       4 | 7.18e-005 | 2.87e-014 | -3.42e+002 | -3.42e+002 |  2.897 | 0.8733 | 3.14e-006
       5 | 2.02e-005 | 8.05e-015 | -3.42e+002 | -3.42e+002 |  3.439 | 0.7194 | 4.96e-006
       6 | 5.62e-006 | 2.25e-015 | -3.42e+002 | -3.42e+002 |  3.991 | 0.7210 | 1.41e-006
-      7 | 1.65e-007 | 6.60e-017 | -3.42e+002 | -3.42e+002 |  5.251 | 0.9706 | 4.17e-009
-      8 | 2.73e-009 | 1.09e-018 | -3.42e+002 | -3.42e+002 |  6.784 | 0.9834 | 7.27e-011
-      9 | 1.95e-011 | 5.22e-020 | -3.42e+002 | -3.42e+002 |  8.158 | 0.9929 | 3.94e-013
-     10 | 1.11e-013 | 6.77e-020 | -3.42e+002 | -3.42e+002 |  9.126 | 0.9943 | 1.07e-014
-     11 | 6.97e-016 | 5.94e-020 | -3.42e+002 | -3.42e+002 | 10.156 | 0.9950 | 8.84e-016
-     12 | 4.73e-016 | 8.77e-020 | -3.42e+002 | -3.42e+002 | 11.960 | 0.9950 | 8.24e-017
-     13 | 4.93e-016 | 7.50e-020 | -3.42e+002 | -3.42e+002 | 14.262 | 0.9950 | 1.29e-018
+      7 | 1.65e-007 | 6.59e-017 | -3.42e+002 | -3.42e+002 |  5.251 | 0.9706 | 4.17e-009
+      8 | 2.73e-009 | 1.10e-018 | -3.42e+002 | -3.42e+002 |  6.784 | 0.9834 | 7.27e-011
+      9 | 1.95e-011 | 6.77e-020 | -3.42e+002 | -3.42e+002 |  8.158 | 0.9929 | 3.94e-013
+     10 | 1.11e-013 | 6.13e-020 | -3.42e+002 | -3.42e+002 |  9.126 | 0.9943 | 1.07e-014
+     11 | 7.30e-016 | 6.82e-020 | -3.42e+002 | -3.42e+002 | 10.156 | 0.9950 | 8.84e-016
+     12 | 4.73e-016 | 7.63e-020 | -3.42e+002 | -3.42e+002 | 11.960 | 0.9950 | 8.24e-017
+     13 | 5.87e-016 | 6.32e-020 | -3.42e+002 | -3.42e+002 | 14.275 | 0.9950 | 1.29e-018
 ----------------------------------------------------------------------------------
 optimization converged
 
@@ -221,18 +221,19 @@ Notes:
 . program main_scm
   1.         do ../../globals.do
   2.     * Definition of research designs
-.         local control_vars = "edad married nbr_people ind_under14 y_hogar"
+.         local add_control_vars = "edad married nbr_people ind_under14 y_hogar
+> "
   3.         local labor_vars   = "trabajo horas_trabajo"
   4.         local educ_vars    = "educ_HS_or_more educ_more_HS"
   5.         local outcome_vars = "`labor_vars' " + "`educ_vars'"
   6.         local labor_stubs  = `" "Employment" "Hours-worked" "'
   7.         local educ_stubs   = `" "High-school" "Some-college" "'
   8.                 
-.         local restr_rivera "restr((loc_code == 101010 | loc_code == 330020 | 
-> loc_code == 1630020 | loc_code == 1331050))"
-  9.         local restr_salto "restr((loc_code == 101010 | loc_code == 330020 
-> | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code 
-> == 1536000))"
+.         local restr_rivera  "restr((loc_code == 101010 | loc_code == 330020 |
+>  loc_code == 1630020 | loc_code == 1331050))"
+  9.         local restr_salto   "restr((loc_code == 101010 | loc_code == 33002
+> 0 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_cod
+> e == 1536000))"
  10.         local restr_florida "restr((loc_code == 101010 | loc_code == 33002
 > 0 | loc_code == 1630020 | loc_code == 834050))"
  11. 
@@ -265,28 +266,28 @@ Notes:
  29.                                 }
  30.                                         
 .                         build_synth_control, outcomes(`outcome_vars') city(`c
-> ity') event_date(${s_date_`city'}) ///
->                                 time(anio_sem) controls(`control_vars') `rest
-> r_`city'' special_legend(`special_legend') ///
+> ity')  ///
+>                                 time(anio_sem) controls(`add_control_vars') `
+> restr_`city'' special_legend(`special_legend') ///
 >                                 sample_restr(`sample_restr')
  31.                                 
 .                         /*build_synth_control, outcomes(`outcome_vars') city(
-> `city') event_date(`y_date_`city'') ///
->                                 time(anio)     controls(`control_vars') `rest
-> r_`city'' special_legend(`special_legend') ///
+> `city') ///
+>                                 time(anio)     controls(`add_control_vars') `
+> restr_`city'' special_legend(`special_legend') ///
 >                                 sample_restr(`sample_restr')*/
 .                         
 .                         plot_scm, outcomes(``group_vars'_vars') city(`city') 
-> event_date(${s_date_`city'}) ///
->                                 time(anio_sem) groups_vars(`group_vars') city
-> _legend(${legend_`city'})           ///
+> ///
+>                                 time(anio_sem) groups_vars(`group_vars')     
+>       ///
 >                                 stub_list(``group_vars'_stubs') special_legen
 > d(`special_legend')
  32. 
 .                         /*plot_scm, outcomes(``group_vars'_vars') city(`city'
-> ) event_date(`y_date_`city'') ///
->                                 time(anio)     groups_vars(`group_vars') city
-> _legend(${legend_`city'})         ///
+> ) ///
+>                                 time(anio)     groups_vars(`group_vars')     
+>     ///
 >                                 stub_list(``group_vars'_stubs') special_legen
 > d(`special_legend')*/
 .                 }
@@ -310,8 +311,7 @@ Notes:
 
 . 
 . program build_synth_control
-  1.         syntax [if], outcomes(string) controls(string) city(string) event_
-> date(string) ///
+  1.         syntax [if], outcomes(string) controls(string) city(string) ///
 >             time(str) sample_restr(str) [special_legend(string) restr(string)
 > ]
   2. 
@@ -321,209 +321,206 @@ Notes:
 .         * Setup time settings by: qtr, sem, yr
 .         if "`time'" == "anio_qtr" {
   5.                         local weight pesotri
-  6.                         local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 1
-> 9 20 21 22 23 24 25 26 27 28"' //`" 1 3 5 7 "'
-  7.                         local range "if inrange(`time', tq(`event_date') -
->  28,tq(`event_date') + 8) "
+  6.                         local lag_list `" ${q_lag_list} "' 
+  7.                         local range "if inrange(`time', tq(${q_date_`city'
+> }) - ${q_scm_pre},tq(${q_date_`city'}) + ${q_scm_post}) "
   8.                         qui sum `time' `range'  
   9.                         local min_year = year(dofq(r(min)))
- 10.                         qui sum `time'  if  `time' == tq(`event_date')
+ 10.                         local event_date = tq(${q_date_`city'})
  11.                 }
  12.                 else if "`time'" == "anio_sem" {
  13.                         local weight pesosem
- 14.                         local lag_list `" 8 9 10 11 12 13 14 15 16 17 18 1
-> 9 20 "' //`" 5 6 7 8 9 10 11 12 "'
- 15.                         local range "if inrange(`time', th(`event_date') -
->  20,th(`event_date') + 4) "
+ 14.                         local lag_list `" ${s_lag_list} "'
+ 15.                         local range "if inrange(`time', th(${s_date_`city'
+> }) - ${s_scm_pre},th(${s_date_`city'}) + ${s_scm_post}) "
  16.                         qui sum `time' `range'  
  17.                         local min_year = year(dofh(r(min)))
- 18.                         qui sum `time'  if  `time' == th(`event_date')    
->       
+ 18.                         local event_date = th(${s_date_`city'})         
  19.                 }
  20.                 else {
  21.                         local weight pesoan
- 22.                         local lag_list `" 2 3 4 5 6 7 "' //`" 3 4 5 6 "'
- 23.                         local range "if inrange(`time', `event_date' - 4, 
-> `event_date' + 2) "
+ 22.                         local lag_list `" ${y_lag_list} "' 
+ 23.                         local range "if inrange(`time', ${y_date_`city'} -
+>  ${y_scm_pre}, ${y_date_`city'} + ${y_scm_post}) "
  24.                         qui sum `time' `range'  
  25.                         local min_year = r(min)
- 26.                         qui sum `time'  if  `time' == `event_date'      
- 27.                 }
- 28.         local event_date = r(mean)              
- 29.         keep `range'
- 30.         cap drop if `restr'
- 31. 
+ 26.                         local event_date = ${y_date_`city'}     
+ 27.                 }               
+ 28.         keep `range'
+ 29.         cap drop if `restr' //
+ 30. 
 .         * Setup the controls to be used depending on the period
 .         if `min_year' < 2001  {
- 32.                 local control_vars " c98_* "
- 33.                 }
- 34.         else if `min_year' >=2001 & `min_year' < 2006  {
- 35.                 local control_vars " c98_* c01_* "
- 36.                 }
- 37.         else {
- 38.                 local control_vars " c98_* c01_* c06_* "
- 39.                 }
- 40.                 
+ 31.                 local control_vars " c98_* "
+ 32.                 }
+ 33.         else if `min_year' >=2001 & `min_year' < 2006  {
+ 34.                 local control_vars " c98_* c01_* "
+ 35.                 }
+ 36.         else {
+ 37.                 local control_vars " c98_* c01_* c06_* "
+ 38.                 }
+ 39.                 
 .         * Get identifier of treated unit, and collapse data by time and loc_c
 > ode
 .         qui sum loc_code if treatment_`city'==1 | placebo_`city'==1
- 41.         local trunit = r(mean)
- 42.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
+ 40.         local trunit = r(mean)
+ 41.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
 >  locations, not just the DiD controls
- 43.         replace   placebo_`city'=0 if   placebo_`city'!=1 
- 44.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
+ 42.         replace   placebo_`city'=0 if   placebo_`city'!=1 
+ 43.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
 > ty' `if' [aw = `weight'], by(`time' loc_code)
- 45.                 
+ 44.                 
 .         * Check the panel is balanced, this is for the synthetic control to w
 > ork
 .         xtset loc_code `time'
- 46.         local num_`time's = r(tmax) - r(tmin) + 1
- 47.         bysort loc_code: gen num_`time' = _N
- 48.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
+ 45.         local num_`time's = r(tmax) - r(tmin) + 1
+ 46.         bysort loc_code: gen num_`time' = _N
+ 47.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
 > ould be an assertion*/
- 49. 
+ 48. 
 .         * Check the panel is balanced against missing values
 .         local n_outcomes: word count `outcomes'
- 50.         forval i = 1/`n_outcomes' {
- 51.                 local outcome_var: word `i' of `outcomes' 
- 52.                 drop if `outcome_var'==.
- 53.         }
- 54.         bysort loc_code: replace num_`time' = _N
- 55.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
+ 49.         forval i = 1/`n_outcomes' {
+ 50.                 local outcome_var: word `i' of `outcomes' 
+ 51.                 drop if `outcome_var'==.
+ 52.         }
+ 53.         bysort loc_code: replace num_`time' = _N
+ 54.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
 > uld be an assertion*/
- 56. 
+ 55. 
 .         save "../temp/donorpool_`city'_`time'`special_legend'.dta", replace
- 57.         
+ 56.         
 .         * Create the synth control for each outcome
 .         forval i = 1/`n_outcomes' {
- 58.                 local var: word `i' of `outcomes'
- 59.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
+ 57.                 local var: word `i' of `outcomes'
+ 58.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
 >  clear
- 60.                 
+ 59.                 
 .                 * Create lags of current outcome
 .                 local lags "" // so that we do not add lags of other outcomes
- 61.                 local i=1
- 62.                 foreach j of numlist `lag_list' {
- 63.                         local lag`i' = `event_date' - `j'
- 64.                         local lags  = "`lags'" + " `var'(`lag`i'') "
- 65.                         local i = `i'+1
- 66.                 }
- 67.                 * We need unabbreviated variables for the synth
+ 60.                 local i=1
+ 61.                 foreach j of numlist `lag_list' {
+ 62.                         local lag`i' = `event_date' - `j'
+ 63.                         local lags  = "`lags'" + " `var'(`lag`i'') "
+ 64.                         local i = `i'+1
+ 65.                 }
+ 66.                 * We need unabbreviated variables for the synth
 .                 qui desc `control_vars', f varlist
- 68.                 local control_vars_exp `r(varlist)'
- 69. 
+ 67.                 local control_vars_exp `r(varlist)'
+ 68. 
 .                 * Run SCM, save data for this outcome, and rename vars
 .                 qui synth `var' `controls' `control_vars_exp' `lags', ///
 >                         trunit(`trunit') trperiod(`event_date') ///
 >                         keep("../temp/synth_`city'_`var'`special_legend'.dta"
 > , replace) 
- 70. 
+ 69. 
 .                 use "../temp/synth_`city'_`var'`special_legend'.dta", clear
- 71.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
+ 70.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
 >                         (geocode `time' `city'_`var'`special_legend' s_`city'
 > _`var'`special_legend')
- 72.                 drop if `time'==.
- 73.                 drop geocode _W_Weight
- 74.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
+ 71.                 drop if `time'==.
+ 72.                 drop geocode _W_Weight
+ 73.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
 > lace
- 75.         }
- 76. 
+ 74.         }
+ 75. 
 .         * Construct dataset with all outcomes for a given research design: ci
 > ty-time
 .         local outcome_var: word 1 of `outcomes' 
- 77.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
- 78. 
+ 76.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
+ 77. 
 .         forval i = 2/`n_outcomes' {
- 79.                 local outcome_var: word `i' of `outcomes' 
- 80.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
+ 78.                 local outcome_var: word `i' of `outcomes' 
+ 79.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
 > `special_legend'", nogen
- 81.         }
- 82.         save "../temp/controltrends_`city'_`time'`special_legend'.dta", re
+ 80.         }
+ 81.         save "../temp/controltrends_`city'_`time'`special_legend'.dta", re
 > place
- 83. end
+ 82. end
 
 . 
 . program plot_scm
-  1.     syntax, outcomes(string) city(string) city_legend(string) event_date(s
-> tring) ///
->             stub_list(string) time(str) groups_vars(str) [special_legend(stri
-> ng)]
+  1.     syntax, outcomes(string) city(string) time(str) groups_vars(str) ///
+>             stub_list(string) [special_legend(string)]
   2.         
 .         use "../temp/controltrends_`city'_`time'`special_legend'.dta", clear
   3. 
 .         * Setup time settings by: qtr, sem, yr
 .     if "`time'" == "anio_qtr" {
   4.             format `time' %tq 
-  5.                 local vertical = tq(`event_date') + 0.5
-  6.                 local xtitle "Year-qtr"
-  7.                 }
-  8.                 else if "`time'" == "anio_sem" {
-  9.                 format `time' %th
- 10.                 local vertical = th(`event_date') + 0.5
- 11.                 local xtitle "Year-half"                
- 12.                 }
- 13.                 else {
- 14.                 format `time' %ty
- 15.                 local vertical = `event_date' + 0.5
- 16.                 local xtitle "Year"     
- 17.                 }
- 18.         local number_outcomes: word count `outcomes'
- 19.         tsset `time'
- 20.         
+  5.                 local range "if inrange(`time', tq(${q_date_`city'}) - ${q
+> _pre},tq(${q_date_`city'}) + ${q_post}) "
+  6.                 local vertical = tq(${q_date_`city'}) + 0.5
+  7.                 local xtitle "Year-qtr"
+  8.                 }
+  9.                 else if "`time'" == "anio_sem" {
+ 10.                 format `time' %th
+ 11.                 local range "if inrange(`time', th(${s_date_`city'}) - ${s
+> _pre},th(${s_date_`city'}) + ${s_post}) "
+ 12.                 local vertical = th(${s_date_`city'}) + 0.5
+ 13.                 local xtitle "Year-half"                
+ 14.                 }
+ 15.                 else {
+ 16.                 format `time' %ty
+ 17.                 local range "if inrange(`time', ${y_date_`city'} - ${y_pre
+> }, ${y_date_`city'} + ${y_post}) "
+ 18.                 local vertical = ${y_date_`city'} + 0.5
+ 19.                 local xtitle "Year"     
+ 20.                 }
+ 21.         local number_outcomes: word count `outcomes'
+ 22.         tsset `time'
+ 23.         
 .         di `vertical'
- 21. 
+ 24. 
 .         * Create plot for each outcome
 .         forval i = 1/`number_outcomes' {
- 22.                 local outcome_var: word `i' of `outcomes'
- 23.             local stub_var: word `i' of `stub_list'
- 24.                 
-.                 local range "if inrange(`time', th(`event_date') - 8,th(`even
-> t_date') + 4) "
- 25. 
+ 25.                 local outcome_var: word `i' of `outcomes'
+ 26.             local stub_var: word `i' of `stub_list'
+ 27.                 
 .                 tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', wind
 > ow(1 1 0) replace
- 26.                 tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var
+ 28.                 tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var
 > ', window(1 1 0) replace
- 27.                  if "`outcome_var'" == "trabajo" {
- 28.                                 local ylabel "0.4 (0.1) 0.6"
- 29.                             }
- 30.                             else if "`outcome_var'" == "horas_trabajo" {
- 31.                                 local ylabel "12 (8) 28"
- 32.                             }
- 33.                                 
+ 29.                  if "`outcome_var'" == "trabajo" {
+ 30.                                 local ylabel "0.4 (0.1) 0.6"
+ 31.                             }
+ 32.                             else if "`outcome_var'" == "horas_trabajo" {
+ 33.                                 local ylabel "12 (8) 28"
+ 34.                             }
+ 35.                                 
 .                 qui twoway (line `city'_`outcome_var' `time' `range', lcolor(
 > navy) lwidth(thick)) ///
 >                            (line s_`city'_`outcome_var' `time' `range', lpatt
 > ern(dash) lcolor(black)), xtitle("`xtitle'") ///
 >                            ytitle("`stub_var'", size(vlarge)) xline(`vertical
 > ', lcolor(black) lpattern(dot)) ///
->                            legend(label(1 `city_legend') label(2 "Synthetic `
-> city_legend'")  size(vlarge) width(100) forcesize) ///
+>                            legend(label(1 ${legend_`city'}) label(2 "Syntheti
+> c `city_legend'")  size(vlarge) width(100) forcesize) ///
 >                            title(`stub_var', color(black) size(vlarge))  xtit
 > le(, size(vlarge)) ///
 >                            ylabel(`ylabel', labs(large)) xlabel(#7, labs(larg
 > e)) graphregion(color(white)) bgcolor(white) ///
 >                            name(`city'_`outcome_var'`special_legend', replace
 > )
- 34.     }
- 35.         
+ 36.     }
+ 37.         
 .         forval i = 1/`number_outcomes' {
- 36.                 local outcome_var: word `i' of `outcomes'
- 37.                 local plots = "`plots' " + "`city'_`outcome_var'`special_l
+ 38.                 local outcome_var: word `i' of `outcomes'
+ 39.                 local plots = "`plots' " + "`city'_`outcome_var'`special_l
 > egend'"
- 38.         }
- 39.                 
+ 40.         }
+ 41.                 
 .         local plot1: word 1 of `plots'  
- 40.         
+ 42.         
 .         qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') posi
 > tion(6) cols(2) ///
->                    graphregion(color(white)) title({bf: `city_legend' `specia
-> l_legend'}, color(black) size(vlarge)) ///
+>                    graphregion(color(white)) title({bf: ${legend_`city'} `spe
+> cial_legend'}, color(black) size(vlarge)) ///
 >                    name(scm_`city'_`groups_vars'_`time'`special_legend')
- 41.     graph display, ysize(5) xsize(12)
- 42.         graph export ../output/scm_`city'_`groups_vars'_`time'`special_leg
+ 43.     graph display, ysize(5) xsize(12)
+ 44.         graph export ../output/scm_`city'_`groups_vars'_`time'`special_leg
 > end'.pdf, replace    
- 43. end
+ 45. end
 
 . 
 . main_scm
@@ -583,6 +580,29 @@ Notes:
 .     global y_post 2
 
 . 
+.     * Ranges SCM
+.     global q_scm_pre  30
+
+.     global q_scm_post 16
+
+.     global s_scm_pre  20
+
+.     global s_scm_post 8
+
+.     global y_scm_pre  10
+
+.     global y_scm_post 4
+
+. 
+.     *Lag list (related to Ranges SCM)
+.     global q_lag_list " 8 9 10 11 12 13 14 15 16" //`" 1 3 5 7 "'
+
+.     global s_lag_list " 8 9 10 11 12 13 14 15 16 17 18 19 20 " //`" 5 6 7 8 9
+>  10 11 12 "'
+
+.     global y_lag_list " 2 3 4 5 6 7 " //`" 3 4 5 6 "'
+
+. 
 .     * Legends
 .     global legend_mvd    = "Montevideo"
 
@@ -595,13 +615,13 @@ Notes:
 . 
 end of do-file
 (1,490,121 observations deleted)
-(129,998 observations deleted)
-(105,544 real changes made)
-(116,432 real changes made)
+(78,205 observations deleted)
+(128,267 real changes made)
+(141,544 real changes made)
        panel variable:  loc_code (unbalanced)
-        time variable:  anio_sem, 2000h2 to 2012h2, but with gaps
+        time variable:  anio_sem, 2000h2 to 2014h2, but with gaps
                 delta:  1 halfyear
-(303 observations deleted)
+(391 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
@@ -610,35 +630,35 @@ end of do-file
 (0 observations deleted)
 (note: file ../temp/donorpool_rivera_anio_sem.dta not found)
 file ../temp/donorpool_rivera_anio_sem.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_rivera_trabajo.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_rivera_horas_trabajo.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_rivera_educ_HS_or_more.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_rivera_educ_more_HS.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 (note: file ../temp/controltrends_rivera_anio_sem.dta not found)
 file ../temp/controltrends_rivera_anio_sem.dta saved
-        time variable:  anio_sem, 2000h2 to 2012h2
+        time variable:  anio_sem, 2000h2 to 2014h2
                 delta:  1 halfyear
 101.5
 The smoother applied was
@@ -651,13 +671,13 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= s_rivera_horas_trabajo
 (file ../output/scm_rivera_labor_anio_sem.pdf written in PDF format)
 (1,490,121 observations deleted)
-(96,121 observations deleted)
-(109,503 real changes made)
-(128,770 real changes made)
+(60,624 observations deleted)
+(122,409 real changes made)
+(144,048 real changes made)
        panel variable:  loc_code (unbalanced)
-        time variable:  anio_sem, 2003h1 to 2015h1, but with gaps
+        time variable:  anio_sem, 2003h1 to 2015h2, but with gaps
                 delta:  1 halfyear
-(391 observations deleted)
+(412 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
@@ -666,35 +686,35 @@ The smoother applied was
 (0 observations deleted)
 (note: file ../temp/donorpool_salto_anio_sem.dta not found)
 file ../temp/donorpool_salto_anio_sem.dta saved
-(4 observations deleted)
+(3 observations deleted)
 file ../temp/synth_salto_trabajo.dta saved
-(4 observations deleted)
+(3 observations deleted)
 file ../temp/synth_salto_horas_trabajo.dta saved
-(4 observations deleted)
+(3 observations deleted)
 file ../temp/synth_salto_educ_HS_or_more.dta saved
-(4 observations deleted)
+(3 observations deleted)
 file ../temp/synth_salto_educ_more_HS.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                26  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                26  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                26  
     -----------------------------------------
 (note: file ../temp/controltrends_salto_anio_sem.dta not found)
 file ../temp/controltrends_salto_anio_sem.dta saved
-        time variable:  anio_sem, 2003h1 to 2015h1
+        time variable:  anio_sem, 2003h1 to 2015h2
                 delta:  1 halfyear
 106.5
 The smoother applied was
@@ -707,13 +727,13 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= s_salto_horas_trabajo
 (file ../output/scm_salto_labor_anio_sem.pdf written in PDF format)
 (1,490,121 observations deleted)
-(154,875 observations deleted)
-(94,388 real changes made)
-(101,452 real changes made)
+(105,602 observations deleted)
+(116,287 real changes made)
+(124,772 real changes made)
        panel variable:  loc_code (unbalanced)
-        time variable:  anio_sem, 1998h2 to 2010h2, but with gaps
+        time variable:  anio_sem, 1998h2 to 2012h2, but with gaps
                 delta:  1 halfyear
-(229 observations deleted)
+(314 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
 (0 observations deleted)
@@ -722,35 +742,35 @@ The smoother applied was
 (0 observations deleted)
 (note: file ../temp/donorpool_florida_anio_sem.dta not found)
 file ../temp/donorpool_florida_anio_sem.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_florida_trabajo.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_florida_horas_trabajo.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_florida_educ_HS_or_more.dta saved
-(5 observations deleted)
+(1 observation deleted)
 file ../temp/synth_florida_educ_more_HS.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                25  
+    matched                                29  
     -----------------------------------------
 (note: file ../temp/controltrends_florida_anio_sem.dta not found)
 file ../temp/controltrends_florida_anio_sem.dta saved
-        time variable:  anio_sem, 1998h2 to 2010h2
+        time variable:  anio_sem, 1998h2 to 2012h2
                 delta:  1 halfyear
 97.5
 The smoother applied was
@@ -766,4 +786,4 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2018-03-29 17:49:10
+ make.py ended: 2018-04-05 17:33:12
