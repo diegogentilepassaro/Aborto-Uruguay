@@ -11,11 +11,6 @@ program main_scm
 	local labor_stubs  = `" "Employment" "Hours-worked" "'
 	local educ_stubs   = `" "High-school" "Some-college" "'
 		
-	local restr_rivera  "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1331050))"
-	local restr_salto   "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 1313020 | loc_code == 1331050 | loc_code == 1536000))"
-	local restr_florida "restr((loc_code == 101010 | loc_code == 330020 | loc_code == 1630020 | loc_code == 834050))"
-
-
 	foreach city in rivera salto florida {
 	    foreach group_vars in /*educ*/ labor {
 			
@@ -40,11 +35,11 @@ program main_scm
 				}
 					
 			build_synth_control, outcomes(`outcome_vars') city(`city') time(anio_sem)  ///
-				controls(`add_control_vars') `restr_`city'' special_legend(`special_legend') ///
+				controls(`add_control_vars') special_legend(`special_legend') ///
 				sample_restr(`sample_restr')
 				
 			/*build_synth_control, outcomes(`outcome_vars') city(`city') time(anio)  ///
-				controls(`add_control_vars') `restr_`city'' special_legend(`special_legend') ///
+				controls(`add_control_vars') special_legend(`special_legend') ///
 				sample_restr(`sample_restr')*/
 			
 			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') ///
@@ -71,38 +66,40 @@ end
 
 program build_synth_control
 	syntax [if], outcomes(string) controls(string) city(string) ///
-	    time(str) sample_restr(str) [special_legend(string) restr(string)]
+	    time(str) sample_restr(str) [special_legend(string)]
 
     use "..\..\..\assign_treatment\output\ech_final_98_2016.dta", clear
     `sample_restr'
 
 	* Setup time settings by: qtr, sem, yr
+	* Keep if in analysis period and if without implementations in the anlysis period
 	if "`time'" == "anio_qtr" {
+			local event_date = tq(${q_date_`city'})
 			local weight pesotri
 			local lag_list `" ${q_lag_list} "' 
-			local range "if inrange(`time', tq(${q_date_`city'}) - ${q_scm_pre},tq(${q_date_`city'}) + ${q_scm_post}) "
-			qui sum `time' `range'	
+			keep if inrange(`time', `event_date' - ${q_scm_pre} ,  `event_date' + ${q_scm_post})
+			keep if treatment_`city'==1 | ((qofd(impl_date_dpto) > `event_date' + ${q_scm_post})| mi(impl_date_dpto))
+			qui sum `time'	
 			local min_year = year(dofq(r(min)))
-			local event_date = tq(${q_date_`city'})
 		}
 		else if "`time'" == "anio_sem" {
+			local event_date = th(${s_date_`city'})	
 			local weight pesosem
 			local lag_list `" ${s_lag_list} "'
-			local range "if inrange(`time', th(${s_date_`city'}) - ${s_scm_pre},th(${s_date_`city'}) + ${s_scm_post}) "
-			qui sum `time' `range'	
+			keep if inrange(`time', `event_date' - ${s_scm_pre} ,  `event_date' + ${s_scm_post})
+			keep if treatment_`city'==1 | ((hofd(impl_date_dpto) > `event_date' + ${s_scm_post})| mi(impl_date_dpto))
+			qui sum `time'	
 			local min_year = year(dofh(r(min)))
-			local event_date = th(${s_date_`city'})		
 		}
 		else {
+			local event_date = ${y_date_`city'}	
 			local weight pesoan
 			local lag_list `" ${y_lag_list} "' 
-			local range "if inrange(`time', ${y_date_`city'} - ${y_scm_pre}, ${y_date_`city'} + ${y_scm_post}) "
-			qui sum `time' `range'	
+			keep if inrange(`time', `event_date' - ${y_scm_pre} ,  `event_date' + ${y_scm_post})
+			keep if treatment_`city'==1 | ((yofd(impl_date_dpto) > `event_date' + ${y_scm_post})| mi(impl_date_dpto))
+			qui sum `time'
 			local min_year = r(min)
-			local event_date = ${y_date_`city'}	
 		}		
-	keep `range'
-	cap drop if `restr' //
 
 	* Setup the controls to be used depending on the period
 	if `min_year' < 2001  {
@@ -157,7 +154,9 @@ program build_synth_control
 		local control_vars_exp `r(varlist)'
 
 		* Run SCM, save data for this outcome, and rename vars
-		qui synth `var' `controls' `control_vars_exp' `lags', ///
+		di " "
+		di "*** SCM for `city' `time' `var' ***"
+		synth `var' `controls' `control_vars_exp' `lags', ///
 			trunit(`trunit') trperiod(`event_date') ///
 			keep("../temp/synth_`city'_`var'`special_legend'.dta", replace)	
 
