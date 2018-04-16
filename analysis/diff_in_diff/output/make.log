@@ -1,5 +1,5 @@
 
- make.py started: 2018-04-03 15:10:09 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
+ make.py started: 2018-04-16 11:53:11 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\diff_in_diff\code 
 
 
 
@@ -60,19 +60,19 @@ Notes:
 .             plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(a
 > nio_sem) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') 
+> s_vars(`group_vars') geo_var(loc_code)
  13. 
 .             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city') time
 > (anio) plot_option(trend) ///
 >                 stubs(``group_vars'_stubs') restr(``group_vars'_restr') group
-> s_vars(`group_vars') */
+> s_vars(`group_vars') geo_var(loc_code)*/
 . 
 .             reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(an
-> io_sem) ///
+> io_sem) geo_var(loc_code) ///
 >                 restr(``group_vars'_restr') groups_vars(`group_vars')
  14. 
 .             /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(
-> anio) ///
+> anio) geo_var(loc_code) ///
 >                 restr(``group_vars'_restr') groups_vars(`group_vars')*/
 .         }
  15.     }
@@ -106,75 +106,82 @@ Notes:
 . program plot_diff
   1.     syntax , outcomes(string) stubs(string) treatment(string) time(string)
 >  plot_option(str) ///
->          [groups_vars(str) restr(string) sample(str)]
+>          geo_var(string) [groups_vars(str) restr(string) sample(str)]
   2. 
-.        use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+.     use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
   3.     
+.     if "`geo_var'" == "loc_code" {
+  4.         drop treatment_*_s
+  5.     } 
+  6.     else {
+  7.         drop treatment_*_c
+  8.     }
+  9. 
 .     cap keep if `restr'
-  4.     
+ 10.     
 .     keep if !mi(treatment_`treatment')
-  5.     
+ 11.     
 .     if "`time'" == "anio_qtr" {
-  6.         local weight pesotri
-  7.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+ 12.         local weight pesotri
+ 13.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
 > e},tq(${q_date_`treatment'}) + ${q_post}) "
-  8.         local xtitle "Year-qtr"
-  9.         local vertical = tq(${q_date_`treatment'}) - 0.5
- 10.         local vertical2= tq(${q_date_`treatment'}) + 2.5  
- 11.     }
- 12.     else if "`time'" == "anio_sem" {
- 13.         local weight pesosem
- 14.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+ 14.         local xtitle "Year-qtr"
+ 15.         local vertical = tq(${q_date_`treatment'}) - 0.5
+ 16.         local vertical2= tq(${q_date_`treatment'}) + 2.5  
+ 17.     }
+ 18.     else if "`time'" == "anio_sem" {
+ 19.         local weight pesosem
+ 20.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
 > e},th(${s_date_`treatment'}) + ${s_post}) "
- 15.         local xtitle "Year-half"
- 16.         local vertical = th(${s_date_`treatment'}) - 0.5
- 17.         local vertical2= th(${s_date_`treatment'}) + 1.5     
- 18.     }
- 19.     else {
- 20.         local weight pesoan
- 21.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+ 21.         local xtitle "Year-half"
+ 22.         local vertical = th(${s_date_`treatment'}) - 0.5
+ 23.         local vertical2= th(${s_date_`treatment'}) + 1.5     
+ 24.     }
+ 25.     else {
+ 26.         local weight pesoan
+ 27.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
 > ${y_date_`treatment'} + ${y_post}) "
- 22.         local xtitle "Year"
- 23.         local vertical = ${y_date_`treatment'} - 0.5
- 24.         local vertical2= ${y_date_`treatment'} + 0.5   
- 25.     }
- 26.     
+ 28.         local xtitle "Year"
+ 29.         local vertical = ${y_date_`treatment'} - 0.5
+ 30.         local vertical2= ${y_date_`treatment'} + 0.5   
+ 31.     }
+ 32.     
 .     save ..\temp\did_sample.dta, replace
- 27.             
+ 33.             
 .     local n_outcomes: word count `outcomes'
- 28.     
+ 34.     
 .     forval i = 1/`n_outcomes' {
- 29.         local outcome: word `i' of `outcomes'
- 30.         local stub_var: word `i' of `stubs'
- 31. 
+ 35.         local outcome: word `i' of `outcomes'
+ 36.         local stub_var: word `i' of `stubs'
+ 37. 
 .         use ..\temp\did_sample.dta, clear
- 32.         
+ 38.         
 .         if "`plot_option'" == "diff" {
- 33.             preserve
- 34.                 collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (c
+ 39.             preserve
+ 40.                 collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (c
 > ount) n_`outcome' = `outcome' ///
 >                     [aw = `weight'] if treatment_`treatment' == 1 , by(`time'
 > )
- 35.                 rename *`outcome' *`outcome'_t
- 36.                 save ../temp/treat_`outcome'_ts.dta, replace            
- 37.             restore
- 38.             
+ 41.                 rename *`outcome' *`outcome'_t
+ 42.                 save ../temp/treat_`outcome'_ts.dta, replace            
+ 43.             restore
+ 44.             
 .             collapse (mean) `outcome' (sd) sd_`outcome' = `outcome' (count) n
 > _`outcome' = `outcome' ///
 >                 [aw = `weight'] if treatment_`treatment' == 0 , by(`time')
- 39.             rename *`outcome' *`outcome'_c
- 40.             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
+ 45.             rename *`outcome' *`outcome'_c
+ 46.             merge 1:1 `time' using ../temp/treat_`outcome'_ts.dta, ///
 >                 assert(3) keep(3) nogen
- 41.                 
+ 47.                 
 .             gen `outcome'_diff = `outcome'_t - `outcome'_c
- 42.             gen `outcome'_diff_se = sqrt((sd_`outcome'_t^2/n_`outcome'_t)+
+ 48.             gen `outcome'_diff_se = sqrt((sd_`outcome'_t^2/n_`outcome'_t)+
 > (sd_`outcome'_c^2/n_`outcome'_c))
- 43.         
+ 49.         
 .             gen `outcome'_diff_ci_p = `outcome'_diff + 1.96 * `outcome'_diff_
 > se
- 44.             gen `outcome'_diff_ci_n = `outcome'_diff - 1.96 * `outcome'_di
+ 50.             gen `outcome'_diff_ci_n = `outcome'_diff - 1.96 * `outcome'_di
 > ff_se            
- 45.         
+ 51.         
 .             qui twoway (rarea `outcome'_diff_ci_p  `outcome'_diff_ci_n `time'
 >  `range', fc(green)  lc(bg)    fin(inten20)) ///
 >                        (line  `outcome'_diff                      `time' `ran
@@ -188,64 +195,64 @@ Notes:
 >                 ytitle("`stub_var'") name(diff_`outcome'_`treatment', replace
 > ) ///
 >                 title("`stub_var'", color(black) size(medium)) ylabel()
- 46.                 
+ 52.                 
 .                 local diff_stub "diff_"
- 47.         }
- 48.         else {    
- 49.             preserve
- 50.                 collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw
+ 53.         }
+ 54.         else {    
+ 55.             preserve
+ 56.                 collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw
 >  = `weight'] if treatment_`treatment' == 1 , by(`time')
- 51.                 tsset `time'
- 52.                 tssmooth ma `outcome' = `outcome', window(1 1 0) replace
- 53.                 gen treat = 1
- 54.                 save ../temp/treat_`outcome'_ts.dta, replace
- 55.             restore
- 56.             
+ 57.                 tsset `time'
+ 58.                 tssmooth ma `outcome' = `outcome', window(1 1 0) replace
+ 59.                 gen treat = 1
+ 60.                 save ../temp/treat_`outcome'_ts.dta, replace
+ 61.             restore
+ 62.             
 .             collapse (mean) `outcome' (sem) se_`outcome'=`outcome' [aw = `wei
 > ght'] if treatment_`treatment' == 0 , by(`time')
- 57.             tsset `time'
- 58.             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
- 59.             save ../temp/control_`outcome'_ts.dta, replace
- 60.             append using ../temp/treat_`outcome'_ts.dta
- 61.             replace treat = 0 if missing(treat)
- 62. 
+ 63.             tsset `time'
+ 64.             tssmooth ma `outcome' = `outcome', window(1 1 0) replace
+ 65.             save ../temp/control_`outcome'_ts.dta, replace
+ 66.             append using ../temp/treat_`outcome'_ts.dta
+ 67.             replace treat = 0 if missing(treat)
+ 68. 
 .             gen `outcome'_ci_p = `outcome' + 1.96*se_`outcome'
- 63.             gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
- 64.             
+ 69.             gen `outcome'_ci_n = `outcome' - 1.96*se_`outcome'
+ 70.             
 .             if "`treatment'" == "mvd_female" {
- 65.                 if "`outcome'" == "trabajo" {
- 66.                     local ylabel "0.5 (0.1) 0.8"
- 67.                 }
- 68.                 else if "`outcome'" == "horas_trabajo" {
- 69.                     local ylabel "16 (8) 40"
- 70.                 }            
- 71.             }
- 72.             else if "`treatment'" == "mvd_single" | "`treatment'" == "mvd_
+ 71.                 if "`outcome'" == "trabajo" {
+ 72.                     local ylabel "0.5 (0.1) 0.8"
+ 73.                 }
+ 74.                 else if "`outcome'" == "horas_trabajo" {
+ 75.                     local ylabel "16 (8) 40"
+ 76.                 }            
+ 77.             }
+ 78.             else if "`treatment'" == "mvd_single" | "`treatment'" == "mvd_
 > lowed" | "`treatment'" == "mvd_poor" {
- 73.                 if "`outcome'" == "trabajo" {
- 74.                     local ylabel "0.4 (0.2) 0.8"
- 75.                 }
- 76.                 else if "`outcome'" == "horas_trabajo" {
- 77.                     local ylabel "12 (8) 28"
- 78.                 }            
- 79.             }
- 80.             else if "`treatment'" == "placebo_rivera" {
- 81.                 if "`outcome'" == "trabajo" {
- 82.                     local ylabel "0.65 (0.2) 0.85"
- 83.                 }
- 84.                 else if "`outcome'" == "horas_trabajo" {
- 85.                     local ylabel "30 (8) 38"
- 86.                 }            
- 87.             }
- 88.             else {
- 89.                 if "`outcome'" == "trabajo" {
- 90.                     local ylabel "0.4 (0.1) 0.6"
- 91.                 }
- 92.                 else if "`outcome'" == "horas_trabajo" {
- 93.                     local ylabel "12 (8) 28"
- 94.                 }
- 95.             }
- 96.             
+ 79.                 if "`outcome'" == "trabajo" {
+ 80.                     local ylabel "0.4 (0.2) 0.8"
+ 81.                 }
+ 82.                 else if "`outcome'" == "horas_trabajo" {
+ 83.                     local ylabel "12 (8) 28"
+ 84.                 }            
+ 85.             }
+ 86.             else if "`treatment'" == "placebo_rivera" {
+ 87.                 if "`outcome'" == "trabajo" {
+ 88.                     local ylabel "0.65 (0.2) 0.85"
+ 89.                 }
+ 90.                 else if "`outcome'" == "horas_trabajo" {
+ 91.                     local ylabel "30 (8) 38"
+ 92.                 }            
+ 93.             }
+ 94.             else {
+ 95.                 if "`outcome'" == "trabajo" {
+ 96.                     local ylabel "0.4 (0.1) 0.6"
+ 97.                 }
+ 98.                 else if "`outcome'" == "horas_trabajo" {
+ 99.                     local ylabel "12 (8) 28"
+100.                 }
+101.             }
+102.             
 .             qui twoway (scatter  `outcome' `time' `range' & treat == 1, mc(bl
 > ue) lp(solid) lw(medthick)) ///
 >                        (scatter  `outcome' `time' `range' & treat == 0, mc(re
@@ -265,90 +272,96 @@ Notes:
 >                 title("`stub_var'", color(black) size(vlarge)) ylabel(`ylabel
 > ', labs(large)) ///
 >                 xlabel(#7, labs(large)) xtitle(, size(vlarge))         
- 97.         }
- 98.         }
- 99.         
+103.         }
+104.         }
+105.         
 .         forval i = 1/`n_outcomes' {
-100.             local outcome: word `i' of `outcomes'
-101.             local plots = "`plots' " + "`diff_stub'`outcome'_`treatment'"
-102.         }
-103.             
+106.             local outcome: word `i' of `outcomes'
+107.             local plots = "`plots' " + "`diff_stub'`outcome'_`treatment'"
+108.         }
+109.             
 .         local plot1: word 1 of `plots'     
-104.         
+110.         
 .         grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) c
 > ols(2) /// /* cols(1) or cols(3) */
 >                graphregion(color(white)) title({bf: ${legend_`treatment'} `sp
 > ecial_legend'}, color(black) size(vlarge))
-105.         graph display, ysize(3) xsize(7)
-106.         graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`t
-> ime'.pdf, replace            
-107.         
+111.         graph display, ysize(3) xsize(7)
+112.         graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`t
+> ime'_`geo_var'.pdf, replace            
+113.         
 . end
 
 . 
 . program reg_diff
-  1.     syntax, outcomes(string) treatment(string) time(string) [groups_vars(s
-> tr) restr(string) sample(str)]
+  1.     syntax, outcomes(string) treatment(string) time(string) geo_var(string
+> ) [groups_vars(str) restr(string) sample(str)]
   2.         
 .         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
-  3.         
-.         *cap keep if `restr'
+  3. 
+.         if "`geo_var'" == "loc_code" {
+  4.             drop treatment_*_s
+  5.         } 
+  6.         else {
+  7.             drop treatment_*_c
+  8.         }        
+  9.         *cap keep if `restr'
 .         
 .         if "`time'" == "anio_qtr" {
-  4.                 local weight pesotri
-  5.                 local range "if inrange(`time', tq(${q_date_`treatment'}) 
+ 10.                 local weight pesotri
+ 11.                 local range "if inrange(`time', tq(${q_date_`treatment'}) 
 > - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
-  6.                 qui sum `time' `range'
-  7.                 local min_year = year(dofq(r(min)))
-  8.             }
-  9.             else if "`time'" == "anio_sem" {
- 10.                 local weight pesosem
- 11.                 local range "if inrange(`time', th(${s_date_`treatment'}) 
-> - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
  12.                 qui sum `time' `range'
- 13.                 local min_year = year(dofh(r(min)))
+ 13.                 local min_year = year(dofq(r(min)))
  14.             }
- 15.             else {
- 16.                 local weight pesoan
- 17.                 local range "if inrange(`time', ${y_date_`treatment'} - ${
-> y_pre}, ${y_date_`treatment'} + ${y_post}) "
- 18.                 qui sum `time' `range'    
- 19.                 local min_year = r(min)
+ 15.             else if "`time'" == "anio_sem" {
+ 16.                 local weight pesosem
+ 17.                 local range "if inrange(`time', th(${s_date_`treatment'}) 
+> - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
+ 18.                 qui sum `time' `range'
+ 19.                 local min_year = year(dofh(r(min)))
  20.             }
- 21. 
-.         if `min_year' < 2001  {
- 22.             local control_vars " c98_* "
- 23.             }
- 24.         else if `min_year' >=2001 & `min_year' < 2006  {
- 25.             local control_vars " c98_* c01_* "
+ 21.             else {
+ 22.                 local weight pesoan
+ 23.                 local range "if inrange(`time', ${y_date_`treatment'} - ${
+> y_pre}, ${y_date_`treatment'} + ${y_post}) "
+ 24.                 qui sum `time' `range'    
+ 25.                 local min_year = r(min)
  26.             }
- 27.         else {
- 28.             local control_vars " c98_* c01_* c06_* "
+ 27. 
+.         if `min_year' < 2001  {
+ 28.             local control_vars " c98_* "
  29.             }
- 30.         
+ 30.         else if `min_year' >=2001 & `min_year' < 2006  {
+ 31.             local control_vars " c98_* c01_* "
+ 32.             }
+ 33.         else {
+ 34.             local control_vars " c98_* c01_* c06_* "
+ 35.             }
+ 36. 
 .         local n_outcomes: word count `outcomes'
- 31.                 clear matrix
- 32.         forval i = 1/`n_outcomes' {
- 33.             local outcome: word `i' of `outcomes'
- 34.             
+ 37.                 clear matrix
+ 38.         forval i = 1/`n_outcomes' {
+ 39.             local outcome: word `i' of `outcomes'
+ 40.             
 .             if "`time'" == "anio_qtr" {
- 35.                     gen post = (`time' >= tq(${q_date_`treatment'}))
- 36.                 } 
- 37.                 else if "`time'" == "anio_sem" {
- 38.                     gen post = (`time' >= th(${s_date_`treatment'}))
- 39.                 }
- 40.                 else {
- 41.                     gen post = (`time' >= ${y_date_`treatment'})
- 42.                 }
- 43.            
+ 41.                     gen post = (`time' >= tq(${q_date_`treatment'}))
+ 42.                 } 
+ 43.                 else if "`time'" == "anio_sem" {
+ 44.                     gen post = (`time' >= th(${s_date_`treatment'}))
+ 45.                 }
+ 46.                 else {
+ 47.                     gen post = (`time' >= ${y_date_`treatment'})
+ 48.                 }
+ 49.            
 .                     foreach cond in "" "& kids_`treatment' == 1" "& kids_`tre
 > atment' == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"
 > */ {
- 44.                 
+ 50.                 
 .                 foreach age_group in "_young" "_adult" "_placebo" {
- 45. 
+ 51. 
 .                     gen interaction = treatment`age_group'_`treatment' * post
- 46. 
+ 52. 
 .                     reg `outcome' i.treatment`age_group'_`treatment' i.post i
 > nteraction ///
 >                         i.`time' nbr_people ind_under14 edad married y_hogar_
@@ -357,26 +370,26 @@ Notes:
 > ) ///
 >                                                 [aw = `weight'], vce(cluster 
 > `time')
- 47.                         
+ 53.                         
 .                     matrix COLUMN`age_group' = ((_b[interaction] \ _se[intera
 > ction]) \ e(N))
- 48.             
+ 54.             
 .                     drop interaction
- 49.                 }
- 50.                         
+ 55.                 }
+ 56.                         
 .                 matrix COLUMN = (COLUMN_young , COLUMN_adult, COLUMN_placebo)
- 51.                 matrix ROW = (nullmat(ROW) \ COLUMN)
- 52.                         }
- 53.                         
+ 57.                 matrix ROW = (nullmat(ROW) \ COLUMN)
+ 58.                         }
+ 59.                         
 .             matrix TABLE = (nullmat(TABLE) , ROW)
- 54.                         matrix drop ROW
- 55.                         drop post
- 56.         }
- 57.                         
+ 60.                         matrix drop ROW
+ 61.                         drop post
+ 62.         }
+ 63.                         
 .                 matrix_to_txt, matrix(TABLE) saving("../output/tables.txt") a
 > ppend ///
 >                          title(<tab:did_`treatment'>)
- 58.         
+ 64.         
 . //         esttab using ../output/did_`treatment'_`groups_vars'_`time'.tex, l
 > abel se ar2 compress ///
 . //             replace nonotes coeflabels(interaction "${legend_`treatment'} 
@@ -445,6 +458,29 @@ Notes:
 .     global y_post 2
 
 . 
+.     * Ranges SCM (to build synth control)
+.     global q_scm_pre  30
+
+.     global q_scm_post 16
+
+.     global s_scm_pre  20
+
+.     global s_scm_post 8
+
+.     global y_scm_pre  10
+
+.     global y_scm_post 4
+
+. 
+.     *Lag list (related to Ranges SCM)
+.     global q_lag_list " 8 9 10 11 12 13 14 15 16" //`" 1 3 5 7 "'
+
+.     global s_lag_list " 8 9 10 11 12 13 14 15 16 17 18 19 20 " //`" 5 6 7 8 9
+>  10 11 12 "'
+
+.     global y_lag_list " 2 3 4 5 6 7 " //`" 3 4 5 6 "'
+
+. 
 .     * Legends
 .     global legend_mvd    = "Montevideo"
 
@@ -485,7 +521,7 @@ The smoother applied was
 (note: file ../temp/control_horas_trabajo_ts.dta not found)
 file ../temp/control_horas_trabajo_ts.dta saved
 (36 real changes made)
-(file ../output/did_rivera_labor_anio_sem.pdf written in PDF format)
+(file ../output/did_rivera_labor_anio_sem_loc_code.pdf written in PDF format)
 (1,874,692 missing values generated)
 (sum of wgt is   1.7838e+05)
 note: 105.anio_sem omitted because of collinearity
@@ -2455,7 +2491,7 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
 file ../temp/control_horas_trabajo_ts.dta saved
 (36 real changes made)
-(file ../output/did_salto_labor_anio_sem.pdf written in PDF format)
+(file ../output/did_salto_labor_anio_sem_loc_code.pdf written in PDF format)
 (1,869,881 missing values generated)
 (sum of wgt is   3.0111e+05)
 note: 110.anio_sem omitted because of collinearity
@@ -2471,7 +2507,7 @@ Linear regression                               Number of obs     =      5,730
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .0033977   .0225297     0.15   0.883    -.0456903    .0524858
+1.~g_salto_c |   .0033977   .0225297     0.15   0.883    -.0456903    .0524858
       1.post |  -.0314301   .0159858    -1.97   0.073    -.0662601    .0033999
  interaction |  -.0082936   .0288393    -0.29   0.779    -.0711291    .0545419
              |
@@ -2663,7 +2699,7 @@ Linear regression                               Number of obs     =      3,340
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .0156771   .0288647     0.54   0.597    -.0472137     .078568
+1.~g_salto_c |   .0156771   .0288647     0.54   0.597    -.0472137     .078568
       1.post |  -.1141237    .025211    -4.53   0.001    -.1690537   -.0591937
  interaction |   .0059014   .0326354     0.18   0.860    -.0652051    .0770079
              |
@@ -2855,7 +2891,7 @@ Linear regression                               Number of obs     =      2,390
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |  -.0117229   .0210917    -0.56   0.589    -.0576778    .0342319
+1.~g_salto_c |  -.0117229   .0210917    -0.56   0.589    -.0576778    .0342319
       1.post |   .0248557   .0213794     1.16   0.268    -.0217261    .0714374
  interaction |  -.0341425   .0348334    -0.98   0.346    -.1100381     .041753
              |
@@ -3048,7 +3084,7 @@ Linear regression                               Number of obs     =      2,009
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .0094303   .0264992     0.36   0.728    -.0483064    .0671671
+1.~g_salto_c |   .0094303   .0264992     0.36   0.728    -.0483064    .0671671
       1.post |  -.0474635   .0234572    -2.02   0.066    -.0985723    .0036453
  interaction |   -.018406   .0444057    -0.41   0.686    -.1151577    .0783457
              |
@@ -3243,7 +3279,7 @@ Linear regression                               Number of obs     =      3,721
              |               Robust
      trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .0015781   .0198109     0.08   0.938    -.0415861    .0447423
+1.~g_salto_c |   .0015781   .0198109     0.08   0.938    -.0415861    .0447423
       1.post |  -.0291869   .0156621    -1.86   0.087    -.0633116    .0049378
  interaction |    .002351   .0204524     0.11   0.910    -.0422109    .0469129
              |
@@ -3437,7 +3473,7 @@ Linear regression                               Number of obs     =      5,730
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .1986775    .839329     0.24   0.817    -1.630063    2.027418
+1.~g_salto_c |   .1986775    .839329     0.24   0.817    -1.630063    2.027418
       1.post |  -.9071453   .5593225    -1.62   0.131    -2.125804    .3115137
  interaction |  -1.435143   .9056093    -1.58   0.139    -3.408296    .5380103
              |
@@ -3629,7 +3665,7 @@ Linear regression                               Number of obs     =      3,340
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |    1.46985   1.344252     1.09   0.296    -1.459024    4.398723
+1.~g_salto_c |    1.46985   1.344252     1.09   0.296    -1.459024    4.398723
       1.post |  -4.303881   .8641054    -4.98   0.000    -6.186605   -2.421157
  interaction |  -1.719024   1.272298    -1.35   0.202    -4.491124    1.053076
              |
@@ -3821,7 +3857,7 @@ Linear regression                               Number of obs     =      2,390
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   -1.36136   .6425879    -2.12   0.056    -2.761439    .0387189
+1.~g_salto_c |   -1.36136   .6425879    -2.12   0.056    -2.761439    .0387189
       1.post |   1.430386     .77508     1.85   0.090    -.2583677    3.119141
  interaction |  -1.345752   1.150195    -1.17   0.265    -3.851812    1.160307
              |
@@ -4014,7 +4050,7 @@ Linear regression                               Number of obs     =      2,009
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |  -.1032293   1.150553    -0.09   0.930    -2.610069     2.40361
+1.~g_salto_c |  -.1032293   1.150553    -0.09   0.930    -2.610069     2.40361
       1.post |  -1.626853   1.047554    -1.55   0.146    -3.909278    .6555723
  interaction |  -2.714965   1.183561    -2.29   0.041    -5.293723   -.1362076
              |
@@ -4209,7 +4245,7 @@ Linear regression                               Number of obs     =      3,721
              |               Robust
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-1.treatmen.. |   .3914543   .7224649     0.54   0.598    -1.182661     1.96557
+1.~g_salto_c |   .3914543   .7224649     0.54   0.598    -1.182661     1.96557
       1.post |  -1.044968   .5418809    -1.93   0.078    -2.225625    .1356894
  interaction |   -.249651   .7752764    -0.32   0.753    -1.938833    1.439531
              |
@@ -4412,7 +4448,7 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= horas_trabajo
 file ../temp/control_horas_trabajo_ts.dta saved
 (36 real changes made)
-(file ../output/did_florida_labor_anio_sem.pdf written in PDF format)
+(file ../output/did_florida_labor_anio_sem_loc_code.pdf written in PDF format)
 (1,877,616 missing values generated)
 (sum of wgt is   8.7855e+04)
 note: 101.anio_sem omitted because of collinearity

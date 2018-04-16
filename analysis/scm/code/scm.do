@@ -35,17 +35,17 @@ program main_scm
 				}
 					
 			build_synth_control, outcomes(`outcome_vars') city(`city') time(anio_sem)  ///
-				controls(`add_control_vars') special_legend(`special_legend') ///
+				controls(`add_control_vars') special_legend(`special_legend') geo_var(loc_code) ///
 				sample_restr(`sample_restr')
 				
 			/*build_synth_control, outcomes(`outcome_vars') city(`city') time(anio)  ///
-				controls(`add_control_vars') special_legend(`special_legend') ///
+				controls(`add_control_vars') special_legend(`special_legend') geo_var(loc_code) ///
 				sample_restr(`sample_restr')*/
 			
-			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') ///
+			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(loc_code) ///
 				time(anio_sem) stub_list(``group_vars'_stubs') special_legend(`special_legend')
 
-			/*plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') ///
+			/*plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(loc_code) ///
 				time(anio) stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
 
@@ -65,10 +65,16 @@ program main_scm
 end
 
 program build_synth_control
-	syntax [if], outcomes(string) controls(string) city(string) ///
+	syntax [if], outcomes(string) controls(string) city(string) geo_var(string) ///
 	    time(str) sample_restr(str) [special_legend(string)]
 
     use "..\..\..\assign_treatment\output\ech_final_98_2016.dta", clear
+	if "`geo_var'" == "loc_code" {
+        drop treatment_*_s placebo_*_s
+    } 
+    else {
+        drop treatment_*_c placebo_*_c
+    }
     `sample_restr'
 
 	* Setup time settings by: qtr, sem, yr
@@ -112,17 +118,17 @@ program build_synth_control
 		local control_vars " c98_* c01_* c06_* "
 		}
 		
-	* Get identifier of treated unit, and collapse data by time and loc_code
-	qui sum loc_code if treatment_`city'==1 | placebo_`city'==1
+	* Get identifier of treated unit, and collapse data by time and `geo_var'
+	qui sum `geo_var' if treatment_`city'==1 | placebo_`city'==1
 	local trunit = r(mean)
 	replace treatment_`city'=0 if treatment_`city'!=1 //to include all locations, not just the DiD controls
 	replace   placebo_`city'=0 if   placebo_`city'!=1 
-	collapse (mean) `controls' `control_vars' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' loc_code)
+	collapse (mean) `controls' `control_vars' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' `geo_var')
 		
 	* Check the panel is balanced, this is for the synthetic control to work
-	xtset loc_code `time'
+	xtset `geo_var' `time'
 	local num_`time's = r(tmax) - r(tmin) + 1
-	bysort loc_code: gen num_`time' = _N
+	bysort `geo_var': gen num_`time' = _N
 	keep if num_`time' == `num_`time's'  /*for proper geocodes this should be an assertion*/
 
 	* Check the panel is balanced against missing values
@@ -131,7 +137,7 @@ program build_synth_control
 		local outcome_var: word `i' of `outcomes' 
 		drop if `outcome_var'==.
 	}
-	bysort loc_code: replace num_`time' = _N
+	bysort `geo_var': replace num_`time' = _N
 	keep if num_`time' == `num_`time's' /*for proper geocodes this should be an assertion*/
 
 	save "../temp/donorpool_`city'_`time'`special_legend'.dta", replace
@@ -176,14 +182,14 @@ program build_synth_control
 		local outcome_var: word `i' of `outcomes' 
 		merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'`special_legend'", nogen
 	}
-	save "../temp/controltrends_`city'_`time'`special_legend'.dta", replace
+	save "../temp/controltrends_`city'_`time'_`geo_var'`special_legend'.dta", replace
 end
 
 program plot_scm
-    syntax, outcomes(string) city(string) time(str) groups_vars(str) ///
+    syntax, outcomes(string) city(string) time(str) groups_vars(str) geo_var(string) ///
 	    stub_list(string) [special_legend(string)]
 	
-	use "../temp/controltrends_`city'_`time'`special_legend'.dta", clear
+	use "../temp/controltrends_`city'_`time'_`geo_var'`special_legend'.dta", clear
 
 	* Setup time settings by: qtr, sem, yr
     if "`time'" == "anio_qtr" {
@@ -243,7 +249,7 @@ program plot_scm
 		   graphregion(color(white)) title({bf: ${legend_`city'} `special_legend'}, color(black) size(vlarge)) ///
 		   name(scm_`city'_`groups_vars'_`time'`special_legend')
     graph display, ysize(5) xsize(12)
-	graph export ../output/scm_`city'_`groups_vars'_`time'`special_legend'.pdf, replace    
+	graph export ../output/scm_`city'_`groups_vars'_`time'_`geo_var'`special_legend'.pdf, replace    
 end
 
 main_scm

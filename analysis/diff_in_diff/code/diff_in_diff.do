@@ -18,15 +18,15 @@ program main_diff_analysis
         foreach group_vars in labor /*educ*/ {
 
             plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) plot_option(trend) ///
-                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') 
+                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(loc_code)
 
             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) plot_option(trend) ///
-                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') */
+                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(loc_code)*/
 
-            reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) ///
+            reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) geo_var(loc_code) ///
                 restr(``group_vars'_restr') groups_vars(`group_vars')
 
-            /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) ///
+            /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) geo_var(loc_code) ///
                 restr(``group_vars'_restr') groups_vars(`group_vars')*/
         }
     }
@@ -52,10 +52,17 @@ end
 
 program plot_diff
     syntax , outcomes(string) stubs(string) treatment(string) time(string) plot_option(str) ///
-         [groups_vars(str) restr(string) sample(str)]
+         geo_var(string) [groups_vars(str) restr(string) sample(str)]
 
-       use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+    use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
     
+    if "`geo_var'" == "loc_code" {
+        drop treatment_*_s
+    } 
+    else {
+        drop treatment_*_c
+    }
+
     cap keep if `restr'
     
     keep if !mi(treatment_`treatment')
@@ -197,15 +204,21 @@ program plot_diff
         grc1leg `plots', rows(`n_outcomes') legendfrom(`plot1') position(6) cols(2) /// /* cols(1) or cols(3) */
                graphregion(color(white)) title({bf: ${legend_`treatment'} `special_legend'}, color(black) size(vlarge))
         graph display, ysize(3) xsize(7)
-        graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`time'.pdf, replace            
+        graph export ../output/did_`diff_stub'`treatment'_`groups_vars'_`time'_`geo_var'.pdf, replace            
         
 end
 
 program reg_diff
-    syntax, outcomes(string) treatment(string) time(string) [groups_vars(str) restr(string) sample(str)]
+    syntax, outcomes(string) treatment(string) time(string) geo_var(string) [groups_vars(str) restr(string) sample(str)]
         
         use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
-        
+
+        if "`geo_var'" == "loc_code" {
+            drop treatment_*_s
+        } 
+        else {
+            drop treatment_*_c
+        }        
         *cap keep if `restr'
         
         if "`time'" == "anio_qtr" {
@@ -236,7 +249,7 @@ program reg_diff
         else {
             local control_vars " c98_* c01_* c06_* "
             }
-        
+
         local n_outcomes: word count `outcomes'
 		clear matrix
         forval i = 1/`n_outcomes' {

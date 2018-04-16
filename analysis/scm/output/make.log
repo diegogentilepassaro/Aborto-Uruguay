@@ -1,5 +1,5 @@
 
- make.py started: 2018-04-14 18:40:43 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
+ make.py started: 2018-04-16 15:13:28 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
 
 
 
@@ -253,22 +253,22 @@ Notes:
 .                         build_synth_control, outcomes(`outcome_vars') city(`c
 > ity') time(anio_sem)  ///
 >                                 controls(`add_control_vars') special_legend(`
-> special_legend') ///
+> special_legend') geo_var(loc_code) ///
 >                                 sample_restr(`sample_restr')
  28.                                 
 .                         /*build_synth_control, outcomes(`outcome_vars') city(
 > `city') time(anio)  ///
 >                                 controls(`add_control_vars') special_legend(`
-> special_legend') ///
+> special_legend') geo_var(loc_code) ///
 >                                 sample_restr(`sample_restr')*/
 .                         
 .                         plot_scm, outcomes(``group_vars'_vars') city(`city') 
-> groups_vars(`group_vars') ///
+> groups_vars(`group_vars') geo_var(loc_code) ///
 >                                 time(anio_sem) stub_list(``group_vars'_stubs'
 > ) special_legend(`special_legend')
  29. 
 .                         /*plot_scm, outcomes(``group_vars'_vars') city(`city'
-> ) groups_vars(`group_vars') ///
+> ) groups_vars(`group_vars') geo_var(loc_code) ///
 >                                 time(anio) stub_list(``group_vars'_stubs') sp
 > ecial_legend(`special_legend')*/
 .                 }
@@ -292,146 +292,155 @@ Notes:
 
 . 
 . program build_synth_control
-  1.         syntax [if], outcomes(string) controls(string) city(string) ///
+  1.         syntax [if], outcomes(string) controls(string) city(string) geo_va
+> r(string) ///
 >             time(str) sample_restr(str) [special_legend(string)]
   2. 
 .     use "..\..\..\assign_treatment\output\ech_final_98_2016.dta", clear
-  3.     `sample_restr'
-  4. 
+  3.         if "`geo_var'" == "loc_code" {
+  4.         drop treatment_*_s placebo_*_s
+  5.     } 
+  6.     else {
+  7.         drop treatment_*_c placebo_*_c
+  8.     }
+  9.     `sample_restr'
+ 10. 
 .         * Setup time settings by: qtr, sem, yr
 .         * Keep if in analysis period and if without implementations in the an
 > lysis period
 .         if "`time'" == "anio_qtr" {
-  5.                         local event_date = tq(${q_date_`city'})
-  6.                         local weight pesotri
-  7.                         local lag_list `" ${q_lag_list} "' 
-  8.                         keep if inrange(`time', `event_date' - ${q_scm_pre
+ 11.                         local event_date = tq(${q_date_`city'})
+ 12.                         local weight pesotri
+ 13.                         local lag_list `" ${q_lag_list} "' 
+ 14.                         keep if inrange(`time', `event_date' - ${q_scm_pre
 > } ,  `event_date' + ${q_scm_post})
-  9.                         keep if treatment_`city'==1 | ((qofd(impl_date_dpt
+ 15.                         keep if treatment_`city'==1 | ((qofd(impl_date_dpt
 > o) > `event_date' + ${q_scm_post})| mi(impl_date_dpto))
- 10.                         qui sum `time'  
- 11.                         local min_year = year(dofq(r(min)))
- 12.                 }
- 13.                 else if "`time'" == "anio_sem" {
- 14.                         local event_date = th(${s_date_`city'}) 
- 15.                         local weight pesosem
- 16.                         local lag_list `" ${s_lag_list} "'
- 17.                         keep if inrange(`time', `event_date' - ${s_scm_pre
+ 16.                         qui sum `time'  
+ 17.                         local min_year = year(dofq(r(min)))
+ 18.                 }
+ 19.                 else if "`time'" == "anio_sem" {
+ 20.                         local event_date = th(${s_date_`city'}) 
+ 21.                         local weight pesosem
+ 22.                         local lag_list `" ${s_lag_list} "'
+ 23.                         keep if inrange(`time', `event_date' - ${s_scm_pre
 > } ,  `event_date' + ${s_scm_post})
- 18.                         keep if treatment_`city'==1 | ((hofd(impl_date_dpt
+ 24.                         keep if treatment_`city'==1 | ((hofd(impl_date_dpt
 > o) > `event_date' + ${s_scm_post})| mi(impl_date_dpto))
- 19.                         qui sum `time'  
- 20.                         local min_year = year(dofh(r(min)))
- 21.                 }
- 22.                 else {
- 23.                         local event_date = ${y_date_`city'}     
- 24.                         local weight pesoan
- 25.                         local lag_list `" ${y_lag_list} "' 
- 26.                         keep if inrange(`time', `event_date' - ${y_scm_pre
+ 25.                         qui sum `time'  
+ 26.                         local min_year = year(dofh(r(min)))
+ 27.                 }
+ 28.                 else {
+ 29.                         local event_date = ${y_date_`city'}     
+ 30.                         local weight pesoan
+ 31.                         local lag_list `" ${y_lag_list} "' 
+ 32.                         keep if inrange(`time', `event_date' - ${y_scm_pre
 > } ,  `event_date' + ${y_scm_post})
- 27.                         keep if treatment_`city'==1 | ((yofd(impl_date_dpt
+ 33.                         keep if treatment_`city'==1 | ((yofd(impl_date_dpt
 > o) > `event_date' + ${y_scm_post})| mi(impl_date_dpto))
- 28.                         qui sum `time'
- 29.                         local min_year = r(min)
- 30.                 }               
- 31. 
+ 34.                         qui sum `time'
+ 35.                         local min_year = r(min)
+ 36.                 }               
+ 37. 
 .         * Setup the controls to be used depending on the period
 .         if `min_year' < 2001  {
- 32.                 local control_vars " c98_* "
- 33.                 }
- 34.         else if `min_year' >=2001 & `min_year' < 2006  {
- 35.                 local control_vars " c98_* c01_* "
- 36.                 }
- 37.         else {
- 38.                 local control_vars " c98_* c01_* c06_* "
+ 38.                 local control_vars " c98_* "
  39.                 }
- 40.                 
-.         * Get identifier of treated unit, and collapse data by time and loc_c
-> ode
-.         qui sum loc_code if treatment_`city'==1 | placebo_`city'==1
- 41.         local trunit = r(mean)
- 42.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
+ 40.         else if `min_year' >=2001 & `min_year' < 2006  {
+ 41.                 local control_vars " c98_* c01_* "
+ 42.                 }
+ 43.         else {
+ 44.                 local control_vars " c98_* c01_* c06_* "
+ 45.                 }
+ 46.                 
+.         * Get identifier of treated unit, and collapse data by time and `geo_
+> var'
+.         qui sum `geo_var' if treatment_`city'==1 | placebo_`city'==1
+ 47.         local trunit = r(mean)
+ 48.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
 >  locations, not just the DiD controls
- 43.         replace   placebo_`city'=0 if   placebo_`city'!=1 
- 44.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
-> ty' `if' [aw = `weight'], by(`time' loc_code)
- 45.                 
+ 49.         replace   placebo_`city'=0 if   placebo_`city'!=1 
+ 50.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
+> ty' `if' [aw = `weight'], by(`time' `geo_var')
+ 51.                 
 .         * Check the panel is balanced, this is for the synthetic control to w
 > ork
-.         xtset loc_code `time'
- 46.         local num_`time's = r(tmax) - r(tmin) + 1
- 47.         bysort loc_code: gen num_`time' = _N
- 48.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
+.         xtset `geo_var' `time'
+ 52.         local num_`time's = r(tmax) - r(tmin) + 1
+ 53.         bysort `geo_var': gen num_`time' = _N
+ 54.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
 > ould be an assertion*/
- 49. 
+ 55. 
 .         * Check the panel is balanced against missing values
 .         local n_outcomes: word count `outcomes'
- 50.         forval i = 1/`n_outcomes' {
- 51.                 local outcome_var: word `i' of `outcomes' 
- 52.                 drop if `outcome_var'==.
- 53.         }
- 54.         bysort loc_code: replace num_`time' = _N
- 55.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
+ 56.         forval i = 1/`n_outcomes' {
+ 57.                 local outcome_var: word `i' of `outcomes' 
+ 58.                 drop if `outcome_var'==.
+ 59.         }
+ 60.         bysort `geo_var': replace num_`time' = _N
+ 61.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
 > uld be an assertion*/
- 56. 
+ 62. 
 .         save "../temp/donorpool_`city'_`time'`special_legend'.dta", replace
- 57.         
+ 63.         
 .         * Create the synth control for each outcome
 .         forval i = 1/`n_outcomes' {
- 58.                 local var: word `i' of `outcomes'
- 59.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
+ 64.                 local var: word `i' of `outcomes'
+ 65.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
 >  clear
- 60.                 
+ 66.                 
 .                 * Create lags of current outcome
 .                 local lags "" // so that we do not add lags of other outcomes
- 61.                 local i=1
- 62.                 foreach j of numlist `lag_list' {
- 63.                         local lag`i' = `event_date' - `j'
- 64.                         local lags  = "`lags'" + " `var'(`lag`i'') "
- 65.                         local i = `i'+1
- 66.                 }
- 67.                 * We need unabbreviated variables for the synth
+ 67.                 local i=1
+ 68.                 foreach j of numlist `lag_list' {
+ 69.                         local lag`i' = `event_date' - `j'
+ 70.                         local lags  = "`lags'" + " `var'(`lag`i'') "
+ 71.                         local i = `i'+1
+ 72.                 }
+ 73.                 * We need unabbreviated variables for the synth
 .                 qui desc `control_vars', f varlist
- 68.                 local control_vars_exp `r(varlist)'
- 69. 
+ 74.                 local control_vars_exp `r(varlist)'
+ 75. 
 .                 * Run SCM, save data for this outcome, and rename vars
 .                 di " "
- 70.                 di "*** SCM for `city' `time' `var' ***"
- 71.                 synth `var' `controls' `control_vars_exp' `lags', ///
+ 76.                 di "*** SCM for `city' `time' `var' ***"
+ 77.                 synth `var' `controls' `control_vars_exp' `lags', ///
 >                         trunit(`trunit') trperiod(`event_date') ///
 >                         keep("../temp/synth_`city'_`var'`special_legend'.dta"
 > , replace) 
- 72. 
+ 78. 
 .                 use "../temp/synth_`city'_`var'`special_legend'.dta", clear
- 73.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
+ 79.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
 >                         (geocode `time' `city'_`var'`special_legend' s_`city'
 > _`var'`special_legend')
- 74.                 drop if `time'==.
- 75.                 drop geocode _W_Weight
- 76.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
+ 80.                 drop if `time'==.
+ 81.                 drop geocode _W_Weight
+ 82.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
 > lace
- 77.         }
- 78. 
+ 83.         }
+ 84. 
 .         * Construct dataset with all outcomes for a given research design: ci
 > ty-time
 .         local outcome_var: word 1 of `outcomes' 
- 79.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
- 80. 
+ 85.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
+ 86. 
 .         forval i = 2/`n_outcomes' {
- 81.                 local outcome_var: word `i' of `outcomes' 
- 82.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
+ 87.                 local outcome_var: word `i' of `outcomes' 
+ 88.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
 > `special_legend'", nogen
- 83.         }
- 84.         save "../temp/controltrends_`city'_`time'`special_legend'.dta", re
-> place
- 85. end
+ 89.         }
+ 90.         save "../temp/controltrends_`city'_`time'_`geo_var'`special_legend
+> '.dta", replace
+ 91. end
 
 . 
 . program plot_scm
-  1.     syntax, outcomes(string) city(string) time(str) groups_vars(str) ///
+  1.     syntax, outcomes(string) city(string) time(str) groups_vars(str) geo_v
+> ar(string) ///
 >             stub_list(string) [special_legend(string)]
   2.         
-.         use "../temp/controltrends_`city'_`time'`special_legend'.dta", clear
+.         use "../temp/controltrends_`city'_`time'_`geo_var'`special_legend'.dt
+> a", clear
   3. 
 .         * Setup time settings by: qtr, sem, yr
 .     if "`time'" == "anio_qtr" {
@@ -506,8 +515,8 @@ Notes:
 > cial_legend'}, color(black) size(vlarge)) ///
 >                    name(scm_`city'_`groups_vars'_`time'`special_legend')
  43.     graph display, ysize(5) xsize(12)
- 44.         graph export ../output/scm_`city'_`groups_vars'_`time'`special_leg
-> end'.pdf, replace    
+ 44.         graph export ../output/scm_`city'_`groups_vars'_`time'_`geo_var'`s
+> pecial_legend'.pdf, replace    
  45. end
 
 . 
@@ -1158,8 +1167,8 @@ file ../temp/synth_rivera_educ_more_HS.dta saved
     not matched                             0
     matched                                29  
     -----------------------------------------
-(note: file ../temp/controltrends_rivera_anio_sem.dta not found)
-file ../temp/controltrends_rivera_anio_sem.dta saved
+(note: file ../temp/controltrends_rivera_anio_sem_loc_code.dta not found)
+file ../temp/controltrends_rivera_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 2000h2 to 2014h2
                 delta:  1 halfyear
 101.5
@@ -1171,7 +1180,7 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= rivera_horas_trabajo
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= s_rivera_horas_trabajo
-(file ../output/scm_rivera_labor_anio_sem.pdf written in PDF format)
+(file ../output/scm_rivera_labor_anio_sem_loc_code.pdf written in PDF format)
 (1,490,121 observations deleted)
 (60,624 observations deleted)
 (215,114 observations deleted)
@@ -1746,8 +1755,8 @@ file ../temp/synth_salto_educ_more_HS.dta saved
     not matched                             0
     matched                                26  
     -----------------------------------------
-(note: file ../temp/controltrends_salto_anio_sem.dta not found)
-file ../temp/controltrends_salto_anio_sem.dta saved
+(note: file ../temp/controltrends_salto_anio_sem_loc_code.dta not found)
+file ../temp/controltrends_salto_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 2003h1 to 2015h2
                 delta:  1 halfyear
 106.5
@@ -1759,7 +1768,7 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= salto_horas_trabajo
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= s_salto_horas_trabajo
-(file ../output/scm_salto_labor_anio_sem.pdf written in PDF format)
+(file ../output/scm_salto_labor_anio_sem_loc_code.pdf written in PDF format)
 (1,490,121 observations deleted)
 (105,602 observations deleted)
 (188,455 observations deleted)
@@ -2316,8 +2325,8 @@ file ../temp/synth_florida_educ_more_HS.dta saved
     not matched                             0
     matched                                29  
     -----------------------------------------
-(note: file ../temp/controltrends_florida_anio_sem.dta not found)
-file ../temp/controltrends_florida_anio_sem.dta saved
+(note: file ../temp/controltrends_florida_anio_sem_loc_code.dta not found)
+file ../temp/controltrends_florida_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 1998h2 to 2012h2
                 delta:  1 halfyear
 97.5
@@ -2329,9 +2338,9 @@ The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= florida_horas_trabajo
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= s_florida_horas_trabajo
-(file ../output/scm_florida_labor_anio_sem.pdf written in PDF format)
+(file ../output/scm_florida_labor_anio_sem_loc_code.pdf written in PDF format)
 
 . 
 end of do-file
 
- make.py ended: 2018-04-14 18:41:14
+ make.py ended: 2018-04-16 15:13:57

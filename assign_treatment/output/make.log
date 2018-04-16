@@ -1,5 +1,5 @@
 
- make.py started: 2018-04-03 15:08:12 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-04-16 11:39:16 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -105,37 +105,37 @@ Notes:
  25.                         else {
  26.                                 local subsample " hombre == `value'  `rest
 > r`age_group''"
- 27.                                 gen `var'`age_group'_rivera  = (loc_code =
-> = 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio
->  branco 431050 *artigas    202020
- 28.                                 gen `var'`age_group'_salto   = (loc_code =
-> = 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*pay
-> sandu 1111020  *fray bentos 1212020
- 29.                                 gen `var'`age_group'_florida = (loc_code =
-> = 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
- 30. 
-.                                 gen `var'_c`age_group'_rivera  = (loc_code ==
+ 27.                                 *gen `var'`age_group'_rivera  = (loc_code 
+> == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*ri
+> o branco 431050 *artigas    202020
+.                                 *gen `var'`age_group'_salto   = (loc_code == 
+> 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysa
+> ndu 1111020  *fray bentos 1212020
+.                                 *gen `var'`age_group'_florida = (loc_code == 
+> 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
+. 
+.                                 gen `var'`age_group'_rivera_c  = (loc_code ==
 >  1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio 
 > branco 431050 *artigas    202020
- 31.                                 gen `var'_c`age_group'_salto   = (loc_code
+ 28.                                 gen `var'`age_group'_salto_c   = (loc_code
 >  == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*p
 > aysandu 1111020  *fray bentos 1212020
- 32.                                 gen `var'_c`age_group'_florida = (loc_code
+ 29.                                 gen `var'`age_group'_florida_c = (loc_code
 >  == 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
- 33. 
-.                                 gen `var'_d`age_group'_rivera  = (dpto == 13)
+ 30. 
+.                                 gen `var'`age_group'_rivera_s  = (dpto == 13)
 >  if (inlist(dpto,13,4,2)   & `subsample')
- 34.                                 gen `var'_d`age_group'_salto   = (dpto == 
+ 31.                                 gen `var'`age_group'_salto_s   = (dpto == 
 > 15) if (inlist(dpto,15,11,12) & `subsample')
- 35.                                 gen `var'_d`age_group'_florida = (dpto == 
+ 32.                                 gen `var'`age_group'_florida_s = (dpto == 
 > 8)  if (inlist(dpto,8,5,7)    & `subsample')
- 36.                         }
- 37.                         local value = 1
- 38.                 }
- 39.         }
- 40. 
+ 33.                         }
+ 34.                         local value = 1
+ 35.                 }
+ 36.         }
+ 37. 
 .     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
- 41. end
+ 38. end
 
 . 
 . main_assign_treatment
@@ -144,7 +144,7 @@ Notes:
 Duplicates in terms of all variables
 
 (5 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3678_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_325c_000001.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -335,6 +335,29 @@ file ..\temp\clean_loc_1998_2016_impl_date.dta saved
 .     global y_post 2
 
 . 
+.     * Ranges SCM (to build synth control)
+.     global q_scm_pre  30
+
+.     global q_scm_post 16
+
+.     global s_scm_pre  20
+
+.     global s_scm_post 8
+
+.     global y_scm_pre  10
+
+.     global y_scm_post 4
+
+. 
+.     *Lag list (related to Ranges SCM)
+.     global q_lag_list " 8 9 10 11 12 13 14 15 16" //`" 1 3 5 7 "'
+
+.     global s_lag_list " 8 9 10 11 12 13 14 15 16 17 18 19 20 " //`" 5 6 7 8 9
+>  10 11 12 "'
+
+.     global y_lag_list " 2 3 4 5 6 7 " //`" 3 4 5 6 "'
+
+. 
 .     * Legends
 .     global legend_mvd    = "Montevideo"
 
@@ -352,15 +375,9 @@ end of do-file
 (1,866,482 missing values generated)
 (1,858,096 missing values generated)
 (1,872,079 missing values generated)
-(1,866,482 missing values generated)
-(1,858,096 missing values generated)
-(1,872,079 missing values generated)
 (1,853,374 missing values generated)
 (1,852,229 missing values generated)
 (1,860,711 missing values generated)
-(1,868,381 missing values generated)
-(1,859,977 missing values generated)
-(1,872,793 missing values generated)
 (1,868,381 missing values generated)
 (1,859,977 missing values generated)
 (1,872,793 missing values generated)
@@ -370,24 +387,15 @@ end of do-file
 (1,874,692 missing values generated)
 (1,869,881 missing values generated)
 (1,877,616 missing values generated)
-(1,874,692 missing values generated)
-(1,869,881 missing values generated)
-(1,877,616 missing values generated)
 (1,867,896 missing values generated)
 (1,866,744 missing values generated)
 (1,871,949 missing values generated)
 (1,875,149 missing values generated)
 (1,871,574 missing values generated)
 (1,877,822 missing values generated)
-(1,875,149 missing values generated)
-(1,871,574 missing values generated)
-(1,877,822 missing values generated)
 (1,868,837 missing values generated)
 (1,868,844 missing values generated)
 (1,872,121 missing values generated)
-(1,875,920 missing values generated)
-(1,872,143 missing values generated)
-(1,878,105 missing values generated)
 (1,875,920 missing values generated)
 (1,872,143 missing values generated)
 (1,878,105 missing values generated)
@@ -413,59 +421,44 @@ end of do-file
   variable under14_florida was float now byte
   variable nbr_under14_florida was float now byte
   variable kids_florida was float now byte
-  variable treatment_rivera was float now byte
-  variable treatment_salto was float now byte
-  variable treatment_florida was float now byte
-  variable treatment_c_rivera was float now byte
-  variable treatment_c_salto was float now byte
-  variable treatment_c_florida was float now byte
-  variable treatment_d_rivera was float now byte
-  variable treatment_d_salto was float now byte
-  variable treatment_d_florida was float now byte
-  variable placebo_rivera was float now byte
-  variable placebo_salto was float now byte
-  variable placebo_florida was float now byte
-  variable placebo_c_rivera was float now byte
-  variable placebo_c_salto was float now byte
-  variable placebo_c_florida was float now byte
-  variable placebo_d_rivera was float now byte
-  variable placebo_d_salto was float now byte
-  variable placebo_d_florida was float now byte
-  variable treatment_young_rivera was float now byte
-  variable treatment_young_salto was float now byte
-  variable treatment_young_florida was float now byte
-  variable treatment_c_young_rivera was float now byte
-  variable treatment_c_young_salto was float now byte
-  variable treatment_c_young_florida was float now byte
-  variable treatment_d_young_rivera was float now byte
-  variable treatment_d_young_salto was float now byte
-  variable treatment_d_young_florida was float now byte
-  variable treatment_adult_rivera was float now byte
-  variable treatment_adult_salto was float now byte
-  variable treatment_adult_florida was float now byte
-  variable treatment_c_adult_rivera was float now byte
-  variable treatment_c_adult_salto was float now byte
-  variable treatment_c_adult_florida was float now byte
-  variable treatment_d_adult_rivera was float now byte
-  variable treatment_d_adult_salto was float now byte
-  variable treatment_d_adult_florida was float now byte
-  variable treatment_placebo_rivera was float now byte
-  variable treatment_placebo_salto was float now byte
-  variable treatment_placebo_florida was float now byte
-  variable treatment_c_placebo_rivera was float now byte
-  variable treatment_c_placebo_salto was float now byte
-  variable treatment_c_placebo_florida was float now byte
-  variable treatment_d_placebo_rivera was float now byte
-  variable treatment_d_placebo_salto was float now byte
-  variable treatment_d_placebo_florida was float now byte
-  (348,421,415 bytes saved)
+  variable treatment_rivera_c was float now byte
+  variable treatment_salto_c was float now byte
+  variable treatment_florida_c was float now byte
+  variable treatment_rivera_s was float now byte
+  variable treatment_salto_s was float now byte
+  variable treatment_florida_s was float now byte
+  variable placebo_rivera_c was float now byte
+  variable placebo_salto_c was float now byte
+  variable placebo_florida_c was float now byte
+  variable placebo_rivera_s was float now byte
+  variable placebo_salto_s was float now byte
+  variable placebo_florida_s was float now byte
+  variable treatment_young_rivera_c was float now byte
+  variable treatment_young_salto_c was float now byte
+  variable treatment_young_florida_c was float now byte
+  variable treatment_young_rivera_s was float now byte
+  variable treatment_young_salto_s was float now byte
+  variable treatment_young_florida_s was float now byte
+  variable treatment_adult_rivera_c was float now byte
+  variable treatment_adult_salto_c was float now byte
+  variable treatment_adult_florida_c was float now byte
+  variable treatment_adult_rivera_s was float now byte
+  variable treatment_adult_salto_s was float now byte
+  variable treatment_adult_florida_s was float now byte
+  variable treatment_placebo_rivera_c was float now byte
+  variable treatment_placebo_salto_c was float now byte
+  variable treatment_placebo_florida_c was float now byte
+  variable treatment_placebo_rivera_s was float now byte
+  variable treatment_placebo_salto_s was float now byte
+  variable treatment_placebo_florida_s was float now byte
+  (263,670,260 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883359:152(99555):1505489200:1503032504
+  1883359:137(72235):3343294420:4135042474
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -597,59 +590,41 @@ under14_fl~a |  1,883,359    .1984884     .398862          0          1
 -------------+---------------------------------------------------------
 nbr_under~da |  1,883,359    .9564236    1.256639          0         14
 kids_florida |  1,883,359      .50243    .4999942          0          1
-tr~nt_rivera |     16,877    .5510458    .4974022          0          1
-tre~nt_salto |     25,263    .4473736    .4972326          0          1
-t~nt_florida |     11,280    .3817376    .4858343          0          1
+~nt_rivera_c |     16,877    .5510458    .4974022          0          1
+t~nt_salto_c |     25,263    .4473736    .4972326          0          1
+treatment_.. |     11,280    .3817376    .4858343          0          1
 -------------+---------------------------------------------------------
-tre~c_rivera |     16,877    .5510458    .4974022          0          1
-trea~c_salto |     25,263    .4473736    .4972326          0          1
-tr~c_florida |     11,280    .3817376    .4858343          0          1
-tre~d_rivera |     29,985    .3838919    .4863402          0          1
-trea~d_salto |     31,130    .4058143    .4910568          0          1
+~nt_rivera_s |     29,985    .3838919    .4863402          0          1
+t~nt_salto_s |     31,130    .4058143    .4910568          0          1
+treatment_.. |     22,648    .3267838    .4690478          0          1
+placebo_ri~c |     14,978    .5478034    .4977262          0          1
+placebo_sa~c |     23,382    .4444872    .4969194          0          1
 -------------+---------------------------------------------------------
-tr~d_florida |     22,648    .3267838    .4690478          0          1
-placebo_ri~a |     14,978    .5478034    .4977262          0          1
-placebo_sa~o |     23,382    .4444872    .4969194          0          1
-placebo_fl~a |     10,566     .368446     .482406          0          1
-placebo_c~ra |     14,978    .5478034    .4977262          0          1
+placebo_fl~c |     10,566     .368446     .482406          0          1
+placebo_ri~s |     26,824    .3826424    .4860412          0          1
+placebo_sa~s |     29,109    .3997389     .489853          0          1
+placebo_fl~s |     21,411    .3178273    .4656428          0          1
+t~g_rivera_c |      8,667    .5415946    .4982956          0          1
 -------------+---------------------------------------------------------
-placebo_c_~o |     23,382    .4444872    .4969194          0          1
-placebo_c~da |     10,566     .368446     .482406          0          1
-placebo_d~ra |     26,824    .3826424    .4860412          0          1
-placebo_d_~o |     29,109    .3997389     .489853          0          1
-placebo_d~da |     21,411    .3178273    .4656428          0          1
+tr~g_salto_c |     13,478    .4565959     .498131          0          1
+~g_florida_c |      5,743    .3945673    .4888001          0          1
+t~g_rivera_s |     15,463    .3795512     .485291          0          1
+tr~g_salto_s |     16,615    .4142642    .4926094          0          1
+~g_florida_s |     11,410    .3343558    .4717855          0          1
 -------------+---------------------------------------------------------
-treatment_.. |      8,667    .5415946    .4982956          0          1
-treatment_.. |     13,478    .4565959     .498131          0          1
-treatment_.. |      5,743    .3945673    .4888001          0          1
-treatment_.. |      8,667    .5415946    .4982956          0          1
-treatment_.. |     13,478    .4565959     .498131          0          1
--------------+---------------------------------------------------------
-treatment_.. |      5,743    .3945673    .4888001          0          1
-treatment_.. |     15,463    .3795512     .485291          0          1
-treatment_.. |     16,615    .4142642    .4926094          0          1
-treatment_.. |     11,410    .3343558    .4717855          0          1
-treatment_.. |      8,210    .5610231    .4962924          0          1
--------------+---------------------------------------------------------
-treatment_.. |     11,785    .4368265    .4960141          0          1
+~lt_rivera_c |      8,210    .5610231    .4962924          0          1
+t~lt_salto_c |     11,785    .4368265    .4960141          0          1
 treatment_.. |      5,537    .3684306    .4824225          0          1
-treatment_.. |      8,210    .5610231    .4962924          0          1
-treatment_.. |     11,785    .4368265    .4960141          0          1
-treatment_.. |      5,537    .3684306    .4824225          0          1
+~lt_rivera_s |     14,522     .388514    .4874292          0          1
+t~lt_salto_s |     14,515    .3961419    .4891114          0          1
 -------------+---------------------------------------------------------
-treatment_.. |     14,522     .388514    .4874292          0          1
-treatment_.. |     14,515    .3961419    .4891114          0          1
 treatment_.. |     11,238    .3190959     .466147          0          1
-treatment_.. |      7,439    .5429493    .4981854          0          1
-treatment_.. |     11,216    .4449893    .4969868          0          1
--------------+---------------------------------------------------------
+t~o_rivera_c |      7,439    .5429493    .4981854          0          1
+tr~o_salto_c |     11,216    .4449893    .4969868          0          1
 treatment_.. |      5,254    .3753331    .4842549          0          1
-treatment_.. |      7,439    .5429493    .4981854          0          1
-treatment_.. |     11,216    .4449893    .4969868          0          1
-treatment_.. |      5,254    .3753331    .4842549          0          1
-treatment_.. |     13,102    .3785682    .4850487          0          1
+t~o_rivera_s |     13,102    .3785682    .4850487          0          1
 -------------+---------------------------------------------------------
-treatment_.. |     13,598    .4046919    .4908504          0          1
+tr~o_salto_s |     13,598    .4046919    .4908504          0          1
 treatment_.. |     10,784    .3178783    .4656735          0          1
 
 
@@ -799,5 +774,3 @@ file ..\output\ech_final_98_2016.dta saved
 > 
 
 end of do-file
-
- make.py ended: 2018-04-03 15:09:48
