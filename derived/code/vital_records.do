@@ -84,6 +84,11 @@ program derived_data
 		lab define treatment_salto`age_group' 0 "Control`age_group'" 1 "Salto`age_group'" 
 	}
 
+	* Add variable dpto coded as in the ECH
+	gen     dpto = depar   if inrange(depar,11,19)
+	replace dpto = 1       if depar==10
+	replace dpto = depar+1 if inrange(depar,1,9)
+	
 	* Labelling
 	lab def not_married               0 "Married"                1 "Not married"
 	lab val not_married               not_married
@@ -103,6 +108,7 @@ program derived_data
 	lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
 	lab def recomm_prenatal_1stvisit  0 "1st visit by 14+ weeks" 1 "1st visit by 13 weeks"
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
+	label_depar
 
 	preserve
 		replace edadm = 15 if inrange(edadm,0,14)
