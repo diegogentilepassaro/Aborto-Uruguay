@@ -19,7 +19,7 @@ capture program drop plot_births
 program plot_births
 syntax, by_vars(string) treatment(string) time(string) 
 	
-	use "..\..\..\derived\output\births.dta", clear
+	use "..\..\..\assign_treatment\output\births.dta", clear
 
 	if "`time'" == "anio_mon" {
         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pre},tm(${m_date_`treatment'}) + ${m_post}) "
@@ -66,7 +66,7 @@ capture program drop diff_in_diff
 program diff_in_diff
 syntax, by_vars(string) treatment(string) time(string)
 	
-	use "..\..\..\derived\output\births.dta", clear
+	use "..\..\..\assign_treatment\output\births.dta", clear
 
 	local treatment rivera
 	local time anio

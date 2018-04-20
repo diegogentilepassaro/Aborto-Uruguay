@@ -3,40 +3,79 @@ set more off
 adopath + ../../library/stata/gslab_misc/ado
 
 program main_assign_treatment
-    add_impl_date
-    assign_treatment
+    do ../../analysis/globals.do
+    clean_impl_date
+    assign_treatment_births
+    assign_treatment_ech
 end
 
-program add_impl_date
+program clean_impl_date
 	import excel ..\..\raw\timeline_implementation.xlsx, clear firstrow cellrange(D1:E14)
 	keep if !mi(impl_date)
 	bys dpto: egen impl_date_dpto = min(impl_date)
 	format %td impl_date_dpto
 	keep *dpto
 	duplicates drop
-	isid dpto
-	tempfile impl_date_dpto
-	save `impl_date_dpto'
-
-	use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
-	merge m:1 dpto using `impl_date_dpto', assert(1 3) nogen
-    save_data ..\temp\clean_loc_1998_2016_impl_date.dta, key(numero pers anio) replace 
+	save_data ..\temp\timeline_implementation.dta, key(dpto) replace
 end
 
-program assign_treatment
-    use ..\temp\clean_loc_1998_2016_impl_date.dta, clear 
-	
-	* Dates of treatments
-	do ../../analysis/globals.do
+program new_age_vars
+syntax, age_var(string)
+	assert !mi(`age_var')
+	gen yob = anio - `age_var'
+	gen age_young   = inrange(`age_var',16,30)
+	gen age_adult   = inrange(`age_var',31,45)
+	gen age_placebo = inrange(`age_var',46,60)
+	gen fertile_age = inrange(`age_var',16,45) if inrange(`age_var',16,60)
+	egen    age_group = cut(`age_var') , at(16(5)50)
+	replace age_group = age_group+2
+
+	lab def age_young                 0 "Age: 31-45"             1 "Age: 16-30"
+	lab val age_young                 age_young
+end
+
+program assign_treatment_births
+	use ..\..\derived\output\births_derived.dta, clear
+	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
+	new_age_vars, age_var(edadm)
+	rename yob yobm
+
+	* TC groups
+	local restr         ""
+	local restr_young   " & age_young==1"
+	local restr_adult   " & age_young==0"
+	foreach age_group in "" "_young" "_adult" {
+		gen treatment_rivera`age_group' =  (depar == 13 `restr`age_group'') if inlist(depar,13,1,3)
+		gen treatment_salto`age_group'  =  (depar == 15 `restr`age_group'') if inlist(depar,15,11,12)
+		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
+		lab define treatment_salto`age_group' 0 "Control`age_group'" 1 "Salto`age_group'" 
+	}
+
+	preserve
+		replace edadm = 15 if inrange(edadm,0,14)
+		replace edadm = 49 if inrange(edadm,50,99)
+		keep if inrange(edadm,15,49) 
+		egen age_group15 = cut(edadm) ,at(15(5)50)
+		bys age_group15: egen age_min = min(edadm)
+		bys age_group15: egen age_max = max(edadm)
+		save "..\output\births15.dta", replace
+	restore
+
+	keep if inrange(edadm,16,45)
+	save "..\output\births.dta", replace
+end
+
+program assign_treatment_ech
+    use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
+	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
+	new_age_vars, age_var(edad)
 
 	* Variables for the triple diff
-	gen fertile_age = (inrange(edad, 16, 45)) if inrange(edad,16,60)
 	gen female      = (hombre==0)             if !mi(hombre)
 	gen single      = (married==0)            if !mi(married)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
 	
-	gen yob = anio-edad
 	foreach city in rivera salto florida {
 		gen age_`city'     = ${y_date_`city'} - yob
 		gen under14_`city' = (inrange(age_`city',0,14))
@@ -44,11 +83,11 @@ program assign_treatment
 		gen kids_`city' = (nbr_under14_`city' > 0)
 	}
 	
-	* Diff in Diff Rivera , Salto , Florida
+	* TC groups
 	local restr         " & inrange(edad, 16, 45)"
-	local restr_young   " & inrange(edad, 16, 30)"
-	local restr_adult   " & inrange(edad, 31, 45)"
-	local restr_placebo " & inrange(edad, 46, 60)"
+	local restr_young   " & age_young==1 "
+	local restr_adult   " & age_adult==1 "
+	local restr_placebo " & age_placebo==1 "
 
 	foreach age_group in "" "_young" "_adult" "_placebo" {
 		local value = 0

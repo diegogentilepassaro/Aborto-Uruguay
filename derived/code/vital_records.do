@@ -66,24 +66,6 @@ program derived_data
 	gen no_prenatal_care          = (totcons==0 | totcon==99 | semprim==97 | semprim==99)
 	gen first_pregnancy           = (numemban==0)
 	
-	* Age vars
-	assert !mi(edadm)
-	egen age_group = cut(edadm) ,at(16(5)50)
-	replace age_group = age_group+2
-	gen yobm = anio - edadm
-	gen age_young = inrange(edadm,16,30)
-	
-	* TC groups
-	local restr         ""
-	local restr_young   " & age_young==1"
-	local restr_adult   " & age_young==0"
-	foreach age_group in "" "_young" "_adult" {
-		gen treatment_rivera`age_group' =  (depar == 13 `restr`age_group'') if inlist(depar,13,1,3)
-		gen treatment_salto`age_group'  =  (depar == 15 `restr`age_group'') if inlist(depar,15,11,12)
-		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
-		lab define treatment_salto`age_group' 0 "Control`age_group'" 1 "Salto`age_group'" 
-	}
-
 	* Add variable dpto coded as in the ECH
 	gen     dpto = depar   if inrange(depar,11,19)
 	replace dpto = 1       if depar==10
@@ -98,8 +80,6 @@ program derived_data
 	lab val prim_school               prim_school
 	lab def high_school               0 "Less than HS"           1 "HS or more"
 	lab val high_school               high_school
-	lab def age_young                 0 "Age: 31-45"             1 "Age: 16-30"
-	lab val age_young                 age_young 
 	lab def no_prenatal_care          0 "No prenatal care"       1 "Prenatal care"
 	lab val no_prenatal_care          no_prenatal_care
 	lab def first_pregnancy           0 "Not first pregnancy"    1 "First pregnancy"
@@ -110,18 +90,7 @@ program derived_data
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
 	label_depar
 
-	preserve
-		replace edadm = 15 if inrange(edadm,0,14)
-		replace edadm = 49 if inrange(edadm,50,99)
-		keep if inrange(edadm,15,49) 
-		egen age_group15 = cut(edadm) ,at(15(5)50)
-		bys age_group15: egen age_min = min(edadm)
-		bys age_group15: egen age_max = max(edadm)
-		save "..\output\births15.dta", replace
-	restore
-
-	keep if inrange(edadm,16,45)
-	save "..\output\births.dta", replace
+	save "..\output\births_derived.dta", replace
 end
 
 program label_depar
