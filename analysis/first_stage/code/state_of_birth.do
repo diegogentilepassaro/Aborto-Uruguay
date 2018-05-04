@@ -2,7 +2,7 @@ clear all
 set more off
 adopath + ../../../library/stata/gslab_misc/ado
 
-	use "..\..\..\derived\output\births.dta", clear
+	use "..\..\..\assign_treatment\output\births.dta", clear
 	drop if inlist(depar,20,99) // drop Extranjero, No indicado
 
 	collapse (count) births = edadm, by(anio codep depar)
@@ -20,26 +20,6 @@ adopath + ../../../library/stata/gslab_misc/ado
 	label var births_sh_same "Share of births in same state"
 	label var births_sh_mvd  "Share of births in Montevideo"
 	label var    depar "Mother's residential state"
-	label define depar  1 "ARTIGAS" ///
-						2 "CANELONES" ///
-						3 "CERRO LARGO" ///
-						4 "COLONIA" ///
-						5 "DURAZNO" ///
-						6 "FLORES" ///
-						7 "FLORIDA" ///
-						8 "LAVALLEJA" ///
-						9 "MALDONADO" ///
-						10 "MONTEVIDEO" ///
-						11 "PAYSANDU" ///
-						12 "RÍO NEGRO" ///
-						13 "RIVERA" ///
-						14 "ROCHA" ///
-						15 "SALTO" ///
-						16 "SAN JOSÉ" ///
-						17 "SORIANO" ///
-						18 "TACUAREMBÓ" ///
-						19 "TREINTA Y TRES"
-	label values depar depar
 
 	foreach var in same mvd {
 		egen min_sh_`var' = min(births_sh_`var'), by(depar)
