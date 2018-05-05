@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-04 18:19:45 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-05-05 13:46:34 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -525,46 +525,55 @@ Notes:
 .         label var    depar "Mother's residential state"
 
 . 
-.         foreach var in same mvd {
-  2.                 egen min_sh_`var' = min(births_sh_`var'), by(depar)
-  3.                 qui sum min_sh_`var', det
-  4.                 gen tag_`var' = (min_sh_`var'> r(p50))
+.         foreach x in same mvd {
+  2.                 egen min_sh_`x' = min(births_sh_`x'), by(depar)
+  3.                 qui sum min_sh_`x', det
+  4.                 gen tag_`x' = (min_sh_`x'> r(p50))
   5.         }
 
 . 
-.         foreach var in same mvd {
-  2.                 forvalues tag = 0/1 {
-  3.                         sum births_sh_`var'
-  4.                         local y_min = floor(`r(min)'*5) / 5
-  5.                         xtline births_sh_`var' if tag_`var'==`tag', ov yla
-> bel(`y_min' (.2) 1 ) legend(rows(3) symx(5) si(small)) name(`var'_`tag')
-  6.                 }
-  7.                 graph combine `var'_0 `var'_1
-  8.                 graph export "..\output\births_sh_`var'_depar.pdf", replac
-> e
-  9.                 graph drop `var'_0 `var'_1
- 10.         }
+.         local plot_lines  = "plot1(lp(shortdash)) plot2(lp(shortdash)) plot3(
+> lp(shortdash)) plot4(lp(shortdash)) plot5(lp(shortdash))"
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-births_sh_~e |        323    .8808725    .1472617   .3184779   .9972585
+.         local legend_all  = "legend(cols(7) symx(3) si(vsmall) bex)"
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-births_sh_~e |        323    .8808725    .1472617   .3184779   .9972585
-(file ..\output\births_sh_same_depar.pdf written in PDF format)
+.         local legend_mvd  = "legend(off)"
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-births_sh_~d |        323    .1428345    .2488286   .0037969   .9972585
+.         local legend_same = "legend(rows(3) symx(5) si(small))"
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-births_sh_~d |        323    .1428345    .2488286   .0037969   .9972585
-(file ..\output\births_sh_mvd_depar.pdf written in PDF format)
+.         local legend_mvd  = "legend(off)"
+
+.         foreach x in same mvd {
+  2.                 xtline births_sh_`x', ov ylabel(0 (.2) 1 ) name(`x') ///
+>                         graphregion(color(white)) `legend_all' `plot_lines'
+  3.                 qui sum births_sh_`x'
+  4.                 local min_`x' = floor(`r(min)'*5) / 5
+  5.                 forvalues tag = 0/1 {
+  6.                         xtline births_sh_`x' if tag_`x'==`tag', ov ylabel(
+> `min_`x'' (.2) 1 ) name(`x'_`tag') ///
+>                                 graphregion(color(white)) `legend_`x''
+  7.                 }
+  8.         }
+
+.         
+.         graph combine mvd_0 mvd_1 same_0 same_1, ysiz(6) xsiz(10) graphregion
+> (color(white)) scale(0.8) 
+
+.         graph export "..\output\births_sh_2groups.pdf", replace
+(file ..\output\births_sh_2groups.pdf written in PDF format)
+
+. 
+.         grc1leg same mvd, rows(1) legendfrom(same) position(6) cols(2) graphr
+> egion(color(white))
+
+.         graph export "..\output\births_sh_1group.pdf", replace
+(file ..\output\births_sh_1group.pdf written in PDF format)
+
+. 
+.         graph drop same_0 same_1 mvd_0 mvd_1 same mvd
 
 . 
 . 
 end of do-file
 
- make.py ended: 2018-05-04 18:23:19
+ make.py ended: 2018-05-05 13:47:50

@@ -21,20 +21,33 @@ adopath + ../../../library/stata/gslab_misc/ado
 	label var births_sh_mvd  "Share of births in Montevideo"
 	label var    depar "Mother's residential state"
 
-	foreach var in same mvd {
-		egen min_sh_`var' = min(births_sh_`var'), by(depar)
-		qui sum min_sh_`var', det
-		gen tag_`var' = (min_sh_`var'> r(p50))
+	foreach x in same mvd {
+		egen min_sh_`x' = min(births_sh_`x'), by(depar)
+		qui sum min_sh_`x', det
+		gen tag_`x' = (min_sh_`x'> r(p50))
 	}
 
-	foreach var in same mvd {
+	local plot_lines  = "plot1(lp(shortdash)) plot2(lp(shortdash)) plot3(lp(shortdash)) plot4(lp(shortdash)) plot5(lp(shortdash))"
+	local legend_all  = "legend(cols(7) symx(3) si(vsmall) bex)"
+	local legend_mvd  = "legend(off)"
+	local legend_same = "legend(rows(3) symx(5) si(small))"
+	local legend_mvd  = "legend(off)"
+	foreach x in same mvd {
+		xtline births_sh_`x', ov ylabel(0 (.2) 1 ) name(`x') ///
+			graphregion(color(white)) `legend_all' `plot_lines'
+		qui sum births_sh_`x'
+		local min_`x' = floor(`r(min)'*5) / 5
 		forvalues tag = 0/1 {
-			sum births_sh_`var'
-			local y_min = floor(`r(min)'*5) / 5
-			xtline births_sh_`var' if tag_`var'==`tag', ov ylabel(`y_min' (.2) 1 ) legend(rows(3) symx(5) si(small)) name(`var'_`tag')
+			xtline births_sh_`x' if tag_`x'==`tag', ov ylabel(`min_`x'' (.2) 1 ) name(`x'_`tag') ///
+				graphregion(color(white)) `legend_`x''
 		}
-		graph combine `var'_0 `var'_1
-		graph export "..\output\births_sh_`var'_depar.pdf", replace
-		graph drop `var'_0 `var'_1
 	}
+	
+	graph combine mvd_0 mvd_1 same_0 same_1, ysiz(6) xsiz(10) graphregion(color(white)) scale(0.8) 
+	graph export "..\output\births_sh_2groups.pdf", replace
+
+	grc1leg same mvd, rows(1) legendfrom(same) position(6) cols(2) graphregion(color(white))
+	graph export "..\output\births_sh_1group.pdf", replace
+
+	graph drop same_0 same_1 mvd_0 mvd_1 same mvd
 
