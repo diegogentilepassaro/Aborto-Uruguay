@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-05 13:46:34 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-05-05 18:44:21 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -125,8 +125,8 @@ Notes:
   1.         *global y_date_rivera = 2010
 .         do ../../globals.do
   2.         
-.         foreach var in no_partner not_married first_pregnancy age_young high_
-> school recomm_prenatal_numvisits {
+.         foreach var in not_married first_pregnancy age_young high_school reco
+> mm_prenatal_numvisits {
   3.                 plot_births, treatment(rivera) by_vars(`var') time(anio_mo
 > n)
   4.                 plot_births, treatment(rivera) by_vars(`var') time(anio_se
@@ -135,8 +135,15 @@ Notes:
 > r)
   6.                 plot_births, treatment(rivera) by_vars(`var') time(anio)
   7.         }
-  8. 
-. end
+  8.         grc1leg g_anio_sem_not_marri_0 g_anio_sem_not_marri_1 g_anio_sem_f
+> irst_pre_0 ///
+>                         g_anio_sem_first_pre_1 g_anio_sem_age_young_0 g_anio_
+> sem_age_young_1 ///
+>                 , cols(2) legendfrom(g_anio_sem_not_marri_0) position(6) ///
+>                   graphregion(color(white)) name(g_anio_sem)
+  9.         graph display g_anio_sem, ysiz(18) xsiz(15)
+ 10.         graph export "..\output\births_rivera_anio_sem.pdf", replace
+ 11. end
 
 . 
 . capture program drop plot_births
@@ -193,7 +200,21 @@ Notes:
  32. 
 .         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
 > lace
- 33. end
+ 33. 
+.         local g_name = substr("`by_vars'",1,9)
+ 34.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
+> n(dot)) xsize(6) "'
+ 35.         local opt2 = `"scheme(s1color) ylabel(0(250)1000) xtitle("`xtitle'
+> ") legend(si(small))"'
+ 36.         forvalues v=0/1 {
+ 37.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
+> nect(l) mc(blue) lc(blue) ) ///
+>                    (scatter Control   `time' `range' & `by_vars'==`v', connec
+> t(l) mc(red)  lc(red)) ///
+>                         , `opt1' `opt2' title(`: label `by_vars' `v'', si(med
+> ium)) name(g_`time'_`g_name'_`v')
+ 38.                 }
+ 39. end
 
 . 
 . capture program drop diff_in_diff
@@ -205,7 +226,7 @@ Notes:
   3. 
 .         local treatment rivera
   4.         local time anio
-  5.         local by_vars first_pregancy
+  5.         local by_vars first_pregnancy
   6. 
 .         if "`time'" == "anio_mon" {
   7.         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pr
@@ -237,14 +258,14 @@ Notes:
 .         reg edadm post##treatment_`treatment'
  28. 
 .         collapse (count) births=edadm , by(anio treatment_`treatment' first_p
-> regancy not_married) //`by_vars')
+> regnancy not_married) //`by_vars')
  29.                 
 .                 gen post = (anio>`event_date')
  30.                 gen interaction = post * treatment_`treatment'
  31.                 gen log_births = log(births)
  32.                 
-.                 reg log_births post##treatment_`treatment'##first_pregancy##n
-> ot_married
+.                 reg log_births post##treatment_`treatment'##first_pregnancy##
+> not_married
  33. end
 
 . 
@@ -342,22 +363,6 @@ end of do-file
 (410 observations deleted)
 (408 missing values generated)
 (409 missing values generated)
-(file ..\output\births_rivera_anio_mon_no_partner.pdf written in PDF format)
-(70 observations deleted)
-(68 missing values generated)
-(69 missing values generated)
-(file ..\output\births_rivera_anio_sem_no_partner.pdf written in PDF format)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_no_partner.pdf written in PDF format)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
-(file ..\output\births_rivera_anio_no_partner.pdf written in PDF format)
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
 (file ..\output\births_rivera_anio_mon_not_married.pdf written in PDF format)
 (70 observations deleted)
 (68 missing values generated)
@@ -442,6 +447,7 @@ end of do-file
 (34 missing values generated)
 (file ..\output\births_rivera_anio_recomm_prenatal_numvisits.pdf written in PDF
 >  format)
+(file ..\output\births_rivera_anio_sem.pdf written in PDF format)
 
 . 
 end of do-file
@@ -576,4 +582,4 @@ Notes:
 . 
 end of do-file
 
- make.py ended: 2018-05-05 13:47:50
+ make.py ended: 2018-05-05 18:46:16

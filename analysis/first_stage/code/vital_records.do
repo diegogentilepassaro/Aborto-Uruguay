@@ -6,13 +6,18 @@ program main
 	*global y_date_rivera = 2010
 	do ../../globals.do
 	
-	foreach var in no_partner not_married first_pregnancy age_young high_school recomm_prenatal_numvisits {
+	foreach var in not_married first_pregnancy age_young high_school recomm_prenatal_numvisits {
 		plot_births, treatment(rivera) by_vars(`var') time(anio_mon)
 		plot_births, treatment(rivera) by_vars(`var') time(anio_sem)
 		plot_births, treatment(rivera) by_vars(`var') time(anio_qtr)
 		plot_births, treatment(rivera) by_vars(`var') time(anio)
 	}
-
+	grc1leg g_anio_sem_not_marri_0 g_anio_sem_not_marri_1 g_anio_sem_first_pre_0 ///
+			g_anio_sem_first_pre_1 g_anio_sem_age_young_0 g_anio_sem_age_young_1 ///
+		, cols(2) legendfrom(g_anio_sem_not_marri_0) position(6) ///
+		  graphregion(color(white)) name(g_anio_sem)
+	graph display g_anio_sem, ysiz(18) xsiz(15)
+	graph export "..\output\births_rivera_anio_sem.pdf", replace
 end
 
 capture program drop plot_births
@@ -60,6 +65,15 @@ syntax, by_vars(string) treatment(string) time(string)
 	   scheme(s1color) 
 
 	graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", replace
+
+	local g_name = substr("`by_vars'",1,9)
+	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(6) "'
+	local opt2 = `"scheme(s1color) ylabel(0(250)1000) xtitle("`xtitle'") legend(si(small))"'
+	forvalues v=0/1 {
+		tw (scatter Treatment `time' `range' & `by_vars'==`v', connect(l) mc(blue) lc(blue) ) ///
+		   (scatter Control   `time' `range' & `by_vars'==`v', connect(l) mc(red)  lc(red)) ///
+			, `opt1' `opt2' title(`: label `by_vars' `v'', si(medium)) name(g_`time'_`g_name'_`v')
+		}
 end
 
 capture program drop diff_in_diff
@@ -70,7 +84,7 @@ syntax, by_vars(string) treatment(string) time(string)
 
 	local treatment rivera
 	local time anio
-	local by_vars first_pregancy
+	local by_vars first_pregnancy
 
 	if "`time'" == "anio_mon" {
         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pre},tm(${m_date_`treatment'}) + ${m_post}) "
@@ -97,13 +111,13 @@ syntax, by_vars(string) treatment(string) time(string)
 	
 	reg edadm post##treatment_`treatment'
 
-	collapse (count) births=edadm , by(anio treatment_`treatment' first_pregancy not_married) //`by_vars')
+	collapse (count) births=edadm , by(anio treatment_`treatment' first_pregnancy not_married) //`by_vars')
 		
 		gen post = (anio>`event_date')
 		gen interaction = post * treatment_`treatment'
 		gen log_births = log(births)
 		
-		reg log_births post##treatment_`treatment'##first_pregancy##not_married
+		reg log_births post##treatment_`treatment'##first_pregnancy##not_married
 end
 
 main
