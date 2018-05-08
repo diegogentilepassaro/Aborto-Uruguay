@@ -72,8 +72,8 @@ syntax, by_vars(string) treatment(string) time(string)
 	graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", replace*/
 
 	local g_name = substr("`by_vars'",1,9)
-	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(6) scheme(s1color) "'
-	local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)) xtitle("`xtitle'", si(small)) legend(si(small))"'
+	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(4) scheme(s1color) "'
+	local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)) xtitle("`xtitle'", si(small)) legend(si(vsmall))"'
 	forvalues v=0/1 {
 		tw (scatter Treatment `time' `range' & `by_vars'==`v', connect(l) mc(blue) lc(blue) ) ///
 		   (scatter Control   `time' `range' & `by_vars'==`v', connect(l) mc(red)  lc(red)) ///

@@ -65,20 +65,22 @@ program plot_natality
 syntax, rescale(int)
 	gen nat_level_`rescale'= nat_level/`rescale'
 	label var nat_level_`rescale' "Births (`rescale's)"
+	local opts = "overlay graphregion(fcolor(white) lcolor(white)) ylab(#3) legend(rows(1))"
+	local opt12 = "plot2(recast(con) lc(red) mc(red)) plot1(recast(con) lc(blue) mc(blue)) legend(order(1 2)) "
+	local opt21 = "plot1(recast(con) lc(red) mc(red)) plot2(recast(con) lc(blue) mc(blue)) legend(order(2 1)) "
+
 	xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & inrange(year,2000,2006) ///
-		, overlay graphregion(fcolor(white) lcolor(white)) tline(2004) name(tot, replace) ///
-		ylab(20(20)60) legend(on rows(1))
-	xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & inrange(year,2008,2014) ///
-		, overlay graphregion(fcolor(white) lcolor(white)) tline(2012) name(mvd, replace) ///
-		ylab(20(20)60) legend(on rows(1))
+		, `opts' `opt12' tline(2003.5, lcolor(black) lpattern(dot)) name(mvd, replace)
+	xtline nat_level_`rescale' if (dpto=="Florida"|dpto=="Colonia") & inrange(year,2004,2010) ///
+		, `opts' `opt21' tline(2007.5, lcolor(black) lpattern(dot)) name(flo, replace) 
 	xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & inrange(year,2006,2012) ///
-		, overlay graphregion(fcolor(white) lcolor(white)) tline(2010) name(rivera, replace) ///
-		ylab(#3) legend(rows(1))
+		, `opts' `opt21' tline(2009.5, lcolor(black) lpattern(dot)) name(riv, replace) 
 	xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & inrange(year,2008,2014) ///
-		, overlay graphregion(fcolor(white) lcolor(white)) tline(2012) name(salto, replace) ///
-		ylab(#3) legend(rows(1))
-	graph combine tot mvd rivera salto, cols(2) ysize(7) xsize(10) graphregion(fcolor(white))
+		, `opts' `opt21' tline(2011.5, lcolor(black) lpattern(dot)) name(sal, replace) 
+		
+	graph combine mvd flo riv sal, cols(2) ysize(7) xsize(10) graphregion(fcolor(white))
 	graph export ../output/natality_`rescale'.pdf, replace
+	graph drop _all
 end
 
 main
