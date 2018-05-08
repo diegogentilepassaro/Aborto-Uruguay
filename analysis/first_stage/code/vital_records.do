@@ -7,17 +7,18 @@ program main
 	do ../../globals.do
 	
 	foreach var in not_married first_pregnancy age_young high_school recomm_prenatal_numvisits {
-		plot_births, treatment(rivera) by_vars(`var') time(anio_mon)
 		plot_births, treatment(rivera) by_vars(`var') time(anio_sem)
-		plot_births, treatment(rivera) by_vars(`var') time(anio_qtr)
 		plot_births, treatment(rivera) by_vars(`var') time(anio)
 	}
-	grc1leg g_anio_sem_not_marri_0 g_anio_sem_not_marri_1 g_anio_sem_first_pre_0 ///
-			g_anio_sem_first_pre_1 g_anio_sem_age_young_0 g_anio_sem_age_young_1 ///
-		, cols(2) legendfrom(g_anio_sem_not_marri_0) position(6) ///
-		  graphregion(color(white)) name(g_anio_sem)
-	graph display g_anio_sem, ysiz(18) xsiz(15)
-	graph export "..\output\births_rivera_anio_sem.pdf", replace
+
+	foreach time in anio anio_sem {
+		grc1leg g_`time'_not_marri_0 g_`time'_not_marri_1 g_`time'_first_pre_0 ///
+				g_`time'_first_pre_1 g_`time'_age_young_0 g_`time'_age_young_1 ///
+			, cols(2) legendfrom(g_`time'_not_marri_0) position(6) ///
+			  graphregion(color(white)) name(g_`time')
+		graph display g_`time', ysiz(18) xsiz(15)
+		graph export "..\output\births_rivera_`time'.pdf", replace
+	}
 end
 
 capture program drop plot_births
@@ -31,24 +32,28 @@ syntax, by_vars(string) treatment(string) time(string)
         local xtitle "Year-month"
         local vertical = tm(${m_date_`treatment'}) - 0.5    
         local vertical2= tm(${m_date_`treatment'}) - 6.5 
+        local y_label = "0(250)500"
     }
 	else if "`time'" == "anio_qtr" {
         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
         local xtitle "Year-quarter"
         local vertical = tq(${q_date_`treatment'}) - 0.5 
-        local vertical2= tq(${q_date_`treatment'}) + 2.5    
+        local vertical2= tq(${q_date_`treatment'}) + 2.5   
+        local y_label = "0(500)1000" 
     }
     else if "`time'" == "anio_sem" {
         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
         local xtitle "Year-half"
         local vertical = th(${s_date_`treatment'}) - 0.5   
         local vertical2= th(${s_date_`treatment'}) + 1.5 
+        local y_label = "0(500)1000"
     }
     else {
         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, ${y_date_`treatment'} + ${y_post}) "
         local xtitle "Year"
         local vertical = ${y_date_`treatment'} - 0.5  
         local vertical2= ${y_date_`treatment'} + 0.5
+        local y_label = "0(600)1800"
     }
 	
 	collapse (count) births=edadm , by(`time' treatment_`treatment' `by_vars')
@@ -57,23 +62,23 @@ syntax, by_vars(string) treatment(string) time(string)
 	gen Treatment = births if treatment_`treatment'==1
 	gen Control   = births if treatment_`treatment'==0
 	
-	tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) ///
+	/*tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) ///
 	   (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) ///
 	   ,  by(`by_vars', title(${legend_`treatment'}))  ///
 	   tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
 	   xtitle("`xtitle'") xsize(8) ///
 	   scheme(s1color) 
 
-	graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", replace
+	graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", replace*/
 
 	local g_name = substr("`by_vars'",1,9)
-	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(6) "'
-	local opt2 = `"scheme(s1color) ylabel(0(250)1000) xtitle("`xtitle'") legend(si(small))"'
+	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(6) scheme(s1color) "'
+	local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)) xtitle("`xtitle'", si(small)) legend(si(small))"'
 	forvalues v=0/1 {
 		tw (scatter Treatment `time' `range' & `by_vars'==`v', connect(l) mc(blue) lc(blue) ) ///
 		   (scatter Control   `time' `range' & `by_vars'==`v', connect(l) mc(red)  lc(red)) ///
 			, `opt1' `opt2' title(`: label `by_vars' `v'', si(medium)) name(g_`time'_`g_name'_`v')
-		}
+	}
 end
 
 capture program drop diff_in_diff

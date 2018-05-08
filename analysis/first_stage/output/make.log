@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-05 18:44:21 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-05-08 15:39:47 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -42,29 +42,27 @@ Notes:
   5.         tsset year
   6.         gen ratio1 = Cifras/Muertesdemujeres
   7. 
-.         tssmooth ma ma_muertes = MuertesMaternas, window(3 1 0) //5-year aver
+.         tssmooth ma ma_muertes = MuertesMaternas, window(2 1 2) //5-year aver
 > age
-  8.         tssmooth ma ma_razon   = Raz, window(3 1 0) //5-year average
-  9.         tssmooth ma ma_ratio1 = ratio1, window(3 1 0)
- 10.         
-.         label var ma_ratio1 "Maternal mortality over fertile women's mortalit
-> y"
+  8.         tssmooth ma ma_razon   = Raz, window(2 1 2) //5-year average
+  9.         tssmooth ma ma_ratio1  = ratio1, window(2 1 2)
+ 10.         label var   ma_ratio1 "Maternal mortality over fertile women's mor
+> tality"
  11.         
-.         plot_ratio, var_ratio(ratio1) start_yr(2000) end_yr(2014) tline(2004)
+.         plot_ratio, var_ratio(ma_ratio1) start_yr(2000) end_yr(2014) tline(20
+> 03.5 2011.5)
  12. end
 
 . 
 . program plot_ratio, 
   1. syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
-  2.         local var_ratio ma_ratio1
-  3.         local start_yr 2000
-  4.         local end_yr 2014 
-  5.         local tline 2004 2012
-  6.         tsline `var_ratio' if inrange(year,`start_yr',`end_yr'), tline(`tl
-> ine') ///
->             tlab(2000(4)2014) graphregion(fcolor(white) lcolor(white))
-  7.         graph export ../output/mortality_`var_ratio'.pdf, replace
-  8. end
+  2.         tsline `var_ratio' if inrange(year,`start_yr',`end_yr') ///
+>                 , recast(connected) mc(blue) lc(blue) tlab(`start_yr'(4)`end_
+> yr') ///
+>                 tline(`tline', lcolor(black) lpattern(dot)) ///
+>                 graphregion(fcolor(white) lcolor(white))
+  3.         graph export ../output/mortality_`var_ratio'.pdf, replace
+  4. end
 
 . 
 . main
@@ -72,11 +70,12 @@ Notes:
         time variable:  year, 1985 to 2015
                 delta:  1 unit
 The smoother applied was
-     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= MuertesMaternas
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)=
+     MuertesMaternas
 The smoother applied was
-     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= Raz
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= Raz
 The smoother applied was
-     (1/4)*[x(t-3) + x(t-2) + x(t-1) + 1*x(t)]; x(t)= ratio1
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= ratio1
 (file ../output/mortality_ma_ratio1.pdf written in PDF format)
 
 . 
@@ -127,22 +126,22 @@ Notes:
   2.         
 .         foreach var in not_married first_pregnancy age_young high_school reco
 > mm_prenatal_numvisits {
-  3.                 plot_births, treatment(rivera) by_vars(`var') time(anio_mo
-> n)
-  4.                 plot_births, treatment(rivera) by_vars(`var') time(anio_se
+  3.                 plot_births, treatment(rivera) by_vars(`var') time(anio_se
 > m)
-  5.                 plot_births, treatment(rivera) by_vars(`var') time(anio_qt
-> r)
-  6.                 plot_births, treatment(rivera) by_vars(`var') time(anio)
-  7.         }
-  8.         grc1leg g_anio_sem_not_marri_0 g_anio_sem_not_marri_1 g_anio_sem_f
-> irst_pre_0 ///
->                         g_anio_sem_first_pre_1 g_anio_sem_age_young_0 g_anio_
-> sem_age_young_1 ///
->                 , cols(2) legendfrom(g_anio_sem_not_marri_0) position(6) ///
->                   graphregion(color(white)) name(g_anio_sem)
-  9.         graph display g_anio_sem, ysiz(18) xsiz(15)
- 10.         graph export "..\output\births_rivera_anio_sem.pdf", replace
+  4.                 plot_births, treatment(rivera) by_vars(`var') time(anio)
+  5.         }
+  6. 
+.         foreach time in anio anio_sem {
+  7.                 grc1leg g_`time'_not_marri_0 g_`time'_not_marri_1 g_`time'
+> _first_pre_0 ///
+>                                 g_`time'_first_pre_1 g_`time'_age_young_0 g_`
+> time'_age_young_1 ///
+>                         , cols(2) legendfrom(g_`time'_not_marri_0) position(6
+> ) ///
+>                           graphregion(color(white)) name(g_`time')
+  8.                 graph display g_`time', ysiz(18) xsiz(15)
+  9.                 graph export "..\output\births_rivera_`time'.pdf", replace
+ 10.         }
  11. end
 
 . 
@@ -159,62 +158,66 @@ Notes:
   5.         local xtitle "Year-month"
   6.         local vertical = tm(${m_date_`treatment'}) - 0.5    
   7.         local vertical2= tm(${m_date_`treatment'}) - 6.5 
-  8.     }
-  9.         else if "`time'" == "anio_qtr" {
- 10.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
+  8.         local y_label = "0(250)500"
+  9.     }
+ 10.         else if "`time'" == "anio_qtr" {
+ 11.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
 > e},tq(${q_date_`treatment'}) + ${q_post}) "
- 11.         local xtitle "Year-quarter"
- 12.         local vertical = tq(${q_date_`treatment'}) - 0.5 
- 13.         local vertical2= tq(${q_date_`treatment'}) + 2.5    
- 14.     }
- 15.     else if "`time'" == "anio_sem" {
- 16.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+ 12.         local xtitle "Year-quarter"
+ 13.         local vertical = tq(${q_date_`treatment'}) - 0.5 
+ 14.         local vertical2= tq(${q_date_`treatment'}) + 2.5   
+ 15.         local y_label = "0(500)1000" 
+ 16.     }
+ 17.     else if "`time'" == "anio_sem" {
+ 18.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
 > e},th(${s_date_`treatment'}) + ${s_post}) "
- 17.         local xtitle "Year-half"
- 18.         local vertical = th(${s_date_`treatment'}) - 0.5   
- 19.         local vertical2= th(${s_date_`treatment'}) + 1.5 
- 20.     }
- 21.     else {
- 22.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+ 19.         local xtitle "Year-half"
+ 20.         local vertical = th(${s_date_`treatment'}) - 0.5   
+ 21.         local vertical2= th(${s_date_`treatment'}) + 1.5 
+ 22.         local y_label = "0(500)1000"
+ 23.     }
+ 24.     else {
+ 25.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
 > ${y_date_`treatment'} + ${y_post}) "
- 23.         local xtitle "Year"
- 24.         local vertical = ${y_date_`treatment'} - 0.5  
- 25.         local vertical2= ${y_date_`treatment'} + 0.5
- 26.     }
- 27.         
+ 26.         local xtitle "Year"
+ 27.         local vertical = ${y_date_`treatment'} - 0.5  
+ 28.         local vertical2= ${y_date_`treatment'} + 0.5
+ 29.         local y_label = "0(600)1800"
+ 30.     }
+ 31.         
 .         collapse (count) births=edadm , by(`time' treatment_`treatment' `by_v
 > ars')
- 28.         
+ 32.         
 .         keep if !mi(treatment)
- 29.         gen Treatment = births if treatment_`treatment'==1
- 30.         gen Control   = births if treatment_`treatment'==0
- 31.         
-.         tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue)) /
-> //
+ 33.         gen Treatment = births if treatment_`treatment'==1
+ 34.         gen Control   = births if treatment_`treatment'==0
+ 35.         
+.         /*tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue))
+>  ///
 >            (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) //
 > /
 >            ,  by(`by_vars', title(${legend_`treatment'}))  ///
 >            tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
 >            xtitle("`xtitle'") xsize(8) ///
 >            scheme(s1color) 
- 32. 
-.         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
-> lace
- 33. 
+> 
+>         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
+> lace*/
+. 
 .         local g_name = substr("`by_vars'",1,9)
- 34.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
-> n(dot)) xsize(6) "'
- 35.         local opt2 = `"scheme(s1color) ylabel(0(250)1000) xtitle("`xtitle'
-> ") legend(si(small))"'
- 36.         forvalues v=0/1 {
- 37.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
+ 36.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
+> n(dot)) xsize(6) scheme(s1color) "'
+ 37.         local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)
+> ) xtitle("`xtitle'", si(small)) legend(si(small))"'
+ 38.         forvalues v=0/1 {
+ 39.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
 > nect(l) mc(blue) lc(blue) ) ///
 >                    (scatter Control   `time' `range' & `by_vars'==`v', connec
 > t(l) mc(red)  lc(red)) ///
 >                         , `opt1' `opt2' title(`: label `by_vars' `v'', si(med
 > ium)) name(g_`time'_`g_name'_`v')
- 38.                 }
- 39. end
+ 40.         }
+ 41. end
 
 . 
 . capture program drop diff_in_diff
@@ -360,93 +363,37 @@ Notes:
 
 . 
 end of do-file
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
-(file ..\output\births_rivera_anio_mon_not_married.pdf written in PDF format)
 (70 observations deleted)
 (68 missing values generated)
 (69 missing values generated)
-(file ..\output\births_rivera_anio_sem_not_married.pdf written in PDF format)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_not_married.pdf written in PDF format)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(file ..\output\births_rivera_anio_not_married.pdf written in PDF format)
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
-(file ..\output\births_rivera_anio_mon_first_pregnancy.pdf written in PDF forma
-> t)
 (70 observations deleted)
 (68 missing values generated)
 (69 missing values generated)
-(file ..\output\births_rivera_anio_sem_first_pregnancy.pdf written in PDF forma
-> t)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_first_pregnancy.pdf written in PDF forma
-> t)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(file ..\output\births_rivera_anio_first_pregnancy.pdf written in PDF format)
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
-(file ..\output\births_rivera_anio_mon_age_young.pdf written in PDF format)
 (70 observations deleted)
 (68 missing values generated)
 (69 missing values generated)
-(file ..\output\births_rivera_anio_sem_age_young.pdf written in PDF format)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_age_young.pdf written in PDF format)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(file ..\output\births_rivera_anio_age_young.pdf written in PDF format)
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
-(file ..\output\births_rivera_anio_mon_high_school.pdf written in PDF format)
 (70 observations deleted)
 (68 missing values generated)
 (69 missing values generated)
-(file ..\output\births_rivera_anio_sem_high_school.pdf written in PDF format)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_high_school.pdf written in PDF format)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(file ..\output\births_rivera_anio_high_school.pdf written in PDF format)
-(410 observations deleted)
-(408 missing values generated)
-(409 missing values generated)
-(file ..\output\births_rivera_anio_mon_recomm_prenatal_numvisits.pdf written in
->  PDF format)
 (70 observations deleted)
 (68 missing values generated)
 (69 missing values generated)
-(file ..\output\births_rivera_anio_sem_recomm_prenatal_numvisits.pdf written in
->  PDF format)
-(138 observations deleted)
-(136 missing values generated)
-(137 missing values generated)
-(file ..\output\births_rivera_anio_qtr_recomm_prenatal_numvisits.pdf written in
->  PDF format)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(file ..\output\births_rivera_anio_recomm_prenatal_numvisits.pdf written in PDF
->  format)
+(file ..\output\births_rivera_anio.pdf written in PDF format)
 (file ..\output\births_rivera_anio_sem.pdf written in PDF format)
 
 . 
@@ -582,4 +529,4 @@ Notes:
 . 
 end of do-file
 
- make.py ended: 2018-05-05 18:46:16
+ make.py ended: 2018-05-08 15:40:51
