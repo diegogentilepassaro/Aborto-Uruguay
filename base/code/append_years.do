@@ -34,7 +34,7 @@ program append_years
 	
 	isid numero pers anio*/
 	
-	recode_dummies, vars(trabajo estudiante hombre busca_trabajo)
+	recode_dummies, vars(trabajo_1 hombre busca_trabajo)
 	
 	save_data ..\output\clean_1998_2016, key(numero pers anio) replace
 end

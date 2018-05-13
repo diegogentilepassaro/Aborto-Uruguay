@@ -1,5 +1,5 @@
 
- make.py started: 2018-02-04 19:53:18 C:\Users\cravizza\GitHub\Aborto-Uruguay\base\code 
+ make.py started: 2018-05-13 12:23:46 C:\Users\cravizza\GitHub\Aborto-Uruguay\base\code 
 
 
 
@@ -78,83 +78,93 @@ Notes:
 .         forvalues year=1998/2000 {
   2.                 use ..\temp\preclean_`year'.dta, replace                
   3.                 
-.                 gen     primaria   = (pe141==8|pe141==1|pe141==2|pe141==3|pe1
-> 41==4)
-  4.                 gen     secundaria = (((pe141==3|pe141==4) & pe15==1)|pe14
-> 1==5|pe141==6|pe141==7)
-  5.                 gen     terciaria  = ((pe141==5|pe141==6|pe141==7) & pe15=
-> =1)
-  6.                 gen     educ_level = 1              if primaria==1
-  7.                 replace educ_level = 2              if secundaria==1
-  8.                 replace educ_level = 3              if terciaria==1
-  9.                 assert  pe141==0 | pe141==9         if educ_level==.
- 10.                 replace educ_level = 1              if educ_level==.
- 11.                 
-.                 gen estudiante = (pobpcoac==33)
- 12. 
-.                 gen     c98_resid_house         =       (hc1==1)
- 13.                 gen     c98_resid_owned         =       (hd3==1|hd3==2)
- 14.                 gen     c98_nbr_rooms           =       hd41
- 15.                 gen     c98_nbr_bedrooms        =       hd42
- 16.                 gen     c98_b_piped_water       =       (hd6==1)
- 17.                 gen     c98_hhld_toilet         =       (hd7==1)
- 18.                 gen     c98_b_sewage            =       (hd9==1)
- 19.                 gen     c98_hhld_stove          =       (hd102!=7)
- 20.                 gen     c98_hhld_hot_water      =       (hd111==1)
- 21.                 gen     c98_hhld_refrigerat     =       (hd112==1|hd113==1
-> )
- 22.                 gen     c98_hhld_tv                     =       (hd114==1|
-> hd115==1)
- 23.                 gen     c98_hhld_vcr            =       (hd116==1)
- 24.                 gen     c98_hhld_wash_mac       =       (hd117==1)
- 25.                 gen     c98_hhld_dishwasher     =       (hd118==1)
- 26.                 gen     c98_hhld_microwave      =       (hd119==1)
- 27.                 gen     c98_hhld_car            =       (hd1110==1)
- 28.                 
-.                 gen married = (pe5==1|pe5==2)
- 29.                                 
-.                 keep    ident persona pe1  pe1a pe1b pe1c ///
->                         pe1d  pe1e pe1h peso* ccz pe2 pe3 pobpcoac pf133 pf05
-> 3 pf37 ///
->                                 pf38 pf351 pt1 married locech nomlocech ht3 h
-> t11 hd21 hd22 ///
->                                 c98_* estudiante educ_level married
- 30.                 
 .                 rename (ident     persona   pe1        pe1a        pe1b   ///
 >                         pe1c      pe1d      pe1e       pe1h        locech ///
->                         nomlocech ht11      hd21       hd22        ht3)   ///
+>                         nomlocech ht11      hd21       hd22        ht3   ///
+>                         pe2       pe3       pt1 ///
+>                         pf37                pf06                   pf051 ///
+>                                 pf38                pf351                  pf
+> 052)        ///
 >                            (numero    pers      nper       anio        semana
 >  ///
 >                             dpto      secc      segm       estrato     loc   
 >  ///
 >                             nomloc    y_hogar   nbr_people nbr_above14 nbr_un
-> der14)
- 31. 
-.                 rename (pe2    pobpcoac          pf37             pf053      
->    ///
->                                 pe3    pt1               pf38             pf3
-> 51)        ///
->                            (hombre codigo_actividad  meses_trabajando horas_t
-> rabajo ///
->                                 edad   ytotal            anios_trabajando bus
-> ca_trabajo)
- 32. 
-.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
- 33. 
+> der14 ///
+>                             hombre    edad      ytotal ///
+>                             meses_trabajando    horas_trabajo          horas_
+> trabajo_p  ///
+>                                 anios_trabajando    busca_trabajo          ho
+> ras_trabajo_s)
+  4. 
+.                 replace pobpcoac = 1  if pobpcoac==40
+  5.                 replace pobpcoac = 2  if inlist(pobpcoac,11,12)
+  6.                 replace pobpcoac = 3  if pobpcoac==23
+  7.                 replace pobpcoac = 4  if pobpcoac==21
+  8.                 replace pobpcoac = 5  if pobpcoac==22
+  9.                 replace pobpcoac = 6  if pobpcoac==34
+ 10.                 replace pobpcoac = 7  if pobpcoac==33
+ 11.                 replace pobpcoac = 8  if pobpcoac==32
+ 12.                 replace pobpcoac = 9  if pobpcoac==30
+ 13.                 replace pobpcoac = 10 if pobpcoac==31
+ 14.                 replace pobpcoac = 11 if inlist(pobpcoac,35,36,37,38)
+ 15. 
+.                 gen     c98_resid_house         =       (hc1==1)
+ 16.                 gen     c98_resid_owned         =       (hd3==1|hd3==2)
+ 17.                 gen     c98_nbr_rooms           =       hd41
+ 18.                 gen     c98_nbr_bedrooms        =       hd42
+ 19.                 gen     c98_b_piped_water       =       (hd6==1)
+ 20.                 gen     c98_hhld_toilet         =       (hd7==1)
+ 21.                 gen     c98_b_sewage            =       (hd9==1)
+ 22.                 gen     c98_hhld_stove          =       (hd102!=7)
+ 23.                 gen     c98_hhld_hot_water      =       (hd111==1)
+ 24.                 gen     c98_hhld_refrigerat     =       (hd112==1|hd113==1
+> )
+ 25.                 gen     c98_hhld_tv                     =       (hd114==1|
+> hd115==1)
+ 26.                 gen     c98_hhld_vcr            =       (hd116==1)
+ 27.                 gen     c98_hhld_wash_mac       =       (hd117==1)
+ 28.                 gen     c98_hhld_dishwasher     =       (hd118==1)
+ 29.                 gen     c98_hhld_microwave      =       (hd119==1)
+ 30.                 gen     c98_hhld_car            =       (hd1110==1)
+ 31.                 
 .                 gen     trimestre = 1 if inrange(semana, 1, 12)
- 34.                 replace trimestre = 2 if inrange(semana, 13, 24)
- 35.                 replace trimestre = 3 if inrange(semana, 25, 36)
- 36.                 replace trimestre = 4 if inrange(semana, 37, 48)
+ 32.                 replace trimestre = 2 if inrange(semana, 13, 24)
+ 33.                 replace trimestre = 3 if inrange(semana, 25, 36)
+ 34.                 replace trimestre = 4 if inrange(semana, 37, 48)
+ 35. 
+.                 gen married = (pe5==1|pe5==2)
+ 36.                 gen etnia = .
  37.                 
-.                 gen trabajo = (codigo_actividad == 11 | codigo_actividad == 1
-> 2)
- 38.                 drop codigo_actividad
- 39.                 gen etnia = .
- 40.                 assert nper==pers
- 41.                 drop nper
- 42.                 save ..\temp\clean_`year'.dta, replace
- 43.                 }
- 44. end
+.                 gen estudiante = (pobpcoac==33)
+ 38.                 gen trabajo    = (pobpcoac==2)
+ 39.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 40.                 
+.                 gen     primaria   = (pe141==8|pe141==1|pe141==2|pe141==3|pe1
+> 41==4)
+ 41.                 gen     secundaria = (((pe141==3|pe141==4) & pe15==1)|pe14
+> 1==5|pe141==6|pe141==7)
+ 42.                 gen     terciaria  = ((pe141==5|pe141==6|pe141==7) & pe15=
+> =1)
+ 43.                 gen     educ_level = 1              if primaria==1
+ 44.                 replace educ_level = 2              if secundaria==1
+ 45.                 replace educ_level = 3              if terciaria==1
+ 46.                 assert  pe141==0 | pe141==9         if educ_level==.
+ 47.                 replace educ_level = 1              if educ_level==.
+ 48.                                 
+.                 assert nper==pers
+ 49.                 drop nper
+ 50. 
+.                 keep numero pers anio trimestre semana dpto secc segm estrato
+>  loc nomloc ccz ///
+>                             peso* hombre edad ytotal y_hogar* nbr_people nbr_
+> above14 nbr_under14 ///
+>                             pobpcoac married etnia c98_* estudiante educ_leve
+> l *trabaj*
+ 51. 
+.                 save ..\temp\clean_`year'.dta, replace
+ 52.                 }
+ 53. end
 
 . 
 . program clean_01_05
@@ -176,72 +186,74 @@ Notes:
  10.         foreach year in 2001 2002 2003 2004 2005 {
  11.                 use ..\temp\preclean_`year'.dta, clear
  12.                 
-.                 gen     primaria   = e11_1 + e11_2
- 13.                 gen     secundaria = max(e11_3,e11_4)
- 14.                 gen     terciaria  = max(e11_5,e11_6)
- 15.                 gen     educ_level = 1 if primaria>=0
- 16.                 replace educ_level = 2 if secundaria==6 | (e11_3+e11_4==6 
-> & e13==1) 
- 17.                 replace educ_level = 3 if terciaria>0 & e13==1
- 18.                 assert !mi(educ_level)
- 19. 
-.                 gen estudiante = (pobpcoac == 7)
- 20. 
+.                 rename (correlativ nper  locech          nomlocech ///
+>                                 e1         e2    pt1             ht11 ///
+>                                 f17_1            f17_2           f1_1      f2
+> 3 ///
+>                                 d14              d16             ht3) ///    
+>                       
+>                            (numero     pers  loc             nomloc ///
+>                                 hombre     edad  ytotal          y_hogar ///
+>                                 horas_trabajo_p  horas_trabajo_s trabajo_1 bu
+> sca_trabajo ///
+>                                 nbr_above14      nbr_people      nbr_under14)
+ 13. 
 .                 gen     c98_resid_house         =       (c1==1)
- 21.                 gen     c98_resid_owned         =       (d2==1|d2==2)
- 22.                 gen     c98_nbr_rooms           =       d3
- 23.                 gen     c98_nbr_bedrooms        =       d4
- 24.                 gen     c98_b_piped_water       =       (d6==1)
- 25.                 gen     c98_hhld_toilet         =       (d7==1)
- 26.                 gen     c98_b_sewage            =       (d8==1)
- 27.                 gen     c98_hhld_stove          =       (d9!=5)
- 28.                 gen     c98_hhld_hot_water      =       (d10_1==1|d10_2==1
+ 14.                 gen     c98_resid_owned         =       (d2==1|d2==2)
+ 15.                 gen     c98_nbr_rooms           =       d3
+ 16.                 gen     c98_nbr_bedrooms        =       d4
+ 17.                 gen     c98_b_piped_water       =       (d6==1)
+ 18.                 gen     c98_hhld_toilet         =       (d7==1)
+ 19.                 gen     c98_b_sewage            =       (d8==1)
+ 20.                 gen     c98_hhld_stove          =       (d9!=5)
+ 21.                 gen     c98_hhld_hot_water      =       (d10_1==1|d10_2==1
 > )
- 29.                 gen     c98_hhld_refrigerat     =       (d10_3==1)
- 30.                 gen     c98_hhld_tv                     =       (d10_4==1)
- 31.                 gen     c98_hhld_vcr            =       (d10_6==1)
- 32.                 gen     c98_hhld_wash_mac       =       (d10_7==1)
- 33.                 gen     c98_hhld_dishwasher     =       (d10_8==1)
- 34.                 gen     c98_hhld_microwave      =       (d10_9==1)
- 35.                 gen     c98_hhld_car            =       (d10_12==1)
- 36.                 gen     c01_hhld_computer       =       (d10_10==1)
- 37.                 gen     c01_hhld_internet       =       (d10_11==1)
- 38.                 gen     c01_hhld_phone          =       (d10_13==1)
- 39.                 gen     c01_hhld_cable_tv       =       (d10_5==1)
- 40.                 
-.                 gen married = (e4==1|e4==2)
- 41.                 
-.                 keep anio correlativ nper dpto secc segm ccz  /*e11 e13*/ ///
->                     mes estrato pesoan pesosem pesotri e1 e2 e9 f1_1 f17_1 f2
-> 3 pt1 ///
->                     locech nomlocech ht3 ht11 d14 d16 ///
->                         c98_* c01_* estudiante educ_level married 
- 42.                          
+ 22.                 gen     c98_hhld_refrigerat     =       (d10_3==1)
+ 23.                 gen     c98_hhld_tv                     =       (d10_4==1)
+ 24.                 gen     c98_hhld_vcr            =       (d10_6==1)
+ 25.                 gen     c98_hhld_wash_mac       =       (d10_7==1)
+ 26.                 gen     c98_hhld_dishwasher     =       (d10_8==1)
+ 27.                 gen     c98_hhld_microwave      =       (d10_9==1)
+ 28.                 gen     c98_hhld_car            =       (d10_12==1)
+ 29.                 gen     c01_hhld_computer       =       (d10_10==1)
+ 30.                 gen     c01_hhld_internet       =       (d10_11==1)
+ 31.                 gen     c01_hhld_phone          =       (d10_13==1)
+ 32.                 gen     c01_hhld_cable_tv       =       (d10_5==1)
+ 33.                          
 .                 capture gen     trimestre = 1 if inlist(mes, 1, 2, 3)
- 43.                 capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
- 44.                 capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
- 45.                 capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
- 46.                 
-.                 rename (nper    correlativ  e1         e2     f17_1         /
-> //
->                                 locech  nomlocech   f1_1       pt1    f23    
->        ///
->                                 ht11    d14         d16        ht3)          
->        ///
->                            (pers    numero      hombre     edad   horas_traba
-> jo ///
->                                 loc     nomloc      trabajo    ytotal busca_t
-> rabajo ///
->                                 y_hogar nbr_above14 nbr_people nbr_under14)
- 47. 
-.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
- 48. 
-.                 gen meses_trabajando = .
- 49.                 gen anios_trabajando = .
- 50.                 gen etnia = .
- 51.                 save ..\temp\clean_`year'.dta, replace
- 52.         }
- 53.         * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it b
+ 34.                 capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
+ 35.                 capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
+ 36.                 capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
+ 37.                 
+.                 gen married = (e4==1|e4==2)
+ 38.                 gen etnia = .
+ 39. 
+.                 gen estudiante = (pobpcoac==7)
+ 40.                 gen trabajo    = (pobpcoac==2)
+ 41.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 42.                 gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 43.                 gen meses_trabajando = .
+ 44.                 gen anios_trabajando = .
+ 45. 
+.                 gen     primaria   = e11_1 + e11_2
+ 46.                 gen     secundaria = max(e11_3,e11_4)
+ 47.                 gen     terciaria  = max(e11_5,e11_6)
+ 48.                 gen     educ_level = 1 if primaria>=0
+ 49.                 replace educ_level = 2 if secundaria==6 | (e11_3+e11_4==6 
+> & e13==1) 
+ 50.                 replace educ_level = 3 if terciaria>0 & e13==1
+ 51.                 assert !mi(educ_level)
+ 52.                 
+.                 keep numero pers anio trimestre mes dpto secc segm estrato lo
+> c nomloc ccz ///
+>                      peso* hombre edad ytotal y_hogar* nbr_people nbr_above14
+>  nbr_under14 ///
+>                      pobpcoac married etnia c98_* c01_* estudiante educ_level
+>  *trabaj*
+ 53.                 
+.                 save ..\temp\clean_`year'.dta, replace
+ 54.         }
+ 55.         * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it b
 > e no response?
 . end
 
@@ -292,117 +304,113 @@ Notes:
   5.                 capture rename PT1 pt1
   6.                 capture rename HT11 ht11
   7.                 capture rename HT3 ht3
-  8.                 
-.                 gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4
-> >0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
->                                                    | (e48==2 & (e52_1_1>0|e52
-> _2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
-  9.                 gen     secundaria = (e48==1 & (e50_9>0|e50_10>0|e50_11>0|
-> e50_12>0)) ///
->                                                    | (e48==2 & (e52_2_2==1|e5
-> 2_3_2==1|e52_3_3==1|e52_4_1>0|e52_5_1>0|e52_6_1>0|e52_7_1>0))
- 10.                 gen     terciaria  = (e48==1 & (e50_12>0)) ///
->                                                    | (e48==2 & (e52_4_2==1|e5
-> 2_5_2==1|e52_6_2==1|e52_7_2==1))
- 11.                 gen     educ_level = 1 if primaria==1
- 12.                 replace educ_level = 2 if secundaria==1
- 13.                 replace educ_level = 3 if terciaria==1
- 14.                 assert e51==2 if educ_level ==. & e51!=0
- 15.                 replace educ_level=1 if educ_level==.
- 16. 
-.                 gen estudiante = (Pobpcoac == 7)
- 17. 
+  8.                 capture rename Pobpcoac pobpcoac
+  9. 
+.                 rename (nper  locagr nom_locagr e27  e26    pesoano  pt1     
+>          ht11             ///
+>                             f62          f81             f93             f82_
+> 1            f82_2            ///
+>                                 d23          d25             ht3             
+> f102                              ///
+>                                 e38          e39_1           e30_1  e30_2    
+> e30_3  e30_4     e30_5_2)        ///
+>                            (pers   loc   nomloc     edad hombre pesoan   ytot
+> al     y_hogar                ///
+>                             trabajo_1    horas_trabajo_p horas_trabajo_s mese
+> s_trabajando anios_trabajando ///
+>                                 nbr_above14  nbr_people      nbr_under14     
+> busca_trabajo                     ///
+>                                 live_births  live_births_nbr afro   asia     
+> blanco indigena  otro)
+ 10. 
 .                 gen     c98_resid_house         =       (c1!=5)
- 18.                 gen     c06_mat_walls           =       (c2==1|c2==2)
- 19.                 gen     c06_mat_roof            =       (c3==1|c3==2)
- 20.                 gen     c06_mat_floor           =       (c4==1|c4==2)
- 21.                 gen     c98_resid_owned         =       (d7_1==1|d7_1==2|d
+ 11.                 gen     c06_mat_walls           =       (c2==1|c2==2)
+ 12.                 gen     c06_mat_roof            =       (c3==1|c3==2)
+ 13.                 gen     c06_mat_floor           =       (c4==1|c4==2)
+ 14.                 gen     c98_resid_owned         =       (d7_1==1|d7_1==2|d
 > 7_1==3|d7_1==4)
- 22.                 gen     c98_nbr_rooms           =       d8
- 23.                 gen     c98_nbr_bedrooms        =       d9
- 24.                 gen     c98_b_piped_water       =       (d13==1)
- 25.                 gen     c98_hhld_toilet         =       (d14==1)
- 26.                 gen     c98_b_sewage            =       (d17==1)
- 27.                 gen     c06_b_electr            =       (d18_1==1|d18_1==2
+ 15.                 gen     c98_nbr_rooms           =       d8
+ 16.                 gen     c98_nbr_bedrooms        =       d9
+ 17.                 gen     c98_b_piped_water       =       (d13==1)
+ 18.                 gen     c98_hhld_toilet         =       (d14==1)
+ 19.                 gen     c98_b_sewage            =       (d17==1)
+ 20.                 gen     c06_b_electr            =       (d18_1==1|d18_1==2
 > )
- 28.                 gen     c98_hhld_stove          =       (d19!=3)
- 29.                 gen     c98_hhld_hot_water      =       (d21_1_1==1|d21_1_
+ 21.                 gen     c98_hhld_stove          =       (d19!=3)
+ 22.                 gen     c98_hhld_hot_water      =       (d21_1_1==1|d21_1_
 > 2==1|d21_1_3==1|d21_2_1==1|d21_2_2==1)
- 30.                 gen     c98_hhld_refrigerat     =       (d21_3==1|d21_4==1
+ 23.                 gen     c98_hhld_refrigerat     =       (d21_3==1|d21_4==1
 > )
- 31.                 gen     c98_hhld_tv                     =       (d21_5_1==
+ 24.                 gen     c98_hhld_tv                     =       (d21_5_1==
 > 1)
- 32.                 gen     c98_hhld_vcr            =       (d21_8==1|d21_9==1
+ 25.                 gen     c98_hhld_vcr            =       (d21_8==1|d21_9==1
 > )
- 33.                 gen     c98_hhld_wash_mac       =       (d21_10==1)
- 34.                 gen     c98_hhld_dishwasher     =       (d21_12==1)
- 35.                 gen     c98_hhld_microwave      =       (d21_13==1)
- 36.                 gen     c98_hhld_car            =       (d21_18_1==1)
- 37.                 gen     c01_hhld_computer       =       (d21_14_1==1)
- 38.                 gen     c01_hhld_internet       =       (d21_15==1)
- 39.                 gen     c01_hhld_phone          =       (d21_16_1==1|d21_1
+ 26.                 gen     c98_hhld_wash_mac       =       (d21_10==1)
+ 27.                 gen     c98_hhld_dishwasher     =       (d21_12==1)
+ 28.                 gen     c98_hhld_microwave      =       (d21_13==1)
+ 29.                 gen     c98_hhld_car            =       (d21_18_1==1)
+ 30.                 gen     c01_hhld_computer       =       (d21_14_1==1)
+ 31.                 gen     c01_hhld_internet       =       (d21_15==1)
+ 32.                 gen     c01_hhld_phone          =       (d21_16_1==1|d21_1
 > 7_1==1)
- 40.                 gen     c01_hhld_cable_tv       =       (d21_7==1)
- 41.                 
+ 33.                 gen     c01_hhld_cable_tv       =       (d21_7==1)
+ 34.                 
 .                 gen married  = (e34==1|e37==2) if e34!=0
- 42. 
-.                 keep anio numero nper dpto secc segm ccz region_3 region_4 //
-> /
->                     trimestre mes estrato pesoano pesosem pesotri e38 e39_1 /
-> //
->                         e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 e48 f62 f81 f
-> 82_1 f82_2 ///
->                         f102 pt1 locagr nom_locagr ht3 ht11 d25 d23 lp_06 li_
-> 06 ///
->                         c98_* c01_* c06_* estudiante educ_level married 
- 43.                         
-.                 rename (nper e26    e27  e30_1  e30_2   e30_3  e30_4      e30
-> _5_2 ///
->                             f62              pt1    ht11    locagr nom_locagr
->  pesoano ///
->                             f81              f82_1                 f82_2     
->          ///
->                                 f102             d23              d25        
-> ht3          ///
->                                 e38              e39_1)                      
->              ///
->                            (pers hombre edad afro   asia    blanco indigena  
->  otro    ///
->                             trabajo          ytotal y_hogar loc    nomloc    
->  pesoan  ///
->                             horas_trabajo    meses_trabajando      anios_trab
-> ajando   ///
->                                 busca_trabajo    nbr_above14      nbr_people 
-> nbr_under14  ///
->                                 live_births      live_births_nbr)
- 44. 
-.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
- 45. 
-.                 destring anio, replace
- 46.                 destring secc, replace
- 47.                 destring segm, replace
- 48.                 destring estrato, replace
- 49. 
-.                 * Create mestizo dummy from otro
+ 35.                 * Create mestizo dummy from otro
 .                 gen     mestizo  = regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")
- 50.                 replace asia     = 1   if regexm(otro,"[Aa][Ss][Ii][Aa]*")
+ 36.                 replace asia     = 1   if regexm(otro,"[Aa][Ss][Ii][Aa]*")
 > ==1
- 51.                 replace blanco   = 1   if regexm(otro,"[Bb][Ll][Aa][Nn][Cc
+ 37.                 replace blanco   = 1   if regexm(otro,"[Bb][Ll][Aa][Nn][Cc
 > ]*")==1
- 52.                 replace otro     = ""  if regexm(otro,"[Bb][Ll][Aa][Nn][Cc
+ 38.                 replace otro     = ""  if regexm(otro,"[Bb][Ll][Aa][Nn][Cc
 > ]*")==1 ///
 >                                                                 | regexm(otro
 > ,"[Aa][Ss][Ii][Aa]*")==1 ///
 >                                                                 | regexm(otro
 > ,"[Mm][Ee][Ss][Tt][Ii][Zz]*")==1
- 53.                 gen     otro_new = !mi(otro)
- 54.                 drop    otro
- 55.                 rename  otro_new otro
- 56.                 replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & i
+ 39.                 gen     otro_new = !mi(otro)
+ 40.                 drop    otro
+ 41.                 rename  otro_new otro
+ 42.                 replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & i
 > ndigena!=1 & otro!=1 & mestizo!=1)
- 57.                 clean_etnia_variable
- 58.                 save ..\temp\clean_2006, replace        
- 59. end
+ 43.                 clean_etnia_variable
+ 44. 
+.                 gen estudiante = (pobpcoac == 7)
+ 45.                 gen trabajo    = (pobpcoac == 2)
+ 46.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 47.                 gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 48.                 
+.                 gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4
+> >0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
+>                                                    | (e48==2 & (e52_1_1>0|e52
+> _2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
+ 49.                 gen     secundaria = (e48==1 & (e50_9>0|e50_10>0|e50_11>0|
+> e50_12>0)) ///
+>                                                    | (e48==2 & (e52_2_2==1|e5
+> 2_3_2==1|e52_3_3==1|e52_4_1>0|e52_5_1>0|e52_6_1>0|e52_7_1>0))
+ 50.                 gen     terciaria  = (e48==1 & (e50_12>0)) ///
+>                                                    | (e48==2 & (e52_4_2==1|e5
+> 2_5_2==1|e52_6_2==1|e52_7_2==1))
+ 51.                 gen     educ_level = 1 if primaria==1
+ 52.                 replace educ_level = 2 if secundaria==1
+ 53.                 replace educ_level = 3 if terciaria==1
+ 54.                 assert e51==2 if educ_level ==. & e51!=0
+ 55.                 replace educ_level=1 if educ_level==.
+ 56. 
+.                 destring anio, replace
+ 57.                 destring secc, replace
+ 58.                 destring segm, replace
+ 59.                 destring estrato, replace
+ 60. 
+.                 keep numero pers anio trimestre mes dpto secc segm estrato lo
+> c nomloc ccz    ///
+>                          peso* hombre edad ytotal y_hogar* nbr_people nbr_abo
+> ve14 nbr_under14    ///
+>                          pobpcoac married etnia c98_* c01_* c06_* estudiante 
+> educ_level *trabaj* ///
+>                          lp_06 li_06 region_3 region_4 live_births*
+ 61.                 save ..\temp\clean_2006, replace        
+ 62. end
 
 . 
 . program clean_07
@@ -414,100 +422,100 @@ Notes:
   5.                 capture rename PT1  pt1
   6.                 capture rename HT11 ht11
   7.                 capture rename HT3  ht3
-  8.                 
+  8.                 capture rename Pobpcoac pobpcoac
+  9.                                         
+.                 rename (nper loc_agr pesoano e27      e28   pt1       ht11   
+>                            ///
+>                                 f68          f88              f101           
+>  f89_1            f89_2            ///
+>                                 d24          d26              ht3            
+>  f102                              ///
+>                             e41          e42_1            e31_1 e31_2     e31
+> _3   e31_4    e31_5_1)         ///
+>                            (pers loc     pesoan  hombre   edad  ytotal    y_h
+> ogar                           ///
+>                             trabajo_1    horas_trabajo_p  horas_trabajo_s mes
+> es_trabajando anios_trabajando ///
+>                             nbr_above14  nbr_people       nbr_under14     bus
+> ca_trabajo                     ///
+>                             live_births  live_births_nbr  afro  asia      bla
+> nco  indigena otro)
+ 10. 
+.                 gen     c98_resid_house         =       (c1!=5)
+ 11.                 gen     c06_mat_walls           =       (c2==1|c2==2)
+ 12.                 gen     c06_mat_roof            =       (c3==1|c3==2)
+ 13.                 gen     c06_mat_floor           =       (c4==1|c4==2)
+ 14.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
+> 8_1==3|d8_1==4)
+ 15.                 gen     c98_nbr_rooms           =       d9
+ 16.                 gen     c98_nbr_bedrooms        =       d10
+ 17.                 gen     c98_b_piped_water       =       (d14_1==1)
+ 18.                 gen     c98_hhld_toilet         =       (d15==1)
+ 19.                 gen     c98_b_sewage            =       (d18_1==1)
+ 20.                 gen     c06_b_electr            =       (d19_1==1|d19_1==2
+> )
+ 21.                 gen     c98_hhld_stove          =       (d20!=3)
+ 22.                 gen     c98_hhld_hot_water      =       (d22_1_1==1|d22_1_
+> 2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+ 23.                 gen     c98_hhld_refrigerat     =       (d22_1_2==1|d22_4=
+> =1)
+ 24.                 gen     c98_hhld_tv                     =       (d22_5_1==
+> 1)
+ 25.                 gen     c98_hhld_vcr            =       (d22_8==1|d22_9==1
+> )
+ 26.                 gen     c98_hhld_wash_mac       =       (d22_10==1)
+ 27.                 gen     c98_hhld_dishwasher     =       (d22_12==1)
+ 28.                 gen     c98_hhld_microwave      =       (d22_13==1)
+ 29.                 gen     c98_hhld_car            =       (d22_18_1==1)
+ 30.                 gen     c01_hhld_computer       =       (d22_14_1==1)
+ 31.                 gen     c01_hhld_internet       =       (d22_15_1==1|d22_1
+> 5_2==1)
+ 32.                 gen     c01_hhld_phone          =       (d22_16_1==1|d22_1
+> 7_1==1)
+ 33.                 gen     c01_hhld_cable_tv       =       (d22_7==1)
+ 34.                 
+.                 gen married  = (e37==1|e40==2) if e37!=0
+ 35.                 clean_etnia_variable
+ 36.                 
+.                 gen estudiante = (pobpcoac == 7)
+ 37.                 gen trabajo    = (pobpcoac == 2)
+ 38.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 39.                 gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 40.                 
 .                 gen     primaria   = (e50==1 & (e52_1>0|e52_2>0|e52_3>0|e52_4
 > >0|e52_5>0|e52_6>0|e52_7>0|e52_8>0)) ///
 >                                                    | (e50==2 & (e54_1_1>0|e54
 > _2_1>0|e54_3_1>0|e54_3_3==1|e54_3_3==2|e54_3_3==3))
-  9.                 gen     secundaria = (e50==1 & (e52_9>0|e52_10>0|e52_11>0|
+ 41.                 gen     secundaria = (e50==1 & (e52_9>0|e52_10>0|e52_11>0|
 > e52_12>0)) ///
 >                                                    | (e50==2 & (e54_2_2==1|e5
 > 4_3_2==1|e54_3_3==1|e54_4_1>0|e54_5_1>0|e54_6_1>0|e54_7_1>0))
- 10.                 gen     terciaria  = (e50==1 & (e52_12>0)) ///
+ 42.                 gen     terciaria  = (e50==1 & (e52_12>0)) ///
 >                                                    | (e50==2 & (e54_4_2==1|e5
 > 4_5_2==1|e54_6_2==1|e54_7_2==1))   
- 11.                 gen     educ_level = 1 if primaria==1
- 12.                 replace educ_level = 2 if secundaria==1
- 13.                 replace educ_level = 3 if terciaria==1
- 14.                 assert e53==2 if educ_level ==. & e53!=0
- 15.                 replace educ_level=1 if educ_level==.
- 16.                 
-.                 gen estudiante = (Pobpcoac == 7)
- 17. 
-.                 gen     c98_resid_house         =       (c1!=5)
- 18.                 gen     c06_mat_walls           =       (c2==1|c2==2)
- 19.                 gen     c06_mat_roof            =       (c3==1|c3==2)
- 20.                 gen     c06_mat_floor           =       (c4==1|c4==2)
- 21.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
-> 8_1==3|d8_1==4)
- 22.                 gen     c98_nbr_rooms           =       d9
- 23.                 gen     c98_nbr_bedrooms        =       d10
- 24.                 gen     c98_b_piped_water       =       (d14_1==1)
- 25.                 gen     c98_hhld_toilet         =       (d15==1)
- 26.                 gen     c98_b_sewage            =       (d18_1==1)
- 27.                 gen     c06_b_electr            =       (d19_1==1|d19_1==2
-> )
- 28.                 gen     c98_hhld_stove          =       (d20!=3)
- 29.                 gen     c98_hhld_hot_water      =       (d22_1_1==1|d22_1_
-> 2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
- 30.                 gen     c98_hhld_refrigerat     =       (d22_1_2==1|d22_4=
-> =1)
- 31.                 gen     c98_hhld_tv                     =       (d22_5_1==
-> 1)
- 32.                 gen     c98_hhld_vcr            =       (d22_8==1|d22_9==1
-> )
- 33.                 gen     c98_hhld_wash_mac       =       (d22_10==1)
- 34.                 gen     c98_hhld_dishwasher     =       (d22_12==1)
- 35.                 gen     c98_hhld_microwave      =       (d22_13==1)
- 36.                 gen     c98_hhld_car            =       (d22_18_1==1)
- 37.                 gen     c01_hhld_computer       =       (d22_14_1==1)
- 38.                 gen     c01_hhld_internet       =       (d22_15_1==1|d22_1
-> 5_2==1)
- 39.                 gen     c01_hhld_phone          =       (d22_16_1==1|d22_1
-> 7_1==1)
- 40.                 gen     c01_hhld_cable_tv       =       (d22_7==1)
- 41.                 
-.                 gen married  = (e37==1|e40==2) if e37!=0
- 42. 
-.                 keep anio numero nper dpto region_3 region_4 secc segm ccz   
->          ///
->                     trimestre mes estrato pesoano pesosem pesotri            
->          ///
->                         e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50
->              ///
->                         f68 f88 f89_1 f89_2 f102 pt1 loc_agr ht3 ht11 d24 d26
->  lp_06 li_06 ///
->                         c98_* c01_* c06_* estudiante educ_level married 
- 43.                                         
-.                 rename (nper    e27     e28      e31_1   f89_1            f88
->    ///
->                         e31_2   e31_3   e31_4    e31_5_1 f89_2            f10
-> 2  ///
->                             pt1     loc_agr pesoano  f68     e41             
->  e42_1 ///
->                             ht11    d24              d26                     
->  ht3)  ///
->                            (pers    hombre  edad     afro    meses_trabajando
->  horas_trabajo   ///
->                             asia    blanco  indigena otro    anios_trabajando
->  busca_trabajo   ///
->                             ytotal  loc     pesoan   trabajo live_births     
->  live_births_nbr ///
->                             y_hogar nbr_above14      nbr_people              
->  nbr_under14)
- 44. 
-.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
- 45. 
+ 43.                 gen     educ_level = 1 if primaria==1
+ 44.                 replace educ_level = 2 if secundaria==1
+ 45.                 replace educ_level = 3 if terciaria==1
+ 46.                 assert e53==2 if educ_level ==. & e53!=0
+ 47.                 replace educ_level=1 if educ_level==.           
+ 48. 
 .                 destring numero, replace
- 46.                 destring anio, replace
- 47.                 destring secc, replace
- 48.                 destring segm, replace
- 49.                 destring estrato, replace
- 50.                 
+ 49.                 destring anio, replace
+ 50.                 destring secc, replace
+ 51.                 destring segm, replace
+ 52.                 destring estrato, replace
+ 53.                 
 .                 gen nomloc = ""
- 51.                 clean_etnia_variable
- 52.                 save ..\temp\clean_2007, replace
- 53. end 
+ 54. 
+.                 keep numero pers anio trimestre mes dpto secc segm estrato lo
+> c nomloc ccz    ///
+>                          peso* hombre edad ytotal y_hogar* nbr_people nbr_abo
+> ve14 nbr_under14    ///
+>                          pobpcoac married etnia c98_* c01_* c06_* estudiante 
+> educ_level *trabaj* ///
+>                          lp_06 li_06 region_3 region_4 live_births*     
+ 55.                 save ..\temp\clean_2007, replace
+ 56. end 
 
 . 
 . program clean_08
@@ -519,90 +527,95 @@ Notes:
   5.                 capture rename PT1  pt1
   6.                 capture rename HT11 ht11
   7.                 capture rename HT3  ht3
-  8.                 
+  8.                         
+.                 rename (nper e28     nom_locagr      pesoano e27     pt1    h
+> t11                       ///
+>                                 f68          f88_1           f101            
+> f89_1            f89_2            ///
+>                                 d24          d26             ht3     f102    
+>                                   ///
+>                                 e41          e42_1           e31_1   e31_2   
+> e31_3  e31_4    e31_5_1)          ///
+>                            (pers edad    nomloc          pesoan  hombre  ytot
+> al  y_hogar                   ///
+>                                 trabajo_1    horas_trabajo_p horas_trabajo_s 
+> meses_trabajando anios_trabajando ///
+>                                 nbr_above14  nbr_people      nbr_under14     
+> busca_trabajo                     ///
+>                                 live_births  live_births_nbr afro    asia    
+> blanco indigena otro )
+  9. 
+.                 gen     c98_resid_house         =       (c1!=5)
+ 10.                 gen     c06_mat_walls           =       (c2==1|c2==2)
+ 11.                 gen     c06_mat_roof            =       (c3==1|c3==2)
+ 12.                 gen     c06_mat_floor           =       (c4==1|c4==2)
+ 13.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
+> 8_1==3|d8_1==4)
+ 14.                 gen     c98_nbr_rooms           =       d9
+ 15.                 gen     c98_nbr_bedrooms        =       d10
+ 16.                 gen     c98_b_piped_water       =       (d14_1==1)
+ 17.                 gen     c98_hhld_toilet         =       (d15==1)
+ 18.                 gen     c98_b_sewage            =       (d18_1==1)
+ 19.                 gen     c06_b_electr            =       (d19_1==1|d19_1==2
+> )
+ 20.                 gen     c98_hhld_stove          =       (d20!=3)
+ 21.                 gen     c98_hhld_hot_water      =       (d22_1_1==1|d22_1_
+> 2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+ 22.                 gen     c98_hhld_refrigerat     =       (d22_1_2==1|d22_4=
+> =1)
+ 23.                 gen     c98_hhld_tv                     =       (d22_5_1==
+> 1)
+ 24.                 gen     c98_hhld_vcr            =       (d22_8==1|d22_9==1
+> )
+ 25.                 gen     c98_hhld_wash_mac       =       (d22_10==1)
+ 26.                 gen     c98_hhld_dishwasher     =       (d22_12==1)
+ 27.                 gen     c98_hhld_microwave      =       (d22_13==1)
+ 28.                 gen     c98_hhld_car            =       (d22_18_1==1)
+ 29.                 gen     c01_hhld_computer       =       (d22_14_1==1)
+ 30.                 gen     c01_hhld_internet       =       (d22_15_1==1|d22_1
+> 5_2==1)
+ 31.                 gen     c01_hhld_phone          =       (d22_16_1==1|d22_1
+> 7_1==1)
+ 32.                 gen     c01_hhld_cable_tv       =       (d22_7==1)
+ 33.                 
+.                 gen married  = (e37==1|e40==2) if e37!=0
+ 34.                 clean_etnia_variable
+ 35.                 
+.                 gen estudiante = (pobpcoac == 7)
+ 36.                 gen trabajo    = (pobpcoac == 2)
+ 37.             bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 38.                 gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 39.                 
 .                 gen     primaria   = (e52_1>0|e52_2>0|e53_2>0|e52_7_2==3|e52_
 > 7_2==2)
-  9.                 gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_
+ 40.                 gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_
 > 2==1)|e52_7_2==1)
- 10.                 gen     terciaria  = (((e52_8>0|e52_9>0|e52_10>0) & e53_2=
+ 41.                 gen     terciaria  = (((e52_8>0|e52_9>0|e52_10>0) & e53_2=
 > =1) | e52_11>0)
- 11.                 gen     educ_level = 1 if primaria>0
- 12.                 replace educ_level = 2 if secundaria==1
- 13.                 replace educ_level = 3 if terciaria==1
- 14.                 assert e52_1+e52_2+e52_3+e52_4+e52_5+e52_6+e52_7_1+e52_8+e
+ 42.                 gen     educ_level = 1 if primaria>0
+ 43.                 replace educ_level = 2 if secundaria==1
+ 44.                 replace educ_level = 3 if terciaria==1
+ 45.                 assert e52_1+e52_2+e52_3+e52_4+e52_5+e52_6+e52_7_1+e52_8+e
 > 52_9+e52_10+e52_11==0 if educ_level ==.
- 15.                 replace educ_level = 1 if educ_level==.
- 16.                 
-.                 gen estudiante = (pobpcoac == 7)
- 17. 
-.                 gen     c98_resid_house         =       (c1!=5)
- 18.                 gen     c06_mat_walls           =       (c2==1|c2==2)
- 19.                 gen     c06_mat_roof            =       (c3==1|c3==2)
- 20.                 gen     c06_mat_floor           =       (c4==1|c4==2)
- 21.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
-> 8_1==3|d8_1==4)
- 22.                 gen     c98_nbr_rooms           =       d9
- 23.                 gen     c98_nbr_bedrooms        =       d10
- 24.                 gen     c98_b_piped_water       =       (d14_1==1)
- 25.                 gen     c98_hhld_toilet         =       (d15==1)
- 26.                 gen     c98_b_sewage            =       (d18_1==1)
- 27.                 gen     c06_b_electr            =       (d19_1==1|d19_1==2
-> )
- 28.                 gen     c98_hhld_stove          =       (d20!=3)
- 29.                 gen     c98_hhld_hot_water      =       (d22_1_1==1|d22_1_
-> 2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
- 30.                 gen     c98_hhld_refrigerat     =       (d22_1_2==1|d22_4=
-> =1)
- 31.                 gen     c98_hhld_tv                     =       (d22_5_1==
-> 1)
- 32.                 gen     c98_hhld_vcr            =       (d22_8==1|d22_9==1
-> )
- 33.                 gen     c98_hhld_wash_mac       =       (d22_10==1)
- 34.                 gen     c98_hhld_dishwasher     =       (d22_12==1)
- 35.                 gen     c98_hhld_microwave      =       (d22_13==1)
- 36.                 gen     c98_hhld_car            =       (d22_18_1==1)
- 37.                 gen     c01_hhld_computer       =       (d22_14_1==1)
- 38.                 gen     c01_hhld_internet       =       (d22_15_1==1|d22_1
-> 5_2==1)
- 39.                 gen     c01_hhld_phone          =       (d22_16_1==1|d22_1
-> 7_1==1)
- 40.                 gen     c01_hhld_cable_tv       =       (d22_7==1)
- 41.                 
-.                 gen married  = (e37==1|e40==2) if e37!=0
- 42. 
-.                 keep  anio numero nper dpto region_3 region_4 secc segm ccz /
-> //
->                     trimestre mes estrato pesoano pesosem pesotri nom_locagr 
-> ///
->                         e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50
->  ///
->                         f68 f88_1 f89_1 f89_2 f102 pt1 ht3 ht11 d24 d26 lp_06
->  li_06 ///
->                         c98_* c01_* c06_* estudiante educ_level married 
- 43.                         
-.                 rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
->                         f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ///
->                         ht3 ht11 d24 d26 ///
->                         e41 e42_1) ///
->                         (pers hombre edad afro asia blanco indigena otro ///
->                         trabajo horas_trabajo meses_trabajando ///
->                         anios_trabajando busca_trabajo ytotal nomloc pesoan /
-> //
->                         nbr_under14 y_hogar nbr_above14 nbr_people ///
->                         live_births live_births_nbr)
- 44. 
-.             bysort numero: egen y_hogar_alt = sum(ytotal) 
- 45. 
+ 46.                 replace educ_level = 1 if educ_level==.
+ 47. 
 .                 destring numero, replace
- 46.                 destring anio, replace
- 47.                 destring secc, replace
- 48.                 destring segm, replace
- 49.                 destring estrato, replace
- 50.                 
+ 48.                 destring anio, replace
+ 49.                 destring secc, replace
+ 50.                 destring segm, replace
+ 51.                 destring estrato, replace
+ 52.                 
 .             gen loc = ""        
- 51.                 clean_etnia_variable
- 52.                 save ..\temp\clean_2008, replace
- 53. end 
+ 53. 
+.                 keep numero pers anio trimestre mes dpto  secc segm estrato l
+> oc nomloc ccz  ///
+>                      peso* hombre edad ytotal y_hogar* nbr_people nbr_above14
+>  nbr_under14    ///
+>                          pobpcoac married etnia c98_* c01_* c06_* estudiante 
+> educ_level *trabaj* ///
+>                          lp_06 li_06 region_3 region_4 live_births*
+ 54.                 save ..\temp\clean_2008, replace
+ 55. end 
 
 . 
 . program clean_09_16
@@ -619,128 +632,132 @@ Notes:
   9.                 capture rename Loc_agr_13 locagr
  10.                 capture rename Nom_loc_agr_13 nom_locagr
  11.                 capture rename POBPCOAC pobpcoac
- 12.                 
-.                 capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
- 13.                 capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
- 14.                 capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
- 15.                 capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
- 16.                 capture gen pesosem = .
- 17.                 capture gen pesotri = .
- 18. 
-.                 if "`year'" <= "2010" {
- 19.                                 gen     primaria   = (e51_1>0|e51_2>0|e51_
-> 3>0|e51_4>0)
- 20.                                 gen     secundaria = (e51_5==3|e51_6==3|(e
-> 51_7>=3 & e53==1)|e51_7_1==1)
- 21.                                 gen     terciaria  = (((e51_8>0|e51_9>0|e5
-> 1_10>0) & e53==1) | e51_11>0)
- 22. 
-.                                 gen     educ_level = 1 if primaria>0
- 23.                                 replace educ_level = 2 if secundaria==1
- 24.                                 replace educ_level = 3 if terciaria==1
- 25.                                 assert e51_1+e51_2+e51_3+e51_4+e51_5+e51_6
-> +e51_7_1+e51_8+e51_9+e51_10+e51_11==0 if educ_level ==.
- 26.                                 replace educ_level = 1 if educ_level==. 
- 27.                                 gen live_births     = .
- 28.                                 gen live_births_nbr = .
- 29.                         }
- 30.                         else {
- 31.                                 gen     primaria   = (e193!=3|e197!=3|e201
-> _1==2|e212_1==2)
- 32.                                 gen     secundaria = (e201_1==1|e212_1==1|
-> e215_1==2|e218_1==2|e218_1==2|e221_1==2|e224_1==2)
- 33.                                 gen     terciaria  = (e215_1==1|e218_1==1|
-> e218_1==1|e221_1==1|e224_1==1)
- 34.                                 
-.                                 gen     educ_level = 1 if primaria==1
- 35.                                 replace educ_level = 2 if secundaria==1
- 36.                                 replace educ_level = 3 if terciaria==1
- 37.                                 assert  e193==3        if educ_level==.
- 38.                                 assert e197_1+e201_+e212_1+e215_1+e218_1+e
-> 218_1+e221_1+e224_1==0 if educ_level==.
- 39.                                 replace educ_level = 1 if educ_level==. 
- 40.                                 gen live_births     = e185
- 41.                                 gen live_births_nbr = e186_1 + e186_2 + e1
-> 86_3 + e186_4 
- 42.                 }
- 43.                 
-.                 gen estudiante = (pobpcoac == 7)
- 44.                 
+ 12.                         
+.                 rename (nper e27    e26      locagr nom_locagr      pesoano p
+> t1      ht11             ///
+>                                 f66         f85             f98             f
+> 88_1            f88_2            ///
+>                                 d23         d25             ht3             f
+> 99              e29_6)           ///
+>                            (pers edad   hombre   loc    nomloc          pesoa
+> n  ytotal   y_hogar          ///
+>                             trabajo_1   horas_trabajo_p horas_trabajo_s meses
+> _trabajando anios_trabajando ///
+>                                 nbr_above14 nbr_people      nbr_under14     b
+> usca_trabajo    ascendencia)
+ 13.                 
 .                 gen     c98_resid_house         =       (c1!=5)
- 45.                 gen     c06_mat_walls           =       (c2==1|c2==2)
- 46.                 gen     c06_mat_roof            =       (c3==1|c3==2)
- 47.                 gen     c06_mat_floor           =       (c4==1|c4==2)
- 48.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
+ 14.                 gen     c06_mat_walls           =       (c2==1|c2==2)
+ 15.                 gen     c06_mat_roof            =       (c3==1|c3==2)
+ 16.                 gen     c06_mat_floor           =       (c4==1|c4==2)
+ 17.                 gen     c98_resid_owned         =       (d8_1==1|d8_1==2|d
 > 8_1==3|d8_1==4)
- 49.                 gen     c98_nbr_rooms           =       d9
- 50.                 gen     c98_nbr_bedrooms        =       d10
- 51.                 gen     c98_b_piped_water       =       (d12==1)
- 52.                 gen     c98_hhld_toilet         =       (d13==1)
- 53.                 gen     c98_b_sewage            =       (d16==1)
- 54.                 gen     c06_b_electr            =       (d18==1)
- 55.                 gen     c98_hhld_stove          =       (d19!=3)
- 56.                 gen     c98_hhld_hot_water      =       (d21_1==1|d21_2==1
+ 18.                 gen     c98_nbr_rooms           =       d9
+ 19.                 gen     c98_nbr_bedrooms        =       d10
+ 20.                 gen     c98_b_piped_water       =       (d12==1)
+ 21.                 gen     c98_hhld_toilet         =       (d13==1)
+ 22.                 gen     c98_b_sewage            =       (d16==1)
+ 23.                 gen     c06_b_electr            =       (d18==1)
+ 24.                 gen     c98_hhld_stove          =       (d19!=3)
+ 25.                 gen     c98_hhld_hot_water      =       (d21_1==1|d21_2==1
 > )
- 57.                 gen     c98_hhld_refrigerat     =       (d21_3==1)
- 58.                 gen     c98_hhld_tv                     =       (d21_4==1|
+ 26.                 gen     c98_hhld_refrigerat     =       (d21_3==1)
+ 27.                 gen     c98_hhld_tv                     =       (d21_4==1|
 > d21_5==1)
- 59.                 gen     c98_hhld_vcr            =       (d21_8==1|d21_9==1
+ 28.                 gen     c98_hhld_vcr            =       (d21_8==1|d21_9==1
 > )
- 60.                 gen     c98_hhld_wash_mac       =       (d21_10==1)
- 61.                 gen     c98_hhld_dishwasher     =       (d21_12==1)
- 62.                 gen     c98_hhld_microwave      =       (d21_13==1)
- 63.                 gen     c98_hhld_car            =       (d21_18==1)
- 64.                 gen     c01_hhld_computer       =       (d21_15==1)
- 65.                 gen     c01_hhld_internet       =       (d21_16==1)
- 66.                 gen     c01_hhld_phone          =       (d21_17 ==1)
- 67.                 gen     c01_hhld_cable_tv       =       (d21_7==1)
- 68. 
+ 29.                 gen     c98_hhld_wash_mac       =       (d21_10==1)
+ 30.                 gen     c98_hhld_dishwasher     =       (d21_12==1)
+ 31.                 gen     c98_hhld_microwave      =       (d21_13==1)
+ 32.                 gen     c98_hhld_car            =       (d21_18==1)
+ 33.                 gen     c01_hhld_computer       =       (d21_15==1)
+ 34.                 gen     c01_hhld_internet       =       (d21_16==1)
+ 35.                 gen     c01_hhld_phone          =       (d21_17 ==1)
+ 36.                 gen     c01_hhld_cable_tv       =       (d21_7==1)
+ 37.                 
+.                 capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
+ 38.                 capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
+ 39.                 capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
+ 40.                 capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
+ 41.                 capture gen pesosem = .
+ 42.                 capture gen pesotri = .
+ 43. 
 .                 gen married  = (e33==1|e35!=0|e36==3) if e33!=0
- 69.                 
-.                 keep anio numero nper dpto region_3 region_4 secc segm ccz* /
-> //
->                     trimestre mes estrato pesoano pesosem pesotri ///
->                         e26 e27 e29_6 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
->                         locagr nom_locagr ht3 ht11 d23 d25 lp_06 li_06 ///
->                         c98_* c01_* c06_* estudiante educ_level married live_
-> births live_births_nbr
- 70.                         
-.                 rename (nper e26 e27 e29_6 f66 f85 f88_1 f88_2 f99 pt1 locagr
->  ///
->                     nom_locagr pesoano ht11 d23 d25 ht3) ///
->                         (pers hombre edad ascendencia trabajo ///
->                         horas_trabajo meses_trabajando anios_trabajando busca
-> _trabajo ///
->                         ytotal loc nomloc pesoan y_hogar nbr_above14 nbr_peop
-> le nbr_under14)
- 71.                 
-.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
- 72.                 
+ 44.                 gen etnia = ascendencia
+ 45.                 replace etnia=0 if ascendencia==5
+ 46.                 
+.                 gen estudiante = (pobpcoac == 7)
+ 47.                 gen trabajo    = (pobpcoac == 2)
+ 48.                 bysort numero: egen y_hogar_alt = sum(ytotal) 
+ 49.                 gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 50. 
+.                 if "`year'" <= "2010" {
+ 51.                                 gen     primaria   = (e51_1>0|e51_2>0|e51_
+> 3>0|e51_4>0)
+ 52.                                 gen     secundaria = (e51_5==3|e51_6==3|(e
+> 51_7>=3 & e53==1)|e51_7_1==1)
+ 53.                                 gen     terciaria  = (((e51_8>0|e51_9>0|e5
+> 1_10>0) & e53==1) | e51_11>0)
+ 54. 
+.                                 gen     educ_level = 1 if primaria>0
+ 55.                                 replace educ_level = 2 if secundaria==1
+ 56.                                 replace educ_level = 3 if terciaria==1
+ 57.                                 assert e51_1+e51_2+e51_3+e51_4+e51_5+e51_6
+> +e51_7_1+e51_8+e51_9+e51_10+e51_11==0 if educ_level ==.
+ 58.                                 replace educ_level = 1 if educ_level==. 
+ 59.                                 gen live_births     = .
+ 60.                                 gen live_births_nbr = .
+ 61.                         }
+ 62.                         else {
+ 63.                                 gen     primaria   = (e193!=3|e197!=3|e201
+> _1==2|e212_1==2)
+ 64.                                 gen     secundaria = (e201_1==1|e212_1==1|
+> e215_1==2|e218_1==2|e218_1==2|e221_1==2|e224_1==2)
+ 65.                                 gen     terciaria  = (e215_1==1|e218_1==1|
+> e218_1==1|e221_1==1|e224_1==1)
+ 66.                                 
+.                                 gen     educ_level = 1 if primaria==1
+ 67.                                 replace educ_level = 2 if secundaria==1
+ 68.                                 replace educ_level = 3 if terciaria==1
+ 69.                                 assert  e193==3        if educ_level==.
+ 70.                                 assert e197_1+e201_+e212_1+e215_1+e218_1+e
+> 218_1+e221_1+e224_1==0 if educ_level==.
+ 71.                                 replace educ_level = 1 if educ_level==. 
+ 72.                                 gen live_births     = e185
+ 73.                                 gen live_births_nbr = e186_1 + e186_2 + e1
+> 86_3 + e186_4 
+ 74.                 }
+ 75.                 
 .                 destring numero, replace
- 73.                 destring anio, replace
- 74.                 destring secc, replace
- 75.                 destring segm, replace
- 76.                 destring estrato, replace
- 77.                 
-.                 gen etnia = ascendencia
- 78.                 replace etnia=0 if ascendencia==5
- 79.                 save ..\temp\clean_`year', replace
- 80.                 }
- 81. end
+ 76.                 destring anio, replace
+ 77.                 destring secc, replace
+ 78.                 destring segm, replace
+ 79.                 destring estrato, replace
+ 80.                 
+.                 keep numero pers anio trimestre mes dpto secc segm estrato lo
+> c nomloc ccz*  ///
+>                      peso* hombre edad ytotal y_hogar* nbr_people nbr_above14
+>  nbr_under14    ///
+>                          pobpcoac married etnia c98_* c01_* c06_* estudiante 
+> educ_level *trabaj* ///
+>                          lp_06 li_06 region_3 region_4 live_births*
+ 81.                 save ..\temp\clean_`year', replace
+ 82.                 }
+ 83. end
 
 . 
 . main_clean_raw
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -750,7 +767,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -758,24 +775,22 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_000006.tmp saved
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: variable pg112 was int, now long to accommodate using data's values)
-(note: file ..\temp\preclean_1998_p.dta not found)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
-(note: file ..\temp\preclean_1998_h.dta not found)
 file ..\temp\preclean_1998_h.dta saved
 
     Result                           # of obs.
@@ -783,10 +798,9 @@ file ..\temp\preclean_1998_h.dta saved
     not matched                             0
     matched                            56,857  
     -----------------------------------------
-(note: file ..\temp\preclean_1998.dta not found)
 file ..\temp\preclean_1998.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -795,9 +809,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -805,7 +819,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -813,23 +827,21 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000i.tmp saved
 (note: variable pg25o was byte, now int to accommodate using data's values)
 (note: variable pg41o was int, now long to accommodate using data's values)
 (note: variable pg111 was int, now long to accommodate using data's values)
-(note: file ..\temp\preclean_1999_p.dta not found)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000j.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000l.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000m.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000o.tmp saved
-(note: file ..\temp\preclean_1999_h.dta not found)
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000o.tmp saved
 file ..\temp\preclean_1999_h.dta saved
 
     Result                           # of obs.
@@ -837,10 +849,9 @@ file ..\temp\preclean_1999_h.dta saved
     not matched                             0
     matched                            57,674  
     -----------------------------------------
-(note: file ..\temp\preclean_1999.dta not found)
 file ..\temp\preclean_1999.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000p.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -850,9 +861,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000r.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000s.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -860,7 +871,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -870,23 +881,21 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000u.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: variable pg132 was byte, now int to accommodate using data's values)
-(note: file ..\temp\preclean_2000_p.dta not found)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000v.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_00000x.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000010.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000011.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_00000x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000010.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_920_000012.tmp saved
-(note: file ..\temp\preclean_2000_h.dta not found)
+file C:\Users\cravizza\AppData\Local\Temp\ST_2490_000012.tmp saved
 file ..\temp\preclean_2000_h.dta saved
 
     Result                           # of obs.
@@ -894,44 +903,71 @@ file ..\temp\preclean_2000_h.dta saved
     not matched                             0
     matched                            57,984  
     -----------------------------------------
-(note: file ..\temp\preclean_2000.dta not found)
 file ..\temp\preclean_2000.dta saved
-(10,184 missing values generated)
-(10,906 real changes made)
-(2,926 real changes made)
-(4,378 real changes made)
+(12,725 real changes made)
+(23,877 real changes made)
+(513 real changes made)
+(2,120 real changes made)
+(117 real changes made)
+(3,624 real changes made)
+(2,966 real changes made)
+(140 real changes made)
+(3,570 real changes made)
+(5,328 real changes made)
+(1,877 real changes made)
 (42,549 missing values generated)
 (14,333 real changes made)
 (14,320 real changes made)
 (13,896 real changes made)
 (56,857 missing values generated)
-(note: file ..\temp\clean_1998.dta not found)
+(10,184 missing values generated)
+(10,906 real changes made)
+(2,926 real changes made)
+(4,378 real changes made)
 file ..\temp\clean_1998.dta saved
-(10,782 missing values generated)
-(12,257 real changes made)
-(3,281 real changes made)
-(4,062 real changes made)
+(12,309 real changes made)
+(24,080 real changes made)
+(587 real changes made)
+(2,294 real changes made)
+(145 real changes made)
+(3,425 real changes made)
+(2,994 real changes made)
+(163 real changes made)
+(3,739 real changes made)
+(5,509 real changes made)
+(2,428 real changes made)
 (43,031 missing values generated)
 (14,390 real changes made)
 (14,251 real changes made)
 (14,390 real changes made)
 (57,674 missing values generated)
-(note: file ..\temp\clean_1999.dta not found)
+(10,782 missing values generated)
+(12,257 real changes made)
+(3,281 real changes made)
+(4,062 real changes made)
 file ..\temp\clean_1999.dta saved
-(10,861 missing values generated)
-(12,296 real changes made)
-(3,491 real changes made)
-(3,845 real changes made)
+(12,146 real changes made)
+(23,791 real changes made)
+(759 real changes made)
+(2,741 real changes made)
+(152 real changes made)
+(3,342 real changes made)
+(3,017 real changes made)
+(143 real changes made)
+(3,726 real changes made)
+(5,427 real changes made)
+(2,740 real changes made)
 (43,414 missing values generated)
 (14,372 real changes made)
 (14,630 real changes made)
 (14,412 real changes made)
 (57,984 missing values generated)
-(note: file ..\temp\clean_2000.dta not found)
+(10,861 missing values generated)
+(12,296 real changes made)
+(3,491 real changes made)
+(3,845 real changes made)
 file ..\temp\clean_2000.dta saved
-(note: file ..\temp\preclean_2001_p.dta not found)
 file ..\temp\preclean_2001_p.dta saved
-(note: file ..\temp\preclean_2001_h.dta not found)
 file ..\temp\preclean_2001_h.dta saved
 
     Result                           # of obs.
@@ -939,11 +975,8 @@ file ..\temp\preclean_2001_h.dta saved
     not matched                             0
     matched                            57,410  
     -----------------------------------------
-(note: file ..\temp\preclean_2001.dta not found)
 file ..\temp\preclean_2001.dta saved
-(note: file ..\temp\preclean_2002_p.dta not found)
 file ..\temp\preclean_2002_p.dta saved
-(note: file ..\temp\preclean_2002_h.dta not found)
 file ..\temp\preclean_2002_h.dta saved
 
     Result                           # of obs.
@@ -951,11 +984,8 @@ file ..\temp\preclean_2002_h.dta saved
     not matched                             0
     matched                            56,333  
     -----------------------------------------
-(note: file ..\temp\preclean_2002.dta not found)
 file ..\temp\preclean_2002.dta saved
-(note: file ..\temp\preclean_2003_p.dta not found)
 file ..\temp\preclean_2003_p.dta saved
-(note: file ..\temp\preclean_2003_h.dta not found)
 file ..\temp\preclean_2003_h.dta saved
 
     Result                           # of obs.
@@ -963,11 +993,8 @@ file ..\temp\preclean_2003_h.dta saved
     not matched                             0
     matched                            55,369  
     -----------------------------------------
-(note: file ..\temp\preclean_2003.dta not found)
 file ..\temp\preclean_2003.dta saved
-(note: file ..\temp\preclean_2004_p.dta not found)
 file ..\temp\preclean_2004_p.dta saved
-(note: file ..\temp\preclean_2004_h.dta not found)
 file ..\temp\preclean_2004_h.dta saved
 
     Result                           # of obs.
@@ -975,11 +1002,8 @@ file ..\temp\preclean_2004_h.dta saved
     not matched                             0
     matched                            55,587  
     -----------------------------------------
-(note: file ..\temp\preclean_2004.dta not found)
 file ..\temp\preclean_2004.dta saved
-(note: file ..\temp\preclean_2005_p.dta not found)
 file ..\temp\preclean_2005_p.dta saved
-(note: file ..\temp\preclean_2005_h.dta not found)
 file ..\temp\preclean_2005_h.dta saved
 
     Result                           # of obs.
@@ -987,52 +1011,38 @@ file ..\temp\preclean_2005_h.dta saved
     not matched                             0
     matched                            54,330  
     -----------------------------------------
-(note: file ..\temp\preclean_2005.dta not found)
 file ..\temp\preclean_2005.dta saved
+(57,410 missing values generated)
+(57,410 missing values generated)
+(57,410 missing values generated)
 (11,558 real changes made)
 (3,425 real changes made)
-(57,410 missing values generated)
-(57,410 missing values generated)
-(57,410 missing values generated)
-(note: file ..\temp\clean_2001.dta not found)
 file ..\temp\clean_2001.dta saved
+(56,333 missing values generated)
+(56,333 missing values generated)
+(56,333 missing values generated)
 (11,570 real changes made)
 (3,591 real changes made)
-(56,333 missing values generated)
-(56,333 missing values generated)
-(56,333 missing values generated)
-(note: file ..\temp\clean_2002.dta not found)
 file ..\temp\clean_2002.dta saved
+(55,369 missing values generated)
+(55,369 missing values generated)
+(55,369 missing values generated)
 (11,702 real changes made)
 (3,571 real changes made)
-(55,369 missing values generated)
-(55,369 missing values generated)
-(55,369 missing values generated)
-(note: file ..\temp\clean_2003.dta not found)
 file ..\temp\clean_2003.dta saved
+(55,587 missing values generated)
+(55,587 missing values generated)
+(55,587 missing values generated)
 (12,357 real changes made)
 (3,691 real changes made)
-(55,587 missing values generated)
-(55,587 missing values generated)
-(55,587 missing values generated)
-(note: file ..\temp\clean_2004.dta not found)
 file ..\temp\clean_2004.dta saved
+(54,330 missing values generated)
+(54,330 missing values generated)
+(54,330 missing values generated)
 (12,337 real changes made)
 (3,677 real changes made)
-(54,330 missing values generated)
-(54,330 missing values generated)
-(54,330 missing values generated)
-(note: file ..\temp\clean_2005.dta not found)
 file ..\temp\clean_2005.dta saved
-(38,791 missing values generated)
-(41,673 real changes made)
-(10,947 real changes made)
-(16,761 real changes made)
 (57,844 missing values generated)
-anio: all characters numeric; replaced as int
-secc: all characters numeric; replaced as byte
-segm: all characters numeric; replaced as int
-estrato: all characters numeric; replaced as byte
 (3 real changes made)
 (0 real changes made)
 (11 real changes made)
@@ -1060,19 +1070,16 @@ estrato: all characters numeric; replaced as byte
 (223,745 real changes made)
 (1,116 real changes made)
 (24,821 real changes made)
-(note: file ..\temp\clean_2006.dta not found)
-file ..\temp\clean_2006.dta saved
-(25,881 missing values generated)
-(29,417 real changes made)
-(8,681 real changes made)
-(8,843 real changes made)
-(31,488 missing values generated)
-numero: all characters numeric; replaced as long
-anio already numeric; no replace
+(38,791 missing values generated)
+(41,673 real changes made)
+(10,947 real changes made)
+(16,761 real changes made)
+anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
-estrato already numeric; no replace
-(143,185 missing values generated)
+estrato: all characters numeric; replaced as byte
+file ..\temp\clean_2006.dta saved
+(31,488 missing values generated)
 (142,859 real changes made)
 (128,098 real changes made)
 (1,879 real changes made)
@@ -1096,19 +1103,18 @@ estrato already numeric; no replace
 (122,839 real changes made)
 (252 real changes made)
 (18,280 real changes made)
-(note: file ..\temp\clean_2007.dta not found)
-file ..\temp\clean_2007.dta saved
-(15,211 missing values generated)
-(27,259 real changes made)
-(8,651 real changes made)
-(15,211 real changes made)
-(30,221 missing values generated)
+(25,881 missing values generated)
+(29,417 real changes made)
+(8,681 real changes made)
+(8,843 real changes made)
 numero: all characters numeric; replaced as long
 anio already numeric; no replace
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(144,582 missing values generated)
+(143,185 missing values generated)
+file ..\temp\clean_2007.dta saved
+(30,221 missing values generated)
 (144,207 real changes made)
 (130,188 real changes made)
 (1,496 real changes made)
@@ -1132,98 +1138,102 @@ estrato already numeric; no replace
 (123,894 real changes made)
 (140 real changes made)
 (18,884 real changes made)
-(note: file ..\temp\clean_2008.dta not found)
+(15,211 missing values generated)
+(27,259 real changes made)
+(8,651 real changes made)
+(15,211 real changes made)
+numero: all characters numeric; replaced as long
+anio already numeric; no replace
+secc: all characters numeric; replaced as byte
+segm: all characters numeric; replaced as int
+estrato already numeric; no replace
+(144,582 missing values generated)
 file ..\temp\clean_2008.dta saved
+(27,271 missing values generated)
+(10 real changes made)
 (7,656 missing values generated)
 (27,919 real changes made)
 (8,817 real changes made)
 (7,656 real changes made)
 (132,599 missing values generated)
 (132,599 missing values generated)
-(27,271 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato: all characters numeric; replaced as byte
-(10 real changes made)
-(note: file ..\temp\clean_2009.dta not found)
 file ..\temp\clean_2009.dta saved
+(26,874 missing values generated)
+(4 real changes made)
 (7,452 missing values generated)
 (27,473 real changes made)
 (8,508 real changes made)
 (7,452 real changes made)
 (132,010 missing values generated)
 (132,010 missing values generated)
-(26,874 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(4 real changes made)
-(note: file ..\temp\clean_2010.dta not found)
 file ..\temp\clean_2010.dta saved
+(25,574 missing values generated)
+(6 real changes made)
 (36 missing values generated)
 (33,574 real changes made)
 (8,914 real changes made)
 (36 real changes made)
-(25,574 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(6 real changes made)
-(note: file ..\temp\clean_2011.dta not found)
 file ..\temp\clean_2011.dta saved
+(23,148 missing values generated)
+(2 real changes made)
 (31,351 real changes made)
 (9,074 real changes made)
 (null assertion)
 (null assertion)
 (0 real changes made)
-(23,148 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(2 real changes made)
-(note: file ..\temp\clean_2012.dta not found)
 file ..\temp\clean_2012.dta saved
+(24,537 missing values generated)
+(4 real changes made)
 (33,961 real changes made)
 (9,825 real changes made)
 (null assertion)
 (null assertion)
 (0 real changes made)
-(24,537 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(4 real changes made)
-(note: file ..\temp\clean_2013.dta not found)
 file ..\temp\clean_2013.dta saved
+(24,859 missing values generated)
+(13 real changes made)
 (36,291 real changes made)
 (10,483 real changes made)
 (null assertion)
 (null assertion)
 (0 real changes made)
-(24,859 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(13 real changes made)
-(note: file ..\temp\clean_2014.dta not found)
 file ..\temp\clean_2014.dta saved
+(22,759 missing values generated)
+(3 real changes made)
 (67 missing values generated)
 (33,729 real changes made)
 (9,981 real changes made)
 (67 real changes made)
-(22,759 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1231,21 +1241,18 @@ secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 (75245 missing values generated)
 estrato already numeric; no replace
-(3 real changes made)
-(note: file ..\temp\clean_2015.dta not found)
 file ..\temp\clean_2015.dta saved
+(21,747 missing values generated)
+(12 real changes made)
 (59 missing values generated)
 (33,118 real changes made)
 (9,929 real changes made)
 (58 real changes made)
-(21,747 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
-(12 real changes made)
-(note: file ..\temp\clean_2016.dta not found)
 file ..\temp\clean_2016.dta saved
 
 . 
@@ -1324,7 +1331,7 @@ Notes:
 >         
 >         isid numero pers anio*/
 .         
-.         recode_dummies, vars(trabajo estudiante hombre busca_trabajo)
+.         recode_dummies, vars(trabajo_1 hombre busca_trabajo)
   9.         
 .         save_data ..\output\clean_1998_2016, key(numero pers anio) replace
  10. end
@@ -1332,6 +1339,8 @@ Notes:
 . 
 . main_append_years
 (note: variable anio was byte, now int to accommodate using data's values)
+(note: variable horas_trabajo was byte, now float to accommodate using data's
+       values)
 (note: variable meses_trabajando was byte, now float to accommodate using
        data's values)
 (note: variable anios_trabajando was byte, now float to accommodate using
@@ -1353,16 +1362,20 @@ Notes:
 (note: variable hombre was byte, now double to accommodate using data's
        values)
 (note: variable edad was byte, now double to accommodate using data's values)
-(note: variable trabajo was float, now double to accommodate using data's
+(note: variable trabajo_1 was byte, now double to accommodate using data's
        values)
-(note: variable horas_trabajo was byte, now double to accommodate using
+(note: variable horas_trabajo_p was byte, now double to accommodate using
        data's values)
 (note: variable meses_trabajando was float, now double to accommodate using
        data's values)
 (note: variable anios_trabajando was float, now double to accommodate using
        data's values)
+(note: variable horas_trabajo_s was byte, now double to accommodate using
+       data's values)
 (note: variable busca_trabajo was byte, now double to accommodate using
        data's values)
+(note: variable pobpcoac was byte, now double to accommodate using data's
+       values)
 (note: variable ytotal was long, now double to accommodate using data's
        values)
 (note: variable nbr_above14 was byte, now double to accommodate using data's
@@ -1377,21 +1390,14 @@ Notes:
 (note: variable loc was str4, now str5 to accommodate using data's values)
 (note: variable estrato was byte, now double to accommodate using data's
        values)
-(note: variable otro was float, now double to accommodate using data's
-       values)
+(label Pobpcoac already defined)
 (label f102 already defined)
 (label mes already defined)
 (label region_4 already defined)
 (label region_3 already defined)
 (label f102 already defined)
 (label f68 already defined)
-(label e50 already defined)
 (label e41 already defined)
-(label e31_5_1 already defined)
-(label e31_4 already defined)
-(label e31_3 already defined)
-(label e31_2 already defined)
-(label e31_1 already defined)
 (label e27 already defined)
 (label mes already defined)
 (label region_4 already defined)
@@ -1400,18 +1406,16 @@ Notes:
 (label mes already defined)
 (label region_4 already defined)
 (label region_3 already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label mes already defined)
 (label region_4 already defined)
 (label region_3 already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label estratogeo09 already defined)
 (label mes already defined)
@@ -1420,28 +1424,25 @@ Notes:
 (label dpto already defined)
 (note: variable nomloc was str43, now str104 to accommodate using data's
        values)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label mes already defined)
 (label region_4 already defined)
 (label region_3 already defined)
 (label dpto already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label region_4 already defined)
 (label region_3 already defined)
 (label mes already defined)
 (label dpto already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label region_4 already defined)
 (label region_3 already defined)
@@ -1452,32 +1453,28 @@ Notes:
 (label region_4 already defined)
 (label dpto already defined)
 (label mes already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
 (label estred13 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (label region_4 already defined)
 (label region_3 already defined)
 (label dpto already defined)
 (label mes already defined)
+(label pobpcoac already defined)
 (label f99 already defined)
 (label f66 already defined)
 (label estred13 already defined)
-(label e49 already defined)
-(label e29_6 already defined)
 (label e26 already defined)
 (56,857 real changes made)
 (57,674 real changes made)
 (57,984 real changes made)
 (687,523 real changes made)
-(0 real changes made)
 (1,062,184 real changes made)
 (739,861 real changes made)
 (data now sorted by numero pers anio)
-  variable educ_level was float now byte
-  variable estudiante was float now byte
+  variable horas_trabajo was float now int
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
   variable c98_nbr_rooms was float now byte
@@ -1496,6 +1493,9 @@ Notes:
   variable c98_hhld_car was float now byte
   variable married was float now byte
   variable etnia was float now byte
+  variable estudiante was float now byte
+  variable trabajo was float now byte
+  variable educ_level was float now byte
   variable c01_hhld_computer was float now byte
   variable c01_hhld_internet was float now byte
   variable c01_hhld_phone was float now byte
@@ -1504,7 +1504,6 @@ Notes:
   variable c06_mat_roof was float now byte
   variable c06_mat_floor was float now byte
   variable c06_b_electr was float now byte
-  variable mestizo was float now byte
   variable numero was double now long
   variable pers was double now byte
   variable anio was double now int
@@ -1512,7 +1511,9 @@ Notes:
   variable estrato was double now byte
   variable hombre was double now byte
   variable edad was double now byte
-  variable horas_trabajo was double now byte
+  variable pobpcoac was double now byte
+  variable horas_trabajo_p was double now byte
+  variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
   variable meses_trabajando was double now byte
   variable anios_trabajando was double now byte
@@ -1524,32 +1525,24 @@ Notes:
   variable nbr_above14 was double now byte
   variable nbr_under14 was double now byte
   variable trimestre was double now byte
-  variable trabajo was double now byte
   variable mes was double now byte
+  variable trabajo_1 was double now byte
   variable region_3 was double now byte
   variable region_4 was double now byte
-  variable afro was double now byte
-  variable asia was double now byte
-  variable blanco was double now byte
-  variable indigena was double now byte
+  variable pesomen was double now int
   variable live_births was double now byte
   variable live_births_nbr was double now byte
-  variable e48 was double now byte
   variable li_06 was double now int
-  variable otro was double now byte
-  variable e50 was double now byte
-  variable ascendencia was double now byte
-  variable e49 was double now byte
   variable ccz04 was double now byte
   variable ccz10 was double now byte
-  (680,015,778 bytes saved)
+  (597,528,657 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\clean_1998_2016
 Key: numero pers anio
 ===============================================================================
 > ===================
-  2011881:77(47252):4274266872:1456293420
+  2011881:70(37414):2264837785:1918930752
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1565,27 +1558,27 @@ Key: numero pers anio
       hombre |  2,011,881    .4720418    .4992179          0          1
         edad |  2,011,881    36.74193    23.45375          0         99
 -------------+---------------------------------------------------------
-horas_trab~o |  2,011,881    17.68721     22.6782          0         99
-       pf133 |    172,515    .8011535    .9642651          0          2
+    pobpcoac |  2,011,881     3.81857    3.213639          1         99
+horas_trab~p |  2,011,881    17.62084    22.59044          0         99
+horas_trab~s |  2,011,881    .8661352    4.764467          0         98
+horas_trab~o |  2,011,881    18.57639    23.64626          0        180
 busca_trab~o |  2,011,881    .0693992    .2541319          0          1
+-------------+---------------------------------------------------------
 meses_trab~o |  1,732,852     .934639    3.796047          0         80
 anios_trab~o |  1,732,852    3.778004    8.104987          0         98
--------------+---------------------------------------------------------
       ytotal |  2,011,881    8852.992    16860.12          0    7244333
      pesotri |  1,891,419     109.458    56.74707          1       1527
      pesosem |  1,772,828    54.39186    29.61631          3       1345
+-------------+---------------------------------------------------------
       pesoan |  2,011,881    27.47466    14.12721          1       1323
          ccz |  1,807,450    3.922782    5.494704          0         18
--------------+---------------------------------------------------------
          loc |          0
       nomloc |          0
   nbr_people |  2,011,881    3.782025    1.883805          1         27
+-------------+---------------------------------------------------------
  nbr_above14 |  2,011,881    2.784786    1.254834          1         16
  nbr_under14 |  2,011,881    .9970977    1.285163          0         14
--------------+---------------------------------------------------------
      y_hogar |  2,011,881    27511.72    34674.04          0    7681180
-  educ_level |  2,011,881    1.289468    .5799682          1          3
-  estudiante |  2,011,881    .0671113    .2502148          0          1
 c98_resid_~e |  2,011,881    .9954247    .0674862          0          1
 c98_resid_~d |  2,011,881    .6420713    .4793911          0          1
 -------------+---------------------------------------------------------
@@ -1605,44 +1598,35 @@ c98_hhld_w~c |  2,011,881    .6984961    .4589111          0          1
 c98_hhld_d~r |  2,011,881    .0409105    .1980829          0          1
 c98_hhld_m~e |  2,011,881    .4683035    .4989944          0          1
 c98_hhld_car |  2,011,881    .3664526    .4818352          0          1
-     married |  1,695,559    .5274868    .4992441          0          1
--------------+---------------------------------------------------------
- y_hogar_alt |  2,011,881    27804.22    32191.49          0    7289481
    trimestre |  2,011,881    2.497938     1.11696          1          4
-     trabajo |  2,011,881    .4228013    .4940045          0          1
-       etnia |  1,560,337    2.259484    .9788979          0          4
-         mes |  1,839,366    6.494094    3.444294          1         12
 -------------+---------------------------------------------------------
-          e9 |    279,029    1.656792    .5465739          0          2
+     married |  1,695,559    .5274868    .4992441          0          1
+       etnia |  1,560,337    2.259484    .9788979          0          4
+  estudiante |  2,011,881    .0626493    .2423312          0          1
+     trabajo |  2,011,881    .4474072    .4972264          0          1
+ y_hogar_alt |  2,011,881    27804.22    32191.49          0    7289481
+-------------+---------------------------------------------------------
+  educ_level |  2,011,881    1.289468    .5799682          1          3
+         mes |  1,839,366    6.494094    3.444294          1         12
+   trabajo_1 |  1,839,366    .4234492    .4941054          0          1
 c01_hhld_c~r |  1,839,366    .5143044    .4997955          0          1
 c01_hhld_i~t |  1,839,366     .350274    .4770558          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |  1,839,366    .7160603     .450908          0          1
 c01_hhld_c~v |  1,839,366    .5446029    .4980067          0          1
--------------+---------------------------------------------------------
     region_3 |  1,560,337    1.791686    .7105442          1          3
     region_4 |  1,560,337    1.874478    .8836783          1          4
-        afro |    544,628    .0139728    .1173781          0          1
-        asia |    544,628    .0009272    .0304365          0          1
-      blanco |    544,628     .863852    .3429459          0          1
+     pesomen |  1,439,875    269.4868    116.7817          1       2451
 -------------+---------------------------------------------------------
-    indigena |    544,628    .0027689    .0525471          0          1
  live_births |  1,295,728    .7620025    .7370323          0          2
 live_birth~r |  1,295,728     1.07133    1.770882          0         99
-         e48 |    256,861    1.729075    .4444557          0          2
        li_06 |  1,560,337    1751.036    550.9899        898       3021
--------------+---------------------------------------------------------
        lp_06 |  1,560,337    17719.04    9722.893       2214   132026.8
 c06_mat_wa~s |  1,560,337     .971983    .1650215          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |  1,560,337    .5369802    .4986308          0          1
 c06_mat_fl~r |  1,560,337    .7705964    .4204494          0          1
 c06_b_electr |  1,560,337    .9857172    .1186542          0          1
--------------+---------------------------------------------------------
-     mestizo |    544,628    .1138116    .3175826          0          1
-        otro |    544,628    .0046674    .0681589          0          1
-         e50 |    287,767    1.725719     .446152          1          2
- ascendencia |  1,015,709    2.935092     .406392          1          5
-         e49 |  1,015,709    1.218007    .4128974          0          2
--------------+---------------------------------------------------------
        ccz04 |    120,462    3.528764    5.341155          0         18
        ccz10 |    120,462    3.552116    5.353865          0         18
 
@@ -1655,4 +1639,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-02-04 20:03:17
+ make.py ended: 2018-05-13 12:28:17

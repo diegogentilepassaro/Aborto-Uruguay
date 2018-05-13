@@ -28,12 +28,12 @@ if stata_exe:
 # SET DEFAULT OPTIONS
 set_option(link_logs_dir = '../output/')
 set_option(output_dir = '../output/', temp_dir = '../temp/')
-clear_dirs('../temp/')
+#clear_dirs('../temp/')
 delete_files('../output/*')
 
 start_make_logging()
 
-os.system('Rscript spss_to_dta.R')
+#os.system('Rscript spss_to_dta.R')
 run_stata(program = 'clean_raw.do')
 run_stata(program = 'append_years.do')
 

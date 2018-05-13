@@ -42,16 +42,30 @@ program clean_98_00
 	forvalues year=1998/2000 {
 		use ..\temp\preclean_`year'.dta, replace		
 		
-		gen     primaria   = (pe141==8|pe141==1|pe141==2|pe141==3|pe141==4)
-		gen     secundaria = (((pe141==3|pe141==4) & pe15==1)|pe141==5|pe141==6|pe141==7)
-		gen     terciaria  = ((pe141==5|pe141==6|pe141==7) & pe15==1)
-		gen     educ_level = 1              if primaria==1
-		replace educ_level = 2              if secundaria==1
-		replace educ_level = 3              if terciaria==1
-		assert  pe141==0 | pe141==9         if educ_level==.
-		replace educ_level = 1              if educ_level==.
-		
-		gen estudiante = (pobpcoac==33)
+		rename (ident     persona   pe1        pe1a        pe1b   ///
+		        pe1c      pe1d      pe1e       pe1h        locech ///
+		        nomlocech ht11      hd21       hd22        ht3   ///
+		        pe2       pe3       pt1 ///
+		        pf37                pf06                   pf051 ///
+				pf38                pf351                  pf052)        ///
+			   (numero    pers      nper       anio        semana ///
+			    dpto      secc      segm       estrato     loc    ///
+			    nomloc    y_hogar   nbr_people nbr_above14 nbr_under14 ///
+			    hombre    edad      ytotal ///
+			    meses_trabajando    horas_trabajo          horas_trabajo_p  ///
+				anios_trabajando    busca_trabajo          horas_trabajo_s)
+
+		replace pobpcoac = 1  if pobpcoac==40
+		replace pobpcoac = 2  if inlist(pobpcoac,11,12)
+		replace pobpcoac = 3  if pobpcoac==23
+		replace pobpcoac = 4  if pobpcoac==21
+		replace pobpcoac = 5  if pobpcoac==22
+		replace pobpcoac = 6  if pobpcoac==34
+		replace pobpcoac = 7  if pobpcoac==33
+		replace pobpcoac = 8  if pobpcoac==32
+		replace pobpcoac = 9  if pobpcoac==30
+		replace pobpcoac = 10 if pobpcoac==31
+		replace pobpcoac = 11 if inlist(pobpcoac,35,36,37,38)
 
 		gen	c98_resid_house		=	(hc1==1)
 		gen	c98_resid_owned		=	(hd3==1|hd3==2)
@@ -70,37 +84,34 @@ program clean_98_00
 		gen	c98_hhld_microwave	=	(hd119==1)
 		gen	c98_hhld_car		=	(hd1110==1)
 		
-		gen married = (pe5==1|pe5==2)
-				
-		keep    ident persona pe1  pe1a pe1b pe1c ///
-		        pe1d  pe1e pe1h peso* ccz pe2 pe3 pobpcoac pf133 pf053 pf37 ///
-				pf38 pf351 pt1 married locech nomlocech ht3 ht11 hd21 hd22 ///
-				c98_* estudiante educ_level married
-		
-		rename (ident     persona   pe1        pe1a        pe1b   ///
-		        pe1c      pe1d      pe1e       pe1h        locech ///
-		        nomlocech ht11      hd21       hd22        ht3)   ///
-			   (numero    pers      nper       anio        semana ///
-			    dpto      secc      segm       estrato     loc    ///
-			    nomloc    y_hogar   nbr_people nbr_above14 nbr_under14)
-
-		rename (pe2    pobpcoac          pf37             pf053         ///
-				pe3    pt1               pf38             pf351)        ///
-			   (hombre codigo_actividad  meses_trabajando horas_trabajo ///
-				edad   ytotal            anios_trabajando busca_trabajo)
-
-		bysort numero: egen y_hogar_alt = sum(ytotal) 
-
 		gen     trimestre = 1 if inrange(semana, 1, 12)
 		replace trimestre = 2 if inrange(semana, 13, 24)
 		replace trimestre = 3 if inrange(semana, 25, 36)
 		replace trimestre = 4 if inrange(semana, 37, 48)
-		
-		gen trabajo = (codigo_actividad == 11 | codigo_actividad == 12)
-		drop codigo_actividad
+
+		gen married = (pe5==1|pe5==2)
 		gen etnia = .
+		
+		gen estudiante = (pobpcoac==33)
+		gen trabajo    = (pobpcoac==2)
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+		
+		gen     primaria   = (pe141==8|pe141==1|pe141==2|pe141==3|pe141==4)
+		gen     secundaria = (((pe141==3|pe141==4) & pe15==1)|pe141==5|pe141==6|pe141==7)
+		gen     terciaria  = ((pe141==5|pe141==6|pe141==7) & pe15==1)
+		gen     educ_level = 1              if primaria==1
+		replace educ_level = 2              if secundaria==1
+		replace educ_level = 3              if terciaria==1
+		assert  pe141==0 | pe141==9         if educ_level==.
+		replace educ_level = 1              if educ_level==.
+				
 		assert nper==pers
 		drop nper
+
+		keep numero pers anio trimestre semana dpto secc segm estrato loc nomloc ccz ///
+			    peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
+			    pobpcoac married etnia c98_* estudiante educ_level *trabaj*
+
 		save ..\temp\clean_`year'.dta, replace
 		}
 end
@@ -122,15 +133,14 @@ program clean_01_05
 	foreach year in 2001 2002 2003 2004 2005 {
 		use ..\temp\preclean_`year'.dta, clear
 		
-		gen     primaria   = e11_1 + e11_2
-		gen     secundaria = max(e11_3,e11_4)
-		gen     terciaria  = max(e11_5,e11_6)
-		gen     educ_level = 1 if primaria>=0
-		replace educ_level = 2 if secundaria==6 | (e11_3+e11_4==6 & e13==1) 
-		replace educ_level = 3 if terciaria>0 & e13==1
-		assert !mi(educ_level)
-
-		gen estudiante = (pobpcoac == 7)
+		rename (correlativ nper  locech          nomlocech ///
+				e1         e2    pt1             ht11 ///
+				f17_1            f17_2           f1_1      f23 ///
+				d14              d16             ht3) ///			   
+			   (numero     pers  loc             nomloc ///
+				hombre     edad  ytotal          y_hogar ///
+				horas_trabajo_p  horas_trabajo_s trabajo_1 busca_trabajo ///
+				nbr_above14      nbr_people      nbr_under14)
 
 		gen	c98_resid_house		=	(c1==1)
 		gen	c98_resid_owned		=	(d2==1|d2==2)
@@ -152,31 +162,34 @@ program clean_01_05
 		gen	c01_hhld_internet	=	(d10_11==1)
 		gen	c01_hhld_phone		=	(d10_13==1)
 		gen	c01_hhld_cable_tv	=	(d10_5==1)
-		
-		gen married = (e4==1|e4==2)
-		
-		keep anio correlativ nper dpto secc segm ccz  /*e11 e13*/ ///
-		    mes estrato pesoan pesosem pesotri e1 e2 e9 f1_1 f17_1 f23 pt1 ///
-		    locech nomlocech ht3 ht11 d14 d16 ///
-			c98_* c01_* estudiante educ_level married 
 			 
 		capture gen     trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
 		capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		
-		rename (nper    correlativ  e1         e2     f17_1         ///
-				locech  nomlocech   f1_1       pt1    f23           ///
-				ht11    d14         d16        ht3)                 ///
-			   (pers    numero      hombre     edad   horas_trabajo ///
-				loc     nomloc      trabajo    ytotal busca_trabajo ///
-				y_hogar nbr_above14 nbr_people nbr_under14)
+		gen married = (e4==1|e4==2)
+		gen etnia = .
 
+		gen estudiante = (pobpcoac==7)
+		gen trabajo    = (pobpcoac==2)
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
-
+		gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
 		gen meses_trabajando = .
 		gen anios_trabajando = .
-		gen etnia = .
+
+		gen     primaria   = e11_1 + e11_2
+		gen     secundaria = max(e11_3,e11_4)
+		gen     terciaria  = max(e11_5,e11_6)
+		gen     educ_level = 1 if primaria>=0
+		replace educ_level = 2 if secundaria==6 | (e11_3+e11_4==6 & e13==1) 
+		replace educ_level = 3 if terciaria>0 & e13==1
+		assert !mi(educ_level)
+		
+		keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
+		     peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
+		     pobpcoac married etnia c98_* c01_* estudiante educ_level *trabaj*
+		
 		save ..\temp\clean_`year'.dta, replace
 	}
 	* Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
@@ -225,20 +238,16 @@ program clean_06
 		capture rename PT1 pt1
 		capture rename HT11 ht11
 		capture rename HT3 ht3
-		
-		gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4>0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
-						   | (e48==2 & (e52_1_1>0|e52_2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
-		gen     secundaria = (e48==1 & (e50_9>0|e50_10>0|e50_11>0|e50_12>0)) ///
-						   | (e48==2 & (e52_2_2==1|e52_3_2==1|e52_3_3==1|e52_4_1>0|e52_5_1>0|e52_6_1>0|e52_7_1>0))
-		gen     terciaria  = (e48==1 & (e50_12>0)) ///
-						   | (e48==2 & (e52_4_2==1|e52_5_2==1|e52_6_2==1|e52_7_2==1))
-		gen     educ_level = 1 if primaria==1
-		replace educ_level = 2 if secundaria==1
-		replace educ_level = 3 if terciaria==1
-		assert e51==2 if educ_level ==. & e51!=0
-		replace educ_level=1 if educ_level==.
+		capture rename Pobpcoac pobpcoac
 
-		gen estudiante = (Pobpcoac == 7)
+		rename (nper  locagr nom_locagr e27  e26    pesoano  pt1              ht11             ///
+			    f62          f81             f93             f82_1            f82_2            ///
+				d23          d25             ht3             f102                              ///
+				e38          e39_1           e30_1  e30_2    e30_3  e30_4     e30_5_2)        ///
+			   (pers   loc   nomloc     edad hombre pesoan   ytotal     y_hogar                ///
+			    trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
+				nbr_above14  nbr_people      nbr_under14     busca_trabajo                     ///
+				live_births  live_births_nbr afro   asia     blanco indigena  otro)
 
 		gen	c98_resid_house		=	(c1!=5)
 		gen	c06_mat_walls		=	(c2==1|c2==2)
@@ -266,31 +275,6 @@ program clean_06
 		gen	c01_hhld_cable_tv	=	(d21_7==1)
 		
 		gen married  = (e34==1|e37==2) if e34!=0
-
-		keep anio numero nper dpto secc segm ccz region_3 region_4 ///
-		    trimestre mes estrato pesoano pesosem pesotri e38 e39_1 ///
-			e26 e27 e30_1 e30_2 e30_3 e30_4 e30_5_2 e48 f62 f81 f82_1 f82_2 ///
-			f102 pt1 locagr nom_locagr ht3 ht11 d25 d23 lp_06 li_06 ///
-			c98_* c01_* c06_* estudiante educ_level married 
-			
-		rename (nper e26    e27  e30_1  e30_2   e30_3  e30_4      e30_5_2 ///
-			    f62              pt1    ht11    locagr nom_locagr pesoano ///
-			    f81              f82_1                 f82_2              ///
-				f102             d23              d25        ht3          ///
-				e38              e39_1)                                   ///
-			   (pers hombre edad afro   asia    blanco indigena   otro    ///
-			    trabajo          ytotal y_hogar loc    nomloc     pesoan  ///
-			    horas_trabajo    meses_trabajando      anios_trabajando   ///
-				busca_trabajo    nbr_above14      nbr_people nbr_under14  ///
-				live_births      live_births_nbr)
-
-		bysort numero: egen y_hogar_alt = sum(ytotal) 
-
-		destring anio, replace
-		destring secc, replace
-		destring segm, replace
-		destring estrato, replace
-
 		* Create mestizo dummy from otro
 		gen     mestizo  = regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")
 		replace asia     = 1   if regexm(otro,"[Aa][Ss][Ii][Aa]*")==1
@@ -303,6 +287,33 @@ program clean_06
 		rename  otro_new otro
 		replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
 		clean_etnia_variable
+
+		gen estudiante = (pobpcoac == 7)
+		gen trabajo    = (pobpcoac == 2)
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+		gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+		
+		gen     primaria   = (e48==1 & (e50_1>0|e50_2>0|e50_3>0|e50_4>0|e50_5>0|e50_6>0|e50_7>0|e50_8>0)) ///
+						   | (e48==2 & (e52_1_1>0|e52_2_1>0|e52_3_1>0|e52_3_3==1|e52_3_3==2|e52_3_3==3))
+		gen     secundaria = (e48==1 & (e50_9>0|e50_10>0|e50_11>0|e50_12>0)) ///
+						   | (e48==2 & (e52_2_2==1|e52_3_2==1|e52_3_3==1|e52_4_1>0|e52_5_1>0|e52_6_1>0|e52_7_1>0))
+		gen     terciaria  = (e48==1 & (e50_12>0)) ///
+						   | (e48==2 & (e52_4_2==1|e52_5_2==1|e52_6_2==1|e52_7_2==1))
+		gen     educ_level = 1 if primaria==1
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e51==2 if educ_level ==. & e51!=0
+		replace educ_level=1 if educ_level==.
+
+		destring anio, replace
+		destring secc, replace
+		destring segm, replace
+		destring estrato, replace
+
+		keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
+			 peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
+			 pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level *trabaj* ///
+			 lp_06 li_06 region_3 region_4 live_births*
 		save ..\temp\clean_2006, replace	
 end
 
@@ -315,20 +326,16 @@ program clean_07
 		capture rename PT1  pt1
 		capture rename HT11 ht11
 		capture rename HT3  ht3
-		
-		gen     primaria   = (e50==1 & (e52_1>0|e52_2>0|e52_3>0|e52_4>0|e52_5>0|e52_6>0|e52_7>0|e52_8>0)) ///
-						   | (e50==2 & (e54_1_1>0|e54_2_1>0|e54_3_1>0|e54_3_3==1|e54_3_3==2|e54_3_3==3))
-		gen     secundaria = (e50==1 & (e52_9>0|e52_10>0|e52_11>0|e52_12>0)) ///
-						   | (e50==2 & (e54_2_2==1|e54_3_2==1|e54_3_3==1|e54_4_1>0|e54_5_1>0|e54_6_1>0|e54_7_1>0))
-		gen     terciaria  = (e50==1 & (e52_12>0)) ///
-						   | (e50==2 & (e54_4_2==1|e54_5_2==1|e54_6_2==1|e54_7_2==1))	
-		gen     educ_level = 1 if primaria==1
-		replace educ_level = 2 if secundaria==1
-		replace educ_level = 3 if terciaria==1
-		assert e53==2 if educ_level ==. & e53!=0
-		replace educ_level=1 if educ_level==.
-		
-		gen estudiante = (Pobpcoac == 7)
+		capture rename Pobpcoac pobpcoac
+					
+		rename (nper loc_agr pesoano e27      e28   pt1       ht11                              ///
+				f68          f88              f101            f89_1            f89_2            ///
+				d24          d26              ht3             f102                              ///
+			    e41          e42_1            e31_1 e31_2     e31_3   e31_4    e31_5_1)         ///
+			   (pers loc     pesoan  hombre   edad  ytotal    y_hogar                           ///
+			    trabajo_1    horas_trabajo_p  horas_trabajo_s meses_trabajando anios_trabajando ///
+			    nbr_above14  nbr_people       nbr_under14     busca_trabajo                     ///
+			    live_births  live_births_nbr  afro  asia      blanco  indigena otro)
 
 		gen	c98_resid_house		=	(c1!=5)
 		gen	c06_mat_walls		=	(c2==1|c2==2)
@@ -356,23 +363,24 @@ program clean_07
 		gen	c01_hhld_cable_tv	=	(d22_7==1)
 		
 		gen married  = (e37==1|e40==2) if e37!=0
-
-		keep anio numero nper dpto region_3 region_4 secc segm ccz            ///
-		    trimestre mes estrato pesoano pesosem pesotri                     ///
-			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50             ///
-			f68 f88 f89_1 f89_2 f102 pt1 loc_agr ht3 ht11 d24 d26 lp_06 li_06 ///
-			c98_* c01_* c06_* estudiante educ_level married 
-					
-		rename (nper    e27     e28      e31_1   f89_1            f88   ///
-		        e31_2   e31_3   e31_4    e31_5_1 f89_2            f102  ///
-			    pt1     loc_agr pesoano  f68     e41              e42_1 ///
-			    ht11    d24              d26                      ht3)  ///
-			   (pers    hombre  edad     afro    meses_trabajando horas_trabajo   ///
-			    asia    blanco  indigena otro    anios_trabajando busca_trabajo   ///
-			    ytotal  loc     pesoan   trabajo live_births      live_births_nbr ///
-			    y_hogar nbr_above14      nbr_people               nbr_under14)
-
+		clean_etnia_variable
+		
+		gen estudiante = (pobpcoac == 7)
+		gen trabajo    = (pobpcoac == 2)
 		bysort numero: egen y_hogar_alt = sum(ytotal) 
+		gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+		
+		gen     primaria   = (e50==1 & (e52_1>0|e52_2>0|e52_3>0|e52_4>0|e52_5>0|e52_6>0|e52_7>0|e52_8>0)) ///
+						   | (e50==2 & (e54_1_1>0|e54_2_1>0|e54_3_1>0|e54_3_3==1|e54_3_3==2|e54_3_3==3))
+		gen     secundaria = (e50==1 & (e52_9>0|e52_10>0|e52_11>0|e52_12>0)) ///
+						   | (e50==2 & (e54_2_2==1|e54_3_2==1|e54_3_3==1|e54_4_1>0|e54_5_1>0|e54_6_1>0|e54_7_1>0))
+		gen     terciaria  = (e50==1 & (e52_12>0)) ///
+						   | (e50==2 & (e54_4_2==1|e54_5_2==1|e54_6_2==1|e54_7_2==1))	
+		gen     educ_level = 1 if primaria==1
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e53==2 if educ_level ==. & e53!=0
+		replace educ_level=1 if educ_level==.		
 
 		destring numero, replace
 		destring anio, replace
@@ -381,7 +389,11 @@ program clean_07
 		destring estrato, replace
 		
 		gen nomloc = ""
-		clean_etnia_variable
+
+		keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
+			 peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
+			 pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level *trabaj* ///
+			 lp_06 li_06 region_3 region_4 live_births*	
 		save ..\temp\clean_2007, replace
 end 
 
@@ -394,17 +406,15 @@ program clean_08
 		capture rename PT1  pt1
 		capture rename HT11 ht11
 		capture rename HT3  ht3
-		
-		gen     primaria   = (e52_1>0|e52_2>0|e53_2>0|e52_7_2==3|e52_7_2==2)
-		gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_2==1)|e52_7_2==1)
-		gen     terciaria  = (((e52_8>0|e52_9>0|e52_10>0) & e53_2==1) | e52_11>0)
-		gen     educ_level = 1 if primaria>0
-		replace educ_level = 2 if secundaria==1
-		replace educ_level = 3 if terciaria==1
-		assert e52_1+e52_2+e52_3+e52_4+e52_5+e52_6+e52_7_1+e52_8+e52_9+e52_10+e52_11==0 if educ_level ==.
-		replace educ_level = 1 if educ_level==.
-		
-		gen estudiante = (pobpcoac == 7)
+			
+		rename (nper e28     nom_locagr      pesoano e27     pt1    ht11                       ///
+				f68          f88_1           f101            f89_1            f89_2            ///
+				d24          d26             ht3     f102                                      ///
+				e41          e42_1           e31_1   e31_2   e31_3  e31_4    e31_5_1)          ///
+			   (pers edad    nomloc          pesoan  hombre  ytotal  y_hogar                   ///
+				trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
+				nbr_above14  nbr_people      nbr_under14     busca_trabajo                     ///
+				live_births  live_births_nbr afro    asia    blanco indigena otro )
 
 		gen	c98_resid_house		=	(c1!=5)
 		gen	c06_mat_walls		=	(c2==1|c2==2)
@@ -432,24 +442,21 @@ program clean_08
 		gen	c01_hhld_cable_tv	=	(d22_7==1)
 		
 		gen married  = (e37==1|e40==2) if e37!=0
-
-		keep  anio numero nper dpto region_3 region_4 secc segm ccz ///
-		    trimestre mes estrato pesoano pesosem pesotri nom_locagr ///
-			e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 e41 e42_1 e50 ///
-			f68 f88_1 f89_1 f89_2 f102 pt1 ht3 ht11 d24 d26 lp_06 li_06 ///
-			c98_* c01_* c06_* estudiante educ_level married 
-			
-		rename(nper e27 e28 e31_1 e31_2 e31_3 e31_4 e31_5_1 ///
-			f68 f88_1 f89_1 f89_2 f102 pt1 nom_locagr pesoano ///
-			ht3 ht11 d24 d26 ///
-			e41 e42_1) ///
-			(pers hombre edad afro asia blanco indigena otro ///
-			trabajo horas_trabajo meses_trabajando ///
-			anios_trabajando busca_trabajo ytotal nomloc pesoan ///
-			nbr_under14 y_hogar nbr_above14 nbr_people ///
-			live_births live_births_nbr)
-
+		clean_etnia_variable
+		
+		gen estudiante = (pobpcoac == 7)
+		gen trabajo    = (pobpcoac == 2)
 	    bysort numero: egen y_hogar_alt = sum(ytotal) 
+		gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+		
+		gen     primaria   = (e52_1>0|e52_2>0|e53_2>0|e52_7_2==3|e52_7_2==2)
+		gen     secundaria = (e52_5==3|e52_6==3|(e52_7_1>=3 & e53_2==1)|e52_7_2==1)
+		gen     terciaria  = (((e52_8>0|e52_9>0|e52_10>0) & e53_2==1) | e52_11>0)
+		gen     educ_level = 1 if primaria>0
+		replace educ_level = 2 if secundaria==1
+		replace educ_level = 3 if terciaria==1
+		assert e52_1+e52_2+e52_3+e52_4+e52_5+e52_6+e52_7_1+e52_8+e52_9+e52_10+e52_11==0 if educ_level ==.
+		replace educ_level = 1 if educ_level==.
 
 		destring numero, replace
 		destring anio, replace
@@ -458,7 +465,11 @@ program clean_08
 		destring estrato, replace
 		
 	    gen loc = ""	
-		clean_etnia_variable
+
+		keep numero pers anio trimestre mes dpto  secc segm estrato loc nomloc ccz  ///
+		     peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
+			 pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level *trabaj* ///
+			 lp_06 li_06 region_3 region_4 live_births*
 		save ..\temp\clean_2008, replace
 end 
 
@@ -476,6 +487,38 @@ program clean_09_16
 		capture rename Loc_agr_13 locagr
 		capture rename Nom_loc_agr_13 nom_locagr
 		capture rename POBPCOAC pobpcoac
+			
+		rename (nper e27    e26      locagr nom_locagr      pesoano pt1      ht11             ///
+				f66         f85             f98             f88_1            f88_2            ///
+				d23         d25             ht3             f99              e29_6)           ///
+			   (pers edad   hombre   loc    nomloc          pesoan  ytotal   y_hogar          ///
+			    trabajo_1   horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
+				nbr_above14 nbr_people      nbr_under14     busca_trabajo    ascendencia)
+		
+		gen	c98_resid_house		=	(c1!=5)
+		gen	c06_mat_walls		=	(c2==1|c2==2)
+		gen	c06_mat_roof		=	(c3==1|c3==2)
+		gen	c06_mat_floor		=	(c4==1|c4==2)
+		gen	c98_resid_owned		=	(d8_1==1|d8_1==2|d8_1==3|d8_1==4)
+		gen	c98_nbr_rooms		=	d9
+		gen	c98_nbr_bedrooms	=	d10
+		gen	c98_b_piped_water	=	(d12==1)
+		gen	c98_hhld_toilet		=	(d13==1)
+		gen	c98_b_sewage		=	(d16==1)
+		gen	c06_b_electr		=	(d18==1)
+		gen	c98_hhld_stove		=	(d19!=3)
+		gen	c98_hhld_hot_water	=	(d21_1==1|d21_2==1)
+		gen	c98_hhld_refrigerat	=	(d21_3==1)
+		gen	c98_hhld_tv			=	(d21_4==1|d21_5==1)
+		gen	c98_hhld_vcr		=	(d21_8==1|d21_9==1)
+		gen	c98_hhld_wash_mac	=	(d21_10==1)
+		gen	c98_hhld_dishwasher	=	(d21_12==1)
+		gen	c98_hhld_microwave	=	(d21_13==1)
+		gen	c98_hhld_car		=	(d21_18==1)
+		gen	c01_hhld_computer	=	(d21_15==1)
+		gen	c01_hhld_internet	=	(d21_16==1)
+		gen	c01_hhld_phone		=	(d21_17	==1)
+		gen	c01_hhld_cable_tv	=	(d21_7==1)
 		
 		capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
 		capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
@@ -483,6 +526,15 @@ program clean_09_16
 		capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
 		capture gen pesosem = .
 		capture gen pesotri = .
+
+		gen married  = (e33==1|e35!=0|e36==3) if e33!=0
+		gen etnia = ascendencia
+		replace etnia=0 if ascendencia==5
+		
+		gen estudiante = (pobpcoac == 7)
+		gen trabajo    = (pobpcoac == 2)
+		bysort numero: egen y_hogar_alt = sum(ytotal) 
+		gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
 
 		if "`year'" <= "2010" {
 				gen     primaria   = (e51_1>0|e51_2>0|e51_3>0|e51_4>0)
@@ -512,57 +564,16 @@ program clean_09_16
 				gen live_births_nbr = e186_1 + e186_2 + e186_3 + e186_4 
 		}
 		
-		gen estudiante = (pobpcoac == 7)
-		
-		gen	c98_resid_house		=	(c1!=5)
-		gen	c06_mat_walls		=	(c2==1|c2==2)
-		gen	c06_mat_roof		=	(c3==1|c3==2)
-		gen	c06_mat_floor		=	(c4==1|c4==2)
-		gen	c98_resid_owned		=	(d8_1==1|d8_1==2|d8_1==3|d8_1==4)
-		gen	c98_nbr_rooms		=	d9
-		gen	c98_nbr_bedrooms	=	d10
-		gen	c98_b_piped_water	=	(d12==1)
-		gen	c98_hhld_toilet		=	(d13==1)
-		gen	c98_b_sewage		=	(d16==1)
-		gen	c06_b_electr		=	(d18==1)
-		gen	c98_hhld_stove		=	(d19!=3)
-		gen	c98_hhld_hot_water	=	(d21_1==1|d21_2==1)
-		gen	c98_hhld_refrigerat	=	(d21_3==1)
-		gen	c98_hhld_tv			=	(d21_4==1|d21_5==1)
-		gen	c98_hhld_vcr		=	(d21_8==1|d21_9==1)
-		gen	c98_hhld_wash_mac	=	(d21_10==1)
-		gen	c98_hhld_dishwasher	=	(d21_12==1)
-		gen	c98_hhld_microwave	=	(d21_13==1)
-		gen	c98_hhld_car		=	(d21_18==1)
-		gen	c01_hhld_computer	=	(d21_15==1)
-		gen	c01_hhld_internet	=	(d21_16==1)
-		gen	c01_hhld_phone		=	(d21_17	==1)
-		gen	c01_hhld_cable_tv	=	(d21_7==1)
-
-		gen married  = (e33==1|e35!=0|e36==3) if e33!=0
-		
-		keep anio numero nper dpto region_3 region_4 secc segm ccz* ///
-		    trimestre mes estrato pesoano pesosem pesotri ///
-			e26 e27 e29_6 e49 f66 f85 f88_1 f88_2 f99 pt1 ///
-			locagr nom_locagr ht3 ht11 d23 d25 lp_06 li_06 ///
-			c98_* c01_* c06_* estudiante educ_level married live_births live_births_nbr
-			
-		rename (nper e26 e27 e29_6 f66 f85 f88_1 f88_2 f99 pt1 locagr ///
-		    nom_locagr pesoano ht11 d23 d25 ht3) ///
-			(pers hombre edad ascendencia trabajo ///
-			horas_trabajo meses_trabajando anios_trabajando busca_trabajo ///
-			ytotal loc nomloc pesoan y_hogar nbr_above14 nbr_people nbr_under14)
-		
-		bysort numero: egen y_hogar_alt = sum(ytotal) 
-		
 		destring numero, replace
 		destring anio, replace
 		destring secc, replace
 		destring segm, replace
 		destring estrato, replace
 		
-		gen etnia = ascendencia
-		replace etnia=0 if ascendencia==5
+		keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
+		     peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
+			 pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level *trabaj* ///
+			 lp_06 li_06 region_3 region_4 live_births*
 		save ..\temp\clean_`year', replace
 		}
 end
