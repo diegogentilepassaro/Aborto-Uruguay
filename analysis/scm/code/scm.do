@@ -123,6 +123,9 @@ program build_synth_control
 	local trunit = r(mean)
 	replace treatment_`city'=0 if treatment_`city'!=1 //to include all locations, not just the DiD controls
 	replace   placebo_`city'=0 if   placebo_`city'!=1 
+
+	replace horas_trabajo=. if trabajo!=1
+    
 	collapse (mean) `controls' `control_vars' `outcomes' treatment_`city' `if' [aw = `weight'], by(`time' `geo_var')
 		
 	* Check the panel is balanced, this is for the synthetic control to work
@@ -195,26 +198,27 @@ program plot_scm
     if "`time'" == "anio_qtr" {
 	    format `time' %tq 
 		local range "if inrange(`time', tq(${q_date_`city'}) - ${q_pre},tq(${q_date_`city'}) + ${q_post}) "
-		local vertical = tq(${q_date_`city'}) + 0.5
+		local vertical = tq(${q_date_`city'}) - 0.5
+        local vertical2= tq(${q_date_`city'}) + 2.5  
 		local xtitle "Year-qtr"
 		}
 		else if "`time'" == "anio_sem" {
 		format `time' %th
 		local range "if inrange(`time', th(${s_date_`city'}) - ${s_pre},th(${s_date_`city'}) + ${s_post}) "
-		local vertical = th(${s_date_`city'}) + 0.5
+		local vertical = th(${s_date_`city'}) - 0.5
+        local vertical2= th(${s_date_`city'}) + 1.5  
 		local xtitle "Year-half"		
 		}
 		else {
 		format `time' %ty
 		local range "if inrange(`time', ${y_date_`city'} - ${y_pre}, ${y_date_`city'} + ${y_post}) "
-		local vertical = ${y_date_`city'} + 0.5
+		local vertical = ${y_date_`city'} - 0.5
+        local vertical2= ${y_date_`city'} + 0.5   
 		local xtitle "Year"	
 		}
 	local number_outcomes: word count `outcomes'
 	tsset `time'
 	
-	di `vertical'
-
 	* Create plot for each outcome
 	forval i = 1/`number_outcomes' {
 		local outcome_var: word `i' of `outcomes'
@@ -223,15 +227,15 @@ program plot_scm
 		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 0) replace
 		tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 0) replace
 		 if "`outcome_var'" == "trabajo" {
-			        local ylabel "0.4 (0.1) 0.6"
+			        local ylabel "0.45 (0.1) 0.65"
 			    }
 			    else if "`outcome_var'" == "horas_trabajo" {
-			        local ylabel "12 (8) 28"
+			        local ylabel "25 (10) 45"
 			    }
 				
-		qui twoway (line `city'_`outcome_var' `time' `range', lcolor(navy) lwidth(thick)) ///
-			   (line s_`city'_`outcome_var' `time' `range', lpattern(dash) lcolor(black)), xtitle("`xtitle'") ///
-			   ytitle("`stub_var'", size(vlarge)) xline(`vertical', lcolor(black) lpattern(dot)) ///
+		qui twoway (line `city'_`outcome_var' `time' `range', recast(connected) mc(blue) lc(blue)) ///
+			     (line s_`city'_`outcome_var' `time' `range', recast(connected) mc(red)  lc(red)), xtitle("`xtitle'") ///
+			   ytitle("`stub_var'", size(vlarge)) xline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
 			   legend(label(1 ${legend_`city'}) label(2 "Synthetic `city_legend'")  size(vlarge) width(100) forcesize) ///
 			   title(`stub_var', color(black) size(vlarge))  xtitle(, size(vlarge)) ///
 			   ylabel(`ylabel', labs(large)) xlabel(#7, labs(large)) graphregion(color(white)) bgcolor(white) ///

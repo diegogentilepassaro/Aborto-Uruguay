@@ -98,6 +98,10 @@ program plot_diff
         local stub_var: word `i' of `stubs'
 
         use ..\temp\did_sample.dta, clear
+
+        if "`outcome'" == "horas_trabajo" {
+            keep if trabajo==1
+        }
         
         if "`plot_option'" == "diff" {
             preserve
@@ -174,10 +178,10 @@ program plot_diff
             }
             else {
                 if "`outcome'" == "trabajo" {
-                    local ylabel "0.4 (0.1) 0.6"
+                    local ylabel "0.45 (0.1) 0.65"
                 }
                 else if "`outcome'" == "horas_trabajo" {
-                    local ylabel "12 (8) 28"
+                    local ylabel "25 (10) 45"
                 }
             }
             
@@ -250,11 +254,25 @@ program reg_diff
             local control_vars " c98_* c01_* c06_* "
             }
 
+        save ..\temp\did_reg_sample.dta, replace
+
         local n_outcomes: word count `outcomes'
 		clear matrix
         forval i = 1/`n_outcomes' {
             local outcome: word `i' of `outcomes'
-            
+
+            use ..\temp\did_reg_sample.dta, clear
+
+            if "`outcome'" == "horas_trabajo" {
+                keep if trabajo==1
+            }
+            if "`outcome'" == "trabajo" {
+                local estimation = "logit" 
+            }
+            else {
+                local estimation = "reg"
+            }
+                
             if "`time'" == "anio_qtr" {
                     gen post = (`time' >= tq(${q_date_`treatment'}))
                 } 
@@ -271,10 +289,10 @@ program reg_diff
 
                     gen interaction = treatment`age_group'_`treatment' * post
 
-                    reg `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
+                    `estimation' `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
                         i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
                         `range' `cond' & !mi(treatment`age_group'_`treatment') ///
-						[aw = `weight'], vce(cluster `time')
+						[pw = `weight'], vce(cluster `time')
 			
                     matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
             

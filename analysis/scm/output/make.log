@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-04 14:51:57 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
+ make.py started: 2018-05-13 19:00:56 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\scm\code 
 
 
 
@@ -7,32 +7,32 @@
 Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./scm.do"
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.59e+001 | 5.97e-008 | -2.36e+002 | -4.76e+002 |  0.000 | 0.0000 | 1.00e+002
-      1 | 3.29e-001 | 2.99e-010 | -2.36e+002 | -6.73e+002 |  0.000 | 0.9950 | 2.07e-005
-      2 | 1.86e-003 | 1.69e-012 | -2.36e+002 | -2.45e+002 |  1.411 | 0.9943 | 2.65e-006
-      3 | 8.67e-005 | 7.86e-014 | -2.36e+002 | -2.36e+002 |  2.742 | 0.9535 | 3.47e-006
-      4 | 1.71e-005 | 1.55e-014 | -2.36e+002 | -2.36e+002 |  3.377 | 0.8030 | 2.97e-006
-      5 | 3.88e-006 | 3.52e-015 | -2.36e+002 | -2.36e+002 |  4.009 | 0.7728 | 9.21e-007
-      6 | 3.00e-007 | 2.72e-016 | -2.36e+002 | -2.36e+002 |  5.029 | 0.9228 | 2.42e-008
-      7 | 4.37e-009 | 3.96e-018 | -2.36e+002 | -2.36e+002 |  6.716 | 0.9854 | 8.13e-011
-      8 | 2.75e-011 | 9.62e-020 | -2.36e+002 | -2.36e+002 |  8.599 | 0.9937 | 3.12e-013
-      9 | 1.38e-013 | 1.05e-019 | -2.36e+002 | -2.36e+002 | 10.887 | 0.9950 | 2.57e-015
-     10 | 7.72e-016 | 1.18e-019 | -2.36e+002 | -2.36e+002 | 13.184 | 0.9950 | 1.32e-017
+      0 | 6.59e+001 | 4.67e-008 | -2.53e+002 | -4.93e+002 |  0.024 | 0.0000 | 1.00e+002
+      1 | 3.53e-001 | 2.50e-010 | -2.53e+002 | -6.90e+002 |  0.000 | 0.9946 | 2.37e-005
+      2 | 1.76e-003 | 1.25e-012 | -2.53e+002 | -2.62e+002 |  1.432 | 0.9950 | 2.08e-006
+      3 | 6.37e-005 | 4.52e-014 | -2.53e+002 | -2.53e+002 |  2.873 | 0.9639 | 2.13e-006
+      4 | 7.33e-006 | 5.20e-015 | -2.53e+002 | -2.53e+002 |  3.700 | 0.8850 | 7.91e-007
+      5 | 2.03e-006 | 1.44e-015 | -2.53e+002 | -2.53e+002 |  4.245 | 0.7236 | 7.00e-007
+      6 | 2.47e-007 | 1.75e-016 | -2.53e+002 | -2.53e+002 |  5.129 | 0.8779 | 3.79e-008
+      7 | 5.29e-009 | 3.73e-018 | -2.53e+002 | -2.53e+002 |  6.648 | 0.9786 | 1.49e-010
+      8 | 3.03e-011 | 8.87e-020 | -2.53e+002 | -2.53e+002 |  8.609 | 0.9943 | 3.21e-013
+      9 | 1.51e-013 | 9.20e-020 | -2.53e+002 | -2.53e+002 | 10.907 | 0.9950 | 2.69e-015
+     10 | 9.66e-016 | 7.51e-020 | -2.53e+002 | -2.53e+002 | 13.204 | 0.9950 | 1.36e-017
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.59e+001 | 1.05e-007 | -2.01e+002 | -4.40e+002 |  0.000 | 0.0000 | 1.00e+002
-      1 | 4.84e-001 | 7.75e-010 | -2.00e+002 | -6.37e+002 |  0.000 | 0.9927 | 4.47e-005
-      2 | 2.42e-003 | 3.87e-012 | -2.00e+002 | -2.12e+002 |  1.226 | 0.9950 | 2.15e-006
-      3 | 6.44e-005 | 1.03e-013 | -2.00e+002 | -2.01e+002 |  2.800 | 0.9734 | 1.48e-006
-      4 | 1.59e-005 | 2.55e-014 | -2.00e+002 | -2.01e+002 |  3.351 | 0.7530 | 3.51e-006
-      5 | 1.91e-006 | 3.05e-015 | -2.00e+002 | -2.00e+002 |  4.203 | 0.8803 | 2.26e-007
-      6 | 4.90e-008 | 7.84e-017 | -2.00e+002 | -2.00e+002 |  5.552 | 0.9743 | 1.44e-009
-      7 | 9.99e-010 | 1.57e-018 | -2.00e+002 | -2.00e+002 |  7.011 | 0.9796 | 4.06e-011
-      8 | 9.09e-012 | 1.20e-019 | -2.00e+002 | -2.00e+002 |  8.437 | 0.9909 | 2.81e-013
-      9 | 4.55e-014 | 1.11e-019 | -2.00e+002 | -2.00e+002 | 10.603 | 0.9950 | 3.18e-015
-     10 | 5.54e-016 | 7.44e-020 | -2.00e+002 | -2.00e+002 | 12.899 | 0.9950 | 2.17e-017
+      0 | 6.59e+001 | 2.42e-008 | -4.33e+002 | -6.73e+002 |  0.257 | 0.0000 | 1.00e+002
+      1 | 3.29e-001 | 1.21e-010 | -4.33e+002 | -8.70e+002 |  0.000 | 0.9950 | 2.07e-005
+      2 | 2.37e-003 | 8.69e-013 | -4.33e+002 | -4.42e+002 |  1.643 | 0.9928 | 4.28e-006
+      3 | 1.31e-004 | 4.81e-014 | -4.33e+002 | -4.33e+002 |  2.899 | 0.9446 | 5.29e-006
+      4 | 3.48e-005 | 1.28e-014 | -4.33e+002 | -4.33e+002 |  3.433 | 0.7346 | 6.96e-006
+      5 | 6.08e-006 | 2.23e-015 | -4.33e+002 | -4.33e+002 |  4.135 | 0.8252 | 8.70e-007
+      6 | 3.94e-007 | 1.45e-016 | -4.33e+002 | -4.33e+002 |  5.217 | 0.9352 | 2.33e-008
+      7 | 6.03e-009 | 2.22e-018 | -4.33e+002 | -4.33e+002 |  6.819 | 0.9847 | 1.06e-010
+      8 | 3.12e-011 | 3.69e-020 | -4.33e+002 | -4.33e+002 |  9.024 | 0.9948 | 3.04e-013
+      9 | 1.56e-013 | 3.60e-020 | -4.33e+002 | -4.33e+002 | 11.322 | 0.9950 | 1.77e-015
+     10 | 9.29e-016 | 2.95e-020 | -4.33e+002 | -4.33e+002 | 13.625 | 0.9950 | 8.91e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -69,31 +69,32 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.45e+001 | 4.51e-008 | -3.02e+002 | -5.32e+002 |  0.121 | 0.0000 | 1.00e+002
-      1 | 3.23e-001 | 2.25e-010 | -3.02e+002 | -7.21e+002 |  0.000 | 0.9950 | 2.07e-005
-      2 | 1.91e-003 | 1.33e-012 | -3.02e+002 | -3.11e+002 |  1.530 | 0.9941 | 2.90e-006
-      3 | 7.90e-005 | 5.52e-014 | -3.02e+002 | -3.03e+002 |  2.913 | 0.9586 | 2.79e-006
-      4 | 1.70e-005 | 1.19e-014 | -3.02e+002 | -3.02e+002 |  3.516 | 0.7848 | 3.21e-006
-      5 | 1.46e-006 | 1.02e-015 | -3.02e+002 | -3.02e+002 |  4.403 | 0.9139 | 1.25e-007
-      6 | 2.76e-008 | 1.93e-017 | -3.02e+002 | -3.02e+002 |  5.832 | 0.9812 | 7.68e-010
-      7 | 1.54e-010 | 1.11e-019 | -3.02e+002 | -3.02e+002 |  7.899 | 0.9944 | 2.49e-012
-      8 | 7.69e-013 | 6.49e-020 | -3.02e+002 | -3.02e+002 | 10.197 | 0.9950 | 1.72e-014
-      9 | 3.77e-015 | 7.61e-020 | -3.02e+002 | -3.02e+002 | 12.495 | 0.9950 | 8.65e-017
+      0 | 6.45e+001 | 4.34e-008 | -3.20e+002 | -5.50e+002 |  0.145 | 0.0000 | 1.00e+002
+      1 | 3.23e-001 | 2.17e-010 | -3.20e+002 | -7.39e+002 |  0.000 | 0.9950 | 2.07e-005
+      2 | 1.90e-003 | 1.28e-012 | -3.20e+002 | -3.29e+002 |  1.555 | 0.9941 | 2.88e-006
+      3 | 8.09e-005 | 5.44e-014 | -3.20e+002 | -3.20e+002 |  2.926 | 0.9575 | 2.93e-006
+      4 | 1.24e-005 | 8.32e-015 | -3.20e+002 | -3.20e+002 |  3.543 | 0.8470 | 1.64e-006
+      5 | 2.23e-006 | 1.50e-015 | -3.20e+002 | -3.20e+002 |  4.225 | 0.8199 | 5.53e-007
+      6 | 2.78e-007 | 1.87e-016 | -3.20e+002 | -3.20e+002 |  5.094 | 0.8754 | 5.45e-008
+      7 | 3.08e-009 | 2.10e-018 | -3.20e+002 | -3.20e+002 |  6.670 | 0.9889 | 5.74e-011
+      8 | 2.58e-011 | 8.79e-020 | -3.20e+002 | -3.20e+002 |  8.419 | 0.9916 | 8.67e-013
+      9 | 1.29e-013 | 8.43e-020 | -3.20e+002 | -3.20e+002 | 10.710 | 0.9950 | 5.50e-015
+     10 | 7.84e-016 | 7.89e-020 | -3.20e+002 | -3.20e+002 | 13.012 | 0.9950 | 2.82e-017
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.45e+001 | 9.04e-008 | -2.18e+002 | -4.48e+002 |  0.000 | 0.0000 | 1.00e+002
-      1 | 3.36e-001 | 4.71e-010 | -2.18e+002 | -6.37e+002 |  0.000 | 0.9948 | 2.24e-005
-      2 | 1.75e-003 | 2.45e-012 | -2.18e+002 | -2.27e+002 |  1.391 | 0.9948 | 2.25e-006
-      3 | 7.81e-005 | 1.10e-013 | -2.18e+002 | -2.18e+002 |  2.740 | 0.9553 | 3.24e-006
-      4 | 1.17e-005 | 1.65e-014 | -2.18e+002 | -2.18e+002 |  3.278 | 0.8497 | 1.66e-006
-      5 | 2.45e-006 | 3.43e-015 | -2.18e+002 | -2.18e+002 |  3.943 | 0.7915 | 9.39e-007
-      6 | 1.39e-007 | 1.95e-016 | -2.18e+002 | -2.18e+002 |  5.041 | 0.9431 | 1.47e-008
-      7 | 1.36e-009 | 1.94e-018 | -2.18e+002 | -2.18e+002 |  6.623 | 0.9902 | 3.42e-011
-      8 | 8.47e-012 | 9.75e-020 | -2.18e+002 | -2.18e+002 |  8.462 | 0.9938 | 3.66e-013
-      9 | 4.24e-014 | 1.24e-019 | -2.18e+002 | -2.18e+002 | 10.752 | 0.9950 | 3.40e-015
-     10 | 5.21e-016 | 1.40e-019 | -2.18e+002 | -2.18e+002 | 13.048 | 0.9950 | 1.74e-017
+      0 | 6.45e+001 | 3.20e-007 | -1.29e+002 | -3.59e+002 |  0.000 | 0.0000 | 1.00e+002
+      1 | 3.90e-001 | 1.93e-009 | -1.29e+002 | -5.47e+002 |  0.000 | 0.9940 | 3.02e-005
+      2 | 3.08e-003 | 1.53e-011 | -1.29e+002 | -1.40e+002 |  1.065 | 0.9921 | 5.26e-006
+      3 | 1.92e-004 | 9.52e-013 | -1.29e+002 | -1.29e+002 |  2.269 | 0.9376 | 7.94e-006
+      4 | 3.83e-005 | 1.90e-013 | -1.29e+002 | -1.29e+002 |  2.798 | 0.8005 | 5.17e-006
+      5 | 1.23e-006 | 6.11e-015 | -1.29e+002 | -1.29e+002 |  3.768 | 0.9678 | 3.87e-008
+      6 | 2.74e-008 | 1.36e-016 | -1.29e+002 | -1.29e+002 |  5.146 | 0.9778 | 1.98e-009
+      7 | 1.97e-010 | 1.08e-018 | -1.29e+002 | -1.29e+002 |  6.738 | 0.9928 | 8.61e-012
+      8 | 9.85e-013 | 2.05e-019 | -1.29e+002 | -1.29e+002 |  8.995 | 0.9950 | 1.07e-013
+      9 | 5.03e-015 | 1.66e-019 | -1.29e+002 | -1.29e+002 | 11.293 | 0.9950 | 5.90e-016
+     10 | 4.61e-016 | 1.70e-019 | -1.29e+002 | -1.29e+002 | 13.599 | 0.9950 | 2.97e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -126,32 +127,33 @@ counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.59e+001 | 4.81e-008 | -3.24e+002 | -5.64e+002 |  0.132 | 0.0000 | 1.00e+002
-      1 | 8.22e-001 | 6.00e-010 | -3.24e+002 | -7.59e+002 |  0.000 | 0.9875 | 1.29e-004
-      2 | 5.21e-003 | 3.80e-012 | -3.24e+002 | -3.42e+002 |  1.246 | 0.9937 | 3.76e-006
-      3 | 2.17e-004 | 1.59e-013 | -3.24e+002 | -3.25e+002 |  2.623 | 0.9582 | 5.64e-006
-      4 | 1.53e-005 | 1.12e-014 | -3.24e+002 | -3.24e+002 |  3.367 | 0.9297 | 6.67e-007
-      5 | 2.65e-006 | 1.94e-015 | -3.24e+002 | -3.24e+002 |  4.096 | 0.8265 | 7.47e-007
-      6 | 4.94e-008 | 3.61e-017 | -3.24e+002 | -3.24e+002 |  5.448 | 0.9814 | 1.56e-009
-      7 | 6.34e-010 | 4.87e-019 | -3.24e+002 | -3.24e+002 |  6.683 | 0.9872 | 3.28e-011
-      8 | 3.77e-012 | 8.73e-020 | -3.24e+002 | -3.24e+002 |  7.896 | 0.9941 | 4.11e-013
-      9 | 2.17e-014 | 9.31e-020 | -3.24e+002 | -3.24e+002 |  9.124 | 0.9942 | 2.37e-014
-     10 | 5.22e-016 | 1.05e-019 | -3.24e+002 | -3.24e+002 | 10.626 | 0.9950 | 1.05e-015
-     11 | 4.61e-016 | 7.89e-020 | -3.24e+002 | -3.24e+002 | 12.919 | 0.9950 | 3.32e-017
+      0 | 6.59e+001 | 5.58e-008 | -3.09e+002 | -5.48e+002 |  0.111 | 0.0000 | 1.00e+002
+      1 | 1.08e+000 | 9.18e-010 | -3.08e+002 | -7.43e+002 |  0.000 | 0.9835 | 2.24e-004
+      2 | 9.92e-003 | 8.40e-012 | -3.08e+002 | -3.32e+002 |  1.111 | 0.9909 | 8.32e-006
+      3 | 6.01e-004 | 5.09e-013 | -3.08e+002 | -3.09e+002 |  2.325 | 0.9394 | 1.56e-005
+      4 | 2.58e-005 | 2.19e-014 | -3.08e+002 | -3.09e+002 |  2.995 | 0.9570 | 4.70e-007
+      5 | 6.60e-006 | 5.59e-015 | -3.08e+002 | -3.08e+002 |  3.581 | 0.7447 | 3.68e-006
+      6 | 6.51e-007 | 5.52e-016 | -3.08e+002 | -3.08e+002 |  4.506 | 0.9012 | 1.39e-007
+      7 | 1.56e-008 | 1.32e-017 | -3.08e+002 | -3.08e+002 |  6.014 | 0.9761 | 9.54e-010
+      8 | 1.48e-010 | 1.43e-019 | -3.08e+002 | -3.08e+002 |  7.543 | 0.9905 | 4.68e-012
+      9 | 8.03e-013 | 9.07e-020 | -3.08e+002 | -3.08e+002 |  8.980 | 0.9946 | 4.49e-014
+     10 | 4.02e-015 | 6.24e-020 | -3.08e+002 | -3.08e+002 | 11.244 | 0.9950 | 1.40e-015
+     11 | 4.91e-016 | 9.04e-020 | -3.08e+002 | -3.08e+002 | 13.557 | 0.9950 | 7.59e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
 ----------------------------------------------------------------------------------
-      0 | 6.59e+001 | 1.26e-008 | -5.79e+002 | -8.19e+002 |  0.384 | 0.0000 | 1.00e+002
-      1 | 8.22e-001 | 1.58e-010 | -5.79e+002 | -1.01e+003 |  0.125 | 0.9875 | 1.29e-004
-      2 | 5.03e-003 | 9.64e-013 | -5.79e+002 | -5.97e+002 |  1.500 | 0.9939 | 3.50e-006
-      3 | 1.94e-004 | 3.72e-014 | -5.79e+002 | -5.80e+002 |  2.911 | 0.9614 | 4.80e-006
-      4 | 7.18e-006 | 1.38e-015 | -5.79e+002 | -5.79e+002 |  3.636 | 0.9630 | 1.69e-007
-      5 | 1.76e-006 | 3.38e-016 | -5.79e+002 | -5.79e+002 |  4.234 | 0.7544 | 1.46e-006
-      6 | 5.99e-008 | 1.15e-017 | -5.79e+002 | -5.79e+002 |  5.552 | 0.9661 | 6.76e-009
-      7 | 3.25e-010 | 7.47e-020 | -5.79e+002 | -5.79e+002 |  7.699 | 0.9946 | 8.29e-012
-      8 | 1.63e-012 | 3.34e-020 | -5.79e+002 | -5.79e+002 |  9.997 | 0.9950 | 5.00e-014
-      9 | 8.04e-015 | 3.22e-020 | -5.79e+002 | -5.79e+002 | 12.294 | 0.9950 | 2.52e-016
+      0 | 6.59e+001 | 2.26e-008 | -4.29e+002 | -6.69e+002 |  0.254 | 0.0000 | 1.00e+002
+      1 | 4.00e-001 | 1.37e-010 | -4.29e+002 | -8.66e+002 |  0.000 | 0.9939 | 3.04e-005
+      2 | 2.52e-003 | 8.66e-013 | -4.29e+002 | -4.40e+002 |  1.595 | 0.9937 | 3.36e-006
+      3 | 1.11e-004 | 3.81e-014 | -4.29e+002 | -4.30e+002 |  2.951 | 0.9560 | 3.69e-006
+      4 | 2.26e-005 | 7.78e-015 | -4.29e+002 | -4.29e+002 |  3.492 | 0.7959 | 3.58e-006
+      5 | 5.40e-006 | 1.86e-015 | -4.29e+002 | -4.29e+002 |  4.101 | 0.7613 | 1.42e-006
+      6 | 3.60e-007 | 1.23e-016 | -4.29e+002 | -4.29e+002 |  5.200 | 0.9335 | 2.63e-008
+      7 | 8.20e-009 | 2.82e-018 | -4.29e+002 | -4.29e+002 |  6.768 | 0.9772 | 2.44e-010
+      8 | 4.10e-011 | 4.31e-020 | -4.29e+002 | -4.29e+002 |  9.045 | 0.9950 | 3.16e-013
+      9 | 2.05e-013 | 6.36e-020 | -4.29e+002 | -4.29e+002 | 11.342 | 0.9950 | 1.67e-015
+     10 | 1.13e-015 | 5.48e-020 | -4.29e+002 | -4.29e+002 | 13.638 | 0.9950 | 8.43e-018
 ----------------------------------------------------------------------------------
 optimization converged
 counter | pri_inf  | dual_inf  | pri_obj   | dual_obj  | sigfig | alpha  | nu 
@@ -360,78 +362,81 @@ Notes:
  48.         replace treatment_`city'=0 if treatment_`city'!=1 //to include all
 >  locations, not just the DiD controls
  49.         replace   placebo_`city'=0 if   placebo_`city'!=1 
- 50.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`ci
-> ty' `if' [aw = `weight'], by(`time' `geo_var')
- 51.                 
+ 50. 
+.         replace horas_trabajo=. if trabajo!=1
+ 51.     
+.         collapse (mean) `controls' `control_vars' `outcomes' treatment_`city'
+>  `if' [aw = `weight'], by(`time' `geo_var')
+ 52.                 
 .         * Check the panel is balanced, this is for the synthetic control to w
 > ork
 .         xtset `geo_var' `time'
- 52.         local num_`time's = r(tmax) - r(tmin) + 1
- 53.         bysort `geo_var': gen num_`time' = _N
- 54.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
+ 53.         local num_`time's = r(tmax) - r(tmin) + 1
+ 54.         bysort `geo_var': gen num_`time' = _N
+ 55.         keep if num_`time' == `num_`time's'  /*for proper geocodes this sh
 > ould be an assertion*/
- 55. 
+ 56. 
 .         * Check the panel is balanced against missing values
 .         local n_outcomes: word count `outcomes'
- 56.         forval i = 1/`n_outcomes' {
- 57.                 local outcome_var: word `i' of `outcomes' 
- 58.                 drop if `outcome_var'==.
- 59.         }
- 60.         bysort `geo_var': replace num_`time' = _N
- 61.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
+ 57.         forval i = 1/`n_outcomes' {
+ 58.                 local outcome_var: word `i' of `outcomes' 
+ 59.                 drop if `outcome_var'==.
+ 60.         }
+ 61.         bysort `geo_var': replace num_`time' = _N
+ 62.         keep if num_`time' == `num_`time's' /*for proper geocodes this sho
 > uld be an assertion*/
- 62. 
+ 63. 
 .         save "../temp/donorpool_`city'_`time'`special_legend'.dta", replace
- 63.         
+ 64.         
 .         * Create the synth control for each outcome
 .         forval i = 1/`n_outcomes' {
- 64.                 local var: word `i' of `outcomes'
- 65.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
+ 65.                 local var: word `i' of `outcomes'
+ 66.                 use "../temp/donorpool_`city'_`time'`special_legend'.dta",
 >  clear
- 66.                 
+ 67.                 
 .                 * Create lags of current outcome
 .                 local lags "" // so that we do not add lags of other outcomes
- 67.                 local i=1
- 68.                 foreach j of numlist `lag_list' {
- 69.                         local lag`i' = `event_date' - `j'
- 70.                         local lags  = "`lags'" + " `var'(`lag`i'') "
- 71.                         local i = `i'+1
- 72.                 }
- 73.                 * We need unabbreviated variables for the synth
+ 68.                 local i=1
+ 69.                 foreach j of numlist `lag_list' {
+ 70.                         local lag`i' = `event_date' - `j'
+ 71.                         local lags  = "`lags'" + " `var'(`lag`i'') "
+ 72.                         local i = `i'+1
+ 73.                 }
+ 74.                 * We need unabbreviated variables for the synth
 .                 qui desc `control_vars', f varlist
- 74.                 local control_vars_exp `r(varlist)'
- 75. 
+ 75.                 local control_vars_exp `r(varlist)'
+ 76. 
 .                 * Run SCM, save data for this outcome, and rename vars
 .                 di " "
- 76.                 di "*** SCM for `city' `time' `var' ***"
- 77.                 synth `var' `controls' `control_vars_exp' `lags', ///
+ 77.                 di "*** SCM for `city' `time' `var' ***"
+ 78.                 synth `var' `controls' `control_vars_exp' `lags', ///
 >                         trunit(`trunit') trperiod(`event_date') ///
 >                         keep("../temp/synth_`city'_`var'`special_legend'.dta"
 > , replace) 
- 78. 
+ 79. 
 .                 use "../temp/synth_`city'_`var'`special_legend'.dta", clear
- 79.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
+ 80.                 rename (_Co_Number _time _Y_treated _Y_synthetic) ///
 >                         (geocode `time' `city'_`var'`special_legend' s_`city'
 > _`var'`special_legend')
- 80.                 drop if `time'==.
- 81.                 drop geocode _W_Weight
- 82.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
+ 81.                 drop if `time'==.
+ 82.                 drop geocode _W_Weight
+ 83.                 save "../temp/synth_`city'_`var'`special_legend'.dta", rep
 > lace
- 83.         }
- 84. 
+ 84.         }
+ 85. 
 .         * Construct dataset with all outcomes for a given research design: ci
 > ty-time
 .         local outcome_var: word 1 of `outcomes' 
- 85.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
- 86. 
+ 86.         use "../temp/synth_`city'_`outcome_var'`special_legend'", clear
+ 87. 
 .         forval i = 2/`n_outcomes' {
- 87.                 local outcome_var: word `i' of `outcomes' 
- 88.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
+ 88.                 local outcome_var: word `i' of `outcomes' 
+ 89.                 merge 1:1 `time' using "../temp/synth_`city'_`outcome_var'
 > `special_legend'", nogen
- 89.         }
- 90.         save "../temp/controltrends_`city'_`time'_`geo_var'`special_legend
+ 90.         }
+ 91.         save "../temp/controltrends_`city'_`time'_`geo_var'`special_legend
 > '.dta", replace
- 91. end
+ 92. end
 
 . 
 . program plot_scm
@@ -447,50 +452,51 @@ Notes:
   4.             format `time' %tq 
   5.                 local range "if inrange(`time', tq(${q_date_`city'}) - ${q
 > _pre},tq(${q_date_`city'}) + ${q_post}) "
-  6.                 local vertical = tq(${q_date_`city'}) + 0.5
-  7.                 local xtitle "Year-qtr"
-  8.                 }
-  9.                 else if "`time'" == "anio_sem" {
- 10.                 format `time' %th
- 11.                 local range "if inrange(`time', th(${s_date_`city'}) - ${s
+  6.                 local vertical = tq(${q_date_`city'}) - 0.5
+  7.         local vertical2= tq(${q_date_`city'}) + 2.5  
+  8.                 local xtitle "Year-qtr"
+  9.                 }
+ 10.                 else if "`time'" == "anio_sem" {
+ 11.                 format `time' %th
+ 12.                 local range "if inrange(`time', th(${s_date_`city'}) - ${s
 > _pre},th(${s_date_`city'}) + ${s_post}) "
- 12.                 local vertical = th(${s_date_`city'}) + 0.5
- 13.                 local xtitle "Year-half"                
- 14.                 }
- 15.                 else {
- 16.                 format `time' %ty
- 17.                 local range "if inrange(`time', ${y_date_`city'} - ${y_pre
+ 13.                 local vertical = th(${s_date_`city'}) - 0.5
+ 14.         local vertical2= th(${s_date_`city'}) + 1.5  
+ 15.                 local xtitle "Year-half"                
+ 16.                 }
+ 17.                 else {
+ 18.                 format `time' %ty
+ 19.                 local range "if inrange(`time', ${y_date_`city'} - ${y_pre
 > }, ${y_date_`city'} + ${y_post}) "
- 18.                 local vertical = ${y_date_`city'} + 0.5
- 19.                 local xtitle "Year"     
- 20.                 }
- 21.         local number_outcomes: word count `outcomes'
- 22.         tsset `time'
- 23.         
-.         di `vertical'
- 24. 
+ 20.                 local vertical = ${y_date_`city'} - 0.5
+ 21.         local vertical2= ${y_date_`city'} + 0.5   
+ 22.                 local xtitle "Year"     
+ 23.                 }
+ 24.         local number_outcomes: word count `outcomes'
+ 25.         tsset `time'
+ 26.         
 .         * Create plot for each outcome
 .         forval i = 1/`number_outcomes' {
- 25.                 local outcome_var: word `i' of `outcomes'
- 26.             local stub_var: word `i' of `stub_list'
- 27.                 
+ 27.                 local outcome_var: word `i' of `outcomes'
+ 28.             local stub_var: word `i' of `stub_list'
+ 29.                 
 .                 tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', wind
 > ow(1 1 0) replace
- 28.                 tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var
+ 30.                 tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var
 > ', window(1 1 0) replace
- 29.                  if "`outcome_var'" == "trabajo" {
- 30.                                 local ylabel "0.4 (0.1) 0.6"
- 31.                             }
- 32.                             else if "`outcome_var'" == "horas_trabajo" {
- 33.                                 local ylabel "12 (8) 28"
- 34.                             }
- 35.                                 
-.                 qui twoway (line `city'_`outcome_var' `time' `range', lcolor(
-> navy) lwidth(thick)) ///
->                            (line s_`city'_`outcome_var' `time' `range', lpatt
-> ern(dash) lcolor(black)), xtitle("`xtitle'") ///
+ 31.                  if "`outcome_var'" == "trabajo" {
+ 32.                                 local ylabel "0.45 (0.1) 0.65"
+ 33.                             }
+ 34.                             else if "`outcome_var'" == "horas_trabajo" {
+ 35.                                 local ylabel "25 (10) 45"
+ 36.                             }
+ 37.                                 
+.                 qui twoway (line `city'_`outcome_var' `time' `range', recast(
+> connected) mc(blue) lc(blue)) ///
+>                              (line s_`city'_`outcome_var' `time' `range', rec
+> ast(connected) mc(red)  lc(red)), xtitle("`xtitle'") ///
 >                            ytitle("`stub_var'", size(vlarge)) xline(`vertical
-> ', lcolor(black) lpattern(dot)) ///
+> ' `vertical2', lcolor(black) lpattern(dot)) ///
 >                            legend(label(1 ${legend_`city'}) label(2 "Syntheti
 > c `city_legend'")  size(vlarge) width(100) forcesize) ///
 >                            title(`stub_var', color(black) size(vlarge))  xtit
@@ -499,25 +505,25 @@ Notes:
 > e)) graphregion(color(white)) bgcolor(white) ///
 >                            name(`city'_`outcome_var'`special_legend', replace
 > )
- 36.     }
- 37.         
+ 38.     }
+ 39.         
 .         forval i = 1/`number_outcomes' {
- 38.                 local outcome_var: word `i' of `outcomes'
- 39.                 local plots = "`plots' " + "`city'_`outcome_var'`special_l
+ 40.                 local outcome_var: word `i' of `outcomes'
+ 41.                 local plots = "`plots' " + "`city'_`outcome_var'`special_l
 > egend'"
- 40.         }
- 41.                 
+ 42.         }
+ 43.                 
 .         local plot1: word 1 of `plots'  
- 42.         
+ 44.         
 .         qui grc1leg `plots', rows(`number_outcomes') legendfrom(`plot1') posi
 > tion(6) cols(2) ///
 >                    graphregion(color(white)) title({bf: ${legend_`city'} `spe
 > cial_legend'}, color(black) size(vlarge)) ///
 >                    name(scm_`city'_`groups_vars'_`time'`special_legend')
- 43.     graph display, ysize(5) xsize(12)
- 44.         graph export ../output/scm_`city'_`groups_vars'_`time'_`geo_var'`s
+ 45.     graph display, ysize(5) xsize(12)
+ 46.         graph export ../output/scm_`city'_`groups_vars'_`time'_`geo_var'`s
 > pecial_legend'.pdf, replace    
- 45. end
+ 47. end
 
 . 
 . main_scm
@@ -616,6 +622,7 @@ end of do-file
 (198,841 observations deleted)
 (102,915 real changes made)
 (116,192 real changes made)
+(53,316 real changes made, 53,316 to missing)
        panel variable:  loc_code (unbalanced)
         time variable:  anio_sem, 2000h2 to 2014h2, but with gaps
                 delta:  1 halfyear
@@ -679,7 +686,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  .0496026 
+   RMSPE |  .0441688 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -687,29 +694,29 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |        .087
-   231050 |        .051
+   202020 |           0
+   231050 |        .141
    404020 |           0
-   431050 |        .092
+   431050 |        .077
    505320 |           0
    532050 |           0
    606020 |           0
-   633050 |        .226
+   633050 |        .065
    707320 |           0
-   909020 |         .11
-  1010020 |         .19
+   909020 |        .127
+  1010020 |        .111
   1010021 |           0
-  1035050 |           0
+  1035050 |        .086
   1111020 |           0
-  1212020 |        .114
-  1236050 |        .033
+  1212020 |        .137
+  1236050 |           0
   1414320 |           0
-  1435050 |           0
-  1515020 |           0
+  1435050 |        .137
+  1515020 |        .063
   1717220 |           0
   1732050 |           0
-  1818020 |        .017
-  1833050 |         .08
+  1818020 |           0
+  1833050 |        .056
   1919020 |           0
 -----------------------
 -------------------------------------------------------------------------------
@@ -718,40 +725,40 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  30.29369   30.01352 
-                       married |  .5464722   .5584689 
-                    nbr_people |  4.389529   4.390474 
-                   ind_under14 |  .7100719   .7034709 
-                       y_hogar |   15405.8   16401.31 
-               c98_resid_house |  .9994645   .9923367 
-               c98_resid_owned |  .5784735   .6251354 
-                 c98_nbr_rooms |  3.356489    3.45693 
-              c98_nbr_bedrooms |  2.160575   2.183793 
-             c98_b_piped_water |  .9271568   .9308131 
-               c98_hhld_toilet |  .9091481    .890554 
-                  c98_b_sewage |  .3631495   .4835762 
-                c98_hhld_stove |  .9421937   .9589152 
-            c98_hhld_hot_water |  .8537448   .8142716 
-           c98_hhld_refrigerat |  .7767538   .7657922 
-                   c98_hhld_tv |  .9477476   .9020349 
-                  c98_hhld_vcr |  .3153888   .3460004 
-             c98_hhld_wash_mac |  .4624102   .5590943 
-           c98_hhld_dishwasher |  .0190914   .0152939 
-            c98_hhld_microwave |  .2244169    .285719 
-                  c98_hhld_car |  .2251059   .2660912 
-                   trabajo(93) |  .4623119   .4944907 
-                   trabajo(92) |  .4844219   .4517396 
-                   trabajo(91) |  .5358992   .4354893 
-                   trabajo(90) |  .3827845   .4761387 
-                   trabajo(89) |  .4757728   .4785399 
-                   trabajo(88) |  .4442996   .4242924 
-                   trabajo(87) |  .5235261   .4537325 
-                   trabajo(86) |  .4285154    .441287 
-                   trabajo(85) |  .3589949   .4432967 
-                   trabajo(84) |  .4459369   .3746545 
-                   trabajo(83) |  .4334773    .454847 
-                   trabajo(82) |  .4286779   .4217147 
-                   trabajo(81) |  .4213585   .3969124 
+                          edad |  30.29369   29.99798 
+                       married |  .5464722   .5595436 
+                    nbr_people |  4.389529   4.397812 
+                   ind_under14 |  .7100719   .6994976 
+                       y_hogar |   15405.8   16680.03 
+               c98_resid_house |  .9994645   .9934946 
+               c98_resid_owned |  .5784735   .6425275 
+                 c98_nbr_rooms |  3.356489   3.471021 
+              c98_nbr_bedrooms |  2.160575   2.204006 
+             c98_b_piped_water |  .9271568   .9312769 
+               c98_hhld_toilet |  .9091481    .889976 
+                  c98_b_sewage |  .3631495   .4497517 
+                c98_hhld_stove |  .9421937   .9568576 
+            c98_hhld_hot_water |  .8537448   .8198749 
+           c98_hhld_refrigerat |  .7767538   .7700917 
+                   c98_hhld_tv |  .9477476   .9216942 
+                  c98_hhld_vcr |  .3153888   .3510602 
+             c98_hhld_wash_mac |  .4624102   .5712685 
+           c98_hhld_dishwasher |  .0190914   .0179262 
+            c98_hhld_microwave |  .2244169    .290532 
+                  c98_hhld_car |  .2251059   .2755058 
+                   trabajo(93) |  .4687986   .4815085 
+                   trabajo(92) |  .4986862   .4821766 
+                   trabajo(91) |  .5358992    .477677 
+                   trabajo(90) |  .3827845   .4949124 
+                   trabajo(89) |  .4757728   .4524184 
+                   trabajo(88) |  .4442996   .4236888 
+                   trabajo(87) |  .5302479   .4131093 
+                   trabajo(86) |  .4360401   .4342757 
+                   trabajo(85) |  .3589949   .3962136 
+                   trabajo(84) |  .4459369   .4263408 
+                   trabajo(83) |  .4334773   .4437693 
+                   trabajo(82) |  .4351833   .4543046 
+                   trabajo(81) |  .4213585   .4198741 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -810,7 +817,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  2.023505 
+   RMSPE |  2.545666 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -818,28 +825,28 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |        .117
-   231050 |        .093
+   202020 |           0
+   231050 |        .019
    404020 |           0
-   431050 |        .004
+   431050 |        .092
    505320 |           0
-   532050 |        .067
+   532050 |           0
    606020 |           0
-   633050 |        .017
+   633050 |        .013
    707320 |           0
-   909020 |           0
-  1010020 |        .033
-  1010021 |        .086
-  1035050 |           0
+   909020 |        .125
+  1010020 |           0
+  1010021 |           0
+  1035050 |        .046
   1111020 |           0
   1212020 |           0
-  1236050 |           0
+  1236050 |        .032
   1414320 |           0
   1435050 |           0
-  1515020 |        .166
+  1515020 |        .085
   1717220 |           0
   1732050 |           0
-  1818020 |        .416
+  1818020 |        .588
   1833050 |           0
   1919020 |           0
 -----------------------
@@ -849,40 +856,40 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  30.29369   29.91777 
-                       married |  .5464722   .5426628 
-                    nbr_people |  4.389529   4.468239 
-                   ind_under14 |  .7100719   .6873072 
-                       y_hogar |   15405.8   17086.97 
-               c98_resid_house |  .9994645   .9923848 
-               c98_resid_owned |  .5784735   .6655119 
-                 c98_nbr_rooms |  3.356489   3.517346 
-              c98_nbr_bedrooms |  2.160575   2.245481 
-             c98_b_piped_water |  .9271568   .9279034 
-               c98_hhld_toilet |  .9091481   .8827927 
-                  c98_b_sewage |  .3631495   .5311694 
-                c98_hhld_stove |  .9421937   .9422685 
-            c98_hhld_hot_water |  .8537448    .795927 
-           c98_hhld_refrigerat |  .7767538   .7707734 
-                   c98_hhld_tv |  .9477476   .9304815 
-                  c98_hhld_vcr |  .3153888   .3586967 
-             c98_hhld_wash_mac |  .4624102    .510696 
-           c98_hhld_dishwasher |  .0190914   .0156695 
-            c98_hhld_microwave |  .2244169   .2768206 
-                  c98_hhld_car |  .2251059   .2854639 
-             horas_trabajo(93) |  15.85463   17.23758 
-             horas_trabajo(92) |    16.318   16.79812 
-             horas_trabajo(91) |  18.65979   16.83254 
-             horas_trabajo(90) |   14.2165    18.1504 
-             horas_trabajo(89) |  19.92782   17.91107 
-             horas_trabajo(88) |  17.91815   16.82192 
-             horas_trabajo(87) |  23.46282   18.31219 
-             horas_trabajo(86) |  17.51137   16.63947 
-             horas_trabajo(85) |  13.56856   14.81353 
-             horas_trabajo(84) |  18.42745   16.66092 
-             horas_trabajo(83) |  15.89774   17.56812 
-             horas_trabajo(82) |  16.66924    16.1092 
-             horas_trabajo(81) |  15.83133   16.72878 
+                          edad |  30.29369   30.09607 
+                       married |  .5464722   .5547179 
+                    nbr_people |  4.389529   4.370954 
+                   ind_under14 |  .7100719   .6853357 
+                       y_hogar |   15405.8   16908.08 
+               c98_resid_house |  .9994645   .9951286 
+               c98_resid_owned |  .5784735   .6337744 
+                 c98_nbr_rooms |  3.356489    3.52108 
+              c98_nbr_bedrooms |  2.160575   2.236113 
+             c98_b_piped_water |  .9271568   .9290599 
+               c98_hhld_toilet |  .9091481   .8847252 
+                  c98_b_sewage |  .3631495   .5102328 
+                c98_hhld_stove |  .9421937   .9484186 
+            c98_hhld_hot_water |  .8537448   .8138766 
+           c98_hhld_refrigerat |  .7767538   .7735504 
+                   c98_hhld_tv |  .9477476   .9357781 
+                  c98_hhld_vcr |  .3153888    .348312 
+             c98_hhld_wash_mac |  .4624102    .512062 
+           c98_hhld_dishwasher |  .0190914   .0142623 
+            c98_hhld_microwave |  .2244169   .2678653 
+                  c98_hhld_car |  .2251059   .2705291 
+             horas_trabajo(93) |  35.29431   35.11189 
+             horas_trabajo(92) |  34.29419   35.13869 
+             horas_trabajo(91) |  35.59417   35.52317 
+             horas_trabajo(90) |  37.13969   39.79422 
+             horas_trabajo(89) |  42.43639   39.23764 
+             horas_trabajo(88) |  41.73753    40.2954 
+             horas_trabajo(87) |  45.19952    40.0019 
+             horas_trabajo(86) |  41.67859   37.87126 
+             horas_trabajo(85) |  39.40432   37.52132 
+             horas_trabajo(84) |  41.43752    36.0142 
+             horas_trabajo(83) |   37.9955    38.5867 
+             horas_trabajo(82) |  39.23077    38.7672 
+             horas_trabajo(81) |  37.45472   38.52803 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -1171,7 +1178,6 @@ file ../temp/synth_rivera_educ_more_HS.dta saved
 file ../temp/controltrends_rivera_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 2000h2 to 2014h2
                 delta:  1 halfyear
-101.5
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= rivera_trabajo
 The smoother applied was
@@ -1186,6 +1192,7 @@ The smoother applied was
 (215,114 observations deleted)
 (95,861 real changes made)
 (117,500 real changes made)
+(52,636 real changes made, 52,636 to missing)
        panel variable:  loc_code (unbalanced)
         time variable:  anio_sem, 2003h1 to 2015h2, but with gaps
                 delta:  1 halfyear
@@ -1250,7 +1257,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  .0427185 
+   RMSPE |  .0471381 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -1258,13 +1265,13 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |        .139
+   202020 |        .364
    231050 |           0
    404020 |           0
-   431050 |        .048
+   431050 |         .01
    505320 |           0
-   532050 |           0
-   606020 |        .043
+   532050 |        .062
+   606020 |           0
    633050 |           0
    707320 |           0
    909020 |           0
@@ -1272,14 +1279,14 @@ Unit Weights:
   1010021 |           0
   1035050 |           0
   1111020 |           0
-  1212020 |        .173
-  1236050 |        .187
+  1212020 |        .191
+  1236050 |        .158
   1414320 |           0
   1435050 |           0
-  1717220 |        .268
-  1732050 |        .102
+  1717220 |        .199
+  1732050 |           0
   1818020 |           0
-  1833050 |         .04
+  1833050 |        .017
   1919020 |           0
 -----------------------
 -------------------------------------------------------------------------------
@@ -1288,44 +1295,44 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  29.36131   29.67256 
-                       married |  .5083424   .5556515 
-                    nbr_people |  4.695566   4.493077 
-                   ind_under14 |  .6713324   .6958027 
-                       y_hogar |  25196.42   24524.41 
-               c98_resid_house |   .994897   .9949129 
-               c98_resid_owned |  .6910699   .6353442 
-                 c98_nbr_rooms |  3.722518   3.651252 
-              c98_nbr_bedrooms |  2.344877   2.271236 
-             c98_b_piped_water |  .9386441   .9470161 
-               c98_hhld_toilet |  .8923974   .8915589 
-                  c98_b_sewage |  .7197322   .5611393 
-                c98_hhld_stove |  .9030331   .9216588 
-            c98_hhld_hot_water |  .8017336   .8451215 
-           c98_hhld_refrigerat |  .7870631   .7843425 
-                   c98_hhld_tv |  .9568334   .9428878 
-                  c98_hhld_vcr |  .4106262   .4658938 
-             c98_hhld_wash_mac |  .5911414   .6084992 
-           c98_hhld_dishwasher |  .0195671   .0166114 
-            c98_hhld_microwave |  .3643404   .3769293 
-                  c98_hhld_car |  .3071567    .302813 
-             c01_hhld_computer |  .4442914    .435407 
-             c01_hhld_internet |   .224017   .2307122 
-                c01_hhld_phone |   .640771   .6027503 
-             c01_hhld_cable_tv |  .5954262   .6184626 
-                   trabajo(98) |  .4569033   .5218825 
-                   trabajo(97) |  .5496019   .5368286 
-                   trabajo(96) |  .4890527   .4859965 
-                   trabajo(95) |  .4895996   .4951909 
-                   trabajo(94) |  .4179476   .4897636 
-                   trabajo(93) |  .4506406   .4757952 
-                   trabajo(92) |  .4440973   .4598144 
-                   trabajo(91) |  .5561304   .4411355 
-                   trabajo(90) |  .4338808   .4775782 
-                   trabajo(89) |   .483101   .4706809 
-                   trabajo(88) |   .331348   .3826839 
-                   trabajo(87) |  .4211796      .4094 
-                   trabajo(86) |  .4458925   .4161804 
+                          edad |  29.36131   29.71582 
+                       married |  .5083424   .5489922 
+                    nbr_people |  4.695566   4.510649 
+                   ind_under14 |  .6713324   .6941795 
+                       y_hogar |  25196.42   23775.87 
+               c98_resid_house |   .994897   .9973379 
+               c98_resid_owned |  .6910699   .6582473 
+                 c98_nbr_rooms |  3.722518    3.66895 
+              c98_nbr_bedrooms |  2.344877   2.284907 
+             c98_b_piped_water |  .9386441    .952279 
+               c98_hhld_toilet |  .8923974     .90424 
+                  c98_b_sewage |  .7197322   .5794306 
+                c98_hhld_stove |  .9030331   .9287641 
+            c98_hhld_hot_water |  .8017336   .8521822 
+           c98_hhld_refrigerat |  .7870631   .7820048 
+                   c98_hhld_tv |  .9568334   .9426262 
+                  c98_hhld_vcr |  .4106262   .4715089 
+             c98_hhld_wash_mac |  .5911414   .5931857 
+           c98_hhld_dishwasher |  .0195671   .0176598 
+            c98_hhld_microwave |  .3643404   .3827478 
+                  c98_hhld_car |  .3071567   .3080669 
+             c01_hhld_computer |  .4442914   .4310272 
+             c01_hhld_internet |   .224017   .2272263 
+                c01_hhld_phone |   .640771   .6146986 
+             c01_hhld_cable_tv |  .5954262    .583415 
+                   trabajo(98) |  .5024655   .5967521 
+                   trabajo(97) |  .5982158   .5574832 
+                   trabajo(96) |  .5254679   .5226354 
+                   trabajo(95) |  .5102929   .5022666 
+                   trabajo(94) |  .4820842    .512662 
+                   trabajo(93) |   .471385   .5080885 
+                   trabajo(92) |  .5057547   .4969919 
+                   trabajo(91) |  .5913949   .4905478 
+                   trabajo(90) |  .4402068   .4935663 
+                   trabajo(89) |   .483101   .4770625 
+                   trabajo(88) |  .3443887   .4405096 
+                   trabajo(87) |  .4474637   .4288132 
+                   trabajo(86) |   .457994   .4151204 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -1386,7 +1393,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  1.987978 
+   RMSPE |  3.464255 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -1394,12 +1401,12 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |        .432
+   202020 |        .492
    231050 |           0
    404020 |           0
    431050 |           0
    505320 |           0
-   532050 |        .147
+   532050 |           0
    606020 |           0
    633050 |           0
    707320 |           0
@@ -1407,13 +1414,13 @@ Unit Weights:
   1010020 |           0
   1010021 |           0
   1035050 |           0
-  1111020 |        .092
+  1111020 |        .386
   1212020 |           0
-  1236050 |        .206
+  1236050 |        .122
   1414320 |           0
   1435050 |           0
-  1717220 |        .114
-  1732050 |        .009
+  1717220 |           0
+  1732050 |           0
   1818020 |           0
   1833050 |           0
   1919020 |           0
@@ -1424,44 +1431,44 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  29.36131   29.78951 
-                       married |  .5083424   .5458027 
-                    nbr_people |  4.695566   4.475574 
-                   ind_under14 |  .6713324   .6807606 
-                       y_hogar |  25196.42   23333.51 
-               c98_resid_house |   .994897   .9957953 
-               c98_resid_owned |  .6910699   .6714283 
-                 c98_nbr_rooms |  3.722518   3.628042 
-              c98_nbr_bedrooms |  2.344877   2.280769 
-             c98_b_piped_water |  .9386441   .9456044 
-               c98_hhld_toilet |  .8923974   .9011273 
-                  c98_b_sewage |  .7197322   .5409697 
-                c98_hhld_stove |  .9030331   .9207674 
-            c98_hhld_hot_water |  .8017336   .8415952 
-           c98_hhld_refrigerat |  .7870631   .7824331 
-                   c98_hhld_tv |  .9568334   .9402746 
-                  c98_hhld_vcr |  .4106262   .4673052 
-             c98_hhld_wash_mac |  .5911414   .5902212 
-           c98_hhld_dishwasher |  .0195671   .0190452 
-            c98_hhld_microwave |  .3643404   .3880248 
-                  c98_hhld_car |  .3071567   .3244576 
-             c01_hhld_computer |  .4442914   .4344683 
-             c01_hhld_internet |   .224017    .230446 
-                c01_hhld_phone |   .640771   .6326205 
-             c01_hhld_cable_tv |  .5954262   .5534873 
-             horas_trabajo(98) |  16.02796    19.2941 
-             horas_trabajo(97) |  20.79092   18.37356 
-             horas_trabajo(96) |  17.22717   17.52686 
-             horas_trabajo(95) |  16.18006   15.40269 
-             horas_trabajo(94) |  16.83685   16.81893 
-             horas_trabajo(93) |  16.14905   17.63296 
-             horas_trabajo(92) |  17.31125   16.80559 
-             horas_trabajo(91) |  19.31895   16.19461 
-             horas_trabajo(90) |  17.61788   16.47801 
-             horas_trabajo(89) |  21.38013   18.42773 
-             horas_trabajo(88) |  14.13517   16.01537 
-             horas_trabajo(87) |  18.92858   15.76259 
-             horas_trabajo(86) |  19.01565   15.32942 
+                          edad |  29.36131   29.74932 
+                       married |  .5083424   .5409049 
+                    nbr_people |  4.695566    4.52579 
+                   ind_under14 |  .6713324   .6834202 
+                       y_hogar |  25196.42   22676.24 
+               c98_resid_house |   .994897   .9943595 
+               c98_resid_owned |  .6910699   .6747013 
+                 c98_nbr_rooms |  3.722518   3.636148 
+              c98_nbr_bedrooms |  2.344877   2.302098 
+             c98_b_piped_water |  .9386441   .9394823 
+               c98_hhld_toilet |  .8923974   .8985943 
+                  c98_b_sewage |  .7197322   .6086005 
+                c98_hhld_stove |  .9030331   .9180274 
+            c98_hhld_hot_water |  .8017336   .8355757 
+           c98_hhld_refrigerat |  .7870631   .7802603 
+                   c98_hhld_tv |  .9568334   .9366489 
+                  c98_hhld_vcr |  .4106262   .4612333 
+             c98_hhld_wash_mac |  .5911414   .5656038 
+           c98_hhld_dishwasher |  .0195671   .0189861 
+            c98_hhld_microwave |  .3643404   .3658578 
+                  c98_hhld_car |  .3071567   .3218471 
+             c01_hhld_computer |  .4442914   .4298505 
+             c01_hhld_internet |   .224017   .2212155 
+                c01_hhld_phone |   .640771   .6349085 
+             c01_hhld_cable_tv |  .5954262   .5368405 
+             horas_trabajo(98) |  33.96438   35.08278 
+             horas_trabajo(97) |  37.48948   36.28665 
+             horas_trabajo(96) |  34.99439   35.38109 
+             horas_trabajo(95) |  34.07584   33.91482 
+             horas_trabajo(94) |  36.77592   35.93982 
+             horas_trabajo(93) |  36.10497   36.74924 
+             horas_trabajo(92) |  36.24762   36.38276 
+             horas_trabajo(91) |  34.56038   35.69974 
+             horas_trabajo(90) |  40.30648   38.29265 
+             horas_trabajo(89) |  45.16197   39.96179 
+             horas_trabajo(88) |  41.41926   33.86149 
+             horas_trabajo(87) |  43.49716     34.099 
+             horas_trabajo(86) |  41.75496   36.22698 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -1759,7 +1766,6 @@ file ../temp/synth_salto_educ_more_HS.dta saved
 file ../temp/controltrends_salto_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 2003h1 to 2015h2
                 delta:  1 halfyear
-106.5
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= salto_trabajo
 The smoother applied was
@@ -1774,6 +1780,7 @@ The smoother applied was
 (188,455 observations deleted)
 (90,696 real changes made)
 (99,181 real changes made)
+(46,267 real changes made, 46,267 to missing)
        panel variable:  loc_code (unbalanced)
         time variable:  anio_sem, 1998h2 to 2012h2, but with gaps
                 delta:  1 halfyear
@@ -1837,7 +1844,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  .0657497 
+   RMSPE |  .0678295 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -1845,25 +1852,25 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |        .182
+   202020 |           0
    231050 |           0
    404020 |           0
    431050 |           0
-   505320 |        .425
+   505320 |        .514
    532050 |           0
    606020 |           0
    633050 |           0
-   707320 |        .216
+   707320 |        .126
    909020 |           0
   1010020 |           0
-  1010021 |           0
+  1010021 |        .167
   1035050 |           0
-  1111020 |        .002
-  1212020 |        .094
+  1111020 |           0
+  1212020 |        .093
   1236050 |           0
   1414320 |           0
   1435050 |           0
-  1515020 |        .081
+  1515020 |          .1
   1717220 |           0
   1732050 |           0
   1818020 |           0
@@ -1876,40 +1883,40 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  29.60715   30.06861 
-                       married |  .5047788   .5437004 
-                    nbr_people |  4.546464   4.393435 
-                   ind_under14 |  .6653701   .6650896 
-                       y_hogar |  18449.51   15336.57 
-               c98_resid_house |  .9693237   .9894846 
-               c98_resid_owned |  .7078008   .6985768 
-                 c98_nbr_rooms |  3.524679   3.496357 
-              c98_nbr_bedrooms |  2.307877   2.292588 
-             c98_b_piped_water |  .9541407   .9547765 
-               c98_hhld_toilet |   .922427   .9317203 
-                  c98_b_sewage |  .7564512   .5475185 
-                c98_hhld_stove |  .9812913   .9782429 
-            c98_hhld_hot_water |  .8799736   .8589655 
-           c98_hhld_refrigerat |  .8384222    .831301 
-                   c98_hhld_tv |  .9611912    .949208 
-                  c98_hhld_vcr |  .4033209   .3526492 
-             c98_hhld_wash_mac |  .7079846   .6245173 
-           c98_hhld_dishwasher |  .0213982   .0242165 
-            c98_hhld_microwave |   .316113   .3037253 
-                  c98_hhld_car |  .3793115   .3738569 
-                   trabajo(89) |  .3845378   .4510684 
-                   trabajo(88) |  .5439613   .4792037 
-                   trabajo(87) |  .4470647   .5103126 
-                   trabajo(86) |   .509804   .4654631 
-                   trabajo(85) |  .4504935   .4383042 
-                   trabajo(84) |  .6469907   .4992862 
-                   trabajo(83) |  .4047218   .4714249 
-                   trabajo(82) |  .5641026   .5135344 
-                   trabajo(81) |   .516129   .4585856 
-                   trabajo(80) |       .65   .5288916 
-                   trabajo(79) |  .5319149    .538604 
-                   trabajo(78) |  .6851852   .5828672 
-                   trabajo(77) |  .5693184   .5244482 
+                          edad |  29.60715   30.12468 
+                       married |  .5047788   .5497278 
+                    nbr_people |  4.546464   4.307639 
+                   ind_under14 |  .6653701   .6562079 
+                       y_hogar |  18449.51   16083.11 
+               c98_resid_house |  .9693237   .9896739 
+               c98_resid_owned |  .7078008   .6715348 
+                 c98_nbr_rooms |  3.524679   3.406848 
+              c98_nbr_bedrooms |  2.307877   2.266878 
+             c98_b_piped_water |  .9541407    .963664 
+               c98_hhld_toilet |   .922427   .9401997 
+                  c98_b_sewage |  .7564512   .5064103 
+                c98_hhld_stove |  .9812913   .9818117 
+            c98_hhld_hot_water |  .8799736   .8851931 
+           c98_hhld_refrigerat |  .8384222   .8368381 
+                   c98_hhld_tv |  .9611912   .9597545 
+                  c98_hhld_vcr |  .4033209   .3956698 
+             c98_hhld_wash_mac |  .7079846   .6806331 
+           c98_hhld_dishwasher |  .0213982   .0247164 
+            c98_hhld_microwave |   .316113   .3262501 
+                  c98_hhld_car |  .3793115   .3823448 
+                   trabajo(89) |  .3845378   .4584574 
+                   trabajo(88) |  .5439613   .4933829 
+                   trabajo(87) |  .4470647   .5387848 
+                   trabajo(86) |   .509804    .493822 
+                   trabajo(85) |  .4700802   .4580323 
+                   trabajo(84) |  .6469907   .5122572 
+                   trabajo(83) |  .4047218   .4943825 
+                   trabajo(82) |  .5641026   .5330751 
+                   trabajo(81) |   .516129   .4512883 
+                   trabajo(80) |       .65   .5798475 
+                   trabajo(79) |  .5319149   .5453971 
+                   trabajo(78) |  .6851852   .6053763 
+                   trabajo(77) |  .5693184   .5357976 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -1968,7 +1975,7 @@ Third Step: Obtain Results
 Loss: Root Mean Squared Prediction Error
 
 ---------------------
-   RMSPE |  2.455961 
+   RMSPE |  2.766346 
 ---------------------
 -------------------------------------------------------------------------------
 Unit Weights:
@@ -1976,26 +1983,26 @@ Unit Weights:
 -----------------------
     Co_No | Unit_Weight
 ----------+------------
-   202020 |           0
+   202020 |        .118
    231050 |           0
    404020 |           0
    431050 |           0
-   505320 |        .347
-   532050 |           0
+   505320 |        .189
+   532050 |        .034
    606020 |           0
    633050 |           0
-   707320 |           0
+   707320 |        .038
    909020 |           0
   1010020 |           0
   1010021 |           0
   1035050 |           0
-  1111020 |           0
-  1212020 |         .05
+  1111020 |        .388
+  1212020 |        .138
   1236050 |           0
-  1414320 |           0
-  1435050 |           0
-  1515020 |        .454
-  1717220 |        .148
+  1414320 |         .04
+  1435050 |        .029
+  1515020 |           0
+  1717220 |        .027
   1732050 |           0
   1818020 |           0
   1833050 |           0
@@ -2007,40 +2014,40 @@ Predictor Balance:
 ------------------------------------------------------
                                |   Treated  Synthetic 
 -------------------------------+----------------------
-                          edad |  29.60715   29.79587 
-                       married |  .5047788   .5252916 
-                    nbr_people |  4.546464   4.576642 
-                   ind_under14 |  .6653701   .6656828 
-                       y_hogar |  18449.51   15353.02 
-               c98_resid_house |  .9693237   .9806366 
-               c98_resid_owned |  .7078008   .6962603 
-                 c98_nbr_rooms |  3.524679   3.544189 
-              c98_nbr_bedrooms |  2.307877   2.310015 
-             c98_b_piped_water |  .9541407   .9472765 
-               c98_hhld_toilet |   .922427   .9189154 
-                  c98_b_sewage |  .7564512   .5447769 
-                c98_hhld_stove |  .9812913   .9736045 
-            c98_hhld_hot_water |  .8799736   .8451177 
-           c98_hhld_refrigerat |  .8384222   .8278461 
-                   c98_hhld_tv |  .9611912    .956472 
-                  c98_hhld_vcr |  .4033209   .3308962 
-             c98_hhld_wash_mac |  .7079846   .6078322 
-           c98_hhld_dishwasher |  .0213982   .0199096 
-            c98_hhld_microwave |   .316113   .2857464 
-                  c98_hhld_car |  .3793115   .3294416 
-             horas_trabajo(89) |   14.5868    18.2163 
-             horas_trabajo(88) |  14.83271   16.45993 
-             horas_trabajo(87) |  15.61264   17.25666 
-             horas_trabajo(86) |   16.5098   17.34833 
-             horas_trabajo(85) |  15.39513   14.90788 
-             horas_trabajo(84) |  23.02569   18.69191 
-             horas_trabajo(83) |  14.64025   17.02103 
-             horas_trabajo(82) |  16.79487   18.75144 
-             horas_trabajo(81) |      17.5     17.234 
-             horas_trabajo(80) |      26.2   20.74537 
-             horas_trabajo(79) |  19.23404   18.92482 
-             horas_trabajo(78) |  22.22222   20.52684 
-             horas_trabajo(77) |  18.64684   18.51075 
+                          edad |  29.60715   29.80163 
+                       married |  .5047788   .5372739 
+                    nbr_people |  4.546464   4.513244 
+                   ind_under14 |  .6653701   .6774028 
+                       y_hogar |  18449.51   14651.19 
+               c98_resid_house |  .9693237   .9884031 
+               c98_resid_owned |  .7078008   .6843149 
+                 c98_nbr_rooms |  3.524679   3.514085 
+              c98_nbr_bedrooms |  2.307877   2.298013 
+             c98_b_piped_water |  .9541407   .9392529 
+               c98_hhld_toilet |   .922427   .9075257 
+                  c98_b_sewage |  .7564512   .5550853 
+                c98_hhld_stove |  .9812913   .9749802 
+            c98_hhld_hot_water |  .8799736   .8499359 
+           c98_hhld_refrigerat |  .8384222     .83164 
+                   c98_hhld_tv |  .9611912   .9433888 
+                  c98_hhld_vcr |  .4033209   .3405474 
+             c98_hhld_wash_mac |  .7079846   .5810652 
+           c98_hhld_dishwasher |  .0213982   .0220691 
+            c98_hhld_microwave |   .316113   .2774337 
+                  c98_hhld_car |  .3793115   .3496755 
+             horas_trabajo(89) |  37.93333   37.84985 
+             horas_trabajo(88) |    27.915   33.90291 
+             horas_trabajo(87) |  38.96783   34.58764 
+             horas_trabajo(86) |  34.53846   35.73763 
+             horas_trabajo(85) |    37.125   36.31904 
+             horas_trabajo(84) |    40.678   36.49255 
+             horas_trabajo(83) |  37.58472    37.6778 
+             horas_trabajo(82) |  33.45454   36.30688 
+             horas_trabajo(81) |  35.40625   36.65554 
+             horas_trabajo(80) |  40.30769   38.45076 
+             horas_trabajo(79) |     38.08   37.25316 
+             horas_trabajo(78) |  33.51351   38.32385 
+             horas_trabajo(77) |  32.75291     37.289 
 ------------------------------------------------------
 -------------------------------------------------------------------------------
 (0 observations deleted)
@@ -2329,7 +2336,6 @@ file ../temp/synth_florida_educ_more_HS.dta saved
 file ../temp/controltrends_florida_anio_sem_loc_code.dta saved
         time variable:  anio_sem, 1998h2 to 2012h2
                 delta:  1 halfyear
-97.5
 The smoother applied was
      (1/2)*[x(t-1) + 1*x(t)]; x(t)= florida_trabajo
 The smoother applied was
@@ -2343,4 +2349,4 @@ The smoother applied was
 . 
 end of do-file
 
- make.py ended: 2018-05-04 14:52:53
+ make.py ended: 2018-05-13 19:01:22
