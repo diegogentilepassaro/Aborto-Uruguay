@@ -5,9 +5,20 @@ program main
 	qui do ../../globals.do
 	global controls = "nbr_people ind_under14 edad married y_hogar_alt"
 
-	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) outcome(trabajo)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) outcome(horas_trabajo)
+	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6) int_mvd(int_mvd)
+	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
+	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
+	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6) int_mvd(riv_flo)
+	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(trabajo)
+	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(horas_trabajo)
+end
+
+capture program drop assign_impl_date_mvd
+program              assign_impl_date_mvd
+	qui sum impl_date_dpto if dpto==1
+	replace impl_date_dpto = `r(mean)' if inlist(dpto,3,16)
+	qui sum impl_date_dpto             if inlist(dpto,1,3,16)
+	assert `r(sd)'==0
 end
 
 capture program drop relative_time
@@ -30,13 +41,13 @@ end
 
 capture program drop pooled_es
 program              pooled_es
-syntax, data(str) time(str) geo_var(str) num_periods(int) [outcome(str) groups_vars(str) restr(str)]
+syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(str) groups_vars(str) restr(str)]
 
 	if "`data'" == "ech" {
 		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
-		keep if hombre == 0 & inrange(edad, 16, 45) 
+		keep if hombre == 0 & inrange(edad, 16, 45) & inrange(horas_trabajo,0,100)
 		if "`outcome'" == "horas_trabajo" {
-			keep if !mi(trabajo) //trabajo==1
+			keep if trabajo==1
 		}
 		tab trabajo,m
 	}
@@ -47,7 +58,13 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) [outcome(str) groups_v
 		local outcome births
 	}
 
-	keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop Montevideo and Canelones
+	if "`int_mvd'" == "int_mvd" {
+		assign_impl_date_mvd
+		keep if !mi(impl_date_dpto) & !inlist(dpto,1) //drop Montevideo
+	}
+	else {
+		keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop Montevideo, San Jose, and Canelones
+	}
 
 	qui sum impl_date_dpto
 	local impl_date_min = `r(min)'
@@ -90,26 +107,26 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) [outcome(str) groups_v
 	if "`data'" == "ech" {
 		local all_controls = "`control_vars' ${controls}"
 		replace `weight' = int(`weight')
-		local fw_weight = "[fw = `weight']"
+		local pweight = "[pw = `weight']"
 	}
 	else {
-		local other_controls = ""
-		local fw_weight = ""
+		local all_controls = ""
+		local pweight = ""
 	}
 	if "`outcome'" == "trabajo" {
-		local estimation = "reg" //"logit"
+		local estimation = "logit" // "reg" //
 	}
 	else {
 		local estimation = "reg"
 	}
 	* Run regression and plot coefficients
-	`estimation' `outcome' ib`num_periods'.t i.`time' i.`geo_var'  `all_controls' `fw_weight', vce(cluster `time')
+	`estimation' `outcome' ib`num_periods'.t i.`time' i.`geo_var'  `all_controls' `pweight', vce(cluster `time')
 	* Coef plot
 	coefplot, vertical baselevels graphregion(color(white)) bgcolor(white) ///
 		drop(_cons 0.t 1000.t *.`time' *.`geo_var'  `all_controls') ///
 		xtitle("Time relative to event (`time')") ytitle(`: var lab `outcome'') ///
 		xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4")
-	graph export ../output/pooled_es_`outcome'_`time'_`geo_var'.pdf, replace
+	graph export ../output/pooled_es_`outcome'_`time'_`geo_var'_`int_mvd'.pdf, replace
 	* Coef plot with shift
 	qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
 	local target_mean = r(mean)
@@ -126,7 +143,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) [outcome(str) groups_v
 		xtitle("Time relative to event (`time')") ytitle(`: var lab `outcome'') ///
 		xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4")
 		
-	graph export ../output/pooled_es_shift_`outcome'_`time'_`geo_var'.pdf, replace
+	graph export ../output/pooled_es_shift_`outcome'_`time'_`geo_var'_`int_mvd'.pdf, replace
 end
 
 main

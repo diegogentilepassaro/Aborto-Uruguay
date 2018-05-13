@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-09 18:01:47 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2018-05-13 14:01:46 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -39,12 +39,28 @@ Notes:
 > "
   3. 
 .         pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(
-> 6)
+> 6) int_mvd(int_mvd)
   4.         pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_perio
-> ds(6) outcome(trabajo)
+> ds(6) int_mvd(int_mvd) outcome(trabajo)
   5.         pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_perio
-> ds(6) outcome(horas_trabajo)
-  6. end
+> ds(6) int_mvd(int_mvd) outcome(horas_trabajo)
+  6.         pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_perio
+> ds(6) int_mvd(riv_flo)
+  7.         pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_perio
+> ds(6) int_mvd(riv_flo) outcome(trabajo)
+  8.         pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_perio
+> ds(6) int_mvd(riv_flo) outcome(horas_trabajo)
+  9. end
+
+. 
+. capture program drop assign_impl_date_mvd
+
+. program              assign_impl_date_mvd
+  1.         qui sum impl_date_dpto if dpto==1
+  2.         replace impl_date_dpto = `r(mean)' if inlist(dpto,3,16)
+  3.         qui sum impl_date_dpto             if inlist(dpto,1,3,16)
+  4.         assert `r(sd)'==0
+  5. end
 
 . 
 . capture program drop relative_time
@@ -75,15 +91,16 @@ Notes:
 . capture program drop pooled_es
 
 . program              pooled_es
-  1. syntax, data(str) time(str) geo_var(str) num_periods(int) [outcome(str) gr
-> oups_vars(str) restr(str)]
+  1. syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [ou
+> tcome(str) groups_vars(str) restr(str)]
   2. 
 .         if "`data'" == "ech" {
   3.                 use  ..\..\..\assign_treatment\output\ech_final_98_2016.dt
 > a, clear
-  4.                 keep if hombre == 0 & inrange(edad, 16, 45) 
+  4.                 keep if hombre == 0 & inrange(edad, 16, 45) & inrange(hora
+> s_trabajo,0,100)
   5.                 if "`outcome'" == "horas_trabajo" {
-  6.                         keep if !mi(trabajo) //trabajo==1
+  6.                         keep if trabajo==1
   7.                 }
   8.                 tab trabajo,m
   9.         }
@@ -95,70 +112,77 @@ Notes:
  14.                 local outcome births
  15.         }
  16. 
-.         keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop Montevideo 
-> and Canelones
- 17. 
+.         if "`int_mvd'" == "int_mvd" {
+ 17.                 assign_impl_date_mvd
+ 18.                 keep if !mi(impl_date_dpto) & !inlist(dpto,1) //drop Monte
+> video
+ 19.         }
+ 20.         else {
+ 21.                 keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop 
+> Montevideo, San Jose, and Canelones
+ 22.         }
+ 23. 
 .         qui sum impl_date_dpto
- 18.         local impl_date_min = `r(min)'
- 19.         local impl_date_max = `r(max)'
- 20.         if "`time'" == "anio_qtr" {
- 21.                 keep if inrange(`time', qofd(`impl_date_min') - ${q_pre}, 
+ 24.         local impl_date_min = `r(min)'
+ 25.         local impl_date_max = `r(max)'
+ 26.         if "`time'" == "anio_qtr" {
+ 27.                 keep if inrange(`time', qofd(`impl_date_min') - ${q_pre}, 
 > qofd(`impl_date_max') + ${q_post})
- 22.                 local weight pesotri
- 23.                 gen post = (`time' >= qofd(impl_date_dpto))
- 24.                 qui sum `time'
- 25.                 local min_year = year(dofq(r(min)))
- 26.         }
- 27.         else if "`time'" == "anio_sem" {
- 28.                 keep if inrange(`time', hofd(`impl_date_min') - ${s_pre}, 
+ 28.                 local weight pesotri
+ 29.                 gen post = (`time' >= qofd(impl_date_dpto))
+ 30.                 qui sum `time'
+ 31.                 local min_year = year(dofq(r(min)))
+ 32.         }
+ 33.         else if "`time'" == "anio_sem" {
+ 34.                 keep if inrange(`time', hofd(`impl_date_min') - ${s_pre}, 
 > hofd(`impl_date_max') + ${s_post})
- 29.                 local weight pesosem
- 30.                 gen post = (`time' >= hofd(impl_date_dpto))
- 31.                 qui sum `time'
- 32.                 local min_year = year(dofh(r(min)))
- 33.         }
- 34.         else {
- 35.                 keep if inrange(`time', yofd(`impl_date_min') - ${y_pre}, 
+ 35.                 local weight pesosem
+ 36.                 gen post = (`time' >= hofd(impl_date_dpto))
+ 37.                 qui sum `time'
+ 38.                 local min_year = year(dofh(r(min)))
+ 39.         }
+ 40.         else {
+ 41.                 keep if inrange(`time', yofd(`impl_date_min') - ${y_pre}, 
 > yofd(`impl_date_max') + ${y_post})
- 36.                 local weight pesoan
- 37.                 gen post = (`time' >= yofd(impl_date_dpto))
- 38.                 qui sum `time'    
- 39.                 local min_year = r(min)
- 40.         }
- 41.         
+ 42.                 local weight pesoan
+ 43.                 gen post = (`time' >= yofd(impl_date_dpto))
+ 44.                 qui sum `time'    
+ 45.                 local min_year = r(min)
+ 46.         }
+ 47.         
 .         if `min_year' < 2001  {
- 42.                         local control_vars " c98_* "
- 43.                         }
- 44.                 else if `min_year' >=2001 & `min_year' < 2006  {
- 45.                         local control_vars " c98_* c01_* "
- 46.                         }
- 47.                 else {
- 48.                         local control_vars " c98_* c01_* c06_* "
+ 48.                         local control_vars " c98_* "
  49.                         }
- 50.         
+ 50.                 else if `min_year' >=2001 & `min_year' < 2006  {
+ 51.                         local control_vars " c98_* c01_* "
+ 52.                         }
+ 53.                 else {
+ 54.                         local control_vars " c98_* c01_* c06_* "
+ 55.                         }
+ 56.         
 .         relative_time, num_periods(`num_periods') time(`time') event_date(imp
 > l_date_dpto)
- 51.         tab t,m
- 52.         tab dpto,m
- 53.         if "`data'" == "ech" {
- 54.                 local all_controls = "`control_vars' ${controls}"
- 55.                 replace `weight' = int(`weight')
- 56.                 local fw_weight = "[fw = `weight']"
- 57.         }
- 58.         else {
- 59.                 local other_controls = ""
- 60.                 local fw_weight = ""
- 61.         }
- 62.         if "`outcome'" == "trabajo" {
- 63.                 local estimation = "reg" //"logit"
- 64.         }
- 65.         else {
- 66.                 local estimation = "reg"
+ 57.         tab t,m
+ 58.         tab dpto,m
+ 59.         if "`data'" == "ech" {
+ 60.                 local all_controls = "`control_vars' ${controls}"
+ 61.                 replace `weight' = int(`weight')
+ 62.                 local pweight = "[pw = `weight']"
+ 63.         }
+ 64.         else {
+ 65.                 local all_controls = ""
+ 66.                 local pweight = ""
  67.         }
- 68.         * Run regression and plot coefficients
+ 68.         if "`outcome'" == "trabajo" {
+ 69.                 local estimation = "logit" // "reg" //
+ 70.         }
+ 71.         else {
+ 72.                 local estimation = "reg"
+ 73.         }
+ 74.         * Run regression and plot coefficients
 .         `estimation' `outcome' ib`num_periods'.t i.`time' i.`geo_var'  `all_c
-> ontrols' `fw_weight', vce(cluster `time')
- 69.         * Coef plot
+> ontrols' `pweight', vce(cluster `time')
+ 75.         * Coef plot
 .         coefplot, vertical baselevels graphregion(color(white)) bgcolor(white
 > ) ///
 >                 drop(_cons 0.t 1000.t *.`time' *.`geo_var'  `all_controls') /
@@ -166,20 +190,20 @@ Notes:
 >                 xtitle("Time relative to event (`time')") ytitle(`: var lab `
 > outcome'') ///
 >                 xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4")
- 70.         graph export ../output/pooled_es_`outcome'_`time'_`geo_var'.pdf, r
-> eplace
- 71.         * Coef plot with shift
+ 76.         graph export ../output/pooled_es_`outcome'_`time'_`geo_var'_`int_m
+> vd'.pdf, replace
+ 77.         * Coef plot with shift
 .         qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
- 72.         local target_mean = r(mean)
- 73.         preserve
- 74.             coefplot, omitted vertical baselevels gen ///
+ 78.         local target_mean = r(mean)
+ 79.         preserve
+ 80.             coefplot, omitted vertical baselevels gen ///
 >                         drop(_cons 0.t 1000.t *.`time' *.`geo_var' `control_v
 > ars' ${controls})
- 75.             qui sum __b
- 76.             local coef_mean = r(mean)
- 77.         restore 
- 78.         local yshift = `target_mean' - `coef_mean'
- 79.         coefplot, vertical baselevels graphregion(color(white)) bgcolor(wh
+ 81.             qui sum __b
+ 82.             local coef_mean = r(mean)
+ 83.         restore 
+ 84.         local yshift = `target_mean' - `coef_mean'
+ 85.         coefplot, vertical baselevels graphregion(color(white)) bgcolor(wh
 > ite) ///
 >                 drop(_cons 0.t 1000.t *.`time' *.`geo_var' `all_controls') //
 > /
@@ -188,13 +212,450 @@ Notes:
 >                 xtitle("Time relative to event (`time')") ytitle(`: var lab `
 > outcome'') ///
 >                 xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4")
- 80.                 
-.         graph export ../output/pooled_es_shift_`outcome'_`time'_`geo_var'.pdf
-> , replace
- 81. end
+ 86.                 
+.         graph export ../output/pooled_es_shift_`outcome'_`time'_`geo_var'_`in
+> t_mvd'.pdf, replace
+ 87. end
 
 . 
 . main
+(69 real changes made)
+(547 observations deleted)
+(39 observations deleted)
+(100 real changes made)
+(25 real changes made)
+(27 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         29       29.00       29.00
+          1 |          4        4.00       33.00
+          2 |          4        4.00       37.00
+          3 |          4        4.00       41.00
+          4 |          4        4.00       45.00
+          5 |          4        4.00       49.00
+          6 |          4        4.00       53.00
+          7 |          4        4.00       57.00
+          8 |          4        4.00       61.00
+          9 |          4        4.00       65.00
+         10 |          4        4.00       69.00
+         11 |          4        4.00       73.00
+       1000 |         27       27.00      100.00
+------------+-----------------------------------
+      Total |        100      100.00
+
+       dpto |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |         25       25.00       25.00
+          8 |         25       25.00       50.00
+         13 |         25       25.00       75.00
+         16 |         25       25.00      100.00
+------------+-----------------------------------
+      Total |        100      100.00
+
+Linear regression                               Number of obs     =        100
+                                                F(14, 24)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.9943
+                                                Root MSE          =     124.05
+
+                              (Std. Err. adjusted for 25 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+      births |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |  -159.0429   80.58141    -1.97   0.060    -325.3547    7.268984
+          1  |  -49.28797   62.82601    -0.78   0.440    -178.9545    80.37855
+          2  |  -41.71621   46.61574    -0.89   0.380    -137.9264    54.49395
+          3  |  -37.32674   67.37055    -0.55   0.585    -176.3727    101.7193
+          4  |  -9.215262   67.10044    -0.14   0.892    -147.7038    129.2732
+          5  |  -11.48082   44.38776    -0.26   0.798    -103.0927      80.131
+          7  |  -73.64016   39.57356    -1.86   0.075     -155.316    8.035651
+          8  |  -44.86755   43.35539    -1.03   0.311    -134.3487    44.61358
+          9  |  -49.44877   46.77803    -1.06   0.301    -145.9939    47.09634
+         10  |  -63.96181   97.50131    -0.66   0.518    -265.1946     137.271
+         11  |  -2.970197    43.0499    -0.07   0.946    -91.82081    85.88042
+       1000  |  -74.26325   81.93027    -0.91   0.374     -243.359    94.83252
+             |
+    anio_sem |
+         81  |     -89.25   2.32e-12 -3.8e+13   0.000       -89.25      -89.25
+         82  |  -151.3774   33.76354    -4.48   0.000     -221.062   -81.69293
+         83  |  -136.6633   28.45735    -4.80   0.000    -195.3964   -77.93025
+         84  |  -149.6081   43.79951    -3.42   0.002    -240.0058   -59.21033
+         85  |  -152.4138   42.16954    -3.61   0.001    -239.4475   -65.38015
+         86  |   -145.781   37.27381    -3.91   0.001    -222.7104   -68.85166
+         87  |  -215.0214    40.2907    -5.34   0.000    -298.1774   -131.8655
+         88  |  -160.7014   38.01451    -4.23   0.000    -239.1594   -82.24327
+         89  |  -192.3377   38.25216    -5.03   0.000    -271.2862   -113.3891
+         90  |   -280.297   51.36168    -5.46   0.000    -386.3023   -174.2918
+         91  |  -372.7293   80.69871    -4.62   0.000    -539.2832   -206.1753
+         92  |   -372.868   58.64065    -6.36   0.000    -493.8964   -251.8396
+         93  |  -255.0688   88.82754    -2.87   0.008    -438.3999    -71.7378
+         94  |  -304.5354    103.256    -2.95   0.007    -517.6454   -91.42545
+         95  |   -397.112   103.4108    -3.84   0.001    -610.5414   -183.6825
+         96  |  -329.5796   107.0728    -3.08   0.005     -550.567   -108.5921
+         97  |  -385.9474   107.9495    -3.58   0.002    -608.7443   -163.1505
+         98  |  -372.5742   108.3245    -3.44   0.002    -596.1448   -149.0035
+         99  |  -410.5491     113.39    -3.62   0.001    -644.5746   -176.5235
+        100  |  -348.2608   120.8726    -2.88   0.008    -597.7295   -98.79197
+        101  |  -387.4518   112.8909    -3.43   0.002    -620.4471   -154.4565
+        102  |  -388.2332   130.3675    -2.98   0.007    -657.2985    -119.168
+        103  |   -444.605   137.5199    -3.23   0.004    -728.4321   -160.7779
+        104  |  -365.1029   130.3789    -2.80   0.010    -634.1917   -96.01404
+             |
+        dpto |
+          8  |  -3103.679   96.35627   -32.21   0.000    -3302.549    -2904.81
+         13  |  -2709.626   104.7455   -25.87   0.000     -2925.81   -2493.442
+         16  |   -2858.16   62.03271   -46.08   0.000    -2986.189   -2730.131
+             |
+       _cons |   3919.409   45.30555    86.51   0.000     3825.903    4012.915
+------------------------------------------------------------------------------
+(file ../output/pooled_es_births_anio_sem_dpto_int_mvd.pdf written in PDF forma
+> t)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_es_shift_births_anio_sem_dpto_int_mvd.pdf written in PDF
+>  format)
+(1,490,167 observations deleted)
+
+ Employment |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    158,922       40.42       40.42
+          1 |    234,270       59.58      100.00
+------------+-----------------------------------
+      Total |    393,192      100.00
+(62,080 real changes made)
+(312,203 observations deleted)
+(30,605 observations deleted)
+(50,384 real changes made)
+(4,221 real changes made)
+(27,223 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      6,003       11.91       11.91
+          1 |      1,383        2.74       14.66
+          2 |      1,794        3.56       18.22
+          3 |      1,734        3.44       21.66
+          4 |      1,488        2.95       24.61
+          5 |      1,465        2.91       27.52
+          6 |      1,609        3.19       30.72
+          7 |      1,511        3.00       33.72
+          8 |      1,306        2.59       36.31
+          9 |      1,337        2.65       38.96
+         10 |      1,190        2.36       41.32
+         11 |      2,341        4.65       45.97
+       1000 |     27,223       54.03      100.00
+------------+-----------------------------------
+      Total |     50,384      100.00
+
+       pe1c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |     30,598       60.73       60.73
+          8 |      5,150       10.22       70.95
+         13 |      7,196       14.28       85.23
+         16 |      7,440       14.77      100.00
+------------+-----------------------------------
+      Total |     50,384      100.00
+(2,478 real changes made)
+
+Iteration 0:   log pseudolikelihood = -1984800.9  
+Iteration 1:   log pseudolikelihood = -1755679.8  
+Iteration 2:   log pseudolikelihood = -1752914.4  
+Iteration 3:   log pseudolikelihood =   -1752910  
+Iteration 4:   log pseudolikelihood =   -1752910  
+
+Logistic regression                             Number of obs     =     50,379
+                                                Wald chi2(23)     =          .
+                                                Prob > chi2       =          .
+Log pseudolikelihood =   -1752910               Pseudo R2         =     0.1168
+
+                              (Std. Err. adjusted for 25 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .2178866   .1113371     1.96   0.050    -.0003301    .4361034
+          1  |   .3931632   .0942195     4.17   0.000     .2084964    .5778299
+          2  |   .2401644   .1109393     2.16   0.030     .0227274    .4576014
+          3  |   .1344518   .1238298     1.09   0.278    -.1082502    .3771538
+          4  |   .2596644   .0864328     3.00   0.003     .0902591    .4290696
+          5  |   .0993536   .1013509     0.98   0.327    -.0992906    .2979977
+          7  |   .1542288   .1266575     1.22   0.223    -.0940154    .4024729
+          8  |   .3391451   .0935034     3.63   0.000     .1558818    .5224084
+          9  |   .3076035    .163114     1.89   0.059    -.0120941    .6273011
+         10  |   .1779968   .1794946     0.99   0.321    -.1738062    .5297998
+         11  |   .0943847   .1045094     0.90   0.366      -.11045    .2992195
+       1000  |   .0522558    .101054     0.52   0.605    -.1458064    .2503181
+             |
+    anio_sem |
+         81  |  -.0773977   .0056851   -13.61   0.000    -.0885402   -.0662551
+         82  |  -.1735179   .0618463    -2.81   0.005    -.2947344   -.0523015
+         83  |  -.1514975   .0759928    -1.99   0.046    -.3004407   -.0025543
+         84  |  -.0326817   .0840938    -0.39   0.698    -.1975025     .132139
+         85  |  -.3647178   .0646116    -5.64   0.000    -.4913541   -.2380814
+         86  |  -.2028714   .0730363    -2.78   0.005    -.3460198    -.059723
+         87  |  -.1483563   .0857069    -1.73   0.083    -.3163387    .0196261
+         88  |  -.2489224    .093153    -2.67   0.008    -.4314989   -.0663459
+         89  |  -.3129964   .0677029    -4.62   0.000    -.4456917   -.1803012
+         90  |  -.2595043   .0915757    -2.83   0.005    -.4389895   -.0800192
+         91  |   -.185909   .1594998    -1.17   0.244    -.4985228    .1267048
+         92  |  -.0100034   .0828757    -0.12   0.904    -.1724368      .15243
+         93  |   .0162675   .1143507     0.14   0.887    -.2078557    .2403908
+         94  |   -.062987   .1450347    -0.43   0.664    -.3472498    .2212758
+         95  |  -.0090519   .1464544    -0.06   0.951    -.2960972    .2779935
+         96  |   .0091829   .1508539     0.06   0.951    -.2864854    .3048512
+         97  |   .1044631   .1530546     0.68   0.495    -.1955185    .4044447
+         98  |   .0735362   .1309889     0.56   0.575    -.1831973    .3302697
+         99  |   .0284724   .1296536     0.22   0.826     -.225644    .2825889
+        100  |  -.0774628   .1434917    -0.54   0.589    -.3587014    .2037758
+        101  |   .0233255   .1332353     0.18   0.861    -.2378109    .2844618
+        102  |   .0332246   .1368999     0.24   0.808    -.2350943    .3015434
+        103  |  -.0043596   .1519927    -0.03   0.977    -.3022597    .2935405
+        104  |  -.1917035   .1458603    -1.31   0.189    -.4775844    .0941775
+             |
+    loc_code |
+     303022  |  -.1069464   .0678874    -1.58   0.115    -.2400034    .0261105
+     303023  |   .0810378   .1149341     0.71   0.481     -.144229    .3063045
+     303050  |  -.1113347   .0906073    -1.23   0.219    -.2889216    .0662523
+     330020  |  -.1918144   .0826077    -2.32   0.020    -.3537225   -.0299062
+     808220  |  -.2131808   .1058508    -2.01   0.044    -.4206445   -.0057171
+     834000  |   -.555784   .1419396    -3.92   0.000    -.8339804   -.2775875
+     834050  |  -.0243853   .1190575    -0.20   0.838    -.2577338    .2089632
+    1313020  |  -.3039072   .1229953    -2.47   0.013    -.5449737   -.0628408
+    1331000  |  -.5568656   .1208257    -4.61   0.000    -.7936796   -.3200516
+    1331050  |  -.6576848   .1344679    -4.89   0.000    -.9212371   -.3941325
+    1616021  |    .063095   .0759736     0.83   0.406    -.0858105    .2120005
+    1630020  |  -.1848375   .0956109    -1.93   0.053    -.3722314    .0025564
+    1632000  |  -.2525479   .1718951    -1.47   0.142    -.5894561    .0843603
+    1632050  |   .1323006   .0988924     1.34   0.181     -.061525    .3261262
+             |
+c98_resid_~e |  -.0257774   .1317753    -0.20   0.845    -.2840523    .2324975
+c98_resid_~d |  -.1187779   .0223513    -5.31   0.000    -.1625856   -.0749703
+c98_nbr_ro~s |  -.0286972   .0162348    -1.77   0.077    -.0605169    .0031224
+c98_nbr_be~s |  -.0154515   .0205406    -0.75   0.452    -.0557104    .0248074
+c98_b_pipe~r |  -.2083407   .0657668    -3.17   0.002    -.3372413   -.0794401
+c98_hhld_t~t |   .0777129   .0575354     1.35   0.177    -.0350544    .1904801
+c98_b_sewage |   .0301578   .0352105     0.86   0.392    -.0388535    .0991691
+c98_hhld_s~e |   .1961198   .0673701     2.91   0.004     .0640768    .3281627
+c98_hhld_h~r |     .17107   .0404573     4.23   0.000     .0917752    .2503649
+c98_hhld_r~t |  -.0847223   .0551685    -1.54   0.125    -.1928506     .023406
+ c98_hhld_tv |   .0917948   .0600372     1.53   0.126     -.025876    .2094656
+c98_hhld_vcr |   .0170508   .0290696     0.59   0.558    -.0399245    .0740261
+c98_hhld_w~c |   .1175439   .0304172     3.86   0.000     .0579272    .1771606
+c98_hhld_d~r |   -.300049   .0964259    -3.11   0.002    -.4890403   -.1110577
+c98_hhld_m~e |   .2054622   .0360406     5.70   0.000     .1348239    .2761004
+c98_hhld_car |  -.2468968    .031819    -7.76   0.000     -.309261   -.1845327
+  nbr_people |  -.1881693   .0107242   -17.55   0.000    -.2091884   -.1671502
+ ind_under14 |   .1505475   .0303624     4.96   0.000     .0910382    .2100568
+        edad |   .0788071   .0017164    45.92   0.000     .0754431    .0821711
+     married |  -.4058191   .0448743    -9.04   0.000     -.493771   -.3178671
+ y_hogar_alt |   .0000258   2.13e-06    12.12   0.000     .0000216      .00003
+       _cons |  -1.674818   .2675415    -6.26   0.000     -2.19919   -1.150446
+------------------------------------------------------------------------------
+Note: 0 failures and 2 successes completely determined.
+(file ../output/pooled_es_trabajo_anio_sem_loc_code_int_mvd.pdf written in PDF 
+> format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_es_shift_trabajo_anio_sem_loc_code_int_mvd.pdf written i
+> n PDF format)
+(1,490,167 observations deleted)
+(158,922 observations deleted)
+
+ Employment |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    234,270      100.00      100.00
+------------+-----------------------------------
+      Total |    234,270      100.00
+(36,663 real changes made)
+(187,616 observations deleted)
+(18,286 observations deleted)
+(28,368 real changes made)
+(2,031 real changes made)
+(16,496 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,903       10.23       10.23
+          1 |        739        2.61       12.84
+          2 |        904        3.19       16.03
+          3 |        864        3.05       19.07
+          4 |        761        2.68       21.75
+          5 |        744        2.62       24.38
+          6 |        823        2.90       27.28
+          7 |        768        2.71       29.98
+          8 |        702        2.47       32.46
+          9 |        749        2.64       35.10
+         10 |        653        2.30       37.40
+         11 |      1,262        4.45       41.85
+       1000 |     16,496       58.15      100.00
+------------+-----------------------------------
+      Total |     28,368      100.00
+
+       pe1c |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |     17,644       62.20       62.20
+          8 |      2,816        9.93       72.12
+         13 |      3,566       12.57       84.69
+         16 |      4,342       15.31      100.00
+------------+-----------------------------------
+      Total |     28,368      100.00
+(1,483 real changes made)
+(sum of wgt is   1.5832e+06)
+
+Linear regression                               Number of obs     =     28,365
+                                                F(23, 24)         =          .
+                                                Prob > F          =          .
+                                                R-squared         =     0.0291
+                                                Root MSE          =     17.195
+
+                              (Std. Err. adjusted for 25 clusters in anio_sem)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   2.076948   1.261493     1.65   0.113    -.5266453    4.680542
+          1  |   2.828701   .9964446     2.84   0.009     .7721409    4.885262
+          2  |   2.036939   1.410197     1.44   0.162    -.8735655    4.947443
+          3  |   .5630297   1.652959     0.34   0.736    -2.848511     3.97457
+          4  |   1.557771   1.128222     1.38   0.180     -.770765    3.886308
+          5  |   1.875064   1.376571     1.36   0.186    -.9660399    4.716167
+          7  |   2.713067   1.293588     2.10   0.047      .043232    5.382901
+          8  |  -.7811268   1.057373    -0.74   0.467    -2.963437    1.401184
+          9  |   4.006612    .949723     4.22   0.000      2.04648    5.966744
+         10  |   4.259087   1.676503     2.54   0.018     .7989547     7.71922
+         11  |   3.265468    1.17431     2.78   0.010      .841811    5.689126
+       1000  |   3.695205   1.314784     2.81   0.010     .9816246    6.408786
+             |
+    anio_sem |
+         81  |  -1.562655   .0682103   -22.91   0.000    -1.703434   -1.421876
+         82  |  -.9272063   .5492766    -1.69   0.104    -2.060858     .206445
+         83  |    -1.1893    1.07928    -1.10   0.281    -3.416824    1.038224
+         84  |   1.763327   1.184519     1.49   0.150     -.681401    4.208055
+         85  |  -1.099271   .7485209    -1.47   0.155    -2.644143    .4455998
+         86  |  -1.251247   .9796134    -1.28   0.214     -3.27307    .7705753
+         87  |   1.587596   .9601585     1.65   0.111     -.394074    3.569265
+         88  |  -1.456163   .9192502    -1.58   0.126    -3.353402    .4410765
+         89  |   2.129758   .7699811     2.77   0.011      .540595    3.718921
+         90  |  -3.443148   .8340451    -4.13   0.000    -5.164533   -1.721764
+         91  |  -4.200782   1.255357    -3.35   0.003    -6.791711   -1.609853
+         92  |  -2.806993    1.09372    -2.57   0.017    -5.064321   -.5496654
+         93  |  -2.387629   1.417469    -1.68   0.105    -5.313141    .5378828
+         94  |  -1.588109    1.75419    -0.91   0.374    -5.208578     2.03236
+         95  |  -3.163019   1.794989    -1.76   0.091    -6.867693     .541656
+         96  |  -2.834349   1.802476    -1.57   0.129    -6.554477    .8857793
+         97  |  -3.572763   1.802275    -1.98   0.059    -7.292477    .1469506
+         98  |  -3.984301    1.51906    -2.62   0.015    -7.119487   -.8491145
+         99  |   -3.96752   1.521442    -2.61   0.015    -7.107621   -.8274183
+        100  |  -4.157555   1.564278    -2.66   0.014    -7.386067   -.9290435
+        101  |  -4.705423   1.566321    -3.00   0.006     -7.93815   -1.472695
+        102  |  -5.930238   1.583951    -3.74   0.001    -9.199351   -2.661124
+        103  |  -5.652658   1.601997    -3.53   0.002    -8.959017   -2.346299
+        104  |  -5.823183   1.609126    -3.62   0.001    -9.144256   -2.502111
+             |
+    loc_code |
+     303022  |  -2.191529   .6733638    -3.25   0.003    -3.581284   -.8017746
+     303023  |  -.8504126   .7029026    -1.21   0.238    -2.301132     .600307
+     303050  |  -1.408849   .9305758    -1.51   0.143    -3.329463    .5117654
+     330020  |   .1789176    .690959     0.26   0.798    -1.247152    1.604987
+     808220  |  -.7302413    .890437    -0.82   0.420    -2.568013     1.10753
+     834000  |  -.5719138   1.184349    -0.48   0.634     -3.01629    1.872463
+     834050  |   1.810404     1.3063     1.39   0.179    -.8856669    4.506475
+    1313020  |   1.462547   1.129795     1.29   0.208    -.8692359    3.794329
+    1331000  |   1.343668   1.132807     1.19   0.247    -.9943305    3.681666
+    1331050  |   3.659928   1.460521     2.51   0.019     .6455607    6.674296
+    1616021  |   .2310487   .8963818     0.26   0.799    -1.618992     2.08109
+    1630020  |   .8850897   .8188627     1.08   0.290    -.8049599    2.575139
+    1632000  |   .1924447   1.553803     0.12   0.902    -3.014447    3.399336
+    1632050  |   .5380092   1.213332     0.44   0.661    -1.966184    3.042203
+             |
+c98_resid_~e |   .4076386   2.366601     0.17   0.865    -4.476787    5.292064
+c98_resid_~d |  -.7997988   .3114816    -2.57   0.017    -1.442665   -.1569324
+c98_nbr_ro~s |  -.4445681   .1206793    -3.68   0.001    -.6936379   -.1954983
+c98_nbr_be~s |   .1841581   .2734227     0.67   0.507    -.3801587    .7484748
+c98_b_pipe~r |   2.596827   1.156674     2.25   0.034     .2095686    4.984086
+c98_hhld_t~t |   .8312622   .7826917     1.06   0.299     -.784134    2.446658
+c98_b_sewage |   .4958696   .3314571     1.50   0.148    -.1882243    1.179964
+c98_hhld_s~e |  -1.264725   .6634192    -1.91   0.069    -2.633955     .104505
+c98_hhld_h~r |   .8051138   .5929783     1.36   0.187    -.4187333    2.028961
+c98_hhld_r~t |   1.401095   .6094425     2.30   0.031     .1432677    2.658923
+ c98_hhld_tv |   1.449603   .7192986     2.02   0.055    -.0349559    2.934163
+c98_hhld_vcr |   .0248344   .2838941     0.09   0.931    -.5610943    .6107631
+c98_hhld_w~c |   .7316788   .3164374     2.31   0.030      .078584    1.384773
+c98_hhld_d~r |  -1.900238   .6254053    -3.04   0.006    -3.191011   -.6094653
+c98_hhld_m~e |   .7475818   .3708115     2.02   0.055    -.0177356    1.512899
+c98_hhld_car |  -.9756507   .2330507    -4.19   0.000    -1.456644   -.4946576
+  nbr_people |  -.4674461   .0919012    -5.09   0.000     -.657121   -.2777713
+ ind_under14 |  -.7190797   .2930771    -2.45   0.022    -1.323961   -.1141983
+        edad |   .1706686   .0202357     8.43   0.000     .1289041     .212433
+     married |  -1.961466   .2727431    -7.19   0.000     -2.52438   -1.398552
+ y_hogar_alt |   .0000927     .00001     9.25   0.000      .000072    .0001133
+       _cons |   28.18544   2.263435    12.45   0.000     23.51394    32.85694
+------------------------------------------------------------------------------
+(file ../output/pooled_es_horas_trabajo_anio_sem_loc_code_int_mvd.pdf written i
+> n PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_es_shift_horas_trabajo_anio_sem_loc_code_int_mvd.pdf wri
+> tten in PDF format)
 (616 observations deleted)
 (38 observations deleted)
 (32 real changes made)
@@ -271,7 +732,8 @@ Linear regression                               Number of obs     =         32
      13.dpto |   343.5714   50.20639     6.84   0.000      236.559    450.5838
        _cons |   457.0714   124.2707     3.68   0.002     192.1946    721.9482
 ------------------------------------------------------------------------------
-(file ../output/pooled_es_births_anio_sem_dpto.pdf written in PDF format)
+(file ../output/pooled_es_births_anio_sem_dpto_riv_flo.pdf written in PDF forma
+> t)
 
 Generated variables:
               storage   display    value
@@ -292,124 +754,131 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_es_shift_births_anio_sem_dpto.pdf written in PDF format)
-(1,490,121 observations deleted)
+(file ../output/pooled_es_shift_births_anio_sem_dpto_riv_flo.pdf written in PDF
+>  format)
+(1,490,167 observations deleted)
 
  Employment |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |    173,546       44.13       44.13
-          1 |    219,692       55.87      100.00
+          0 |    158,922       40.42       40.42
+          1 |    234,270       59.58      100.00
 ------------+-----------------------------------
-      Total |    393,238      100.00
-(374,326 observations deleted)
+      Total |    393,192      100.00
+(374,283 observations deleted)
 (8,590 observations deleted)
-(10,322 real changes made)
-(1,306 real changes made)
+(10,319 real changes made)
+(1,305 real changes made)
 (709 real changes made)
 
           t |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |      2,146       20.79       20.79
-          1 |        476        4.61       25.40
-          2 |        934        9.05       34.45
-          3 |        933        9.04       43.49
-          4 |        706        6.84       50.33
-          5 |        707        6.85       57.18
-          6 |        786        7.61       64.79
-          7 |        689        6.68       71.47
-          8 |        555        5.38       76.85
+          0 |      2,145       20.79       20.79
+          1 |        475        4.60       25.39
+          2 |        934        9.05       34.44
+          3 |        933        9.04       43.48
+          4 |        706        6.84       50.32
+          5 |        706        6.84       57.17
+          6 |        786        7.62       64.78
+          7 |        689        6.68       71.46
+          8 |        555        5.38       76.84
           9 |        614        5.95       82.79
          10 |        482        4.67       87.46
          11 |        585        5.67       93.13
        1000 |        709        6.87      100.00
 ------------+-----------------------------------
-      Total |     10,322      100.00
+      Total |     10,319      100.00
 
        pe1c |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          8 |      4,563       44.21       44.21
-         13 |      5,759       55.79      100.00
+          8 |      4,562       44.21       44.21
+         13 |      5,757       55.79      100.00
 ------------+-----------------------------------
-      Total |     10,322      100.00
+      Total |     10,319      100.00
 (451 real changes made)
 
-Linear regression                               Number of obs     =    472,987
-                                                F(14, 15)         =          .
-                                                Prob > F          =          .
-                                                R-squared         =     0.1349
-                                                Root MSE          =     .46507
+Iteration 0:   log pseudolikelihood = -326889.68  
+Iteration 1:   log pseudolikelihood = -286801.56  
+Iteration 2:   log pseudolikelihood = -286649.45  
+Iteration 3:   log pseudolikelihood = -286649.07  
+Iteration 4:   log pseudolikelihood = -286649.07  
+
+Logistic regression                             Number of obs     =     10,314
+                                                Wald chi2(14)     =          .
+                                                Prob > chi2       =          .
+Log pseudolikelihood = -286649.07               Pseudo R2         =     0.1231
 
                               (Std. Err. adjusted for 16 clusters in anio_sem)
 ------------------------------------------------------------------------------
              |               Robust
-     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+     trabajo |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
            t |
-          0  |   .0244651   .1438424     0.17   0.867    -.2821278    .3310579
-          1  |    .002452   .0949148     0.03   0.980    -.1998541     .204758
-          2  |  -.0359684   .0886229    -0.41   0.691    -.2248635    .1529268
-          3  |   .0031738   .0736393     0.04   0.966    -.1537846    .1601323
-          4  |  -.0672031   .0410336    -1.64   0.122    -.1546642    .0202579
-          5  |  -.0547448   .0381121    -1.44   0.171    -.1359789    .0264892
-          7  |  -.0721216   .0309365    -2.33   0.034    -.1380613   -.0061819
-          8  |  -.0543669   .0307461    -1.77   0.097    -.1199006    .0111668
-          9  |  -.0732487   .0682376    -1.07   0.300    -.2186938    .0721964
-         10  |  -.1877616   .0813903    -2.31   0.036    -.3612408   -.0142823
-         11  |  -.1422669   .0838022    -1.70   0.110     -.320887    .0363532
-       1000  |  -.2200682   .1371976    -1.60   0.130    -.5124981    .0723617
+          0  |    .161673   .6424262     0.25   0.801    -1.097459    1.420805
+          1  |   .0714822   .4149115     0.17   0.863    -.7417293    .8846937
+          2  |  -.0359643   .3938273    -0.09   0.927    -.8078517    .7359231
+          3  |   .0910801   .3284957     0.28   0.782    -.5527596    .7349199
+          4  |  -.3214918    .167947    -1.91   0.056    -.6506619    .0076784
+          5  |  -.1692179   .1628988    -1.04   0.299    -.4884936    .1500578
+          7  |  -.2952942   .1237523    -2.39   0.017    -.5378442   -.0527442
+          8  |  -.1007797   .1297792    -0.78   0.437    -.3551423    .1535829
+          9  |  -.3050013   .3039659    -1.00   0.316    -.9007636     .290761
+         10  |   -.784354   .3620709    -2.17   0.030       -1.494   -.0747081
+         11  |  -.6359528   .3744881    -1.70   0.089    -1.369936    .0980304
+       1000  |  -1.106431    .615419    -1.80   0.072     -2.31263    .0997686
              |
     anio_sem |
-         90  |   -.015713   .0048575    -3.23   0.006    -.0260664   -.0053595
-         91  |    .057294   .0149162     3.84   0.002     .0255009    .0890871
-         92  |    .052153   .0145127     3.59   0.003       .02122     .083086
-         93  |   .0463116   .0194104     2.39   0.031     .0049392    .0876839
-         94  |   .1255535   .0773941     1.62   0.126    -.0394081    .2905151
-         95  |   .1449906   .0779726     1.86   0.083     -.021204    .3111852
-         96  |   .0593888   .1002524     0.59   0.562    -.1542942    .2730719
-         97  |   .2066276   .1320667     1.56   0.139    -.0748659    .4881212
-         98  |   .1347791   .1224387     1.10   0.288    -.1261928    .3957511
-         99  |   .0736103   .1592598     0.46   0.651    -.2658439    .4130644
-        100  |   .1458742   .1765518     0.83   0.422     -.230437    .5221854
-        101  |   .1293192   .1793798     0.72   0.482    -.2530198    .5116582
-        102  |   .1472321   .2272579     0.65   0.527    -.3371565    .6316208
-        103  |    .301103   .2349709     1.28   0.219    -.1997256    .8019317
-        104  |   .1491801    .236269     0.63   0.537    -.3544154    .6527755
+         90  |  -.0717143   .0243469    -2.95   0.003    -.1194334   -.0239952
+         91  |   .2847714   .0592405     4.81   0.000     .1686622    .4008805
+         92  |   .3267508   .0661179     4.94   0.000     .1971621    .4563395
+         93  |   .2408204   .0837302     2.88   0.004     .0767122    .4049287
+         94  |   .7622015   .3507258     2.17   0.030     .0747916    1.449611
+         95  |   .6317298   .3529946     1.79   0.074    -.0601269    1.323586
+         96  |   .3897068   .4478879     0.87   0.384    -.4881374    1.267551
+         97  |   1.150371   .5993538     1.92   0.055    -.0243404    2.325083
+         98  |   .7342599   .5506643     1.33   0.182    -.3450223    1.813542
+         99  |   .4077719   .7117939     0.57   0.567    -.9873184    1.802862
+        100  |   .7247631   .7961121     0.91   0.363     -.835588    2.285114
+        101  |   .7134124   .8074579     0.88   0.377    -.8691761    2.296001
+        102  |   1.039464   1.020811     1.02   0.309    -.9612885    3.040216
+        103  |   1.570333   1.055613     1.49   0.137    -.4986294    3.639296
+        104  |   .9615297   1.062382     0.91   0.365    -1.120701    3.043761
              |
     loc_code |
-     834000  |  -.0438925   .0223847    -1.96   0.069    -.0916044    .0038194
-     834050  |   .0240877   .0257037     0.94   0.364    -.0306985    .0788739
-    1313020  |  -.0499301   .0568599    -0.88   0.394     -.171124    .0712639
-    1331000  |  -.1008545   .0592718    -1.70   0.109    -.2271894    .0254804
-    1331050  |  -.1562321   .0511657    -3.05   0.008    -.2652892   -.0471751
+     834000  |  -.2887403    .105075    -2.75   0.006    -.4946834   -.0827972
+     834050  |      .1051   .1204621     0.87   0.383    -.1310013    .3412013
+    1313020  |  -.2481073   .2547858    -0.97   0.330    -.7474782    .2512636
+    1331000  |  -.5949065   .2660254    -2.24   0.025    -1.116307   -.0735063
+    1331050  |   -.847199   .2300964    -3.68   0.000     -1.29818   -.3962184
              |
-c98_resid_~e |   .1252885   .1124032     1.11   0.283    -.1142932    .3648701
-c98_resid_~d |   .0161849   .0147474     1.10   0.290    -.0152483    .0476182
-c98_nbr_ro~s |  -.0180341   .0083082    -2.17   0.046    -.0357425   -.0003257
-c98_nbr_be~s |   .0009269   .0094764     0.10   0.923    -.0192717    .0211254
-c98_b_pipe~r |  -.0191927   .0239076    -0.80   0.435    -.0701506    .0317652
-c98_hhld_t~t |    .027191   .0435996     0.62   0.542    -.0657392    .1201212
-c98_b_sewage |   .0019717   .0138001     0.14   0.888    -.0274426    .0313859
-c98_hhld_s~e |   .0307738   .0292809     1.05   0.310     -.031637    .0931846
-c98_hhld_h~r |   .0773682    .025028     3.09   0.007     .0240223    .1307141
-c98_hhld_r~t |   .0180924   .0290407     0.62   0.543    -.0438064    .0799912
- c98_hhld_tv |   -.008883   .0264684    -0.34   0.742     -.065299     .047533
-c98_hhld_vcr |   .0140504   .0130398     1.08   0.298    -.0137434    .0418442
-c98_hhld_w~c |   .0263136   .0110203     2.39   0.031     .0028244    .0498028
-c98_hhld_d~r |  -.0399574   .0310649    -1.29   0.218    -.1061707    .0262558
-c98_hhld_m~e |   .0395854   .0205748     1.92   0.074    -.0042688    .0834395
-c98_hhld_car |  -.0378808    .015764    -2.40   0.030    -.0714811   -.0042805
-c01_hhld_c~r |  -.0083209   .0258039    -0.32   0.752    -.0633207    .0466788
-c01_hhld_i~t |   .0090756   .0241991     0.38   0.713    -.0425035    .0606548
-c01_hhld_p~e |  -.0390638   .0158709    -2.46   0.026    -.0728919   -.0052358
-c01_hhld_c~v |   .0058939   .0163513     0.36   0.724    -.0289581    .0407459
-  nbr_people |  -.0295697    .004392    -6.73   0.000     -.038931   -.0202083
- ind_under14 |   .0386006   .0096927     3.98   0.001      .017941    .0592602
-        edad |   .0163847   .0008382    19.55   0.000     .0145981    .0181713
-     married |  -.0402438   .0104578    -3.85   0.002    -.0625341   -.0179535
- y_hogar_alt |   3.24e-06   6.76e-07     4.80   0.000     1.80e-06    4.68e-06
-       _cons |  -.1260977   .2075793    -0.61   0.553    -.5685424    .3163471
+c98_resid_~e |   .5712699   .5379708     1.06   0.288    -.4831334    1.625673
+c98_resid_~d |   .0607152   .0619833     0.98   0.327    -.0607698    .1822002
+c98_nbr_ro~s |   -.055614   .0348718    -1.59   0.111    -.1239615    .0127336
+c98_nbr_be~s |  -.0323582   .0431773    -0.75   0.454    -.1169842    .0522678
+c98_b_pipe~r |  -.0694926   .1239214    -0.56   0.575     -.312374    .1733889
+c98_hhld_t~t |   .0615418    .232112     0.27   0.791    -.3933894     .516473
+c98_b_sewage |  -.0170706   .0560565    -0.30   0.761    -.1269394    .0927981
+c98_hhld_s~e |   .1997335   .1348607     1.48   0.139    -.0645885    .4640556
+c98_hhld_h~r |   .3956837   .1200777     3.30   0.001     .1603358    .6310315
+c98_hhld_r~t |   .0747291    .130528     0.57   0.567    -.1811011    .3305592
+ c98_hhld_tv |  -.0791896   .1199287    -0.66   0.509    -.3142456    .1558663
+c98_hhld_vcr |   .0289901   .0547836     0.53   0.597    -.0783838     .136364
+c98_hhld_w~c |   .0831654   .0567825     1.46   0.143    -.0281262     .194457
+c98_hhld_d~r |  -.0809414   .2253974    -0.36   0.720    -.5227122    .3608293
+c98_hhld_m~e |   .2199374   .0896263     2.45   0.014      .044273    .3956018
+c98_hhld_car |  -.1891907    .060095    -3.15   0.002    -.3069747   -.0714066
+c01_hhld_c~r |  -.0448347    .122204    -0.37   0.714    -.2843502    .1946808
+c01_hhld_i~t |   .1083327   .1127682     0.96   0.337     -.112689    .3293543
+c01_hhld_p~e |  -.1608137   .0732652    -2.19   0.028    -.3044108   -.0172166
+c01_hhld_c~v |   .0566095   .0746836     0.76   0.448    -.0897677    .2029867
+  nbr_people |  -.1503623   .0204599    -7.35   0.000     -.190463   -.1102616
+ ind_under14 |   .2301403   .0431539     5.33   0.000     .1455602    .3147203
+        edad |   .0773627   .0039136    19.77   0.000     .0696922    .0850331
+     married |  -.1524393    .048317    -3.15   0.002    -.2471389   -.0577396
+ y_hogar_alt |   .0000192   4.01e-06     4.78   0.000     .0000113     .000027
+       _cons |  -3.013972   .9759874    -3.09   0.002    -4.926872   -1.101072
 ------------------------------------------------------------------------------
-(file ../output/pooled_es_trabajo_anio_sem_loc_code.pdf written in PDF format)
+(file ../output/pooled_es_trabajo_anio_sem_loc_code_riv_flo.pdf written in PDF 
+> format)
 
 Generated variables:
               storage   display    value
@@ -430,54 +899,54 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_es_shift_trabajo_anio_sem_loc_code.pdf written in PDF fo
-> rmat)
-(1,490,121 observations deleted)
-(0 observations deleted)
+(file ../output/pooled_es_shift_trabajo_anio_sem_loc_code_riv_flo.pdf written i
+> n PDF format)
+(1,490,167 observations deleted)
+(158,922 observations deleted)
 
  Employment |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |    173,546       44.13       44.13
-          1 |    219,692       55.87      100.00
+          1 |    234,270      100.00      100.00
 ------------+-----------------------------------
-      Total |    393,238      100.00
-(374,326 observations deleted)
-(8,590 observations deleted)
-(10,322 real changes made)
-(1,306 real changes made)
-(709 real changes made)
+      Total |    234,270      100.00
+(224,279 observations deleted)
+(4,567 observations deleted)
+(5,424 real changes made)
+(609 real changes made)
+(408 real changes made)
 
           t |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |      2,146       20.79       20.79
-          1 |        476        4.61       25.40
-          2 |        934        9.05       34.45
-          3 |        933        9.04       43.49
-          4 |        706        6.84       50.33
-          5 |        707        6.85       57.18
-          6 |        786        7.61       64.79
-          7 |        689        6.68       71.47
-          8 |        555        5.38       76.85
-          9 |        614        5.95       82.79
-         10 |        482        4.67       87.46
-         11 |        585        5.67       93.13
-       1000 |        709        6.87      100.00
+          0 |        998       18.40       18.40
+          1 |        252        4.65       23.05
+          2 |        463        8.54       31.58
+          3 |        453        8.35       39.93
+          4 |        384        7.08       47.01
+          5 |        380        7.01       54.02
+          6 |        445        8.20       62.22
+          7 |        377        6.95       69.17
+          8 |        315        5.81       74.98
+          9 |        355        6.54       81.53
+         10 |        275        5.07       86.60
+         11 |        319        5.88       92.48
+       1000 |        408        7.52      100.00
 ------------+-----------------------------------
-      Total |     10,322      100.00
+      Total |      5,424      100.00
 
        pe1c |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          8 |      4,563       44.21       44.21
-         13 |      5,759       55.79      100.00
+          8 |      2,497       46.04       46.04
+         13 |      2,927       53.96      100.00
 ------------+-----------------------------------
-      Total |     10,322      100.00
-(451 real changes made)
+      Total |      5,424      100.00
+(247 real changes made)
+(sum of wgt is   2.5094e+05)
 
-Linear regression                               Number of obs     =    472,987
+Linear regression                               Number of obs     =      5,421
                                                 F(14, 15)         =          .
                                                 Prob > F          =          .
-                                                R-squared         =     0.1330
-                                                Root MSE          =     20.034
+                                                R-squared         =     0.0631
+                                                Root MSE          =     18.066
 
                               (Std. Err. adjusted for 16 clusters in anio_sem)
 ------------------------------------------------------------------------------
@@ -485,72 +954,72 @@ Linear regression                               Number of obs     =    472,987
 horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
            t |
-          0  |   -4.67606   4.256224    -1.10   0.289    -13.74799    4.395867
-          1  |  -2.144379   3.065558    -0.70   0.495    -8.678462    4.389704
-          2  |  -2.949225   2.634847    -1.12   0.281    -8.565268    2.666819
-          3  |  -2.409333   2.262139    -1.07   0.304    -7.230968    2.412302
-          4  |  -2.849371   1.508688    -1.89   0.078    -6.065063    .3663216
-          5  |  -.9152645    1.13554    -0.81   0.433    -3.335611    1.505082
-          7  |  -.4615871   .9849066    -0.47   0.646    -2.560866    1.637692
-          8  |  -.8794541    .898279    -0.98   0.343    -2.794091    1.035182
-          9  |   1.141256    1.91204     0.60   0.559    -2.934161    5.216674
-         10  |   -2.49278   2.410476    -1.03   0.317    -7.630589    2.645029
-         11  |  -1.495295   2.397885    -0.62   0.542    -6.606265    3.615675
-       1000  |  -3.122231   3.943475    -0.79   0.441    -11.52755    5.283087
+          0  |  -7.643243   3.473432    -2.20   0.044    -15.04669   -.2397983
+          1  |  -2.604361   3.148297    -0.83   0.421    -9.314798    4.106075
+          2  |   -2.25757   2.308349    -0.98   0.344    -7.177699    2.662559
+          3  |  -3.996765    1.91712    -2.08   0.055     -8.08301    .0894806
+          4  |  -.0502973   2.077698    -0.02   0.981    -4.478807    4.378212
+          5  |   1.971935   1.551197     1.27   0.223    -1.334362    5.278232
+          7  |   4.838257   1.512489     3.20   0.006     1.614464     8.06205
+          8  |   .4712082   1.157633     0.41   0.690    -1.996228    2.938645
+          9  |   5.428282   1.615789     3.36   0.004     1.984309    8.872255
+         10  |   6.927415   2.255768     3.07   0.008     2.119359    11.73547
+         11  |   5.820858   1.909432     3.05   0.008     1.750999    9.890717
+       1000  |   6.904408   3.159932     2.18   0.045     .1691735    13.63964
              |
     anio_sem |
-         90  |  -3.515703   .2064434   -17.03   0.000    -3.955727    -3.07568
-         91  |  -2.209993   .4755452    -4.65   0.000    -3.223594   -1.196392
-         92  |  -2.153945   .4914839    -4.38   0.001    -3.201518   -1.106372
-         93  |  -2.000543   .6025849    -3.32   0.005    -3.284922   -.7161638
-         94  |  -.7461289   2.415873    -0.31   0.762     -5.89544    4.403182
-         95  |  -3.194054   2.466172    -1.30   0.215    -8.450574    2.062467
-         96  |  -5.306599   2.972374    -1.79   0.094    -11.64206    1.028865
-         97  |  -1.538064   3.917416    -0.39   0.700     -9.88784    6.811711
-         98  |  -3.826891   3.580207    -1.07   0.302    -11.45792     3.80414
-         99  |  -6.746505   4.670854    -1.44   0.169     -16.7022    3.209185
-        100  |  -5.667094   5.149266    -1.10   0.288    -16.64249    5.308305
-        101  |  -6.168542   5.177685    -1.19   0.252    -17.20452    4.867432
-        102  |  -4.837207   6.566162    -0.74   0.473    -18.83265    9.158236
-        103  |  -.1130615    6.84373    -0.02   0.987    -14.70013      14.474
-        104  |     -6.024     6.8295    -0.88   0.392    -20.58073    8.532735
+         90  |  -4.188486   .4111069   -10.19   0.000     -5.06474   -3.312232
+         91  |  -8.098278   .6690391   -12.10   0.000    -9.524301   -6.672255
+         92  |  -7.606398   .5950568   -12.78   0.000    -8.874732   -6.338065
+         93  |  -5.941491   .6637535    -8.95   0.000    -7.356248   -4.526734
+         94  |  -8.581914   2.874527    -2.99   0.009    -14.70882   -2.455005
+         95  |  -12.46631   2.699109    -4.62   0.000    -18.21933     -6.7133
+         96  |  -11.91182   2.935409    -4.06   0.001    -18.16849   -5.655141
+         97  |  -15.23452    3.76461    -4.05   0.001     -23.2586   -7.210444
+         98  |   -15.7337   3.055028    -5.15   0.000    -22.24534   -9.222063
+         99  |  -15.11155    3.74799    -4.03   0.001    -23.10021   -7.122903
+        100  |  -20.38282   4.279972    -4.76   0.000    -29.50536   -11.26027
+        101  |  -18.62765   4.118231    -4.52   0.000    -27.40545   -9.849849
+        102  |  -19.67476   5.173721    -3.80   0.002    -30.70229   -8.647234
+        103  |  -19.30085   5.486387    -3.52   0.003    -30.99481   -7.606892
+        104  |  -21.45593   5.301479    -4.05   0.001    -32.75576   -10.15609
              |
     loc_code |
-     834000  |  -1.312108    .946576    -1.39   0.186    -3.329687    .7054708
-     834050  |   1.727646   1.105262     1.56   0.139    -.6281651    4.083457
-    1313020  |   1.130432   1.501346     0.75   0.463    -2.069612    4.330475
-    1331000  |  -1.107598     1.6179    -0.68   0.504     -4.55607    2.340874
-    1331050  |  -1.666149   1.300054    -1.28   0.219    -4.437149    1.104851
+     834000  |   .5416031   1.315564     0.41   0.686    -2.262455    3.345661
+     834050  |   2.216255   1.411734     1.57   0.137    -.7927843    5.225293
+    1313020  |   3.818389   1.312165     2.91   0.011     1.021576    6.615203
+    1331000  |   4.599012   1.706825     2.69   0.017     .9610015    8.237022
+    1331050  |   7.494988   1.545166     4.85   0.000     4.201545    10.78843
              |
-c98_resid_~e |   5.498758   3.254886     1.69   0.112    -1.438868    12.43638
-c98_resid_~d |  -.2853582   .7553966    -0.38   0.711    -1.895448    1.324732
-c98_nbr_ro~s |  -.8022007   .3647729    -2.20   0.044    -1.579696   -.0247057
-c98_nbr_be~s |  -.0749169   .5313099    -0.14   0.890    -1.207377    1.057543
-c98_b_pipe~r |  -.7283907   1.696316    -0.43   0.674    -4.344003    2.887221
-c98_hhld_t~t |   1.063395   1.742257     0.61   0.551    -2.650138    4.776927
-c98_b_sewage |  -.1215571   .4642312    -0.26   0.797    -1.111043    .8679283
-c98_hhld_s~e |   .5460964   1.172664     0.47   0.648    -1.953379    3.045571
-c98_hhld_h~r |   2.700834   1.036971     2.60   0.020     .4905821    4.911085
-c98_hhld_r~t |   1.218822   1.312867     0.93   0.368    -1.579488    4.017133
- c98_hhld_tv |   .3650799    1.00702     0.36   0.722    -1.781333    2.511493
-c98_hhld_vcr |   .1527027   .5187941     0.29   0.773    -.9530808    1.258486
-c98_hhld_w~c |   1.608801   .6100988     2.64   0.019     .3084058    2.909195
-c98_hhld_d~r |  -.7460799   1.927147    -0.39   0.704    -4.853696    3.361537
-c98_hhld_m~e |   2.811369   .9829665     2.86   0.012     .7162258    4.906513
-c98_hhld_car |  -1.699554   .6584193    -2.58   0.021    -3.102941   -.2961662
-c01_hhld_c~r |   -1.08822   1.057865    -1.03   0.320    -3.343005    1.166566
-c01_hhld_i~t |  -.5288056   .9627086    -0.55   0.591     -2.58077    1.523159
-c01_hhld_p~e |  -.3223007   .9246836    -0.35   0.732    -2.293217    1.648616
-c01_hhld_c~v |   .6814385   .5419285     1.26   0.228    -.4736547    1.836532
-  nbr_people |  -1.199368   .1722207    -6.96   0.000    -1.566448   -.8322885
- ind_under14 |   .7260485   .5291253     1.37   0.190    -.4017554    1.853852
-        edad |   .6458734   .0407016    15.87   0.000       .55912    .7326268
-     married |  -1.905644   .6116342    -3.12   0.007    -3.209311   -.6019765
- y_hogar_alt |   .0001837   .0000279     6.59   0.000     .0001242    .0002431
-       _cons |  -1.349908   6.271032    -0.22   0.832     -14.7163    12.01648
+c98_resid_~e |    5.68246   2.031923     2.80   0.014     1.351518     10.0134
+c98_resid_~d |  -1.302016   .8724731    -1.49   0.156    -3.161648    .5576164
+c98_nbr_ro~s |  -.9262186   .5078627    -1.82   0.088    -2.008702    .1562652
+c98_nbr_be~s |    .070831   .8582278     0.08   0.935    -1.758438      1.9001
+c98_b_pipe~r |  -.6798218   3.652996    -0.19   0.855    -8.465998    7.106354
+c98_hhld_t~t |   1.821776   2.591527     0.70   0.493    -3.701933    7.345485
+c98_b_sewage |   .3951648   .7190557     0.55   0.591    -1.137466    1.927796
+c98_hhld_s~e |  -1.386034   1.546786    -0.90   0.384    -4.682929    1.910862
+c98_hhld_h~r |  -.1448389   1.406881    -0.10   0.919    -3.143534    2.853856
+c98_hhld_r~t |   1.774888   2.189754     0.81   0.430    -2.892463    6.442238
+ c98_hhld_tv |   2.252077   1.978669     1.14   0.273    -1.965356    6.469511
+c98_hhld_vcr |  -.2707385   .8506808    -0.32   0.755    -2.083922    1.542445
+c98_hhld_w~c |   1.675988   .8052597     2.08   0.055    -.0403825    3.392358
+c98_hhld_d~r |  -1.536479   1.869215    -0.82   0.424    -5.520615    2.447658
+c98_hhld_m~e |   1.607638   .8655498     1.86   0.083    -.2372377    3.452514
+c98_hhld_car |  -.7667061   .7758403    -0.99   0.339    -2.420371    .8869585
+c01_hhld_c~r |   -1.06081   .8732174    -1.21   0.243    -2.922029    .8004091
+c01_hhld_i~t |  -1.950511   1.140257    -1.71   0.108    -4.380912    .4798904
+c01_hhld_p~e |   .9779716   .9930596     0.98   0.340    -1.138685    3.094628
+c01_hhld_c~v |   .4326863    .527896     0.82   0.425    -.6924974     1.55787
+  nbr_people |  -.5742579   .2980751    -1.93   0.073     -1.20959    .0610741
+ ind_under14 |  -1.340968   .7953933    -1.69   0.112    -3.036308    .3543729
+        edad |   .2025017     .03761     5.38   0.000     .1223378    .2826656
+     married |  -2.432933   .9539366    -2.55   0.022    -4.466201   -.3996655
+ y_hogar_alt |   .0001916   .0000246     7.77   0.000      .000139    .0002441
+       _cons |   34.55266   5.038846     6.86   0.000     23.81262    45.29271
 ------------------------------------------------------------------------------
-(file ../output/pooled_es_horas_trabajo_anio_sem_loc_code.pdf written in PDF fo
-> rmat)
+(file ../output/pooled_es_horas_trabajo_anio_sem_loc_code_riv_flo.pdf written i
+> n PDF format)
 
 Generated variables:
               storage   display    value
@@ -571,11 +1040,11 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_es_shift_horas_trabajo_anio_sem_loc_code.pdf written in 
-> PDF format)
+(file ../output/pooled_es_shift_horas_trabajo_anio_sem_loc_code_riv_flo.pdf wri
+> tten in PDF format)
 
 . 
 . 
 end of do-file
 
- make.py ended: 2018-05-09 18:01:57
+ make.py ended: 2018-05-13 14:02:04
