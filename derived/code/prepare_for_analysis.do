@@ -26,8 +26,8 @@ program main_prepare_for_analysis
 	gen     anio_qtr = yq(anio, trimestre)
     format  anio_qtr %tq
 
-	local outcomes = "trabajo horas_trabajo"
-	deseasonalize, outcomes(`outcomes')
+	/*local outcomes = "trabajo horas_trabajo"
+	deseasonalize, outcomes(`outcomes')*/
 	 
 	label_vars
 	drop if (missing(numero) | missing(pers) | missing(anio))
