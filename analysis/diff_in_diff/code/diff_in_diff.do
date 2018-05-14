@@ -285,19 +285,46 @@ program reg_diff
            
 		    foreach cond in "" "& kids_`treatment' == 1" "& kids_`treatment' == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
                 
-                foreach age_group in "_young" "_adult" "_placebo" {
-
-                    gen interaction = treatment`age_group'_`treatment' * post
-
-                    `estimation' `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
+                if "`cond'" == "" {
+                    
+                    gen interaction = treatment_`treatment' * post
+                    
+                    `estimation' `outcome' i.treatment_`treatment' i.post interaction ///
                         i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
-                        `range' `cond' & !mi(treatment`age_group'_`treatment') ///
-						[pw = `weight'], vce(cluster `time')
-			
-                    matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
+                        `range' `cond' & !mi(treatment_`treatment') ///
+                        [pw = `weight'], vce(cluster `time')
             
+                    matrix COLUMN_young   = ((_b[interaction] \ _se[interaction]) \ e(N))
+                    matrix COLUMN_adult   = (. \ . \ .)
+                    
                     drop interaction
-                }
+                    
+                    gen interaction = treatment_placebo_`treatment' * post
+                    
+                    `estimation' `outcome' i.treatment_placebo_`treatment' i.post interaction ///
+                        i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
+                        `range' `cond' & !mi(treatment_placebo_`treatment') ///
+                        [pw = `weight'], vce(cluster `time')
+            
+                    matrix COLUMN_placebo = ((_b[interaction] \ _se[interaction]) \ e(N))
+                   
+                    drop interaction
+                    }
+                else {
+                    foreach age_group in "_young" "_adult" "_placebo" {
+
+                        gen interaction = treatment`age_group'_`treatment' * post
+
+                        `estimation' `outcome' i.treatment`age_group'_`treatment' i.post interaction ///
+                            i.`time' nbr_people ind_under14 edad married y_hogar_alt `control_vars' ///
+                            `range' `cond' & !mi(treatment`age_group'_`treatment') ///
+    						[pw = `weight'], vce(cluster `time')
+    			
+                        matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
+                
+                        drop interaction
+                        }
+                    }
     			
                 matrix COLUMN = (COLUMN_young , COLUMN_adult, COLUMN_placebo)
                 matrix ROW = (nullmat(ROW) \ COLUMN)
