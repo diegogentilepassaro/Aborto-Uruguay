@@ -28,12 +28,12 @@ if stata_exe:
 # SET DEFAULT OPTIONS
 set_option(link_logs_dir = '../output/')
 set_option(output_dir = '../output/', temp_dir = '../temp/')
-#clear_dirs('../temp/')
-#delete_files('../output/*')
+clear_dirs('../temp/')
+delete_files('../output/*')
 
 start_make_logging()
 
-#run_stata(program = 'diff_in_diff.do')
+run_stata(program = 'diff_in_diff.do')
 
 from gslab_fill.tablefill import tablefill
 from gslab_fill.textfill import textfill

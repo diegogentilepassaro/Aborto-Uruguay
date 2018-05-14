@@ -77,10 +77,6 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -102,7 +98,7 @@ name "tab:did_rivera"
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="20" columns="7">
+<lyxtabular version="3" rows="21" columns="7">
 <features tabularvalignment="middle">
 <column alignment="left" valignment="top">
 <column alignment="center" valignment="top">
@@ -181,7 +177,7 @@ Hours worked
 \begin_inset Text
 
 \begin_layout Plain Layout
-Women
+
 \end_layout
 
 \end_inset
@@ -190,7 +186,7 @@ Women
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 16-45
+(1)
 \end_layout
 
 \end_inset
@@ -199,7 +195,7 @@ Age: 16-45
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 31-45
+(2)
 \end_layout
 
 \end_inset
@@ -208,7 +204,7 @@ Age: 31-45
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 46-60
+(3)
 \end_layout
 
 \end_inset
@@ -217,7 +213,7 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 16-45
+(4)
 \end_layout
 
 \end_inset
@@ -226,7 +222,7 @@ Age: 16-45
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 31-45
+(5)
 \end_layout
 
 \end_inset
@@ -235,7 +231,7 @@ Age: 31-45
 \begin_inset Text
 
 \begin_layout Plain Layout
-Age: 46-60
+(6)
 \end_layout
 
 \end_inset
@@ -246,6 +242,24 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
+Women
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 16-45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -255,7 +269,7 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
-(1)
+Age: 46-60
 \end_layout
 
 \end_inset
@@ -264,7 +278,7 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
-(2)
+Age: 16-45
 \end_layout
 
 \end_inset
@@ -273,7 +287,7 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
-(3)
+
 \end_layout
 
 \end_inset
@@ -282,25 +296,7 @@ Age: 46-60
 \begin_inset Text
 
 \begin_layout Plain Layout
-(4)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-(5)
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-(6)
+Age: 46-60
 \end_layout
 
 \end_inset
@@ -316,7 +312,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -325,7 +321,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -343,7 +339,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -352,7 +348,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -381,7 +377,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -390,7 +386,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -408,7 +404,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -417,7 +413,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -446,7 +442,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -455,7 +451,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -473,7 +469,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -482,7 +478,7 @@ Baseline
 
 \end_inset
 </cell>
-<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -496,6 +492,71 @@ Baseline
 
 \begin_layout Plain Layout
 #0#
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 16-30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 31-45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 46-60
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 16-30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 31-45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Age: 46-60
 \end_layout
 
 \end_inset
@@ -1439,8 +1500,8 @@ s (number of rooms, having sewage, hot water, refrigerator, internet and
  other alike).
  Standard errors are clustered at the semester level.
  The unit of observation is the individual-semester.
- Our baseline samples include women between 16 and 30 and between 31 and
- 45 years old.
+ Our baseline sample include women between 16 and 45, which we then split
+ into women between 16 and 30 and between 31 and 45 years old.
  
 \end_layout
 
