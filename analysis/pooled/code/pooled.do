@@ -12,10 +12,10 @@ program main
 	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(all) outcome(trabajo)
 	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(all) outcome(horas_trabajo)
 
-	/*pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
+	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
 	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
 	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(trabajo)
-	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(horas_trabajo)*/
+	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(horas_trabajo)
 end
 
 capture program drop assign_impl_date_mvd
@@ -57,16 +57,27 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		}
 	}
 	else {
+		/*use ..\..\..\derived\output\population_fertile_age.dta, clear
+		keep if inrange(anio,1999,2015)
+		collapse (sum) pop, by(depar anio)
+		tempfile population
+		save `population'*/
+
 		use  ..\..\..\assign_treatment\output\births.dta, clear
 		collapse (count) births=edadm (min) impl_date_dpto , by(`time' `geo_var')
+		*drop if inlist(depar,20,99)
+		*merge m:1 depar anio using `population', assert(3)
+		*gen births = births_l/pop*1000
 		lab var births "Number of births"
 		local outcome births
 	}
 
-	if "`int_mvd'" == "int_mvd" {		
-		keep if !mi(impl_date_dpto) & !inlist(dpto,3, 16)
+	if "`int_mvd'" == "int_mvd" {	
+		assign_impl_date_mvd, dpto_list(,3,16)	
+		keep if !mi(impl_date_dpto) & !inlist(dpto,1)
 	}
 	else {
+		assign_impl_date_mvd, dpto_list(,3,16)
 		keep if !mi(impl_date_dpto)  //drop Montevideo
 	}
 
@@ -141,7 +152,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		drop(_cons 0.t 1000.t *.`time' *.`geo_var' `all_controls') ///
 	    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 		xtitle("`time_label' relative to IS implementation") ytitle(`: var lab `outcome'') ///
-		xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4") xline(6.5 7.5, lcolor(black) lpattern(dot))
+		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") xline(6.5 7.5, lcolor(black) lpattern(dot))
 		
 	graph export ../output/pooled_es_shift_`outcome'_`time'_`geo_var'_`int_mvd'.pdf, replace
 end
@@ -185,11 +196,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 	assert !mi(treatment)
 	
 	
-	qui sum impl_date_dpto
-	local impl_date_min = `r(min)'
-	local impl_date_max = `r(max)'
 	if "`time'" == "anio_qtr" {
-		keep if inrange(`time', qofd(`impl_date_min') - ${q_pre}, qofd(`impl_date_max') + ${q_post})
 		local weight pesotri
 		gen post = (`time' >= qofd(impl_date_dpto))
 		qui sum `time'
@@ -197,7 +204,6 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		local time_label "Quarters"
 	}
 	else if "`time'" == "anio_sem" {
-		keep if inrange(`time', hofd(`impl_date_min') - ${s_pre}, hofd(`impl_date_max') + ${s_post})
 		local weight pesosem
 		gen post = (`time' >= hofd(impl_date_dpto))
 		qui sum `time'
@@ -205,7 +211,6 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		local time_label "Semesters"
 	}
 	else {
-		keep if inrange(`time', yofd(`impl_date_min') - ${y_pre}, yofd(`impl_date_max') + ${y_post})
 		local weight pesoan
 		gen post = (`time' >= yofd(impl_date_dpto))
 		qui sum `time'    
@@ -248,7 +253,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 	coefplot, vertical baselevels graphregion(color(white)) bgcolor(white) ///
 		drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.`geo_var'  `all_controls') ///
 		xtitle("`time_label' relative to IS implementation") ytitle(`: var lab `outcome'') ///
-		xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4") xline(6.5 7.5, lcolor(black) lpattern(dot))
+		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") xline(6.5 7.5, lcolor(black) lpattern(dot))
 	graph export ../output/pooled_did_`outcome'_`time'_`geo_var'_`int_mvd'.pdf, replace
 	* Coef plot with shift
 	qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
@@ -264,7 +269,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		drop(_cons 0.t 1000.t *.`time' *.`geo_var' `all_controls') ///
 	    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 		xtitle("`time_label' relative to IS implementation") ytitle(`: var lab `outcome'') ///
-		xlabel(2 "-4" 4 "-2" 6 "0" 8 "2" 10 "4") xline(6.5 7.5, lcolor(black) lpattern(dot))
+		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") xline(6.5 7.5, lcolor(black) lpattern(dot))
 		
 	graph export ../output/pooled_did_shift_`outcome'_`time'_`geo_var'_`int_mvd'.pdf, replace
 end
