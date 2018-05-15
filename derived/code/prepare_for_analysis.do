@@ -31,6 +31,7 @@ program main_prepare_for_analysis
 	 
 	label_vars
 	drop if (missing(numero) | missing(pers) | missing(anio))
+	replace horas_trabajo = . if horas_trabajo >= 100
     save_data ..\output\clean_loc_1998_2016.dta, key(numero pers anio) replace	
 end
 
