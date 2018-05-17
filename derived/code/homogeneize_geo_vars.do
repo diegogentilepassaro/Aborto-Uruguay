@@ -29,7 +29,9 @@ program main_homogeneize_geo_vars
 	drop if substr(loc_code, -3,.) == "900" 
 	
 	destring loc_code, replace
-		
+	
+	drop_rural_areas
+
 	save ..\temp\clean_loc_1998_2016.dta, replace
 end
 
@@ -256,4 +258,61 @@ program homogeneize_loc_to_2012_2014
 	drop _merge nomloc2 loc12_14 loc98_05
 end
 
+program drop_rural_areas
+	* Artigas
+    drop if dpto == 2 & loc_code == 231000
+
+ 	* Canelones
+    drop if dpto == 3 & loc_code == 303000
+	
+	* Cerro Largo
+    drop if dpto == 4 & loc_code == 431000
+
+    * Colonia
+    drop if dpto == 5 & loc_code == 532000
+
+	* Durazno
+    drop if dpto == 6 & loc_code == 633000
+
+	* Flores
+    drop if dpto == 7 & loc_code == 734000
+
+	* Florida
+    drop if dpto == 8 & loc_code == 834000
+
+	* Lavalleja
+    drop if dpto == 9 & loc_code == 934000
+
+    * Maldonado
+    drop if dpto == 10 & loc_code == 1035000
+
+	* Paysandu
+    drop if dpto == 11 & loc_code == 1136000
+
+	* Rio Negro
+    drop if dpto == 12 & loc_code == 1236000
+	
+    *Rivera
+    drop if dpto == 13 & loc_code == 1331000
+	
+    *Rocha
+    drop if dpto == 14 & loc_code == 1435000
+	
+	* Salto
+    drop if dpto == 15 & loc_code == 1536000
+
+    *San Jose
+    drop if dpto == 16 & loc_code == 1632000
+
+    *Soriano
+    drop if dpto == 17 & loc_code == 1732000
+
+    *Tacuarembo
+    drop if dpto == 18 & loc_code == 1833000
+
+    *Treinta y Tres
+    drop if dpto == 19 & loc_code == 1931000
+end
+
 main_homogeneize_geo_vars
+
