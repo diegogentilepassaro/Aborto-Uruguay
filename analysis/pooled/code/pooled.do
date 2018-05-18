@@ -5,6 +5,8 @@ program main
 	qui do ../../globals.do
 	global controls = "nbr_people ind_under14 edad married y_hogar_alt"
 
+	pooled_births,  num_periods(6) time(anio_sem)
+
 	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6) int_mvd(int_mvd)
 	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
 	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
@@ -45,6 +47,86 @@ syntax, num_periods(int) time(str) event_date(str)
 	assert !mi(t)
 end
 
+capture program drop pooled_births
+program              pooled_births
+syntax,  num_periods(int) time(str)
+	* Merge data
+	use ..\..\..\assign_treatment\output\births15.dta, clear
+	drop if mi(fecparto)
+	drop if inlist(depar,20,99) | inrange(edadm,45,49)
+
+	if "`time'" == "anio_sem" {
+		local time_label "Semesters"
+		local times "anio anio_sem"
+	}
+	else {
+		local time_label "Years"
+		local times "anio"
+	}
+	
+	collapse (count) births=edadm, by(`times' age_min age_max depar dpto impl_date_dpto treatment_rivera treatment_florida)
+	isid `time' age_min age_max dpto
+
+	merge m:1 depar age_min age_max anio using ..\..\..\derived\output\population_fertile_age.dta, assert(3)
+	gen TFR_agegroup = births/pop
+
+	collapse (sum) TFR = TFR_agegroup, by(`times' dpto impl_date_dpto treatment_rivera treatment_florida depar)
+	isid `time' dpto
+	replace TFR = 5 * TFR
+	lab var TFR "Total Fertility Rate"
+	
+	* Define treatment var & assign "fake" impl_date to controls
+		gen treatment = (treatment_florida==1  |   treatment_rivera==1) ///
+				if   !mi(treatment_florida)|!mi(treatment_rivera)
+		foreach d in rivera florida {
+			qui sum impl_date_dpto             if treatment_`d'==1
+			replace impl_date_dpto = `r(mean)' if treatment_`d'==0 
+		}
+		assign_impl_date_mvd, dpto_list(,3,16,9,10)
+		replace treatment = 1 if inlist(dpto,3,16)
+		replace treatment = 0 if inlist(dpto,9,10)
+
+	keep if !mi(impl_date_dpto) 
+	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
+
+	egen Treatment = mean(TFR) if treatment==1, by(t)
+	egen Control   = mean(TFR) if treatment==0, by(t)
+	egen tag_t = tag(t) if treatment==1
+	egen tag_c = tag(t) if treatment==0
+	
+	twoway  (connected Treatment t if tag_t & inrange(t,1,13), sort) ///
+			(connected Control   t if tag_c & inrange(t,1,13), sort), ///
+		graphregion(color(white)) bgcolor(white) ///
+		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") ///
+		xtitle("`time_label' relative to IS implementation") ///
+		xline(6.5 7.5, lcolor(black) lpattern(dot)) ytitle(`: var lab TFR')
+	graph export ../output/pooled_did_births.pdf, replace
+	
+	keep if treatment==1 | dpto==1
+
+		egen mean = mean(TFR), by(t)
+		lab var mean "`: var lab TFR'"
+		egen tag = tag(t)
+		qui sum TFR if inrange(t, 1, `num_periods')
+		local target_mean = r(mean)
+
+		twoway connected mean t if tag & inrange(t,1,13), sort ///
+			graphregion(color(white)) bgcolor(white) ///
+			xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") ///
+			xline(6.5 7.5, lcolor(black) lpattern(dot)) ///
+			xtitle("`time_label' relative to IS implementation") ///
+			yline(`target_mean', lpattern(dashed))
+		graph export ../output/pooled_es_births_t.pdf, replace
+
+		egen mean2 = mean(TFR), by(`time')
+		lab var mean2 "`: var lab TFR'"
+		egen tag2 = tag(`time')
+
+		twoway connected mean2 `time' if tag2 , sort xtitle("`time_label'") ///
+			 graphregion(color(white)) bgcolor(white)
+		graph export ../output/pooled_es_births_`time'.pdf, replace
+end
+
 capture program drop pooled_es
 program              pooled_es
 syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(str) groups_vars(str) restr(str)]
@@ -81,14 +163,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		keep if !mi(impl_date_dpto)  //drop Montevideo
 	}
 
-	if "`time'" == "anio_qtr" {
-		local weight pesotri
-		gen post = (`time' >= qofd(impl_date_dpto))
-		qui sum `time'
-		local min_year = year(dofq(r(min)))
-		local time_label "Quarters"
-	}
-	else if "`time'" == "anio_sem" {
+	if "`time'" == "anio_sem" {
 		local weight pesosem
 		gen post = (`time' >= hofd(impl_date_dpto))
 		qui sum `time'
@@ -177,7 +252,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 	}
 
 	gen treatment = (treatment_florida_c==1  |   treatment_rivera_c==1) ///
-			if   !mi(treatment_florida_c==1)|!mi(treatment_rivera_c==1)
+			if   !mi(treatment_florida_c)   |!mi(treatment_rivera_c)
 	foreach city in rivera florida {
 		qui sum impl_date_dpto             if treatment_`city'_c==1
 		replace impl_date_dpto = `r(mean)' if treatment_`city'_c==0 

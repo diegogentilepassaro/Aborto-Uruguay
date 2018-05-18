@@ -47,6 +47,7 @@ program derived_data
 	replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & madeult==6
 	
 	* Birth date
+	drop if mi(fecparto)
 	replace fecparto = "jan" + substr(fecparto,4, .) if substr(fecparto, 1, 3) == "ene"
 	replace fecparto = "apr" + substr(fecparto,4, .) if substr(fecparto, 1, 3) == "abr"
 	replace fecparto = "aug" + substr(fecparto,4, .) if substr(fecparto, 1, 3) == "ago"
