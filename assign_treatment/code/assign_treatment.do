@@ -45,8 +45,9 @@ program assign_treatment_births
 	local restr_young   " & age_young==1"
 	local restr_adult   " & age_young==0"
 	foreach age_group in "" "_young" "_adult" {
-		gen treatment_rivera`age_group' =  (depar == 13 `restr`age_group'') if inlist(depar,13,1,3)
-		gen treatment_salto`age_group'  =  (depar == 15 `restr`age_group'') if inlist(depar,15,11,12)
+		gen treatment_rivera`age_group'  = (dpto == 13 `restr`age_group'') if inlist(dpto,13,4,2)
+		gen treatment_salto`age_group'   = (dpto == 15 `restr`age_group'') if inlist(dpto,15,11,12)
+		gen treatment_florida`age_group' = (dpto == 8  `restr`age_group'') if inlist(dpto,8,5,7)
 		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
 		lab define treatment_salto`age_group' 0 "Control`age_group'" 1 "Salto`age_group'" 
 	}
