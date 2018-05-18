@@ -7,17 +7,17 @@ program main
 
 	pooled_births,  num_periods(6) time(anio_sem)
 
-	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6) int_mvd(int_mvd)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
-	pooled_es, data(births) time(anio_sem) geo_var(dpto)     num_periods(6) int_mvd(all)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(all) outcome(trabajo)
-	pooled_es, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(all) outcome(horas_trabajo)
+	pooled_es, data(births) time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd)
+	pooled_es, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
+	pooled_es, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
+	pooled_es, data(births) time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(all)
+	pooled_es, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(all) outcome(trabajo)
+	pooled_es, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(all) outcome(horas_trabajo)
 
-	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
-	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
-	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(trabajo)
-	pooled_did, data(ech)    time(anio_sem) geo_var(loc_code) num_periods(6) int_mvd(riv_flo) outcome(horas_trabajo)
+	pooled_did, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd) outcome(trabajo)
+	pooled_did, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd) outcome(horas_trabajo)
+	pooled_did, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(riv_flo) outcome(trabajo)
+	pooled_did, data(ech)    time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(riv_flo) outcome(horas_trabajo)
 end
 
 capture program drop assign_impl_date_mvd
@@ -268,7 +268,7 @@ syntax, data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) [outcome(
 		keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop Montevideo, San Jose, and Canelones
 	}
 
-	assert !mi(treatment)
+	//assert !mi(treatment)
 	
 	
 	if "`time'" == "anio_qtr" {
