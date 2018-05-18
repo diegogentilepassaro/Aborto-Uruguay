@@ -35,17 +35,17 @@ program main_scm
 				}
 					
 			build_synth_control, outcomes(`outcome_vars') city(`city') time(anio_sem)  ///
-				controls(`add_control_vars') special_legend(`special_legend') geo_var(loc_code) ///
+				controls(`add_control_vars') special_legend(`special_legend') geo_var(dpto) ///
 				sample_restr(`sample_restr')
 				
 			/*build_synth_control, outcomes(`outcome_vars') city(`city') time(anio)  ///
-				controls(`add_control_vars') special_legend(`special_legend') geo_var(loc_code) ///
+				controls(`add_control_vars') special_legend(`special_legend') geo_var(dpto) ///
 				sample_restr(`sample_restr')*/
 			
-			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(loc_code) ///
+			plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(dpto) ///
 				time(anio_sem) stub_list(``group_vars'_stubs') special_legend(`special_legend')
 
-			/*plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(loc_code) ///
+			/*plot_scm, outcomes(``group_vars'_vars') city(`city') groups_vars(`group_vars') geo_var(dpto) ///
 				time(anio) stub_list(``group_vars'_stubs') special_legend(`special_legend')*/
 		}
 
@@ -79,44 +79,35 @@ program build_synth_control
 
 	* Setup time settings by: qtr, sem, yr
 	* Keep if in analysis period and if without implementations in the anlysis period
-	if "`time'" == "anio_qtr" {
-			local event_date = tq(${q_date_`city'})
-			local weight pesotri
-			local lag_list `" ${q_lag_list} "' 
-			keep if inrange(`time', `event_date' - ${q_scm_pre} ,  `event_date' + ${q_scm_post})
-			keep if treatment_`city'==1 | ((qofd(impl_date_dpto) > `event_date' + ${q_scm_post})| mi(impl_date_dpto))
-			qui sum `time'	
-			local min_year = year(dofq(r(min)))
-		}
-		else if "`time'" == "anio_sem" {
-			local event_date = th(${s_date_`city'})	
-			local weight pesosem
-			local lag_list `" ${s_lag_list} "'
-			keep if inrange(`time', `event_date' - ${s_scm_pre} ,  `event_date' + ${s_scm_post})
-			keep if treatment_`city'==1 | ((hofd(impl_date_dpto) > `event_date' + ${s_scm_post})| mi(impl_date_dpto))
-			qui sum `time'	
-			local min_year = year(dofh(r(min)))
-		}
-		else {
-			local event_date = ${y_date_`city'}	
-			local weight pesoan
-			local lag_list `" ${y_lag_list} "' 
-			keep if inrange(`time', `event_date' - ${y_scm_pre} ,  `event_date' + ${y_scm_post})
-			keep if treatment_`city'==1 | ((yofd(impl_date_dpto) > `event_date' + ${y_scm_post})| mi(impl_date_dpto))
-			qui sum `time'
-			local min_year = r(min)
-		}		
+	if "`time'" == "anio_sem" {
+		local event_date = th(${s_date_`city'})	
+		local weight pesosem
+		local lag_list `" ${s_lag_list} "'
+		keep if inrange(`time', `event_date' - ${s_scm_pre} ,  `event_date' + ${s_scm_post})
+		keep if treatment_`city'==1 | ((hofd(impl_date_dpto) > `event_date' + ${s_scm_post})| mi(impl_date_dpto))
+		qui sum `time'	
+		local min_year = year(dofh(r(min)))
+	}
+	else {
+		local event_date = ${y_date_`city'}	
+		local weight pesoan
+		local lag_list `" ${y_lag_list} "' 
+		keep if inrange(`time', `event_date' - ${y_scm_pre} ,  `event_date' + ${y_scm_post})
+		keep if treatment_`city'==1 | ((yofd(impl_date_dpto) > `event_date' + ${y_scm_post})| mi(impl_date_dpto))
+		qui sum `time'
+		local min_year = r(min)
+	}		
 
 	* Setup the controls to be used depending on the period
 	if `min_year' < 2001  {
 		local control_vars " c98_* "
-		}
+	}
 	else if `min_year' >=2001 & `min_year' < 2006  {
 		local control_vars " c98_* c01_* "
-		}
+	}
 	else {
 		local control_vars " c98_* c01_* c06_* "
-		}
+	}
 		
 	* Get identifier of treated unit, and collapse data by time and `geo_var'
 	qui sum `geo_var' if treatment_`city'==1 | placebo_`city'==1
@@ -195,27 +186,20 @@ program plot_scm
 	use "../temp/controltrends_`city'_`time'_`geo_var'`special_legend'.dta", clear
 
 	* Setup time settings by: qtr, sem, yr
-    if "`time'" == "anio_qtr" {
-	    format `time' %tq 
-		local range "if inrange(`time', tq(${q_date_`city'}) - ${q_pre},tq(${q_date_`city'}) + ${q_post}) "
-		local vertical = tq(${q_date_`city'}) - 0.5
-        local vertical2= tq(${q_date_`city'}) + 2.5  
-		local xtitle "Year-qtr"
-		}
-		else if "`time'" == "anio_sem" {
+    if "`time'" == "anio_sem" {
 		format `time' %th
 		local range "if inrange(`time', th(${s_date_`city'}) - ${s_pre},th(${s_date_`city'}) + ${s_post}) "
 		local vertical = th(${s_date_`city'}) - 0.5
         local vertical2= th(${s_date_`city'}) + 1.5  
 		local xtitle "Year-half"		
-		}
-		else {
+	}
+	else {
 		format `time' %ty
 		local range "if inrange(`time', ${y_date_`city'} - ${y_pre}, ${y_date_`city'} + ${y_post}) "
 		local vertical = ${y_date_`city'} - 0.5
         local vertical2= ${y_date_`city'} + 0.5   
 		local xtitle "Year"	
-		}
+	}
 	local number_outcomes: word count `outcomes'
 	tsset `time'
 	
@@ -226,12 +210,12 @@ program plot_scm
 		
 		tssmooth ma `city'_`outcome_var' = `city'_`outcome_var', window(1 1 0) replace
 		tssmooth ma s_`city'_`outcome_var' = s_`city'_`outcome_var', window(1 1 0) replace
-		 if "`outcome_var'" == "trabajo" {
+		if "`outcome_var'" == "trabajo" {
 			        local ylabel "0.45 (0.1) 0.65"
-			    }
-			    else if "`outcome_var'" == "horas_trabajo" {
-			        local ylabel "25 (10) 45"
-			    }
+	    }
+	    else if "`outcome_var'" == "horas_trabajo" {
+	        local ylabel "25 (10) 45"
+	    }
 				
 		qui twoway (line `city'_`outcome_var' `time' `range', recast(connected) mc(blue) lc(blue)) ///
 			     (line s_`city'_`outcome_var' `time' `range', recast(connected) mc(red)  lc(red)), xtitle("`xtitle'") ///

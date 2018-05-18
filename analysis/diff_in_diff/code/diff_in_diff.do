@@ -18,15 +18,15 @@ program main_diff_analysis
         foreach group_vars in labor /*educ*/ {
 
             plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) plot_option(trend) ///
-                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(loc_code)
+                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(dpto)
 
             /*plot_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) plot_option(trend) ///
-                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(loc_code)*/
+                stubs(``group_vars'_stubs') restr(``group_vars'_restr') groups_vars(`group_vars') geo_var(dpto)*/
 
-            reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) geo_var(loc_code) ///
+            reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio_sem) geo_var(dpto) ///
                 restr(``group_vars'_restr') groups_vars(`group_vars')
 
-            /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) geo_var(loc_code) ///
+            /*reg_diff, outcomes(``group_vars'_vars') treatment(`city') time(anio) geo_var(dpto) ///
                 restr(``group_vars'_restr') groups_vars(`group_vars')*/
         }
     }
@@ -67,14 +67,7 @@ program plot_diff
     
     keep if !mi(treatment_`treatment')
     
-    if "`time'" == "anio_qtr" {
-        local weight pesotri
-        local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
-        local xtitle "Year-qtr"
-        local vertical = tq(${q_date_`treatment'}) - 0.5
-        local vertical2= tq(${q_date_`treatment'}) + 2.5  
-    }
-    else if "`time'" == "anio_sem" {
+    if "`time'" == "anio_sem" {
         local weight pesosem
         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
         local xtitle "Year-half"
@@ -225,34 +218,28 @@ program reg_diff
         }        
         *cap keep if `restr'
         
-        if "`time'" == "anio_qtr" {
-                local weight pesotri
-                local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
-                qui sum `time' `range'
-                local min_year = year(dofq(r(min)))
-            }
-            else if "`time'" == "anio_sem" {
-                local weight pesosem
-                local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
-                qui sum `time' `range'
-                local min_year = year(dofh(r(min)))
-            }
-            else {
-                local weight pesoan
-                local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, ${y_date_`treatment'} + ${y_post}) "
-                qui sum `time' `range'    
-                local min_year = r(min)
-            }
+        if "`time'" == "anio_sem" {
+            local weight pesosem
+            local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
+            qui sum `time' `range'
+            local min_year = year(dofh(r(min)))
+        }
+        else {
+            local weight pesoan
+            local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, ${y_date_`treatment'} + ${y_post}) "
+            qui sum `time' `range'    
+            local min_year = r(min)
+        }
 
         if `min_year' < 2001  {
             local control_vars " c98_* "
-            }
+        }
         else if `min_year' >=2001 & `min_year' < 2006  {
             local control_vars " c98_* c01_* "
-            }
+        }
         else {
             local control_vars " c98_* c01_* c06_* "
-            }
+        }
 
         save ..\temp\did_reg_sample.dta, replace
 
@@ -273,15 +260,12 @@ program reg_diff
                 local estimation = "reg"
             }
                 
-            if "`time'" == "anio_qtr" {
-                    gen post = (`time' >= tq(${q_date_`treatment'}))
-                } 
-                else if "`time'" == "anio_sem" {
-                    gen post = (`time' >= th(${s_date_`treatment'}))
-                }
-                else {
-                    gen post = (`time' >= ${y_date_`treatment'})
-                }
+            if "`time'" == "anio_sem" {
+                gen post = (`time' >= th(${s_date_`treatment'}))
+            }
+            else {
+                gen post = (`time' >= ${y_date_`treatment'})
+            }
            
 		    foreach cond in "" "& kids_`treatment' == 1" "& kids_`treatment' == 0" "& single == 0" "& single == 1" /*"& young == 0" "& young == 1"*/ {
                 
@@ -309,7 +293,7 @@ program reg_diff
                     matrix COLUMN_placebo = ((_b[interaction] \ _se[interaction]) \ e(N))
                    
                     drop interaction
-                    }
+                }
                 else {
                     foreach age_group in "_young" "_adult" "_placebo" {
 
@@ -323,13 +307,12 @@ program reg_diff
                         matrix COLUMN`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
                 
                         drop interaction
-                        }
                     }
+                }
     			
                 matrix COLUMN = (COLUMN_young , COLUMN_adult, COLUMN_placebo)
                 matrix ROW = (nullmat(ROW) \ COLUMN)
 			}
-			
             matrix TABLE = (nullmat(TABLE) , ROW)
 			matrix drop ROW
 			drop post
