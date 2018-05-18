@@ -1,14 +1,14 @@
 
- make.py started: 2018-05-17 15:21:14 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\code 
+ make.py started: 2018-05-18 15:03:19 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./homogeneize_geo_vars.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./homogeneize_geo_vars.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -33,8 +33,8 @@ Notes:
 . set more off
 
 . adopath + ../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -552,11 +552,11 @@ file ..\temp\clean_loc_1998_2016.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./prepare_for_analysis.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./prepare_for_analysis.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -565,8 +565,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -581,8 +581,8 @@ Notes:
 . set more off
 
 . adopath + ../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -884,9 +884,9 @@ file ..\temp\clean_loc_1998_2016_fixed.dta saved
 (14 missing values generated)
 (14 missing values generated)
 (14 observations deleted)
-(0 real changes made)
+(227 real changes made, 227 to missing)
 (data now sorted by numero pers anio)
-  variable D was int now byte
+  variable horas_trabajo was int now byte
   variable poor was float now byte
   variable indigente was float now byte
   variable ind_under14 was float now byte
@@ -903,7 +903,7 @@ File: ..\output\clean_loc_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:87(54556):2563915162:3068251731
+  1759109:80(60799):2179803563:2705949194
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -913,7 +913,7 @@ Key: numero pers anio
    inflation |  1,759,109    8.087328    3.618307       3.59      25.94
     cpi_2006 |  1,759,109    126.8955    48.03314   48.00595   217.6432
 -------------+---------------------------------------------------------
-           D |          0
+    cpi_2009 |  1,759,109    100.6334    38.70388   37.53526   173.4749
       semana |    171,877    24.40203    13.83498          1         48
         dpto |  1,759,109    5.324262    5.684808          1         19
         secc |  1,616,508    10.20737    16.91198          0         99
@@ -922,28 +922,28 @@ Key: numero pers anio
      estrato |  1,759,109    5.293571     2.91119          1         12
       hombre |  1,759,109     .466954    .4989069          0          1
         edad |  1,759,109    36.72029    23.44052          0         99
-horas_trab~o |  1,759,109    17.44712    22.39598          0         99
-       pf133 |    171,877      .80091    .9642192          0          2
+    pobpcoac |  1,759,109    3.830927    3.218979          1         99
+horas_trab~p |  1,759,109     17.3715    22.29389          0         99
 -------------+---------------------------------------------------------
+horas_trab~s |  1,759,109    .9028628    4.851377          0         98
+horas_trab~o |  1,758,882    18.36416    23.38552          0         99
 busca_trab~o |  1,759,109    .0726709    .2595956          0          1
 meses_trab~o |  1,480,086    1.040192     4.05217          0         80
 anios_trab~o |  1,480,086    3.611756    7.816181          0         98
+-------------+---------------------------------------------------------
       ytotal |  1,759,109    9136.568    17498.91          0    7244333
      pesotri |  1,758,514    113.8277    51.55826          1        635
--------------+---------------------------------------------------------
      pesosem |  1,655,497    56.69414    26.52581          5        318
       pesoan |  1,759,109    28.65458    13.12689          1        159
          ccz |  1,675,778    4.484672    5.656404          0         18
+-------------+---------------------------------------------------------
          loc |          0
       nomloc |          0
--------------+---------------------------------------------------------
   nbr_people |  1,759,109    3.786697    1.891253          1         27
  nbr_above14 |  1,759,109     2.79666    1.266172          1         16
  nbr_under14 |  1,759,109    .9898903     1.28242          0         14
-     y_hogar |  1,759,109    28487.45    36065.88          0    7681180
-  educ_level |  1,759,109    1.312562    .5983129          1          3
 -------------+---------------------------------------------------------
-  estudiante |  1,759,109    .0684847    .2525758          0          1
+     y_hogar |  1,759,109    28487.45    36065.88          0    7681180
 c98_resid_~e |  1,759,109    .9950901    .0698983          0          1
 c98_resid_~d |  1,759,109    .6438868    .4788494          0          1
 c98_nbr_ro~s |  1,759,109    3.573306    1.317593          0         80
@@ -963,52 +963,43 @@ c98_hhld_d~r |  1,759,109     .045029    .2073679          0          1
 -------------+---------------------------------------------------------
 c98_hhld_m~e |  1,759,109    .4894421    .4998887          0          1
 c98_hhld_car |  1,759,109    .3567158      .47903          0          1
-     married |  1,496,996    .5152191    .4997685          0          1
- y_hogar_alt |  1,759,109    28630.53    33402.05          0    7289481
    trimestre |  1,759,109    2.497536    1.117467          1          4
--------------+---------------------------------------------------------
-     trabajo |  1,759,109    .4211757    .4937478          0          1
+     married |  1,496,996    .5152191    .4997685          0          1
        etnia |  1,308,209    2.310405    .9646923          0          4
-         mes |  1,587,232    6.492924    3.446314          1         12
-          e9 |    279,023    1.656785    .5465775          0          2
-c01_hhld_c~r |  1,587,232    .5325894     .498937          0          1
 -------------+---------------------------------------------------------
+  estudiante |  1,759,109    .0633935    .2436694          0          1
+     trabajo |  1,759,109    .4466744    .4971484          0          1
+ y_hogar_alt |  1,759,109    28630.53    33402.05          0    7289481
+  educ_level |  1,759,109    1.312562    .5983129          1          3
+         mes |  1,587,232    6.492924    3.446314          1         12
+-------------+---------------------------------------------------------
+   trabajo_1 |  1,587,232    .4217613    .4938409          0          1
+c01_hhld_c~r |  1,587,232    .5325894     .498937          0          1
 c01_hhld_i~t |  1,587,232    .3749754    .4841167          0          1
 c01_hhld_p~e |  1,587,232    .7338524    .4419425          0          1
 c01_hhld_c~v |  1,587,232    .5672334    .4954592          0          1
+-------------+---------------------------------------------------------
     region_3 |  1,308,209    1.563886    .5254396          1          3
     region_4 |  1,308,209    1.564025    .5259491          1          4
--------------+---------------------------------------------------------
-        afro |    421,145    .0147051      .12037          0          1
-        asia |    421,145    .0009355    .0305724          0          1
-      blanco |    421,145    .8540313    .3530753          0          1
-    indigena |    421,145    .0026642    .0515468          0          1
+     pesomen |  1,201,681    279.6954    101.5616          1       1384
  live_births |  1,079,715    .7560264    .7397838          0          2
--------------+---------------------------------------------------------
 live_birth~r |  1,079,715    1.035443    1.722018          0         72
-         e48 |    176,950    1.712682    .4525376          0          2
+-------------+---------------------------------------------------------
        li_06 |  1,750,880    1620.149    584.9775   363.3281       3021
        lp_06 |  1,750,880    17111.84    9447.677   1585.694   132026.8
 c06_mat_wa~s |  1,308,209    .9747227    .1569662          0          1
--------------+---------------------------------------------------------
 c06_mat_roof |  1,308,209    .6013045      .48963          0          1
 c06_mat_fl~r |  1,308,209    .8012741    .3990414          0          1
-c06_b_electr |  1,308,209    .9971006    .0537678          0          1
-     mestizo |    421,145    .1229244    .3283508          0          1
-        otro |    421,145    .0047395    .0686805          0          1
 -------------+---------------------------------------------------------
-         e50 |    244,195    1.719056    .4494609          1          2
- ascendencia |    887,064    2.932836    .4121994          1          5
-         e49 |    887,064    1.213387    .4097044          0          2
+c06_b_electr |  1,308,209    .9971006    .0537678          0          1
     loc_code |  1,759,109    542400.7    574611.9     101010    1919020
         poor |  1,759,109    .3697667    .4827416          0          1
--------------+---------------------------------------------------------
    indigente |  1,759,109    .0130191    .1133561          0          1
  ind_under14 |  1,759,109    .5127584    .4998373          0          1
+-------------+---------------------------------------------------------
     semestre |  1,759,109    1.499238    .4999996          1          2
     anio_sem |  1,759,109    97.08514     10.0608         76        113
     anio_qtr |  1,759,109    194.6693    20.12793        152        227
--------------+---------------------------------------------------------
 educ_more_HS |  1,759,109    .0715555    .2577506          0          1
 educ_HS_or~e |  1,759,109    .2410067    .4276945          0          1
 
@@ -1022,11 +1013,11 @@ file ..\output\clean_loc_1998_2016.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./population.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./population.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1035,8 +1026,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1157,459 +1148,459 @@ Notes:
  26.                 }
  27.         }
  28. }
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000010.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000011.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000012.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000013.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000014.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000015.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000016.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000017.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000018.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000019.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00001x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000020.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000021.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000022.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000023.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000024.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000025.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000026.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000027.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000028.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000029.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00002x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000030.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000031.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000032.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000033.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000034.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000035.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000036.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000037.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000038.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000039.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00003a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00003b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00003c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -1677,8 +1668,10 @@ file ..\output\population.dta saved
 . gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages=
 > =0)
 
-. collapse (sum) pop if all_ages==0 & fertile_age==1, by(depar anio age_min age
-> _max)
+. collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
+
+. drop if inrange(anio,1996,1998) | inrange(anio,2016,2020)
+(912 observations deleted)
 
 . 
 . save "..\output\population_fertile_age.dta", replace
@@ -1689,11 +1682,11 @@ file ..\output\population_fertile_age.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1702,8 +1695,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1863,23 +1856,23 @@ Notes:
 
 . 
 . main
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000002.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000005.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000006.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000008.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000b.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000c.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000e.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -1905,4 +1898,4 @@ file ..\output\births_derived.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-05-17 15:26:39
+ make.py ended: 2018-05-18 15:06:07

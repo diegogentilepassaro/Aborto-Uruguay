@@ -106,6 +106,7 @@ save "..\output\population.dta", replace
 
 * Collapse to women of fertile age and save table
 gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages==0)
-collapse (sum) pop if all_ages==0 & fertile_age==1, by(depar anio age_min age_max)
+collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
+drop if inrange(anio,1996,1998) | inrange(anio,2016,2020)
 
 save "..\output\population_fertile_age.dta", replace
