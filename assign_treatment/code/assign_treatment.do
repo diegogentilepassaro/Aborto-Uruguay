@@ -5,8 +5,8 @@ adopath + ../../library/stata/gslab_misc/ado
 program main_assign_treatment
     do ../../analysis/globals.do
     clean_impl_date
-    assign_treatment_births
-    assign_treatment_ech
+    assign_treatment_births, num_periods(6)
+    assign_treatment_ech   , num_periods(6)
 end
 
 program clean_impl_date
@@ -26,7 +26,7 @@ syntax, age_var(string)
 	gen age_young   = inrange(`age_var',16,30)
 	gen age_adult   = inrange(`age_var',31,45)
 	gen age_placebo = inrange(`age_var',46,60)
-	gen fertile_age = inrange(`age_var',16,45) if inrange(`age_var',16,60)
+	gen age_fertile = inrange(`age_var',16,45) if inrange(`age_var',16,60)
 	egen    age_group = cut(`age_var') , at(16(5)50)
 	replace age_group = age_group+2
 
@@ -34,86 +34,129 @@ syntax, age_var(string)
 	lab val age_young                 age_young
 end
 
+capture program drop assign_impl_date_mvd
+program              assign_impl_date_mvd
+syntax, dpto_list(str)
+	qui sum impl_date_dpto if dpto==1
+	replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
+	qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
+	assert `r(sd)'==0
+end
+
+capture program drop relative_time
+program              relative_time
+syntax, num_periods(int) time(str) event_date(str)
+	if "`time'" == "anio_qtr" { //+1 since impl_date marks beginning of post
+		gen t = `time' - qofd(`event_date')
+	}
+	else if "`time'" == "anio_sem" {
+		gen t = `time' - hofd(`event_date')
+	}
+	else {
+		gen t = `time' - yofd(`event_date')
+	}
+	replace t = t + `num_periods' + 1  //to make t>=0 for the event window
+	replace t = 0    if t < 0
+	replace t = 1000 if t >  2*`num_periods' + 1
+	assert !mi(t)
+	tab t,m
+	replace t = t+1 if t<1000
+	tab t,m
+end
+
+
+program create_treat_vars
+syntax, [restr(str)]
+	* TC groups
+	local subs         " & age_fertile == 1 `restr' "
+	local subs_young   " & age_young   == 1 `restr' "
+	local subs_adult   " & age_adult   == 1 `restr' " 
+	local subs_placebo " & age_placebo == 1 `restr' "
+	
+	foreach age_group in "" "_young" "_adult" "_placebo" {
+		gen treatment_rivera`age_group'  = (dpto == 13) if inlist(dpto,13,4,2)   `subs`age_group''
+		gen treatment_salto`age_group'   = (dpto == 15) if inlist(dpto,15,11,12) `subs`age_group''
+		gen treatment_florida`age_group' = (dpto == 8)  if inlist(dpto,8,5,7)    `subs`age_group''
+		
+		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
+		lab define treatment_salto`age_group'  0 "Control`age_group'" 1 "Salto`age_group'" 
+
+		gen     treatment`age_group' = 1 if inlist(dpto,13, 15,   8,  3,16) `subs`age_group''
+		replace treatment`age_group' = 0 if inlist(dpto,2,4,11,12,5,7,9,10) `subs`age_group''
+	}
+	* Assign impl_date (to controls and Mvd)
+	qui sum impl_date_dpto             if dpto == 13 
+	replace impl_date_dpto = `r(mean)' if inlist(dpto,4,2)
+	qui sum impl_date_dpto             if dpto == 8
+	replace impl_date_dpto = `r(mean)' if inlist(dpto,5,7)
+	assign_impl_date_mvd, dpto_list(,3,16,9,10)
+end
+
 program assign_treatment_births
+syntax, num_periods(int)
+	local time "anio_sem"
 	use ..\..\derived\output\births_derived.dta, clear
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
-	new_age_vars, age_var(edadm)
-	rename yob yobm
-
-	* TC groups
-	local restr         ""
-	local restr_young   " & age_young==1"
-	local restr_adult   " & age_young==0"
-	foreach age_group in "" "_young" "_adult" {
-		gen treatment_rivera`age_group'  = (dpto == 13 `restr`age_group'') if inlist(dpto,13,4,2)
-		gen treatment_salto`age_group'   = (dpto == 15 `restr`age_group'') if inlist(dpto,15,11,12)
-		gen treatment_florida`age_group' = (dpto == 8  `restr`age_group'') if inlist(dpto,8,5,7)
-		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
-		lab define treatment_salto`age_group' 0 "Control`age_group'" 1 "Salto`age_group'" 
-	}
+	rename edadm edad
+	new_age_vars, age_var(edad)
+	gen hombre = 0
+	create_treat_vars, restr(" & hombre==0 ")
+	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
+	local omitted = `num_periods'+1 //tr_t = treatment*t
+	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
+	*rename yob yobm
 
 	preserve
-		replace edadm = 15 if inrange(edadm,0,14)
-		replace edadm = 49 if inrange(edadm,50,99)
-		keep if inrange(edadm,15,49) 
-		egen age_group15 = cut(edadm) ,at(15(5)50)
-		bys age_group15: egen age_min = min(edadm)
-		bys age_group15: egen age_max = max(edadm)
+		replace edad = .  if edad == 99
+		replace edad = 15 if inrange(edad,0,14)
+		replace edad = 49 if inrange(edad,50,98)
+		keep if inrange(edad,15,49) 
+		egen age_group15 = cut(edad) ,at(15(5)50)
+		bys age_group15: egen age_min = min(edad)
+		bys age_group15: egen age_max = max(edad)
 		save "..\output\births15.dta", replace
 	restore
 
-	keep if inrange(edadm,16,45)
+	keep if inrange(edad,16,45)
 	save "..\output\births.dta", replace
 end
 
 program assign_treatment_ech
+syntax, num_periods(int)
+	local time "anio_sem"
     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
 	new_age_vars, age_var(edad)
+	create_treat_vars, restr(" & hombre==0 ")
+	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
+	local omitted = `num_periods'+1 //tr_t = treatment*t
+	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
+	
+	* Placebo (men) for case studies and SCM
+	gen placebo_rivera  = (dpto == 13) if inlist(dpto,13,4,2)   & hombre==1
+	gen placebo_salto   = (dpto == 15) if inlist(dpto,15,11,12) & hombre==1
+	gen placebo_florida = (dpto == 8)  if inlist(dpto,8,5,7)    & hombre==1	
+	
+	* Kids before implementation (state-dependent)
+	foreach s in rivera salto florida {
+		gen age_`s'     = ${y_date_`s'} - yob
+		gen under14_`s' = (inrange(age_`s',0,14))
+		bys anio numero : egen nbr_under14_`s' = total(under14_`s')
+		gen kids_`s'    = (nbr_under14_`s' > 0)
+	}
+	gen     kids_before = kids_rivera  if !mi(treatment_rivera)  | !mi(treatment_rivera_placebo)
+	replace kids_before = kids_florida if !mi(treatment_florida) | !mi(treatment_florida_placebo)
+	gen     age_mvd     = ${y_date_mvd} - yob
+	gen     under14_mvd = (inrange(age_mvd,0,14))
+	bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
+	replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,3,16,9,10)
 
-	* Variables for the triple diff
+	* Variables for the Mvd triple diff
 	gen female      = (hombre==0)             if !mi(hombre)
 	gen single      = (married==0)            if !mi(married)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
 	
-	foreach city in rivera salto florida {
-		gen age_`city'     = ${y_date_`city'} - yob
-		gen under14_`city' = (inrange(age_`city',0,14))
-		bys anio numero: egen nbr_under14_`city' = total(under14_`city')
-		gen kids_`city' = (nbr_under14_`city' > 0)
-	}
-	
-	* TC groups
-	local restr         " & inrange(edad, 16, 45)"
-	local restr_young   " & age_young==1 "
-	local restr_adult   " & age_adult==1 "
-	local restr_placebo " & age_placebo==1 "
-
-	foreach age_group in "" "_young" "_adult" "_placebo" {
-		local value = 0
-		foreach var in treatment placebo {
-			if "`var'"=="placebo" & inlist("`age_group'","_young","_adult","_placebo") {
-				continue
-			}
-			else {
-				local subsample " hombre == `value'  `restr`age_group''"
-				*gen `var'`age_group'_rivera  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
-				*gen `var'`age_group'_salto   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
-				*gen `var'`age_group'_florida = (loc_code == 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
-
-				gen `var'`age_group'_rivera_c  = (loc_code == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio branco 431050 *artigas    202020
-				gen `var'`age_group'_salto_c   = (loc_code == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysandu 1111020  *fray bentos 1212020
-				gen `var'`age_group'_florida_c = (loc_code == 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
-
-				gen `var'`age_group'_rivera_s  = (dpto == 13) if (inlist(dpto,13,4,2)   & `subsample')
-				gen `var'`age_group'_salto_s   = (dpto == 15) if (inlist(dpto,15,11,12) & `subsample')
-				gen `var'`age_group'_florida_s = (dpto == 8)  if (inlist(dpto,8,5,7)    & `subsample')
-			}
-			local value = 1
-		}
-	}
-
     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
 end
 

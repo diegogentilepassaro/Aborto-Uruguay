@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-18 16:31:40 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-06-22 17:30:18 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -45,8 +45,8 @@ Notes:
 . program main_assign_treatment
   1.     do ../../analysis/globals.do
   2.     clean_impl_date
-  3.     assign_treatment_births
-  4.     assign_treatment_ech
+  3.     assign_treatment_births, num_periods(6)
+  4.     assign_treatment_ech   , num_periods(6)
   5. end
 
 . 
@@ -69,7 +69,7 @@ Notes:
   4.         gen age_young   = inrange(`age_var',16,30)
   5.         gen age_adult   = inrange(`age_var',31,45)
   6.         gen age_placebo = inrange(`age_var',46,60)
-  7.         gen fertile_age = inrange(`age_var',16,45) if inrange(`age_var',16
+  7.         gen age_fertile = inrange(`age_var',16,45) if inrange(`age_var',16
 > ,60)
   8.         egen    age_group = cut(`age_var') , at(16(5)50)
   9.         replace age_group = age_group+2
@@ -80,112 +80,157 @@ Notes:
  12. end
 
 . 
-. program assign_treatment_births
-  1.         use ..\..\derived\output\births_derived.dta, clear
-  2.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
->  3) nogen
-  3.         new_age_vars, age_var(edadm)
-  4.         rename yob yobm
-  5. 
-.         * TC groups
-.         local restr         ""
-  6.         local restr_young   " & age_young==1"
-  7.         local restr_adult   " & age_young==0"
-  8.         foreach age_group in "" "_young" "_adult" {
-  9.                 gen treatment_rivera`age_group'  = (dpto == 13 `restr`age_
-> group'') if inlist(dpto,13,4,2)
- 10.                 gen treatment_salto`age_group'   = (dpto == 15 `restr`age_
-> group'') if inlist(dpto,15,11,12)
- 11.                 gen treatment_florida`age_group' = (dpto == 8  `restr`age_
-> group'') if inlist(dpto,8,5,7)
- 12.                 lab define treatment_rivera`age_group' 0 "Control`age_grou
-> p'" 1 "Rivera`age_group'" 
- 13.                 lab define treatment_salto`age_group' 0 "Control`age_group
-> '" 1 "Salto`age_group'" 
+. capture program drop assign_impl_date_mvd
+
+. program              assign_impl_date_mvd
+  1. syntax, dpto_list(str)
+  2.         qui sum impl_date_dpto if dpto==1
+  3.         replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
+  4.         qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
+  5.         assert `r(sd)'==0
+  6. end
+
+. 
+. capture program drop relative_time
+
+. program              relative_time
+  1. syntax, num_periods(int) time(str) event_date(str)
+  2.         if "`time'" == "anio_qtr" { //+1 since impl_date marks beginning o
+> f post
+  3.                 gen t = `time' - qofd(`event_date')
+  4.         }
+  5.         else if "`time'" == "anio_sem" {
+  6.                 gen t = `time' - hofd(`event_date')
+  7.         }
+  8.         else {
+  9.                 gen t = `time' - yofd(`event_date')
+ 10.         }
+ 11.         replace t = t + `num_periods' + 1  //to make t>=0 for the event wi
+> ndow
+ 12.         replace t = 0    if t < 0
+ 13.         replace t = 1000 if t >  2*`num_periods' + 1
+ 14.         assert !mi(t)
+ 15.         tab t,m
+ 16.         replace t = t+1 if t<1000
+ 17.         tab t,m
+ 18. end
+
+. 
+. 
+. program create_treat_vars
+  1. syntax, [restr(str)]
+  2.         * TC groups
+.         local subs         " & age_fertile == 1 `restr' "
+  3.         local subs_young   " & age_young   == 1 `restr' "
+  4.         local subs_adult   " & age_adult   == 1 `restr' " 
+  5.         local subs_placebo " & age_placebo == 1 `restr' "
+  6.         
+.         foreach age_group in "" "_young" "_adult" "_placebo" {
+  7.                 gen treatment_rivera`age_group'  = (dpto == 13) if inlist(
+> dpto,13,4,2)   `subs`age_group''
+  8.                 gen treatment_salto`age_group'   = (dpto == 15) if inlist(
+> dpto,15,11,12) `subs`age_group''
+  9.                 gen treatment_florida`age_group' = (dpto == 8)  if inlist(
+> dpto,8,5,7)    `subs`age_group''
+ 10.                 
+.                 lab define treatment_rivera`age_group' 0 "Control`age_group'"
+>  1 "Rivera`age_group'" 
+ 11.                 lab define treatment_salto`age_group'  0 "Control`age_grou
+> p'" 1 "Salto`age_group'" 
+ 12. 
+.                 gen     treatment`age_group' = 1 if inlist(dpto,13, 15,   8, 
+>  3,16) `subs`age_group''
+ 13.                 replace treatment`age_group' = 0 if inlist(dpto,2,4,11,12,
+> 5,7,9,10) `subs`age_group''
  14.         }
- 15. 
+ 15.         * Assign impl_date (to controls and Mvd)
+.         qui sum impl_date_dpto             if dpto == 13 
+ 16.         replace impl_date_dpto = `r(mean)' if inlist(dpto,4,2)
+ 17.         qui sum impl_date_dpto             if dpto == 8
+ 18.         replace impl_date_dpto = `r(mean)' if inlist(dpto,5,7)
+ 19.         assign_impl_date_mvd, dpto_list(,3,16,9,10)
+ 20. end
+
+. 
+. program assign_treatment_births
+  1. syntax, num_periods(int)
+  2.         local time "anio_sem"
+  3.         use ..\..\derived\output\births_derived.dta, clear
+  4.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
+>  3) nogen
+  5.         rename edadm edad
+  6.         new_age_vars, age_var(edad)
+  7.         gen hombre = 0
+  8.         create_treat_vars, restr(" & hombre==0 ")
+  9.         relative_time, num_periods(`num_periods') time(`time') event_date(
+> impl_date_dpto)
+ 10.         local omitted = `num_periods'+1 //tr_t = treatment*t
+ 11.         di "Omitted period: -1 (prior to implementation) or t=`omitted'."
+ 12.         *rename yob yobm
+. 
 .         preserve
- 16.                 replace edadm = 15 if inrange(edadm,0,14)
- 17.                 replace edadm = 49 if inrange(edadm,50,99)
- 18.                 keep if inrange(edadm,15,49) 
- 19.                 egen age_group15 = cut(edadm) ,at(15(5)50)
- 20.                 bys age_group15: egen age_min = min(edadm)
- 21.                 bys age_group15: egen age_max = max(edadm)
- 22.                 save "..\output\births15.dta", replace
- 23.         restore
- 24. 
-.         keep if inrange(edadm,16,45)
- 25.         save "..\output\births.dta", replace
- 26. end
+ 13.                 replace edad = .  if edad == 99
+ 14.                 replace edad = 15 if inrange(edad,0,14)
+ 15.                 replace edad = 49 if inrange(edad,50,98)
+ 16.                 keep if inrange(edad,15,49) 
+ 17.                 egen age_group15 = cut(edad) ,at(15(5)50)
+ 18.                 bys age_group15: egen age_min = min(edad)
+ 19.                 bys age_group15: egen age_max = max(edad)
+ 20.                 save "..\output\births15.dta", replace
+ 21.         restore
+ 22. 
+.         keep if inrange(edad,16,45)
+ 23.         save "..\output\births.dta", replace
+ 24. end
 
 . 
 . program assign_treatment_ech
-  1.     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
-  2.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
+  1. syntax, num_periods(int)
+  2.         local time "anio_sem"
+  3.     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
+  4.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
 >  3) nogen
-  3.         new_age_vars, age_var(edad)
-  4. 
+  5.         new_age_vars, age_var(edad)
+  6.         create_treat_vars, restr(" & hombre==0 ")
+  7.         relative_time, num_periods(`num_periods') time(`time') event_date(
+> impl_date_dpto)
+  8.         local omitted = `num_periods'+1 //tr_t = treatment*t
+  9.         di "Omitted period: -1 (prior to implementation) or t=`omitted'."
+ 10.         
+.         * Placebo (men) for case studies and SCM
+.         gen placebo_rivera  = (dpto == 13) if inlist(dpto,13,4,2)   & hombre=
+> =1
+ 11.         gen placebo_salto   = (dpto == 15) if inlist(dpto,15,11,12) & homb
+> re==1
+ 12.         gen placebo_florida = (dpto == 8)  if inlist(dpto,8,5,7)    & homb
+> re==1 
+ 13.         
+.         * Kids before implementation (state-dependent)
+.         foreach s in rivera salto florida {
+ 14.                 gen age_`s'     = ${y_date_`s'} - yob
+ 15.                 gen under14_`s' = (inrange(age_`s',0,14))
+ 16.                 bys anio numero : egen nbr_under14_`s' = total(under14_`s'
+> )
+ 17.                 gen kids_`s'    = (nbr_under14_`s' > 0)
+ 18.         }
+ 19.         gen     kids_before = kids_rivera  if !mi(treatment_rivera)  | !mi
+> (treatment_rivera_placebo)
+ 20.         replace kids_before = kids_florida if !mi(treatment_florida) | !mi
+> (treatment_florida_placebo)
+ 21.         gen     age_mvd     = ${y_date_mvd} - yob
+ 22.         gen     under14_mvd = (inrange(age_mvd,0,14))
+ 23.         bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
+ 24.         replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,3,16,9,
+> 10)
+ 25. 
 .         * Variables for the triple diff
 .         gen female      = (hombre==0)             if !mi(hombre)
-  5.         gen single      = (married==0)            if !mi(married)
-  6.         gen lowed       = (educ_level==1)         if !mi(educ_level)
-  7.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
-  8.         
-.         foreach city in rivera salto florida {
-  9.                 gen age_`city'     = ${y_date_`city'} - yob
- 10.                 gen under14_`city' = (inrange(age_`city',0,14))
- 11.                 bys anio numero: egen nbr_under14_`city' = total(under14_`
-> city')
- 12.                 gen kids_`city' = (nbr_under14_`city' > 0)
- 13.         }
- 14.         
-.         * TC groups
-.         local restr         " & inrange(edad, 16, 45)"
- 15.         local restr_young   " & age_young==1 "
- 16.         local restr_adult   " & age_adult==1 "
- 17.         local restr_placebo " & age_placebo==1 "
- 18. 
-.         foreach age_group in "" "_young" "_adult" "_placebo" {
- 19.                 local value = 0
- 20.                 foreach var in treatment placebo {
- 21.                         if "`var'"=="placebo" & inlist("`age_group'","_you
-> ng","_adult","_placebo") {
- 22.                                 continue
- 23.                         }
- 24.                         else {
- 25.                                 local subsample " hombre == `value'  `rest
-> r`age_group''"
- 26.                                 *gen `var'`age_group'_rivera  = (loc_code 
-> == 1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*ri
-> o branco 431050 *artigas    202020
-.                                 *gen `var'`age_group'_salto   = (loc_code == 
-> 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*paysa
-> ndu 1111020  *fray bentos 1212020
-.                                 *gen `var'`age_group'_florida = (loc_code == 
-> 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
-. 
-.                                 gen `var'`age_group'_rivera_c  = (loc_code ==
->  1313020) if (inlist(loc_code,1313020,431050,202020)   & `subsample') //*rio 
-> branco 431050 *artigas    202020
- 27.                                 gen `var'`age_group'_salto_c   = (loc_code
->  == 1515020) if (inlist(loc_code,1515020,1111020,1212020) & `subsample') //*p
-> aysandu 1111020  *fray bentos 1212020
- 28.                                 gen `var'`age_group'_florida_c = (loc_code
->  == 808220)  if (inlist(loc_code,808220,505320,707320)    & `subsample')
- 29. 
-.                                 gen `var'`age_group'_rivera_s  = (dpto == 13)
->  if (inlist(dpto,13,4,2)   & `subsample')
- 30.                                 gen `var'`age_group'_salto_s   = (dpto == 
-> 15) if (inlist(dpto,15,11,12) & `subsample')
- 31.                                 gen `var'`age_group'_florida_s = (dpto == 
-> 8)  if (inlist(dpto,8,5,7)    & `subsample')
- 32.                         }
- 33.                         local value = 1
- 34.                 }
- 35.         }
- 36. 
+ 26.         gen single      = (married==0)            if !mi(married)
+ 27.         gen lowed       = (educ_level==1)         if !mi(educ_level)
+ 28.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
+ 29.         
 .     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
- 37. end
+ 30. end
 
 . 
 . main_assign_treatment
@@ -317,18 +362,79 @@ file ..\temp\timeline_implementation.dta saved
 (20,400 missing values generated)
 (21056 missing values generated)
 (813,617 real changes made)
-(760,421 missing values generated)
-(748,345 missing values generated)
-(783,879 missing values generated)
-(760,421 missing values generated)
-(748,345 missing values generated)
-(783,879 missing values generated)
-(760,421 missing values generated)
-(748,345 missing values generated)
-(783,879 missing values generated)
+(763,101 missing values generated)
+(750,982 missing values generated)
+(785,137 missing values generated)
+(608,896 missing values generated)
+(178,117 real changes made)
+(782,787 missing values generated)
+(773,135 missing values generated)
+(800,136 missing values generated)
+(676,168 missing values generated)
+(127,576 real changes made)
+(814,987 missing values generated)
+(812,520 missing values generated)
+(819,674 missing values generated)
+(767,401 missing values generated)
+(50,541 real changes made)
+(834,596 missing values generated)
+(834,603 missing values generated)
+(834,637 missing values generated)
+(834,504 missing values generated)
+(150 real changes made)
+(44,794 real changes made)
+(35,109 real changes made)
+(203,786 real changes made)
+(179,549 missing values generated)
+(655,124 real changes made)
+(104,036 real changes made)
+(462,106 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    123,473       14.79       14.79
+          1 |     19,787        2.37       17.16
+          2 |     19,711        2.36       19.53
+          3 |     19,569        2.34       21.87
+          4 |     19,998        2.40       24.27
+          5 |     19,465        2.33       26.60
+          6 |     19,062        2.28       28.88
+          7 |     18,842        2.26       31.14
+          8 |     18,955        2.27       33.41
+          9 |     18,417        2.21       35.62
+         10 |     18,610        2.23       37.85
+         11 |     18,702        2.24       40.09
+         12 |     19,173        2.30       42.38
+         13 |     18,803        2.25       44.64
+       1000 |    462,106       55.36      100.00
+------------+-----------------------------------
+      Total |    834,673      100.00
+(372,567 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    123,473       14.79       14.79
+          2 |     19,787        2.37       17.16
+          3 |     19,711        2.36       19.53
+          4 |     19,569        2.34       21.87
+          5 |     19,998        2.40       24.27
+          6 |     19,465        2.33       26.60
+          7 |     19,062        2.28       28.88
+          8 |     18,842        2.26       31.14
+          9 |     18,955        2.27       33.41
+         10 |     18,417        2.21       35.62
+         11 |     18,610        2.23       37.85
+         12 |     18,702        2.24       40.09
+         13 |     19,173        2.30       42.38
+         14 |     18,803        2.25       44.64
+       1000 |    462,106       55.36      100.00
+------------+-----------------------------------
+      Total |    834,673      100.00
+Omitted period: -1 (prior to implementation) or t=7.
+(7,809 real changes made, 7,809 to missing)
 (3,259 real changes made)
-(7,855 real changes made)
-(0 observations deleted)
+(46 real changes made)
+(7,809 observations deleted)
 (note: file ..\output\births15.dta not found)
 file ..\output\births15.dta saved
 (21,056 observations deleted)
@@ -346,49 +452,110 @@ file ..\output\births.dta saved
 (746,950 missing values generated)
 (1051009 missing values generated)
 (708,100 real changes made)
-(262,113 missing values generated)
-(1,051,009 missing values generated)
-(1,742,232 missing values generated)
-(1,733,846 missing values generated)
-(1,747,829 missing values generated)
 (1,732,505 missing values generated)
 (1,731,367 missing values generated)
 (1,739,749 missing values generated)
-(1,744,131 missing values generated)
-(1,735,727 missing values generated)
-(1,748,543 missing values generated)
-(1,735,391 missing values generated)
-(1,733,283 missing values generated)
-(1,740,820 missing values generated)
-(1,750,442 missing values generated)
-(1,745,631 missing values generated)
-(1,753,366 missing values generated)
+(1,674,747 missing values generated)
+(70,001 real changes made)
 (1,745,407 missing values generated)
 (1,744,281 missing values generated)
 (1,749,320 missing values generated)
-(1,750,899 missing values generated)
-(1,747,324 missing values generated)
-(1,753,572 missing values generated)
+(1,716,005 missing values generated)
+(35,680 real changes made)
 (1,746,207 missing values generated)
 (1,746,195 missing values generated)
 (1,749,538 missing values generated)
-(1,751,670 missing values generated)
-(1,747,893 missing values generated)
-(1,753,855 missing values generated)
+(1,717,851 missing values generated)
+(34,321 real changes made)
 (1,747,426 missing values generated)
 (1,746,775 missing values generated)
 (1,749,874 missing values generated)
+(1,722,570 missing values generated)
+(31,403 real changes made)
+(78,898 real changes made)
+(71,400 real changes made)
+(383,005 real changes made)
+(319,284 missing values generated)
+(1,439,825 real changes made)
+(162,813 real changes made)
+(1,110,605 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    193,035       10.97       10.97
+          1 |     26,143        1.49       12.46
+          2 |     30,177        1.72       14.18
+          3 |     30,450        1.73       15.91
+          4 |     28,461        1.62       17.52
+          5 |     28,044        1.59       19.12
+          6 |     28,338        1.61       20.73
+          7 |     28,327        1.61       22.34
+          8 |     27,537        1.57       23.90
+          9 |     27,399        1.56       25.46
+         10 |     26,095        1.48       26.95
+         11 |     62,192        3.54       30.48
+         12 |     62,383        3.55       34.03
+         13 |     49,923        2.84       36.87
+       1000 |  1,110,605       63.13      100.00
+------------+-----------------------------------
+      Total |  1,759,109      100.00
+(648,504 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    193,035       10.97       10.97
+          2 |     26,143        1.49       12.46
+          3 |     30,177        1.72       14.18
+          4 |     30,450        1.73       15.91
+          5 |     28,461        1.62       17.52
+          6 |     28,044        1.59       19.12
+          7 |     28,338        1.61       20.73
+          8 |     28,327        1.61       22.34
+          9 |     27,537        1.57       23.90
+         10 |     27,399        1.56       25.46
+         11 |     26,095        1.48       26.95
+         12 |     62,192        3.54       30.48
+         13 |     62,383        3.55       34.03
+         14 |     49,923        2.84       36.87
+       1000 |  1,110,605       63.13      100.00
+------------+-----------------------------------
+      Total |  1,759,109      100.00
+Omitted period: -1 (prior to implementation) or t=7.
+(1,697,946 missing values generated)
+(1,693,741 missing values generated)
+(1,712,408 missing values generated)
+(1,720,822 missing values generated)
+(28,595 real changes made)
+(383,005 real changes made)
+(262,113 missing values generated)
+(1,051,009 missing values generated)
 (data now sorted by numero pers anio)
   variable yob was float now int
   variable age_young was float now byte
   variable age_adult was float now byte
   variable age_placebo was float now byte
-  variable fertile_age was float now byte
+  variable age_fertile was float now byte
   variable age_group was float now byte
-  variable female was float now byte
-  variable single was float now byte
-  variable lowed was float now byte
-  variable young was float now byte
+  variable treatment_rivera was float now byte
+  variable treatment_salto was float now byte
+  variable treatment_florida was float now byte
+  variable treatment was float now byte
+  variable treatment_rivera_young was float now byte
+  variable treatment_salto_young was float now byte
+  variable treatment_florida_young was float now byte
+  variable treatment_young was float now byte
+  variable treatment_rivera_adult was float now byte
+  variable treatment_salto_adult was float now byte
+  variable treatment_florida_adult was float now byte
+  variable treatment_adult was float now byte
+  variable treatment_rivera_placebo was float now byte
+  variable treatment_salto_placebo was float now byte
+  variable treatment_florida_placebo was float now byte
+  variable treatment_placebo was float now byte
+  variable t was float now int
+  variable placebo_rivera was float now byte
+  variable placebo_salto was float now byte
+  variable placebo_florida was float now byte
   variable age_rivera was float now int
   variable under14_rivera was float now byte
   variable nbr_under14_rivera was float now byte
@@ -401,44 +568,22 @@ file ..\output\births.dta saved
   variable under14_florida was float now byte
   variable nbr_under14_florida was float now byte
   variable kids_florida was float now byte
-  variable treatment_rivera_c was float now byte
-  variable treatment_salto_c was float now byte
-  variable treatment_florida_c was float now byte
-  variable treatment_rivera_s was float now byte
-  variable treatment_salto_s was float now byte
-  variable treatment_florida_s was float now byte
-  variable placebo_rivera_c was float now byte
-  variable placebo_salto_c was float now byte
-  variable placebo_florida_c was float now byte
-  variable placebo_rivera_s was float now byte
-  variable placebo_salto_s was float now byte
-  variable placebo_florida_s was float now byte
-  variable treatment_young_rivera_c was float now byte
-  variable treatment_young_salto_c was float now byte
-  variable treatment_young_florida_c was float now byte
-  variable treatment_young_rivera_s was float now byte
-  variable treatment_young_salto_s was float now byte
-  variable treatment_young_florida_s was float now byte
-  variable treatment_adult_rivera_c was float now byte
-  variable treatment_adult_salto_c was float now byte
-  variable treatment_adult_florida_c was float now byte
-  variable treatment_adult_rivera_s was float now byte
-  variable treatment_adult_salto_s was float now byte
-  variable treatment_adult_florida_s was float now byte
-  variable treatment_placebo_rivera_c was float now byte
-  variable treatment_placebo_salto_c was float now byte
-  variable treatment_placebo_florida_c was float now byte
-  variable treatment_placebo_rivera_s was float now byte
-  variable treatment_placebo_salto_s was float now byte
-  variable treatment_placebo_florida_s was float now byte
-  (267,384,568 bytes saved)
+  variable kids_before was float now byte
+  variable age_mvd was float now int
+  variable under14_mvd was float now byte
+  variable nbr_under14_mvd was float now byte
+  variable female was float now byte
+  variable single was float now byte
+  variable lowed was float now byte
+  variable young was float now byte
+  (232,202,388 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:133(98934):1113404677:2184540009
+  1759109:127(55711):1862126288:316412297
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -538,69 +683,62 @@ c06_b_electr |  1,308,209    .9971006    .0537678          0          1
 educ_more_HS |  1,759,109    .0715555    .2577506          0          1
 educ_HS_or~e |  1,759,109    .2410067    .4276945          0          1
 -------------+---------------------------------------------------------
-impl_date_~o |  1,177,344    16495.14    598.3647      16162      18414
+impl_date_~o |  1,439,825    16472.65    728.3045      16162      18414
          yob |  1,759,109    1971.573     23.8421       1900       2016
    age_young |  1,759,109    .2128725    .4093384          0          1
    age_adult |  1,759,109    .1896608    .3920327          0          1
  age_placebo |  1,759,109    .1728483    .3781162          0          1
 -------------+---------------------------------------------------------
- fertile_age |  1,012,159    .6995936    .4584349          0          1
+ age_fertile |  1,012,159    .6995936    .4584349          0          1
    age_group |    708,100    29.88178    8.668931         18         43
-      female |  1,759,109     .533046    .4989069          0          1
-      single |  1,496,996    .4847809    .4997685          0          1
-       lowed |  1,759,109    .7589933    .4276945          0          1
+treatment~ra |     26,604    .3909938    .4879822          0          1
+treatment~to |     27,742    .4073967    .4913587          0          1
+treatment~da |     19,360    .2850207    .4514359          0          1
 -------------+---------------------------------------------------------
-       young |    708,100    .5288321    .4991684          0          1
+   treatment |    154,363     .546517    .4978331          0          1
+tre~ra_young |     13,702    .3868048    .4870361          0          1
+trea~o_young |     14,828    .4150256    .4927431          0          1
+tre~da_young |      9,789    .2952293    .4561691          0          1
+trea~t_young |     78,784    .5471162    .4977783          0          1
+-------------+---------------------------------------------------------
+tre~ra_adult |     12,902    .3954426    .4889645          0          1
+trea~o_adult |     12,914    .3986371    .4896367          0          1
+tre~da_adult |      9,571    .2745795    .4463254          0          1
+trea~t_adult |     75,579    .5458924    .4978927          0          1
+t~ra_placebo |     11,683    .3825216    .4860237          0          1
+-------------+---------------------------------------------------------
+tr~o_placebo |     12,334    .4046538    .4908448          0          1
+t~da_placebo |      9,235    .2747158    .4463951          0          1
+tr~t_placebo |     67,942    .5377969     .498573          0          1
+           t |  1,759,109    633.7659    479.2815          1       1000
+placebo_ri~a |     61,163    .3877508    .4872412          0          1
+-------------+---------------------------------------------------------
+placebo_sa~o |     65,368    .3995686    .4898134          0          1
+placebo_fl~a |     46,701    .2757543    .4468983          0          1
   age_rivera |  1,759,109    38.42734     23.8421         -6        110
 under14_ri~a |  1,759,109    .1744878    .3795285          0          1
 nbr_under~ra |  1,759,109    .8386365    1.172369          0         13
- kids_rivera |  1,759,109    .4603586    .4984262          0          1
 -------------+---------------------------------------------------------
+ kids_rivera |  1,759,109    .4603586    .4984262          0          1
    age_salto |  1,759,109    41.42734     23.8421         -3        113
 under14_sa~o |  1,759,109    .1374815    .3443551          0          1
 nbr_under1~o |  1,759,109    .6559173    1.032707          0         11
   kids_salto |  1,759,109    .3846766    .4865189          0          1
- age_florida |  1,759,109    36.42734     23.8421         -8        108
 -------------+---------------------------------------------------------
+ age_florida |  1,759,109    36.42734     23.8421         -8        108
 under14_fl~a |  1,759,109    .1951295    .3963005          0          1
 nbr_under~da |  1,759,109    .9386741    1.243762          0         14
 kids_florida |  1,759,109    .4967225    .4999894          0          1
-~nt_rivera_c |     16,877    .5510458    .4974022          0          1
-t~nt_salto_c |     25,263    .4473736    .4972326          0          1
+ kids_before |    449,887    .5691807    .4951915          0          1
 -------------+---------------------------------------------------------
-treatment_.. |     11,280    .3817376    .4858343          0          1
-~nt_rivera_s |     26,604    .3909938    .4879822          0          1
-t~nt_salto_s |     27,742    .4073967    .4913587          0          1
-treatment_.. |     19,360    .2850207    .4514359          0          1
-placebo_ri~c |     14,978    .5478034    .4977262          0          1
+     age_mvd |  1,759,109    32.42734     23.8421        -12        104
+ under14_mvd |  1,759,109    .2204281    .4145354          0          1
+nbr_under1~d |  1,759,109    1.047484    1.294706          0         15
+      female |  1,759,109     .533046    .4989069          0          1
+      single |  1,496,996    .4847809    .4997685          0          1
 -------------+---------------------------------------------------------
-placebo_sa~c |     23,382    .4444872    .4969194          0          1
-placebo_fl~c |     10,566     .368446     .482406          0          1
-placebo_ri~s |     23,718    .3900413    .4877695          0          1
-placebo_sa~s |     25,826    .4024239     .490396          0          1
-placebo_fl~s |     18,289    .2774345     .447745          0          1
--------------+---------------------------------------------------------
-t~g_rivera_c |      8,667    .5415946    .4982956          0          1
-tr~g_salto_c |     13,478    .4565959     .498131          0          1
-~g_florida_c |      5,743    .3945673    .4888001          0          1
-t~g_rivera_s |     13,702    .3868048    .4870361          0          1
-tr~g_salto_s |     14,828    .4150256    .4927431          0          1
--------------+---------------------------------------------------------
-~g_florida_s |      9,789    .2952293    .4561691          0          1
-~lt_rivera_c |      8,210    .5610231    .4962924          0          1
-t~lt_salto_c |     11,785    .4368265    .4960141          0          1
-treatment_.. |      5,537    .3684306    .4824225          0          1
-~lt_rivera_s |     12,902    .3954426    .4889645          0          1
--------------+---------------------------------------------------------
-t~lt_salto_s |     12,914    .3986371    .4896367          0          1
-treatment_.. |      9,571    .2745795    .4463254          0          1
-t~o_rivera_c |      7,439    .5429493    .4981854          0          1
-tr~o_salto_c |     11,216    .4449893    .4969868          0          1
-treatment_.. |      5,254    .3753331    .4842549          0          1
--------------+---------------------------------------------------------
-t~o_rivera_s |     11,683    .3825216    .4860237          0          1
-tr~o_salto_s |     12,334    .4046538    .4908448          0          1
-treatment_.. |      9,235    .2747158    .4463951          0          1
+       lowed |  1,759,109    .7589933    .4276945          0          1
+       young |    708,100    .5288321    .4991684          0          1
 
 
 
@@ -750,4 +888,4 @@ file ..\output\ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2018-05-18 16:32:58
+ make.py ended: 2018-06-22 17:32:22
