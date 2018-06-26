@@ -43,28 +43,6 @@ syntax, dpto_list(str)
 	assert `r(sd)'==0
 end
 
-capture program drop relative_time
-program              relative_time
-syntax, num_periods(int) time(str) event_date(str)
-	if "`time'" == "anio_qtr" { //+1 since impl_date marks beginning of post
-		gen t = `time' - qofd(`event_date')
-	}
-	else if "`time'" == "anio_sem" {
-		gen t = `time' - hofd(`event_date')
-	}
-	else {
-		gen t = `time' - yofd(`event_date')
-	}
-	replace t = t + `num_periods' + 1  //to make t>=0 for the event window
-	replace t = 0    if t < 0
-	replace t = 1000 if t >  2*`num_periods' + 1
-	assert !mi(t)
-	tab t,m
-	replace t = t+1 if t<1000
-	tab t,m
-end
-
-
 program create_treat_vars
 syntax, [restr(str)]
 	* TC groups
@@ -81,8 +59,8 @@ syntax, [restr(str)]
 		lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rivera`age_group'" 
 		lab define treatment_salto`age_group'  0 "Control`age_group'" 1 "Salto`age_group'" 
 
-		gen     treatment`age_group' = 1 if inlist(dpto,13, 15,   8,  3,16) `subs`age_group''
-		replace treatment`age_group' = 0 if inlist(dpto,2,4,11,12,5,7,9,10) `subs`age_group''
+		gen     treatment`age_group' = 1 if inlist(dpto,13, 8,  3,16) `subs`age_group''
+		replace treatment`age_group' = 0 if inlist(dpto,2,4,5,7,9,10) `subs`age_group''
 	}
 	* Assign impl_date (to controls and Mvd)
 	qui sum impl_date_dpto             if dpto == 13 
@@ -94,16 +72,14 @@ end
 
 program assign_treatment_births
 syntax, num_periods(int)
-	local time "anio_sem"
 	use ..\..\derived\output\births_derived.dta, clear
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
+	drop if mi(fecparto)
+	drop if inlist(depar,20,99)
 	rename edadm edad
 	new_age_vars, age_var(edad)
 	gen hombre = 0
 	create_treat_vars, restr(" & hombre==0 ")
-	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
-	local omitted = `num_periods'+1 //tr_t = treatment*t
-	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
 	*rename yob yobm
 
 	preserve
@@ -123,14 +99,10 @@ end
 
 program assign_treatment_ech
 syntax, num_periods(int)
-	local time "anio_sem"
     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
 	new_age_vars, age_var(edad)
 	create_treat_vars, restr(" & hombre==0 ")
-	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
-	local omitted = `num_periods'+1 //tr_t = treatment*t
-	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
 	
 	* Placebo (men) for case studies and SCM
 	gen placebo_rivera  = (dpto == 13) if inlist(dpto,13,4,2)   & hombre==1

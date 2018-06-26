@@ -16,33 +16,6 @@ program main
 	reg_did, outcomes(trabajo horas_trabajo) data(ech) time(anio_sem) geo_var(dpto) num_periods(6) int_mvd(int_mvd)
 end
 
-capture program drop assign_impl_date_mvd
-program              assign_impl_date_mvd
-syntax, dpto_list(str)
-	qui sum impl_date_dpto if dpto==1
-	replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
-	qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
-	assert `r(sd)'==0
-end
-
-capture program drop relative_time
-program              relative_time
-syntax, num_periods(int) time(str) event_date(str)
-	if "`time'" == "anio_qtr" { //+1 since impl_date marks beginning of post
-		gen t = `time' - qofd(`event_date')
-	}
-	else if "`time'" == "anio_sem" {
-		gen t = `time' - hofd(`event_date')
-	}
-	else {
-		gen t = `time' - yofd(`event_date')
-	}
-	replace t = t + `num_periods' + 1  //to make t>=0 for the event window
-	replace t = 0    if t < 0
-	replace t = 1000 if t >  2*`num_periods' + 1
-	assert !mi(t)
-end
-
 program reg_did
     syntax, outcomes(str) data(str) time(str) geo_var(str) num_periods(int) int_mvd(str) 
  
@@ -56,34 +29,8 @@ program reg_did
 		local all_controls = ""
 	}
 	
-	* Treatment across cities
-	foreach age_group in "" "_young" "_adult" "_placebo" {
-		gen treatment`age_group' = (treatment`age_group'_florida_s==1  |   treatment`age_group'_rivera_s==1) ///
-							if  !mi(treatment`age_group'_florida_s)   |!mi(treatment`age_group'_rivera_s)
-	}
-	foreach city in rivera florida {
-		qui sum impl_date_dpto             if treatment_`city'_c==1
-		replace impl_date_dpto = `r(mean)' if treatment_`city'_c==0 
-	}
-	gen     kids_before = kids_rivera  if !mi(treatment_rivera_s)  | !mi(treatment_placebo_rivera_s)
-	replace kids_before = kids_florida if !mi(treatment_florida_s) | !mi(treatment_placebo_florida_s)
-
-	if "`int_mvd'" == "int_mvd" {
-		assign_impl_date_mvd, dpto_list(,3,16,9,10)
-		replace treatment = 1 if inlist(dpto,3,16) & hombre == 0 & inrange(edad, 16, 45)
-		replace treatment = 0 if inlist(dpto,9,10) & hombre == 0 & inrange(edad, 16, 45)
-		
-		foreach age_group in "_young" "_adult" "_placebo" {
-			replace treatment`age_group' = 1 if inlist(dpto,3,16) & hombre == 0 & age`age_group'==1
-			replace treatment`age_group' = 0 if inlist(dpto,9,10) & hombre == 0 & age`age_group'==1
-		}
-		
+	if "`int_mvd'" == "int_mvd" {		
 		keep if !mi(impl_date_dpto) & !inlist(dpto,1) //drop Montevideo
-		
-		gen age_mvd     = ${y_date_mvd} - yob
-		gen under14_mvd = (inrange(age_mvd,0,14))
-		bys anio numero: egen nbr_under14_mvd = total(under14_mvd)
-		replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,3,16,9,10)	
 	}
 	else {
 		keep if !mi(impl_date_dpto) & !inlist(dpto,1,3,16) //drop Montevideo, San Jose, and Canelones

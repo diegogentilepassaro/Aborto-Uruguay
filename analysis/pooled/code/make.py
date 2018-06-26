@@ -40,9 +40,9 @@ from gslab_fill.tablefill import tablefill
 from gslab_fill.textfill import textfill
 
 tablefill(
-	input = ('../output/tables.txt'),
-	template = '../source/table_pooled_did.lyx',
-	output = '../output/table_pooled_did_filled.lyx'
+	input    = ('../output/tables.txt'),
+	template =  '../source/table_pooled_did.lyx',
+	output   =  '../output/table_pooled_did_filled.lyx'
 	)
 
 run_lyx(program = '../output/table_pooled_did_filled.lyx')
