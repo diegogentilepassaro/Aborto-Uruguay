@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-18 15:03:19 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
+ make.py started: 2018-07-02 16:59:12 C:\Users\cravizza\GitHub\Aborto-Uruguay\derived\code 
 
 
 
@@ -607,23 +607,25 @@ Notes:
   9.         gen indigente   = (y_hogar_alt <= li_06)
  10.         
 .         gen ind_under14 = (nbr_under14>0)
- 11.         
+ 11.         gen work_part_time = (horas_trabajo<32) if !mi(horas_trabajo) & tr
+> abajo==1
+ 12.         
 .         gen     semestre = 1 if inlist(trimestre, 1, 2)
- 12.         replace semestre = 2 if inlist(trimestre, 3, 4)
- 13.         gen     anio_sem = yh(anio, semestre)
- 14.         format  anio_sem %th
- 15.         gen     anio_qtr = yq(anio, trimestre)
- 16.     format  anio_qtr %tq
- 17. 
+ 13.         replace semestre = 2 if inlist(trimestre, 3, 4)
+ 14.         gen     anio_sem = yh(anio, semestre)
+ 15.         format  anio_sem %th
+ 16.         gen     anio_qtr = yq(anio, trimestre)
+ 17.     format  anio_qtr %tq
+ 18. 
 .         /*local outcomes = "trabajo horas_trabajo"
 >         deseasonalize, outcomes(`outcomes')*/
 .          
 .         label_vars
- 18.         drop if (missing(numero) | missing(pers) | missing(anio))
- 19.         replace horas_trabajo = . if horas_trabajo >= 100
- 20.     save_data ..\output\clean_loc_1998_2016.dta, key(numero pers anio) rep
+ 19.         drop if (missing(numero) | missing(pers) | missing(anio))
+ 20.         replace horas_trabajo = . if horas_trabajo >= 100
+ 21.     save_data ..\output\clean_loc_1998_2016.dta, key(numero pers anio) rep
 > lace  
- 21. end
+ 22. end
 
 . 
 . program fix_2012_weights
@@ -718,20 +720,21 @@ Notes:
 . program label_vars
   1.     label var trabajo "Employment"
   2.         label var horas_trabajo "Hours worked"
-  3.         label var  educ_level "Educational attainment"
-  4.         label define educ_level 1 "Primary school" 2 "High school" 3 "Post
+  3.         label var work_part_time "Part-time work"
+  4.         label var  educ_level "Educational attainment"
+  5.         label define educ_level 1 "Primary school" 2 "High school" 3 "Post
 > -secondary"
-  5.         label values educ_level educ_level
-  6.     
+  6.         label values educ_level educ_level
+  7.     
 .         gen educ_more_HS = (educ_level == 3)
-  7.         gen educ_HS_or_more = (educ_level == 2 | educ_level == 3 )
-  8.         
+  8.         gen educ_HS_or_more = (educ_level == 2 | educ_level == 3 )
+  9.         
 .         label var  educ_more_HS "College"
-  9.         label var educ_HS_or_more "High-school"
- 10.         label define educ_HS_or_more 0 "HS degree or less" 1 "More than HS
+ 10.         label var educ_HS_or_more "High-school"
+ 11.         label define educ_HS_or_more 0 "HS degree or less" 1 "More than HS
 >  diploma"
- 11.         label values educ_HS_or_more educ_HS_or_more
- 12. end
+ 12.         label values educ_HS_or_more educ_HS_or_more
+ 13. end
 
 . 
 . main_prepare_for_analysis
@@ -879,6 +882,7 @@ file ..\temp\poverty_2005_imputed.dta saved
 (53,665 real changes made)
 (53,665 real changes made)
 file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(973,374 missing values generated)
 (878,228 missing values generated)
 (878,214 real changes made)
 (14 missing values generated)
@@ -890,20 +894,21 @@ file ..\temp\clean_loc_1998_2016_fixed.dta saved
   variable poor was float now byte
   variable indigente was float now byte
   variable ind_under14 was float now byte
+  variable work_part_time was float now byte
   variable semestre was float now byte
   variable anio_sem was float now int
   variable anio_qtr was float now int
   variable educ_more_HS was float now byte
   variable educ_HS_or_more was float now byte
   variable nomloc was str104 now str1
-  (221,647,734 bytes saved)
+  (226,925,061 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\clean_loc_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:80(60799):2179803563:2705949194
+  1759109:81(75543):2773870478:3054704084
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -997,10 +1002,12 @@ c06_b_electr |  1,308,209    .9971006    .0537678          0          1
    indigente |  1,759,109    .0130191    .1133561          0          1
  ind_under14 |  1,759,109    .5127584    .4998373          0          1
 -------------+---------------------------------------------------------
+work_part_~e |    785,749    .2660239    .4418772          0          1
     semestre |  1,759,109    1.499238    .4999996          1          2
     anio_sem |  1,759,109    97.08514     10.0608         76        113
     anio_qtr |  1,759,109    194.6693    20.12793        152        227
 educ_more_HS |  1,759,109    .0715555    .2577506          0          1
+-------------+---------------------------------------------------------
 educ_HS_or~e |  1,759,109    .2410067    .4276945          0          1
 
 
@@ -1148,459 +1155,459 @@ Notes:
  26.                 }
  27.         }
  28. }
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00000x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000010.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000011.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000012.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000013.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000014.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000015.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000016.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000017.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000018.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000019.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00001x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000020.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000021.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000022.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000023.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000024.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000025.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000026.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000027.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000028.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000029.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002i.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002j.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002k.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002l.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002m.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002n.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002o.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002p.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002q.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002r.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002s.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002t.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002u.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002v.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002w.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00002x.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000030.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000031.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000032.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000033.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000034.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000035.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000036.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000037.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000038.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_000039.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\cravizza\AppData\Local\Temp\ST_16ec_00003c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_1e44_00003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -1761,73 +1768,98 @@ Notes:
   7.         gen partner = (civilm==2|civilm==3|mestciv==2|(convpad==1 & (tunio
 > n==1|tunion==2)))
   8.         gen no_partner = (partner==0)
-  9.         gen prim_school = (instm==2 | ((mademay==2 & madeult==6) | (madema
+  9.         gen single     = no_partner 
+ 10.         gen prim_school = (instm==2 | ((mademay==2 & madeult==6) | (madema
 > y==4 & madeult<3) | mademay==3))
- 10.         gen high_school = (instm==3 | ((mademay==4 & madeult==3) | (madema
+ 11.         gen high_school = (instm==3 | ((mademay==4 & madeult==3) | (madema
 > y==5 & madeult==1)))
- 11.         replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & 
+ 12.         replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & 
 > madeult==6
- 12.         
+ 13.         
 .         * Birth date
-.         replace fecparto = "jan" + substr(fecparto,4, .) if substr(fecparto, 
-> 1, 3) == "ene"
- 13.         replace fecparto = "apr" + substr(fecparto,4, .) if substr(fecpart
+.         drop if mi(fecparto)
+ 14.         replace fecparto = "jan" + substr(fecparto,4, .) if substr(fecpart
+> o, 1, 3) == "ene"
+ 15.         replace fecparto = "apr" + substr(fecparto,4, .) if substr(fecpart
 > o, 1, 3) == "abr"
- 14.         replace fecparto = "aug" + substr(fecparto,4, .) if substr(fecpart
+ 16.         replace fecparto = "aug" + substr(fecparto,4, .) if substr(fecpart
 > o, 1, 3) == "ago"
- 15.         replace fecparto = "dec" + substr(fecparto,4, .) if substr(fecpart
+ 17.         replace fecparto = "dec" + substr(fecparto,4, .) if substr(fecpart
 > o, 1, 3) == "dic"
- 16.         gen     anio_mon = monthly(fecparto, "MY")
- 17.         replace anio_mon = monthly(fecparto, "M20Y")
- 18.         assert !mi(anio_mon) if !mi(fecparto)
- 19.         format  anio_mon %tm 
- 20.         gen     anio_qtr = qofd(dofm(anio_mon))
- 21.     format  anio_qtr %tq
- 22.         gen     anio_sem = hofd(dofm(anio_mon))
- 23.         format  anio_sem %th
- 24.         
+ 18.         gen     anio_mon = monthly(fecparto, "MY")
+ 19.         replace anio_mon = monthly(fecparto, "M20Y")
+ 20.         assert !mi(anio_mon) if !mi(fecparto)
+ 21.         format  anio_mon %tm 
+ 22.         gen     anio_qtr = qofd(dofm(anio_mon))
+ 23.     format  anio_qtr %tq
+ 24.         gen     anio_sem = hofd(dofm(anio_mon))
+ 25.         format  anio_sem %th
+ 26.         
 .         * Pregnancy vars
-.         gen recomm_prenatal_numvisits = (totcons>5 & totcon!=99)
- 25.         gen recomm_prenatal_1stvisit  = (semprim<13 & semprim!=97 & sempri
-> m!=99)
- 26.         gen no_prenatal_care          = (totcons==0 | totcon==99 | semprim
-> ==97 | semprim==99)
- 27.         gen first_pregnancy           = (numemban==0)
- 28.         
+.         gen recomm_prenatal_numvisits = (totcons>5) if !mi(totcons) & totcons
+> !=99
+ 27.         gen recomm_prenatal_1stvisit  = (semprim<13) if !inlist(semprim,97
+> ,99)
+ 28.         gen no_prenatal_care          = (totcons==0 | semprim==97) if totc
+> ons!=99
+ 29.         gen first_pregnancy           = (numemban==0) if numemban!=99
+ 30.         gen kids_before               = (first_pregnancy==0) if !mi(first_
+> pregnancy)
+ 31.         gen lowbirthweight            = (peso<2500) if !mi(peso)   & peso<
+> 9999
+ 32.         gen apgar1_low                = (apgar1<7)  if !mi(apgar1) & inran
+> ge(apgar1,1,10)
+ 33.         gen apgar2_low                = (apgar2<7)  if !mi(apgar2) & inran
+> ge(apgar2,1,10)
+ 34.         gen preg_preterm              = (semgest<37) if !mi(semgest) & sem
+> gest!=99
+ 35.         
 .         * Add variable dpto coded as in the ECH
 .         gen     dpto = depar   if inrange(depar,11,19)
- 29.         replace dpto = 1       if depar==10
- 30.         replace dpto = depar+1 if inrange(depar,1,9)
- 31.         
+ 36.         replace dpto = 1       if depar==10
+ 37.         replace dpto = depar+1 if inrange(depar,1,9)
+ 38.         
 .         * Labelling
 .         lab def not_married               0 "Married"                1 "Not m
 > arried"
- 32.         lab val not_married               not_married
- 33.         lab def no_partner                0 "With partner"           1 "Wi
+ 39.         lab val not_married               not_married
+ 40.         lab def no_partner                0 "With partner"           1 "Wi
 > thout partner"
- 34.         lab val no_partner                no_partner
- 35.         lab def prim_school               0 "Less than PS"           1 "PS
+ 41.         lab val no_partner                no_partner
+ 42.         lab def prim_school               0 "Less than PS"           1 "PS
 >  or more"
- 36.         lab val prim_school               prim_school
- 37.         lab def high_school               0 "Less than HS"           1 "HS
+ 43.         lab val prim_school               prim_school
+ 44.         lab def high_school               0 "Less than HS"           1 "HS
 >  or more"
- 38.         lab val high_school               high_school
- 39.         lab def no_prenatal_care          0 "No prenatal care"       1 "Pr
+ 45.         lab val high_school               high_school
+ 46.         lab def no_prenatal_care          1 "No prenatal care"       0 "Pr
 > enatal care"
- 40.         lab val no_prenatal_care          no_prenatal_care
- 41.         lab def first_pregnancy           0 "Not first pregnancy"    1 "Fi
+ 47.         lab val no_prenatal_care          no_prenatal_care
+ 48.         lab def lowbirthweight            1 "Low birth weight"       0 "No
+> rmal birth weight"
+ 49.         lab val lowbirthweight            lowbirthweight
+ 50.         lab def apgar1_low                1 "Low APGAR score"        0 "No
+> rmal APGAR score"
+ 51.         lab val apgar1_low                apgar1_low
+ 52.         lab def apgar2_low                1 "Low APGAR score"        0 "No
+> rmal APGAR score"
+ 53.         lab val apgar2_low                apgar2_low
+ 54.         lab def preg_preterm              1 "Pre-term birth"         0 "Fu
+> ll-term birth"
+ 55.         lab val preg_preterm              preg_preterm
+ 56.         lab def first_pregnancy           0 "Not first pregnancy"    1 "Fi
 > rst pregnancy"
- 42.         lab val first_pregnancy           first_pregnancy
- 43.         lab def recomm_prenatal_numvisits 0 "5 or less"              1 "Mo
-> re than 5"
- 44.         lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
- 45.         lab def recomm_prenatal_1stvisit  0 "1st visit by 14+ weeks" 1 "1s
-> t visit by 13 weeks"
- 46.         lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
- 47.         label_depar
- 48. 
+ 57.         lab val first_pregnancy           first_pregnancy
+ 58.         lab def recomm_prenatal_numvisits 0 "No prenatal care"       1 "Pr
+> enatal care"
+ 59.         lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
+ 60.         lab def recomm_prenatal_1stvisit  0 "No prenatal care"       1 "Pr
+> enatal care"
+ 61.         lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
+ 62.         label_depar
+ 63. 
 .         save "..\output\births_derived.dta", replace
- 49. end
+ 64. end
 
 . 
 . program label_depar
@@ -1856,23 +1888,23 @@ Notes:
 
 . 
 . main
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000002.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000005.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000006.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000008.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000b.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000c.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000e.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000h.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000001.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000003.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000005.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000007.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_000009.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000b.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000e.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000f.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000g.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_149c_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -1881,21 +1913,29 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_3268_00000h.tmp saved
 (note: file ..\temp\births_append.dta not found)
 file ..\temp\births_append.dta saved
 (2,651 real changes made)
+(28 observations deleted)
 (32,731 real changes made)
 (31,821 real changes made)
 (31,505 real changes made)
 (32,843 real changes made)
-(286,006 missing values generated)
+(285,978 missing values generated)
 (285,978 real changes made)
-(28 missing values generated)
-(28 missing values generated)
-(617,773 missing values generated)
-(326,317 real changes made)
-(289,707 real changes made)
+(10,915 missing values generated)
+(52,685 missing values generated)
+(10,915 missing values generated)
+(5,192 missing values generated)
+(5,192 missing values generated)
+(4,941 missing values generated)
+(9,170 missing values generated)
+(9,188 missing values generated)
+(13,795 missing values generated)
+(617,749 missing values generated)
+(326,307 real changes made)
+(289,693 real changes made)
 (note: file ..\output\births_derived.dta not found)
 file ..\output\births_derived.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2018-05-18 15:06:07
+ make.py ended: 2018-07-02 17:02:37

@@ -18,6 +18,7 @@ program main_prepare_for_analysis
 	gen indigente   = (y_hogar_alt <= li_06)
 	
 	gen ind_under14 = (nbr_under14>0)
+	gen work_part_time = (horas_trabajo<32) if !mi(horas_trabajo) & trabajo==1
 	
 	gen     semestre = 1 if inlist(trimestre, 1, 2)
 	replace semestre = 2 if inlist(trimestre, 3, 4)
@@ -117,6 +118,7 @@ end
 program label_vars
     label var trabajo "Employment"
 	label var horas_trabajo "Hours worked"
+	label var work_part_time "Part-time work"
 	label var  educ_level "Educational attainment"
 	label define educ_level 1 "Primary school" 2 "High school" 3 "Post-secondary"
 	label values educ_level educ_level

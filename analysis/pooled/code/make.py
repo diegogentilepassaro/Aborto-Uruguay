@@ -34,20 +34,12 @@ delete_files('../output/*')
 start_make_logging()
 
 run_stata(program = 'pooled_plots.do')
-run_stata(program = 'pooled_did.do')
+run_stata(program = 'pooled_reg.do')
 
 from gslab_fill.tablefill import tablefill
 from gslab_fill.textfill import textfill
 
-tablefill(
-	input    = ('../output/tables.txt'),
-	template =  '../source/table_pooled_did.lyx',
-	output   =  '../output/table_pooled_did_filled.lyx'
-	)
 
-run_lyx(program = '../output/table_pooled_did_filled.lyx')
-
-os.rename('../output/table_pooled_did_filled.pdf', '../output/table_pooled_did.pdf')
 
 end_make_logging()
 

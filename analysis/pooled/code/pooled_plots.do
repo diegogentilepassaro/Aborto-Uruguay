@@ -3,8 +3,8 @@ set more off
 
 program main
 	qui do ../../globals.do
-	global controls = "nbr_people ind_under14 edad married y_hogar_alt"
-	local labor_vars   = "trabajo horas_trabajo"
+	global controls = "nbr_people ind_under14 edad married poor"
+	local labor_vars   = "trabajo horas_trabajo work_part_time"
 
 	pooled_coefplot, data(births) time(anio_sem) num_periods(6) 
 	pooled_TFR_mean, time(anio_sem) num_periods(6)
@@ -120,6 +120,7 @@ syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) res
 		compute_TFR, time(`time')
 		use  ..\..\..\assign_treatment\output\births.dta, clear
 		keep if (!mi(treatment)|dpto==1) & age_fertile==1
+		save ../temp/plots_sample_births_ind.dta, replace
 		collapse (count) births=edad (min) impl_date_dpto , by(`time' dpto treatment)
 		merge 1:1 dpto `time' using ..\temp\TFR_`time'.dta, assert(3) nogen
 		gen age_fertile = 1
@@ -164,7 +165,7 @@ syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) res
 		if "`outcome'" == "horas_trabajo" {
             keep if trabajo==1
         }
-		if "`outcome'" == "trabajo" {
+		if inlist("`outcome'","trabajo","work_part_time") {
 			local estimation = "logit" // "reg" //
 		}
 		else {

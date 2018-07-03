@@ -42,6 +42,7 @@ program derived_data
 	gen not_married = (married==0)
 	gen partner = (civilm==2|civilm==3|mestciv==2|(convpad==1 & (tunion==1|tunion==2)))
 	gen no_partner = (partner==0)
+	gen single     = no_partner 
 	gen prim_school = (instm==2 | ((mademay==2 & madeult==6) | (mademay==4 & madeult<3) | mademay==3))
 	gen high_school = (instm==3 | ((mademay==4 & madeult==3) | (mademay==5 & madeult==1)))
 	replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & madeult==6
@@ -62,10 +63,15 @@ program derived_data
 	format  anio_sem %th
 	
 	* Pregnancy vars
-	gen recomm_prenatal_numvisits = (totcons>5 & totcon!=99)
-	gen recomm_prenatal_1stvisit  = (semprim<13 & semprim!=97 & semprim!=99)
-	gen no_prenatal_care          = (totcons==0 | totcon==99 | semprim==97 | semprim==99)
-	gen first_pregnancy           = (numemban==0)
+	gen recomm_prenatal_numvisits = (totcons>5) if !mi(totcons) & totcons!=99
+	gen recomm_prenatal_1stvisit  = (semprim<13) if !inlist(semprim,97,99)
+	gen no_prenatal_care          = (totcons==0 | semprim==97) if totcons!=99
+	gen first_pregnancy           = (numemban==0) if numemban!=99
+	gen kids_before               = (first_pregnancy==0) if !mi(first_pregnancy)
+	gen lowbirthweight            = (peso<2500) if !mi(peso)   & peso<9999
+	gen apgar1_low                = (apgar1<7)  if !mi(apgar1) & inrange(apgar1,1,10)
+	gen apgar2_low                = (apgar2<7)  if !mi(apgar2) & inrange(apgar2,1,10)
+	gen preg_preterm              = (semgest<37) if !mi(semgest) & semgest!=99
 	
 	* Add variable dpto coded as in the ECH
 	gen     dpto = depar   if inrange(depar,11,19)
@@ -81,13 +87,21 @@ program derived_data
 	lab val prim_school               prim_school
 	lab def high_school               0 "Less than HS"           1 "HS or more"
 	lab val high_school               high_school
-	lab def no_prenatal_care          0 "No prenatal care"       1 "Prenatal care"
+	lab def no_prenatal_care          1 "No prenatal care"       0 "Prenatal care"
 	lab val no_prenatal_care          no_prenatal_care
+	lab def lowbirthweight            1 "Low birth weight"       0 "Normal birth weight"
+	lab val lowbirthweight            lowbirthweight
+	lab def apgar1_low                1 "Low APGAR score"        0 "Normal APGAR score"
+	lab val apgar1_low                apgar1_low
+	lab def apgar2_low                1 "Low APGAR score"        0 "Normal APGAR score"
+	lab val apgar2_low                apgar2_low
+	lab def preg_preterm              1 "Pre-term birth"         0 "Full-term birth"
+	lab val preg_preterm              preg_preterm
 	lab def first_pregnancy           0 "Not first pregnancy"    1 "First pregnancy"
 	lab val first_pregnancy           first_pregnancy
-	lab def recomm_prenatal_numvisits 0 "5 or less"              1 "More than 5"
+	lab def recomm_prenatal_numvisits 0 "No prenatal care"       1 "Prenatal care"
 	lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
-	lab def recomm_prenatal_1stvisit  0 "1st visit by 14+ weeks" 1 "1st visit by 13 weeks"
+	lab def recomm_prenatal_1stvisit  0 "No prenatal care"       1 "Prenatal care"
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
 	label_depar
 
