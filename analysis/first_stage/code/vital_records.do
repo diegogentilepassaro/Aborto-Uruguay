@@ -21,27 +21,13 @@ program main
 	}
 end
 
-capture program drop plot_births
-program plot_births
+capture program drop plot_births_case_studies
+program plot_births_case_studies
 syntax, by_vars(string) treatment(string) time(string) 
 	
 	use "..\..\..\assign_treatment\output\births.dta", clear
 
-	if "`time'" == "anio_mon" {
-        local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pre},tm(${m_date_`treatment'}) + ${m_post}) "
-        local xtitle "Year-month"
-        local vertical = tm(${m_date_`treatment'}) - 0.5    
-        local vertical2= tm(${m_date_`treatment'}) - 6.5 
-        local y_label = "0(250)500"
-    }
-	else if "`time'" == "anio_qtr" {
-        local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
-        local xtitle "Year-quarter"
-        local vertical = tq(${q_date_`treatment'}) - 0.5 
-        local vertical2= tq(${q_date_`treatment'}) + 2.5   
-        local y_label = "0(500)1000" 
-    }
-    else if "`time'" == "anio_sem" {
+	if "`time'" == "anio_sem" {
         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
         local xtitle "Year-half"
         local vertical = th(${s_date_`treatment'}) - 0.5   
@@ -91,17 +77,7 @@ syntax, by_vars(string) treatment(string) time(string)
 	local time anio
 	local by_vars first_pregnancy
 
-	if "`time'" == "anio_mon" {
-        local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pre},tm(${m_date_`treatment'}) + ${m_post}) "
-        local event_date         ${m_date_`treatment'}   
-        gen post = (`time' >= tm(${m_date_`treatment'})) 
-    }
-	else if "`time'" == "anio_qtr" {
-        local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pre},tq(${q_date_`treatment'}) + ${q_post}) "
-        local event_date         ${q_date_`treatment'}  
-        gen post = (`time' >= tq(${q_date_`treatment'}))  
-    }
-    else if "`time'" == "anio_sem" {
+	if "`time'" == "anio_sem" {
         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pre},th(${s_date_`treatment'}) + ${s_post}) "
         local event_date         ${s_date_`treatment'}  
         gen post = (`time' >= th(${s_date_`treatment'}))   

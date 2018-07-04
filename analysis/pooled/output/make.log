@@ -1,5 +1,5 @@
 
- make.py started: 2018-07-03 15:49:21 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2018-07-04 12:22:14 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -40,9 +40,11 @@ Notes:
   4. 
 .         pooled_coefplot, data(births) time(anio_sem) num_periods(6) 
   5.         pooled_TFR_mean, time(anio_sem) num_periods(6)
-  6.         pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcom
+  6.         plots_subsample_births, by_vars(married kids_before) time(anio_sem
+> ) num_periods(6)
+  7.         pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcom
 > es(`labor_vars')
-  7. end
+  8. end
 
 . 
 . capture program drop relative_time
@@ -312,6 +314,91 @@ Notes:
 > `time'.pdf, replace
  83.         }
  84. end
+
+. 
+. program plots_subsample_births
+  1. syntax, by_vars(str) time(str) num_periods(int)
+  2.         use ../temp/plots_sample_births_ind.dta, clear
+  3.         keep if !mi(impl_date_dpto) & age_fertile==1
+  4.         relative_time, num_periods(`num_periods') time(`time') event_date(
+> impl_date_dpto)
+  5.         if "`time'" == "anio_sem" {
+  6.                 local time_label "Semesters relative to IS implementation"
+  7.         }
+  8.         else {
+  9.                 local time_label "Years relative to IS implementation"
+ 10.         }
+ 11.         
+.         foreach by_var in `by_vars' {
+ 12.                 preserve
+ 13.                         keep if !mi(`by_var')
+ 14.                         collapse (count) births=edad, by(t dpto treatment 
+> `by_var')
+ 15.                         local opts "graphregion(color(white)) bgcolor(whit
+> e) xline(7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
+ 16.                         
+.                         forvalues i=0/1 {
+ 17.                                 * Mean DiD
+.                                 egen Treatment`i' = mean(births) if treatment
+> ==1 & `by_var'==`i', by(t)
+ 18.                                 egen Control`i'   = mean(births) if treatm
+> ent==0 & `by_var'==`i', by(t)
+ 19.                                 egen tag_T`i'     = tag(t)       if treatm
+> ent==1 & `by_var'==`i'
+ 20.                                 egen tag_C`i'     = tag(t)       if treatm
+> ent==0 & `by_var'==`i'
+ 21.                                 sort t dpto treatment `by_var'
+ 22.                                 gen     Diff`i'   = Treatment`i' - Control
+> `i'[_n-2] if tag_T`i'
+ 23.                                 lab var Diff`i' "Number of births"        
+>                                       
+ 24.                                 
+.                                 tw (connected Treatment`i' t if tag_T`i' & in
+> range(t,2,14), sort mc(blue) lc(blue)) ///
+>                                    (connected Control`i'   t if tag_C`i' & in
+> range(t,2,14), sort mc(red)  lc(red)), ///
+>                                         legend(label(1 "Treatment") label( 2 
+> "Control")) ///
+>                                         `opts' xtitle("`time_label'") xlabel(
+> 2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 25.                                 graph export ../output/pooled_did2_births_
+> `time'_`by_var'`i'.pdf, replace
+ 26.                                 
+.                                 tw connected Diff`i' t if tag_T`i' & inrange(
+> t,2,14), sort mc(blue) lc(blue) ///
+>                                         `opts' xtitle("`time_label'") xlabel(
+> 2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 27.                                 graph export ../output/pooled_did_births_`
+> time'_`by_var'`i'.pdf, replace
+ 28.                                 
+.                                 * Mean ES
+.                                 egen    mean_t`i' = mean(births) if (treatmen
+> t==1|dpto==1) & `by_var'==`i', by(t)
+ 29.                                 lab var mean_t`i' "Number of births"
+ 30.                                 egen    tag_t`i'  = tag(t)       if (treat
+> ment==1|dpto==1) & `by_var'==`i'
+ 31.                                 tw connected mean_t`i' t if tag_t`i' & inr
+> ange(t,2,14), sort mc(blue) lc(blue) ///
+>                                         `opts' xtitle("`time_label'") xlabel(
+> 2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 32.                                 graph export ../output/pooled_es_births_`t
+> ime'_`by_var'`i'.pdf, replace
+ 33.                                 
+.                                 egen    mean_t`i'_2 = mean(births) if (treatm
+> ent==1) & `by_var'==`i', by(t)
+ 34.                                 lab var mean_t`i'_2 "Number of births"
+ 35.                                 egen    tag_t`i'_2  = tag(t)       if (tre
+> atment==1) & `by_var'==`i'
+ 36.                                 tw connected mean_t`i'_2 t if tag_t`i'_2 &
+>  inrange(t,2,14), sort mc(blue) lc(blue) ///
+>                                         `opts' xtitle("`time_label'") xlabel(
+> 2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 37.                                 graph export ../output/pooled_es_births_`t
+> ime'_`by_var'`i'_nomvd.pdf, replace
+ 38.                         }
+ 39.                 restore
+ 40.         }
+ 41. end
 
 . 
 . main
@@ -828,6 +915,99 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_es_TFR_anio_sem_meanTFR.pdf written in PDF format)
 (file ../output/pooled_trend_TFR_anio_sem.pdf written in PDF format)
+(0 observations deleted)
+(640,109 real changes made)
+(100,789 real changes made)
+(277,795 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    119,765       18.71       18.71
+          1 |     19,301        3.02       21.73
+          2 |     19,240        3.01       24.73
+          3 |     19,087        2.98       27.71
+          4 |     19,556        3.06       30.77
+          5 |     18,998        2.97       33.74
+          6 |     18,567        2.90       36.64
+          7 |     18,367        2.87       39.51
+          8 |     18,463        2.88       42.39
+          9 |     17,853        2.79       45.18
+         10 |     17,915        2.80       47.98
+         11 |     18,112        2.83       50.81
+         12 |     18,699        2.92       53.73
+         13 |     18,391        2.87       56.60
+       1000 |    277,795       43.40      100.00
+------------+-----------------------------------
+      Total |    640,109      100.00
+(362,314 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    119,765       18.71       18.71
+          2 |     19,301        3.02       21.73
+          3 |     19,240        3.01       24.73
+          4 |     19,087        2.98       27.71
+          5 |     19,556        3.06       30.77
+          6 |     18,998        2.97       33.74
+          7 |     18,567        2.90       36.64
+          8 |     18,367        2.87       39.51
+          9 |     18,463        2.88       42.39
+         10 |     17,853        2.79       45.18
+         11 |     17,915        2.80       47.98
+         12 |     18,112        2.83       50.81
+         13 |     18,699        2.92       53.73
+         14 |     18,391        2.87       56.60
+       1000 |    277,795       43.40      100.00
+------------+-----------------------------------
+      Total |    640,109      100.00
+(0 observations deleted)
+(270 missing values generated)
+(240 missing values generated)
+(315 missing values generated)
+(file ../output/pooled_did2_births_anio_sem_married0.pdf written in PDF format)
+(file ../output/pooled_did_births_anio_sem_married0.pdf written in PDF format)
+(255 missing values generated)
+(file ../output/pooled_es_births_anio_sem_married0.pdf written in PDF format)
+(270 missing values generated)
+(file ../output/pooled_es_births_anio_sem_married0_nomvd.pdf written in PDF for
+> mat)
+(270 missing values generated)
+(240 missing values generated)
+(315 missing values generated)
+(file ../output/pooled_did2_births_anio_sem_married1.pdf written in PDF format)
+(file ../output/pooled_did_births_anio_sem_married1.pdf written in PDF format)
+(255 missing values generated)
+(file ../output/pooled_es_births_anio_sem_married1.pdf written in PDF format)
+(270 missing values generated)
+(file ../output/pooled_es_births_anio_sem_married1_nomvd.pdf written in PDF for
+> mat)
+(4,262 observations deleted)
+(270 missing values generated)
+(240 missing values generated)
+(315 missing values generated)
+(file ../output/pooled_did2_births_anio_sem_kids_before0.pdf written in PDF for
+> mat)
+(file ../output/pooled_did_births_anio_sem_kids_before0.pdf written in PDF form
+> at)
+(255 missing values generated)
+(file ../output/pooled_es_births_anio_sem_kids_before0.pdf written in PDF forma
+> t)
+(270 missing values generated)
+(file ../output/pooled_es_births_anio_sem_kids_before0_nomvd.pdf written in PDF
+>  format)
+(270 missing values generated)
+(240 missing values generated)
+(315 missing values generated)
+(file ../output/pooled_did2_births_anio_sem_kids_before1.pdf written in PDF for
+> mat)
+(file ../output/pooled_did_births_anio_sem_kids_before1.pdf written in PDF form
+> at)
+(255 missing values generated)
+(file ../output/pooled_es_births_anio_sem_kids_before1.pdf written in PDF forma
+> t)
+(270 missing values generated)
+(file ../output/pooled_es_births_anio_sem_kids_before1_nomvd.pdf written in PDF
+>  format)
 (821,501 observations deleted)
 (168,495 missing values generated)
 (769,113 real changes made)
@@ -7514,4 +7694,4 @@ preg_preterm |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 . 
 end of do-file
 
- make.py ended: 2018-07-03 17:26:52
+ make.py ended: 2018-07-04 12:37:43

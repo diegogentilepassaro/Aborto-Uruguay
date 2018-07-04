@@ -8,6 +8,7 @@ program main
 
 	pooled_coefplot, data(births) time(anio_sem) num_periods(6) 
 	pooled_TFR_mean, time(anio_sem) num_periods(6)
+	plots_subsample_births, by_vars(married kids_before) time(anio_sem) num_periods(6)
 	pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcomes(`labor_vars')
 end
 
@@ -224,6 +225,63 @@ syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) res
 			    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 				
 			graph export ../output/pooled_did_shift_`outcome'_`time'.pdf, replace
+	}
+end
+
+program plots_subsample_births
+syntax, by_vars(str) time(str) num_periods(int)
+	use ../temp/plots_sample_births_ind.dta, clear
+	keep if !mi(impl_date_dpto) & age_fertile==1
+	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
+	if "`time'" == "anio_sem" {
+		local time_label "Semesters relative to IS implementation"
+	}
+	else {
+		local time_label "Years relative to IS implementation"
+	}
+	
+	foreach by_var in `by_vars' {
+		preserve
+			keep if !mi(`by_var')
+			collapse (count) births=edad, by(t dpto treatment `by_var')
+			local opts "graphregion(color(white)) bgcolor(white) xline(7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
+			
+			forvalues i=0/1 {
+				* Mean DiD
+				egen Treatment`i' = mean(births) if treatment==1 & `by_var'==`i', by(t)
+				egen Control`i'   = mean(births) if treatment==0 & `by_var'==`i', by(t)
+				egen tag_T`i'     = tag(t)       if treatment==1 & `by_var'==`i'
+				egen tag_C`i'     = tag(t)       if treatment==0 & `by_var'==`i'
+				sort t dpto treatment `by_var'
+				gen     Diff`i'   = Treatment`i' - Control`i'[_n-2] if tag_T`i'
+				lab var Diff`i' "Number of births"						
+				
+				tw (connected Treatment`i' t if tag_T`i' & inrange(t,2,14), sort mc(blue) lc(blue)) ///
+				   (connected Control`i'   t if tag_C`i' & inrange(t,2,14), sort mc(red)  lc(red)), ///
+					legend(label(1 "Treatment") label( 2 "Control")) ///
+					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+				graph export ../output/pooled_did2_births_`time'_`by_var'`i'.pdf, replace
+				
+				tw connected Diff`i' t if tag_T`i' & inrange(t,2,14), sort mc(blue) lc(blue) ///
+					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+				graph export ../output/pooled_did_births_`time'_`by_var'`i'.pdf, replace
+				
+				* Mean ES
+				egen    mean_t`i' = mean(births) if (treatment==1|dpto==1) & `by_var'==`i', by(t)
+				lab var mean_t`i' "Number of births"
+				egen    tag_t`i'  = tag(t)       if (treatment==1|dpto==1) & `by_var'==`i'
+				tw connected mean_t`i' t if tag_t`i' & inrange(t,2,14), sort mc(blue) lc(blue) ///
+					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+				graph export ../output/pooled_es_births_`time'_`by_var'`i'.pdf, replace
+				
+				egen    mean_t`i'_2 = mean(births) if (treatment==1) & `by_var'==`i', by(t)
+				lab var mean_t`i'_2 "Number of births"
+				egen    tag_t`i'_2  = tag(t)       if (treatment==1) & `by_var'==`i'
+				tw connected mean_t`i'_2 t if tag_t`i'_2 & inrange(t,2,14), sort mc(blue) lc(blue) ///
+					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+				graph export ../output/pooled_es_births_`time'_`by_var'`i'_nomvd.pdf, replace
+			}
+		restore
 	}
 end
 
