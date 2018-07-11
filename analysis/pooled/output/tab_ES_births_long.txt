@@ -1,0 +1,20 @@
+\begin{threeparttable}
+\begin{tabular}{l|c} \hline\hline
+ & Number of births \\ \hline
+Baseline &   -180.467 \\ 
+          & (   28.989) \\ 
+          &        170 \\ 
+Had previous pregnancy &   -156.073 \\ 
+          & (   26.554) \\ 
+          &        170 \\ 
+First pregnancy &    -36.052 \\ 
+          & (   25.197) \\ 
+          &        170 \\ 
+Not single &   -523.328 \\ 
+          & (   64.185) \\ 
+          &        170 \\ 
+Single &    342.861 \\ 
+          & (   57.087) \\ 
+          &        170 \\ 
+\hline\hline
+\end{tabular}

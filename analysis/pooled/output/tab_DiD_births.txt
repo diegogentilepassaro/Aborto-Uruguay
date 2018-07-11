@@ -1,8 +1,0 @@
-\begin{threeparttable}
-\begin{tabular}{l|c} \hline\hline
- & Number of births \\ \hline
- Coeff. &   -123.152 \\ 
- SE     & (   16.846) \\ 
- Obs.   &        340 \\ 
-\hline\hline
-\end{tabular}

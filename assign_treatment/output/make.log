@@ -1,5 +1,5 @@
 
- make.py started: 2018-07-02 17:07:30 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-07-11 18:16:55 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -186,8 +186,8 @@ Notes:
  17.         gen     age_mvd     = ${y_date_mvd} - yob
  18.         gen     under14_mvd = (inrange(age_mvd,0,14))
  19.         bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
- 20.         replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,3,16,9,
-> 10)
+ 20.         replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,1,3,16,
+> 9,10)
  21. 
 .         * Variables for the Mvd triple diff
 .         gen female      = (hombre==0)             if !mi(hombre)
@@ -402,7 +402,7 @@ file ..\output\births.dta saved
 (1,712,408 missing values generated)
 (1,720,822 missing values generated)
 (28,595 real changes made)
-(383,005 real changes made)
+(1,211,861 real changes made)
 (262,113 missing values generated)
 (1,051,009 missing values generated)
 (data now sorted by numero pers anio)
@@ -458,7 +458,7 @@ File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:127(44789):1885858492:3860224414
+  1759109:127(44789):2446375066:4234969028
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -604,7 +604,7 @@ nbr_under1~o |  1,759,109    .6559173    1.032707          0         11
 under14_fl~a |  1,759,109    .1951295    .3963005          0          1
 nbr_under~da |  1,759,109    .9386741    1.243762          0         14
 kids_florida |  1,759,109    .4967225    .4999894          0          1
- kids_before |    449,887    .5691807    .4951915          0          1
+ kids_before |  1,278,743    .5206926    .4995718          0          1
 -------------+---------------------------------------------------------
      age_mvd |  1,759,109    32.42734     23.8421        -12        104
  under14_mvd |  1,759,109    .2204281    .4145354          0          1
@@ -763,4 +763,4 @@ file ..\output\ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2018-07-02 17:08:56
+ make.py ended: 2018-07-11 18:18:08

@@ -121,7 +121,7 @@ syntax, num_periods(int)
 	gen     age_mvd     = ${y_date_mvd} - yob
 	gen     under14_mvd = (inrange(age_mvd,0,14))
 	bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
-	replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,3,16,9,10)
+	replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,1,3,16,9,10)
 
 	* Variables for the Mvd triple diff
 	gen female      = (hombre==0)             if !mi(hombre)
