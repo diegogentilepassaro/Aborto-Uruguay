@@ -10,11 +10,11 @@ Had previous pregnancy &   -156.073 \\
 First pregnancy &    -36.052 \\ 
           & (   25.197) \\ 
           &        170 \\ 
-Not single &   -523.328 \\ 
-          & (   64.185) \\ 
+Not single &   -792.634 \\ 
+          & (   90.546) \\ 
           &        170 \\ 
-Single &    342.861 \\ 
-          & (   57.087) \\ 
+Single &    283.700 \\ 
+          & (   43.316) \\ 
           &        170 \\ 
 \hline\hline
 \end{tabular}

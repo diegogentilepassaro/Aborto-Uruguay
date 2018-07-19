@@ -109,7 +109,7 @@ syntax, time(str) by_vars(str) num_periods(str)
 	merge 1:1 `time' dpto using `births_kids_before0' , assert(3) nogen
 	merge 1:1 `time' dpto using `births_kids_before1' , assert(3) nogen
 	gen age_fertile = 1
-	assert births == births_single0 + births_single1
+	assert births >= births_single0 + births_single1
 	save ../temp/plots_sample_births_wide.dta, replace
 	
 	use `births_agg', clear	

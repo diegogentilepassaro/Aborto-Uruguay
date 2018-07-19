@@ -38,14 +38,14 @@ program derived_data
 	* Note: issue with mademay == 4 : table anio madeult if mademay == 4
 	assert (mi(civilm) & !mi(mestciv) & !mi(tunion)) | (!mi(civilm) & mi(mestciv) & mi(tunion))
 	assert (mi(instm) & !mi(mademay) & !mi(madecur) & !mi(madeult)) | (!mi(instm) & mi(mademay) & mi(madecur) & mi(madeult))
-	gen married = (civilm==2 | mestciv==2)
-	gen not_married = (married==0)
-	gen partner = (civilm==2|civilm==3|mestciv==2|(convpad==1 & (tunion==1|tunion==2)))
-	gen no_partner = (partner==0)
-	gen single     = no_partner 
-	gen prim_school = (instm==2 | ((mademay==2 & madeult==6) | (mademay==4 & madeult<3) | mademay==3))
-	gen high_school = (instm==3 | ((mademay==4 & madeult==3) | (mademay==5 & madeult==1)))
-	replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & madeult==6
+	gen married     = (civilm==2 | mestciv==2)                           if civilm!=9 & mestciv!=9
+	gen not_married = (married==0)                                       if !mi(married)
+	gen partner     = (inlist(civilm,2,3)|mestciv==2|inlist(tunion,1,2)) if civilm!=9 & mestciv!=9
+	gen no_partner  = (partner==0)                                       if !mi(partner)
+	gen single      = (inlist(civilm,1,4,5,6))|(tunion==9|mestciv==2)    if civilm!=9 & mestciv!=9 
+	gen     prim_school = (instm==2|((mademay==2 & madeult==6)|(mademay==4 & madeult<3)|mademay==3)) if instm!=9 | mademay!=9 | madeult!=9
+	gen     high_school = (instm==3|((mademay==4 & madeult==3)|(mademay==5 & madeult==1)))           if instm!=9 | mademay!=9 | madeult!=9
+	replace high_school = 1 if inrange(anio,2008,2010) & mademay==4 & madeult==6 
 	
 	* Birth date
 	drop if mi(fecparto)
