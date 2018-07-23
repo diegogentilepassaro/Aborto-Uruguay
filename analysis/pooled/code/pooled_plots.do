@@ -6,9 +6,10 @@ program main
 	global controls = "nbr_people ind_under14 edad single poor"
 	
 	create_births_data,     time(anio_sem) num_periods(6) by_vars(single kids_before)
-	pooled_coefplot,        time(anio_sem) num_periods(6)  data(births_wide)
-	pooled_avg_TFR,         time(anio_sem) num_periods(6)
-	pooled_avg_births_subs, time(anio_sem) num_periods(6) by_vars(single kids_before)
+	local outcomes = "TFR GFR_single0    GFR_single1    GFR_kids_before0    GFR_kids_before1 " + ///
+				  " births births_single0 births_single1 births_kids_before0 births_kids_before1 "
+	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide) outcomes(`outcomes')
+	pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
 	
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcomes(`labor_vars')
@@ -36,7 +37,7 @@ syntax, num_periods(int) time(str) event_date(str)
 end
 
 program compute_TFR
-syntax, time(str)
+syntax, time(str) by_vars(str)
 	use ..\..\..\assign_treatment\output\births15.dta, clear
 	drop if inrange(edad,45,49)
 
@@ -61,11 +62,31 @@ syntax, time(str)
 	lab var TFR "Total Fertility Rate"
 	keep `time' dpto TFR
 	save ../temp/TFR_`time'.dta, replace
+
+	foreach outcome in `by_vars' {
+		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+		keep if hombre==0 & age_fertile==1
+		collapse (count) pop_`outcome'=pers [pw=pesoan], by(anio dpto `outcome')
+		sort anio dpto `outcome'
+		egen tot_`outcome' = total(pop), by(anio dpto)
+		gen pop_sh_`outcome' = pop/tot
+		keep if `outcome'==1
+		xtset dpto anio
+		tssmooth ma pop_sh_`outcome' = pop_sh_`outcome', w(2 1 2) replace
+		isid anio dpto
+		keep anio dpto pop_sh_`outcome'
+		keep if inrange(anio,1999,2015)
+		save ../temp/sh_`outcome'.dta, replace
+	}
+
+	use ..\..\..\derived\output\population_fertile_age.dta, clear
+	collapse (sum) pop, by(depar anio)
+	save ../temp/pop_fertile_age_agg.dta, replace
 end
 
 program create_births_data
 syntax, time(str) by_vars(str) num_periods(str)
-	compute_TFR, time(`time')
+	compute_TFR, time(`time') by_vars(`by_vars')
 	use  ..\..\..\assign_treatment\output\births.dta, clear
 	keep if (!mi(treatment)|dpto==1) & age_fertile==1 & !mi(impl_date_dpto) 
 	save ../temp/plots_sample_births_ind.dta, replace
@@ -92,13 +113,13 @@ syntax, time(str) by_vars(str) num_periods(str)
 		}
 		preserve
 			keep if !mi(`by_var')
-			collapse (count) births=edad (min) impl_date_dpto, by(`time' dpto treatment `by_var')
+			collapse (count) births=edad (min) impl_date_dpto, by(`time' dpto depar treatment `by_var')
 			tempfile births_`by_var'
 			save `births_`by_var''
 		restore
 	}
 
-	collapse (count) births=edad (min) impl_date_dpto , by(`time' dpto treatment)
+	collapse (count) births=edad (min) impl_date_dpto , by(`time' dpto depar treatment)
 	merge 1:1 `time' dpto using ..\temp\TFR_`time'.dta, assert(3) nogen
 	lab var births "Number of births"
 	tempfile births_agg
@@ -110,6 +131,16 @@ syntax, time(str) by_vars(str) num_periods(str)
 	merge 1:1 `time' dpto using `births_kids_before1' , assert(3) nogen
 	gen age_fertile = 1
 	assert births >= births_single0 + births_single1
+	gen anio = year(dofh(anio_sem))
+	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	foreach by_var in `by_vars' {
+		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
+		gen GFR_`by_var'1 = births_`by_var'1/(pop*(  pop_sh_`by_var'))*1000
+		gen GFR_`by_var'0 = births_`by_var'0/(pop*(1-pop_sh_`by_var'))*1000 
+		lab var GFR_`by_var'1 "General fertility rate"
+		lab var GFR_`by_var'0 "General fertility rate"
+		drop pop_sh_`by_var'
+	}
 	save ../temp/plots_sample_births_wide.dta, replace
 	
 	use `births_agg', clear	
@@ -125,59 +156,20 @@ syntax, time(str) by_vars(str) num_periods(str)
 	else {
 		gen post = (`time' >= yofd(impl_date_dpto))
 	}
+	gen anio = year(dofh(anio_sem))
+	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	foreach by_var in `by_vars' {
+		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
+		replace TFR = births/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(TFR)
+		replace TFR = births/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(TFR)
+		drop pop_sh_`by_var'
+	}
 	save ../temp/plots_sample_births_long.dta, replace
-end
-
-capture program drop pooled_avg_TFR
-program              pooled_avg_TFR
-syntax, time(str) num_periods(int)
-	
-	use ../temp/plots_sample_births_wide.dta, clear
-	if "`time'" == "anio_sem" {
-		local time_label "Semesters"
-	}
-	else {
-		local time_label "Years"
-	}
-	keep if !mi(impl_date_dpto) 
-	* Mean TFR: DiD 
-	egen Treatment = mean(TFR) if treatment==1, by(t)
-	egen Control   = mean(TFR) if treatment==0, by(t)
-	egen tag_T = tag(t) if treatment==1
-	egen tag_C = tag(t) if treatment==0
-	
-	twoway  (connected Treatment t if tag_T & inrange(t,2,14), sort) ///
-			(connected Control   t if tag_C & inrange(t,2,14), sort), ///
-		graphregion(color(white)) bgcolor(white) ///
-		xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6") ///
-		xtitle("`time_label' relative to IS implementation") ///
-		xline(7.5 8.5, lcolor(black) lpattern(dot)) ytitle(`: var lab TFR')
-	graph export ../output/pooled_did_TFR_`time'_meanTFR.pdf, replace	
-	* Mean TFR: ES and trend
-	keep if treatment==1 | dpto==1
-	egen mean_t = mean(TFR), by(t)
-	lab var mean_t "`: var lab TFR'"
-	egen tag_t = tag(t)
-	qui sum TFR if inrange(t, 2, `num_periods'+1)
-	local target_mean = r(mean)
-		twoway connected mean_t t if tag_t & inrange(t,2,14), sort ///
-			graphregion(color(white)) bgcolor(white) ///
-			xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6") ///
-			xline(7.5 8.5, lcolor(black) lpattern(dot)) ///
-			xtitle("`time_label' relative to IS implementation") ///
-			yline(`target_mean', lpattern(dashed))
-		graph export ../output/pooled_es_TFR_`time'_meanTFR.pdf, replace
-	egen mean_time = mean(TFR), by(`time')
-	lab var mean_time "`: var lab TFR'"
-	egen tag_time = tag(`time')
-		twoway connected mean_time `time' if tag_time , sort xtitle("`time_label'") ///
-			 graphregion(color(white)) bgcolor(white)
-		graph export ../output/pooled_trend_TFR_`time'.pdf, replace
 end
 
 capture program drop pooled_coefplot
 program              pooled_coefplot
-syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) restr(str)]
+syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) restr(str)]
 
 	if "`data'" == "ech" {
 		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
@@ -186,16 +178,12 @@ syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) res
 	}
 	else  {
 		use  ..\temp\plots_sample_births_wide.dta, clear
-		local outcomes = "births TFR births_single0 births_single1 births_kids_before0 births_kids_before1"
 		local all_controls = ""
 		tab dpto
 	}
 	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
 	local omitted = `num_periods'+1 //tr_t = treatment*t
 	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
-	/*relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
-	tab t,m
-	tab dpto,m*/
 
 	if "`time'" == "anio_sem" {
 		local weight pesosem
@@ -296,9 +284,9 @@ syntax, data(str) time(str) num_periods(int) [outcomes(str) groups_vars(str) res
 	}
 end
 
-program pooled_avg_births_subs
-syntax, by_vars(str) time(str) num_periods(int)
-	use ../temp/plots_sample_births_ind.dta, clear
+program pooled_mean_plots
+syntax, outcomes(str) time(str) num_periods(int)
+	use ../temp/plots_sample_births_wide.dta, clear
 	if "`time'" == "anio_sem" {
 		local time_label "Semesters relative to IS implementation"
 	}
@@ -306,48 +294,38 @@ syntax, by_vars(str) time(str) num_periods(int)
 		local time_label "Years relative to IS implementation"
 	}
 	
-	foreach by_var in `by_vars' {
-		preserve
-			keep if !mi(`by_var')
-			collapse (count) births=edad, by(t dpto treatment `by_var')
-			local opts "graphregion(color(white)) bgcolor(white) xline(7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
-			
-			forvalues i=0/1 {
-				* Mean DiD
-				egen Treatment`i' = mean(births) if treatment==1 & `by_var'==`i', by(t)
-				egen Control`i'   = mean(births) if treatment==0 & `by_var'==`i', by(t)
-				egen tag_T`i'     = tag(t)       if treatment==1 & `by_var'==`i'
-				egen tag_C`i'     = tag(t)       if treatment==0 & `by_var'==`i'
-				sort t dpto treatment `by_var'
-				gen     Diff`i'   = Treatment`i' - Control`i'[_n-2] if tag_T`i'
-				lab var Diff`i' "Number of births"						
-				
-				tw (connected Treatment`i' t if tag_T`i' & inrange(t,2,14), sort mc(blue) lc(blue)) ///
-				   (connected Control`i'   t if tag_C`i' & inrange(t,2,14), sort mc(red)  lc(red)), ///
-					legend(label(1 "Treatment") label( 2 "Control")) ///
-					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-				graph export ../output/pooled_did2_avg_births_`by_var'`i'_`time'.pdf, replace
-				
-				tw connected Diff`i' t if tag_T`i' & inrange(t,2,14), sort mc(blue) lc(blue) ///
-					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-				graph export ../output/pooled_did_avg_births_`by_var'`i'_`time'.pdf, replace
-				
-				* Mean ES
-				egen    mean_t`i' = mean(births) if (treatment==1|dpto==1) & `by_var'==`i', by(t)
-				lab var mean_t`i' "Number of births"
-				egen    tag_t`i'  = tag(t)       if (treatment==1|dpto==1) & `by_var'==`i'
-				tw connected mean_t`i' t if tag_t`i' & inrange(t,2,14), sort mc(blue) lc(blue) ///
-					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-				graph export ../output/pooled_es_avg_births_`by_var'`i'_`time'.pdf, replace
-				
-				egen    mean_t`i'_2 = mean(births) if (treatment==1) & `by_var'==`i', by(t)
-				lab var mean_t`i'_2 "Number of births"
-				egen    tag_t`i'_2  = tag(t)       if (treatment==1) & `by_var'==`i'
-				tw connected mean_t`i'_2 t if tag_t`i'_2 & inrange(t,2,14), sort mc(blue) lc(blue) ///
-					`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-				graph export ../output/pooled_es_avg_births_`by_var'`i'_`time'_nomvd.pdf, replace
-			}
-		restore
+	foreach outcome in `outcomes' {
+		local opts "graphregion(color(white)) bgcolor(white) xline(7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
+		
+		* Mean DiD
+		egen T_`outcome' = mean(`outcome') if treatment==1, by(t)
+		egen C_`outcome' = mean(`outcome') if treatment==0, by(t)
+		sort t dpto treatment `by_var'
+		gen     D_`outcome'   = T_`outcome' - C_`outcome'[_n-2] if treatment==1
+		lab var T_`outcome' "`: var lab `outcome''"
+		lab var C_`outcome' "`: var lab `outcome''"
+		lab var D_`outcome' "`: var lab `outcome''"
+		tw (connected T_`outcome' t if inrange(t,2,14), sort mc(blue) lc(blue)) ///
+		   (connected C_`outcome' t if inrange(t,2,14), sort mc(red)  lc(red)), ///
+			legend(label(1 "Treatment") label( 2 "Control")) ///
+			`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+		graph export ../output/pooled_did2_avg_`outcome'_`time'.pdf, replace
+		tw connected D_`outcome' t if inrange(t,2,14), sort mc(blue) lc(blue) ///
+			`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+		graph export ../output/pooled_did_avg_`outcome'_`time'.pdf, replace
+		
+		* Mean ES
+		egen         avg_`outcome' = mean(`outcome') if (treatment==1|dpto==1), by(t)
+		lab var      avg_`outcome' "`: var lab `outcome''"
+		tw connected avg_`outcome' t if inrange(t,2,14), sort mc(blue) lc(blue) ///
+			`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+		graph export ../output/pooled_es_avg_`outcome'_`time'.pdf, replace
+		
+		egen         avg_`outcome'_2 = mean(`outcome') if (treatment==1), by(t)
+		lab var      avg_`outcome'_2 "`: var lab `outcome''"
+		tw connected avg_`outcome'_2 t if inrange(t,2,14), sort mc(blue) lc(blue) ///
+			`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+		graph export ../output/pooled_es_avg_`outcome'_`time'_nomvd.pdf, replace
 	}
 end
 

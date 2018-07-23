@@ -12,7 +12,7 @@ program main
 	local num_periods = "6"
 	*/
 	pooled_reg, outcomes(trabajo horas_trabajo work_part_time) data(ech) time(anio_sem) num_periods(6)
-	pooled_reg, outcomes(births) data(births_long) time(anio_sem) num_periods(6)
+	pooled_reg, outcomes(births TFR) data(births_long) time(anio_sem) num_periods(6)
 	pooled_reg, outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm) data(births_ind) time(anio_sem) num_periods(6)
 end
 
@@ -181,17 +181,17 @@ program pooled_reg
 		foreach rd in ES DiD {
 			file open myfile using "../output/tab_`rd'_`data'.txt", write replace
 			file write myfile "\begin{threeparttable}" ///
-							_n "\begin{tabular}{l|c} \hline\hline"  ///
-							_n " & `lab_v1' \\ \hline" 
+							_n "\begin{tabular}{l|cc} \hline\hline"  ///
+							_n " & `lab_v1' & Fertility rate \\ \hline" 
 			local r = rowsof(TAB_`rd') / 3
 				forvalues i = 1/`r' {
 					local j1 = 3 * `i' - 2
 					local j2 = 3 * `i' - 1
 					local j3 = 3 * `i' 
 					file write myfile ///
-						_n "`cond`i'' &  " %9.3f  (TAB_`rd'[`j1',1]) " \\ " ///
-		                _n "          & (" %9.3f  (TAB_`rd'[`j2',1]) ") \\ " ///
-		               	_n "          &  " %9.0fc (TAB_`rd'[`j3',1]) " \\ "
+						_n "`cond`i'' &  " %9.3f  (TAB_`rd'[`j1',1]) "  &  " %9.3f  (TAB_`rd'[`j1',2]) " \\ " ///
+		                _n "          & (" %9.3f  (TAB_`rd'[`j2',1]) ") & (" %9.3f  (TAB_`rd'[`j2',2]) ") \\ " ///
+		               	_n "          &  " %9.0fc (TAB_`rd'[`j3',1]) "  &  " %9.0fc (TAB_`rd'[`j3',2]) " \\ "
 		        }
 			file write myfile _n "\hline\hline" _n "\end{tabular}" 
 			file close myfile
