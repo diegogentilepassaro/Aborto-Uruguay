@@ -10,6 +10,7 @@ program main
 				  " births births_single0 births_single1 births_kids_before0 births_kids_before1 "
 	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide) outcomes(`outcomes')
 	pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
+	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_ind) outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm)
 	
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcomes(`labor_vars')
@@ -90,16 +91,6 @@ syntax, time(str) by_vars(str) num_periods(str)
 	use  ..\..\..\assign_treatment\output\births.dta, clear
 	keep if (!mi(treatment)|dpto==1) & age_fertile==1 & !mi(impl_date_dpto) 
 	save ../temp/plots_sample_births_ind.dta, replace
-	preserve
-		relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
-		if "`time'" == "anio_sem" {
-			gen post = (`time' >= hofd(impl_date_dpto))
-		}
-		else {
-			gen post = (`time' >= yofd(impl_date_dpto))
-		}
-		save  ../temp/plots_sample_births_ind.dta, replace
-	restore
 
 	foreach by_var in `by_vars' {
 		forvalues i=0/1 {
@@ -176,6 +167,10 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)
 		local all_controls = "c98_* ${controls}"
 	}
+	else if "`data'" == "births_ind" {
+		use ../temp/plots_sample_births_ind.dta, clear
+		local all_controls = ""
+	}
 	else  {
 		use  ..\temp\plots_sample_births_wide.dta, clear
 		local all_controls = ""
@@ -214,8 +209,8 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		if "`outcome'" == "horas_trabajo" {
             keep if trabajo==1
         }
-		if inlist("`outcome'","trabajo","work_part_time") {
-			local estimation = "logit" // "reg" //
+		if inlist("`outcome'","trabajo","work_part_time") | "`data'" == "births_ind" {
+			local estimation = "logit"
 		}
 		else {
 			local estimation = "reg"
