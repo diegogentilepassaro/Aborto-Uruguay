@@ -12,7 +12,7 @@ program main
 	local num_periods = "6"
 	*/
 	pooled_reg, outcomes(trabajo horas_trabajo work_part_time) data(ech) time(anio_sem) num_periods(6)
-	pooled_reg, outcomes(births TFR) data(births_long) time(anio_sem) num_periods(6)
+	pooled_reg, outcomes(births GFR) data(births_long) time(anio_sem) num_periods(6)
 	pooled_reg, outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm) data(births_ind) time(anio_sem) num_periods(6)
 end
 

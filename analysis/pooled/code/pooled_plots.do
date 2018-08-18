@@ -6,7 +6,7 @@ program main
 	global controls = "nbr_people ind_under14 edad single poor"
 	
 	create_births_data,     time(anio_sem) num_periods(6) by_vars(single kids_before)
-	local outcomes = "TFR GFR_single0    GFR_single1    GFR_kids_before0    GFR_kids_before1 " + ///
+	local outcomes = "GFR GFR_single0    GFR_single1    GFR_kids_before0    GFR_kids_before1 " + ///
 				  " births births_single0 births_single1 births_kids_before0 births_kids_before1 "
 	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide) outcomes(`outcomes')
 	pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
@@ -124,6 +124,8 @@ syntax, time(str) by_vars(str) num_periods(str)
 	assert births >= births_single0 + births_single1
 	gen anio = year(dofh(anio_sem))
 	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	gen GFR = births/pop*1000
+	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
 		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
 		gen GFR_`by_var'1 = births_`by_var'1/(pop*(  pop_sh_`by_var'))*1000
@@ -149,10 +151,12 @@ syntax, time(str) by_vars(str) num_periods(str)
 	}
 	gen anio = year(dofh(anio_sem))
 	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	gen GFR = births/pop*1000 if all_sample==1
+	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
 		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
-		replace TFR = births/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(TFR)
-		replace TFR = births/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(TFR)
+		replace GFR = births/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(GFR)
+		replace GFR = births/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(GFR)
 		drop pop_sh_`by_var'
 	}
 	save ../temp/plots_sample_births_long.dta, replace
@@ -197,7 +201,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 	else {
 		local pweight = ""
 	}
-	
+	drop if anio_sem >=hofd(td(01jul2013))
 	save ../temp/plots_sample_`data'.dta, replace
 
 	local n_outcomes: word count `outcomes'

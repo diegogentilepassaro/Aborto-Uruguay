@@ -1,8 +1,8 @@
 \begin{threeparttable}
 \begin{tabular}{l|cc} \hline\hline
  & Number of births & Fertility rate \\ \hline
-Baseline &   -180.467  &     -0.084 \\ 
-          & (   28.989) & (    0.011) \\ 
+Baseline &   -180.467  &     -3.115 \\ 
+          & (   28.989) & (    0.389) \\ 
           &        170  &        170 \\ 
 Had previous pregnancy &   -156.073  &    -12.875 \\ 
           & (   26.554) & (    1.352) \\ 
