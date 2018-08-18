@@ -1,5 +1,5 @@
 
- make.py started: 2018-07-17 11:14:15 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
+ make.py started: 2018-08-18 15:52:22 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
 
 
 
@@ -133,33 +133,41 @@ Notes:
  38.         gen trabajo    = (pobpcoac==2)
  39.         bysort numero: egen y_hogar_alt = sum(ytotal) 
  40.         
-.         gen anios_prim = clip(pe142,0,6) if pe141 == 1
- 41.         replace anios_prim = 6 if inlist(pe141,2,3,4,5,6)
+.         gen anios_prim = clip(pe142,0,6) if pe141 == 1 & (pe11 == 1 | pe12 ==
+>  1)
+ 41.                 replace anios_prim = 6 if inlist(pe141,2,3,4,5,6) & (pe11 
+> == 1 | pe12 == 1)
  42. 
-.         gen anios_secun = pe142 if pe141 == 2
- 43.         replace anios_secun = pe142 + 3  if pe141 == 3
- 44.         replace anios_secun = 6 if anios_secun > 6 & !missing(anios_secun)
->     
- 45.         replace anios_secun = 6 if inlist(pe141,5,6)
- 46.         
-.         gen anios_terc = pe142 if (pe141 == 5 | pe141 == 6)
- 47.         
-.         gen anios_tecn = pe142 if pe141 == 4
- 48.         
-.         replace anios_secun = 0 if missing(anios_secun) & !missing(anios_prim
+.                 gen anios_secun = pe142 if pe141 == 2 & (pe11 == 1 | pe12 == 
+> 1)
+ 43.                 replace anios_secun = pe142 + 3  if pe141 == 3
+ 44.                 replace anios_secun = 6 if anios_secun > 6 & !missing(anio
+> s_secun)      
+ 45.                 replace anios_secun = 6 if inlist(pe141,5,6) & (pe11 == 1 
+> | pe12 == 1)
+ 46.                 
+.                 gen anios_terc = pe142 if (pe141 == 5 | pe141 == 6) & (pe11 =
+> = 1 | pe12 == 1)
+ 47.                 
+.                 gen anios_tecn = pe142 if pe141 == 4 & (pe11 == 1 | pe12 == 1
 > )
- 49.         replace anios_terc = 0 if missing(anios_terc) & ///
->             (!missing(anios_prim) | !mi(anios_secun))
- 50.         replace anios_tecn = 0 if missing(anios_tecn) & ///
->             (!missing(anios_prim) | !mi(anios_secun))
+ 48.                 
+.                 replace anios_secun = 0 if missing(anios_secun) & !missing(an
+> ios_prim)
+ 49.                 replace anios_terc = 0 if missing(anios_terc) & ///
+>                     (!missing(anios_prim) | !mi(anios_secun))
+ 50.                 replace anios_tecn = 0 if missing(anios_tecn) & ///
+>                     (!missing(anios_prim) | !mi(anios_secun))
  51. 
-.         gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
- 52.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
->             inlist(anios_tecn,1,2,3,4,5)
- 53.         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun
-> ) | ///
->             anios_tecn >= 6 & !missing(anios_tecn))
- 54.         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+.                 gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
+ 52.                 replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | 
+> ///
+>                         inlist(anios_tecn,1,2,3,4,5)
+ 53.                 replace educ_level = 3 if (anios_secun == 6 & !missing(ani
+> os_secun) | ///
+>                     anios_tecn >= 6 & !missing(anios_tecn))
+ 54.                 replace educ_level = 4 if (anios_terc > 0 & !missing(anios
+> _terc))
  55.                 
 .         assert nper==pers
  56.         drop nper
@@ -241,39 +249,43 @@ Notes:
  44.         gen anios_trabajando = .
  45. 
 .         gen anios_prim = clip(e11_2,0,6) if (e9 == 1 | e10 == 1)
- 46. 
-.         gen anios_secun = clip(e11_3, 0, 6) if (e9 == 1 | e10 == 1)
+ 46.         replace anios_prim = round(anios_prim)
  47.         
-.         gen anios_terc = e11_5 + e11_6 if (e9 == 1 | e10 == 1)
- 48.         
-.         gen anios_tecn = e11_4 if (e9 == 1 | e10 == 1)
+.         gen anios_secun = clip(e11_3, 0, 6) if (e9 == 1 | e10 == 1)
+ 48.         replace anios_secun = round(anios_secun)
  49.         
+.         gen anios_terc = e11_5 + e11_6 if (e9 == 1 | e10 == 1)
+ 50.         replace anios_terc = round(anios_terc)
+ 51.         
+.         gen anios_tecn = e11_4 if (e9 == 1 | e10 == 1)
+ 52.         replace anios_tecn = round(anios_tecn)
+ 53.         
 .         replace anios_secun = 0 if missing(anios_secun) & !missing(anios_prim
 > )
- 50.         replace anios_terc = 0 if missing(anios_terc) & ///
+ 54.         replace anios_terc = 0 if missing(anios_terc) & ///
 >             (!missing(anios_prim) | !mi(anios_secun))
- 51.         replace anios_terc = 0 if anios_secun != 6    
- 52.         replace anios_tecn = 0 if missing(anios_tecn) & ///
+ 55.         replace anios_terc = 0 if anios_secun != 6  
+ 56.         replace anios_tecn = 0 if missing(anios_tecn) & ///
 >             (!missing(anios_prim) | !mi(anios_secun))
- 53. 
+ 57. 
 .         gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
- 54.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
+ 58.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
 >             inlist(anios_tecn,1,2,3,4,5)
- 55.         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun
+ 59.         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun
 > ) | ///
 >             anios_tecn >= 6 & !missing(anios_tecn))
- 56.         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
- 57.         
+ 60.         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+ 61.         
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz ///
 >              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
 > er14 ///
 >              pobpcoac married etnia c98_* c01_* estudiante educ_level anios_*
 >  *trabaj*
- 58.         
+ 62.         
 .         save ..\temp\clean_`year'.dta, replace
- 59.     }
- 60.     * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no
+ 63.     }
+ 64.     * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no
 >  response?
 . end
 
@@ -390,47 +402,40 @@ Notes:
  46.         bysort numero: egen y_hogar_alt = sum(ytotal) 
  47.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
  48.         
-.         gen anios_prim = (e50_2 + e50_3) if e48 == 1 & (e50_4 == 0 & e50_5 ==
->  0 & ///
->             e50_6 == 0 & e50_7 == 0 & e50_8 == 0 & e50_9 == 0 & e50_10 == 0 &
->  ///
->             e50_11 == 0 & e50_12 == 0)
+.         gen anios_prim = (e50_2 + e50_3) if e48 == 1
  49.         replace anios_prim = 6 if e48 == 1 & (e50_4 > 0 | e50_5 > 0 | ///
 >             e50_6 > 0 | e50_7 > 0 | e50_8 > 0 | e50_9 > 0 | e50_10 > 0 | ///
 >             e50_11 > 0 | e50_12 > 0)
- 50.         replace anios_prim = e52_1_1 if e48 == 2 & e51 == 1 
- 51.         replace anios_prim = (e52_1_1 - 1) if e48 == 2 & e51 == 1 & ///
->             e52_1_1 == 6 & e52_1_2 == 2
- 52.         replace anios_prim = 6 if e52_3_3 == 1 | e52_3_3 == 2 | e52_3_3 ==
->  3
- 53.             
-.         gen anios_secun = (e50_4 + e50_6) if e48 == 1 & ///
->             (e50_9 == 0 & e50_10 == 0 & e50_11 == 0 & e50_12 == 0)
- 54.         replace anios_secun = 6 if e48 == 1 & (e50_9 > 0 | e50_10 > 0 | //
-> /
->             e50_11 > 0 | e50_12 > 0)    
- 55.         replace anios_secun = e52_2_1 if e48 == 2 & e51 == 1 
- 56.         replace anios_secun = (e52_2_1 - 1) if e48 == 2 & e51 == 1 & ///
->             e52_2_1 == 6 & e52_2_2 == 2
- 57.         
-.         gen anios_terc = (e50_9 + e50_10 + e50_11 + e50_12) if e48 == 1 & ///
->             (e50_9 > 0 | e50_10 > 0 | e50_11 > 0 | e50_12 > 0)
- 58.         replace anios_terc = (e52_4_1 + e52_5_1 + e52_6_1 + e52_7_1) ///
+ 50.         replace anios_prim = e52_1_1 if e48 == 2 & e51 == 1
+ 51.         replace anios_prim = 6 if e48 == 2 & e51 == 1 & ///
+>             (e52_2_1 > 0 | e52_3_1 > 0 | e52_4_1 > 0 | e52_5_1 > 0 | e52_6_1 
+> > 0 | ///
+>              e52_7_1 > 0)
+ 52.             
+.         gen anios_secun = (e50_4 + e50_5) if e48 == 1
+ 53.         replace anios_secun = 6 if e48 == 1 & (e50_6 > 0 | e50_7 > 0 | ///
+>             e50_8 > 0 | e50_9 > 0 | e50_10 > 0 | e50_11 > 0 | e50_12 > 0)
+ 54.         replace anios_secun = e52_2_1 if e48 == 2 & e51 == 1
+ 55.         replace anios_secun = 6 if e48 == 2 & e51 == 1 & ///
+>             (e52_4_1 > 0 | e52_5_1 > 0 | e52_6_1 > 0 | ///
+>              e52_7_1 > 0)
+ 56.         
+.         gen anios_terc = (e50_9 + e50_10 + e50_11 + e50_12) if e48 == 1
+ 57.         replace anios_terc = (e52_4_1 + e52_5_1 + e52_6_1 + e52_7_1) ///
 >             if e48 == 2 & e51 == 1
- 59.         
-.         gen anios_tecn = (e50_5 + e50_7 + e50_8) if e48 == 1 & ///
->             (e50_9 == 0 & e50_10 == 0 & e50_11 == 0 & e50_12 == 0)
- 60.         replace anios_tecn = 6 if e48 == 1 & (e50_9 > 0 | e50_10 > 0 | ///
->             e50_11 > 0 | e50_12 > 0)
- 61.         replace anios_tecn = e52_3_1 if e48 == 2 & e51 == 1 
- 62.         replace anios_tecn = (e52_3_1 - 1) if e48 == 2 & e51 == 1 & ///
->             e52_3_1 == 6 & e52_3_2 == 2
- 63.         replace anios_tecn = 6 if e52_3_3 == 1
- 64.         replace anios_tecn = 3 if e52_3_3 == 2
- 65.         
+ 58.         
+.         gen anios_tecn = (e50_5 + e50_7 + e50_8) if e48 == 1
+ 59.         replace anios_tecn = e52_3_1 if e48 == 2 & e51 == 1 
+ 60.         replace anios_tecn = (e52_3_1) if e48 == 2 & e51 == 1
+ 61.         
 .         replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 66.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 67.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 62.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 63.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 64.         
+.         replace anios_prim = 0 if e51 == 2
+ 65.         replace anios_secun = 0 if e51 == 2
+ 66.         replace anios_terc = 0 if e51 == 2
+ 67.         replace anios_tecn = 0 if e51 == 2
  68.         
 .         gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
  69.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
@@ -519,47 +524,40 @@ Notes:
  38.         bysort numero: egen y_hogar_alt = sum(ytotal) 
  39.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
  40.         
-.         gen anios_prim = (e52_2 + e52_3) if e50 == 1 & (e52_4 == 0 & e52_5 ==
->  0 & ///
->             e52_5 == 0 & e52_7 == 0 & e52_8 == 0 & e52_9 == 0 & e52_10 == 0 &
->  ///
->             e52_11 == 0 & e52_12 == 0)
+.         gen anios_prim = (e52_2 + e52_3) if e50 == 1
  41.         replace anios_prim = 6 if e50 == 1 & (e52_4 > 0 | e52_5 > 0 | ///
 >             e52_6 > 0 | e52_7 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | ///
 >             e52_11 > 0 | e52_12 > 0)
  42.         replace anios_prim = e54_1_1 if e50 == 2 & e53 == 1 
- 43.         replace anios_prim = (e54_1_1 - 1) if e50 == 2 & e53 == 1 & ///
->             e54_1_1 == 6 & e54_1_2 == 2
- 44.         replace anios_prim = 6 if e54_3_3 == 1 | e54_3_3 == 2 | e54_3_3 ==
->  3
- 45.             
-.         gen anios_secun = (e52_4 + e52_5) if e50 == 1 & ///
->             (e52_9 == 0 & e52_10 == 0 & e52_11 == 0 & e52_12 == 0)
- 46.         replace anios_secun = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | //
+ 43.         replace anios_prim = 6 if e50 == 2 & e53 == 1 & ///
+>             (e54_2_1 > 0 | e54_3_1 > 0 | e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 
+> > 0 | ///
+>              e54_7_1 > 0)
+ 44.  
+.         gen anios_secun = (e52_4 + e52_5) if e50 == 1
+ 45.         replace anios_secun = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | //
 > /
 >             e52_11 > 0 | e52_12 > 0)    
- 47.         replace anios_secun = e54_2_1 if e50 == 2 & e53 == 1 
- 48.         replace anios_secun = (e54_2_1 - 1) if e50 == 2 & e53 == 1 & ///
->             e54_2_1 == 6 & e54_2_2 == 2
- 49.         
-.         gen anios_terc = (e52_9 + e52_10 + e52_11 + e52_12) if e50 == 1 & ///
->             (e52_9 > 0 | e52_10 > 0 | e52_11 > 0 | e52_12 > 0)
- 50.         replace anios_terc = (e54_4_1 + e54_5_1 + e54_6_1 + e54_7_1) ///
+ 46.         replace anios_secun = e54_2_1 if e50 == 2 & e53 == 1 
+ 47.         replace anios_secun = 6 if e50 == 2 & e53 == 1 & ///
+>             (e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 > 0 | e54_7_1 > 0)
+ 48. 
+.         gen anios_terc = (e52_9 + e52_10 + e52_11 + e52_12) if e50 == 1
+ 49.         replace anios_terc = (e54_4_1 + e54_5_1 + e54_6_1 + e54_7_1) ///
 >             if e50 == 2 & e53 == 1
- 51.         
-.         gen anios_tecn = (e52_5 + e52_7 + e52_8) if e50 == 1 & ///
->             (e52_9 == 0 & e52_10 == 0 & e52_11 == 0 & e52_12 == 0)
- 52.         replace anios_tecn = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | ///
->             e52_11 > 0 | e52_12 > 0)
- 53.         replace anios_tecn = e54_3_1 if e50 == 2 & e53 == 1 
- 54.         replace anios_tecn = (e54_3_1 - 1) if e50 == 2 & e53 == 1 & ///
->             e54_3_1 == 6 & e54_3_2 == 2
- 55.         replace anios_tecn = 6 if e54_3_3 == 1
- 56.         replace anios_tecn = 3 if e54_3_3 == 2
- 57.         
+ 50.         
+.         gen anios_tecn = (e52_5 + e52_7 + e52_8) if e50 == 1
+ 51.         replace anios_tecn = e54_3_1 if e50 == 2 & e53 == 1
+ 52.         replace anios_tecn = (e54_3_1) if e50 == 2 & e53 == 1
+ 53.         
 .         replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 58.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 59.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 54.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 55.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 56. 
+.         replace anios_prim = 0 if e53 == 2
+ 57.         replace anios_secun = 0 if e53 == 2
+ 58.         replace anios_terc = 0 if e53 == 2
+ 59.         replace anios_tecn = 0 if e53 == 2
  60.         
 .         gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
  61.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
@@ -650,40 +648,49 @@ Notes:
  37.         bysort numero: egen y_hogar_alt = sum(ytotal) 
  38.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
  39.         
-.         gen anios_prim = (e52_2 + e52_3)
- 40.         replace anios_prim = 0 if e51 == 2
- 41.             
-.         gen anios_secun = (e52_4 + e52_5)
- 42.         replace anios_secun = 0 if e51 == 2        
- 43.         
-.         gen anios_terc = (e52_8 + e52_9 + e52_10 + e52_11)
- 44.         replace anios_terc = 0 if e51 == 2
- 45.         
-.         gen anios_tecn = (e52_6 + e52_7_1)
- 46.         replace anios_tecn = 0 if e51 == 2
- 47.         
+.         gen anios_prim = (e52_2 + e52_3) if (e50 == 1 | e51 == 1)
+ 40.         replace anios_prim = 6 if (e50 == 1 | e51 == 1) & (e52_4 > 0 | e52
+> _5 > 0 | ///
+>             e52_6 > 0 | e52_7_1 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | //
+> /
+>             e52_11 > 0)
+ 41.                 replace anios_prim = (e52_2_V + e52_3_V) if ///
+>             ((e52_2 + e52_3) == 0 & !missing(e52_2_V))  
+ 42.                 replace anios_prim = 1 if (e52_2 == 9 | e52_3 == 9)
+ 43.                 replace anios_prim = 6 if anios_prim >= 6
+ 44.          
+.         gen anios_secun = (e52_4 + e52_5) if (e50 == 1 | e51 == 1)
+ 45.         replace anios_secun = 6 if (e50 == 1 | e51 == 1) & (e52_8 > 0 | e5
+> 2_9 > 0 | ///
+>                     e52_10 > 0 | e52_11 > 0)
+ 46.                 replace anios_secun = (e52_4_V + e52_5_V + e52_6_V) if ///
+>             ((e52_4 + e52_5) == 0 & !missing(e52_4_V))  
+ 47.                 replace anios_secun = 1 if (e52_4 == 9 | e52_5 == 9)
+ 48.                 replace anios_secun = 6 if anios_prim >= 6
+ 49.         
+.                 gen anios_terc = (e52_8 + e52_9 + e52_10 + e52_11) if (e50 ==
+>  1 | e51 == 1)
+ 50.                 replace anios_terc = (e52_9_V + e52_10_V + e52_11_V + e52_
+> 12_V) if ///
+>             ((e52_8 + e52_9 + e52_10 + e52_11) == 0 & !missing(e52_9_V))
+ 51.                 replace anios_terc = 1 if (e52_8 == 9 | e52_9 == 9 | e52_1
+> 0 == 9 | e52_11 == 9)
+ 52.                         
+.         gen anios_tecn = (e52_6 + e52_7_1) if (e50 == 1 | e51 == 1)
+ 53.                 replace anios_tecn = (e52_7_V + e52_8_V ) if ///
+>             ((e52_6 + e52_7_1) == 0 & !missing(e52_7_V))
+ 54.                 replace anios_tecn = 1 if (e52_6 == 9 | e52_7_1 == 9)
+ 55.         
 .         replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 48.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 49.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
- 50.         
-.         if anios_terc > 0  & e53_2 == 2 {
- 51.            replace anios_terc = anios_terc - 1 
- 52.         }
- 53.         
-.         if anios_tecn > 0 & anios_terc == 0 & e53_2 == 2 {
- 54.            replace anios_tecn = anios_tecn - 1 
- 55.         }
- 56.         
-.         if anios_secun > 0 & anios_tecn == 0 & anios_terc == 0 & e53_2 == 2 {
- 57.            replace anios_secun = anios_secun - 1 
- 58.         }        
- 59.         
-.         if anios_prim > 0 & anios_secun == 0 & anios_tecn == 0 & ///
->             anios_terc == 0 & e53_2 == 2 {
- 60.            replace anios_prim = anios_prim - 1 
- 61.         }   
- 62.         
-.         gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
+ 56.         replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 57.         replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 58. 
+.                 replace anios_prim = 0 if e51 == 2
+ 59.                 replace anios_secun = 0 if e51 == 2
+ 60.                 replace anios_terc = 0 if e51 == 2
+ 61.                 replace anios_tecn = 0 if e51 == 2
+ 62.                 
+.                 gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
  63.         replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
 >             inlist(anios_tecn,1,2,3,4,5)
  64.         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun
@@ -712,7 +719,7 @@ Notes:
 . 
 . program clean_09_16
   1. 
-.     forval year=2009/2016 {
+.     forval year=2009/2016{      
   2.         use ../temp/raw_`year'.dta, clear
   3.         
 .         capture rename estratogeo09 estrato
@@ -780,116 +787,106 @@ Notes:
  48.         bysort numero: egen y_hogar_alt = sum(ytotal) 
  49.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
  50. 
-.         if "`year'" <= "2010" {
+.         if ("`year'" == "2009" | "`year'" == "2010") {
  51.             gen anios_prim = (e51_2 + e51_3)
- 52.             replace anios_prim = 0 if e50 == 2
- 53.                 
-.             gen anios_secun = (e51_4 + e51_5)
- 54.             replace anios_secun = 0 if e50 == 2        
+ 52.             replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 | ///
+>                 e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | 
+> ///
+>                 e51_11 > 0)
+ 53.             replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
+ 54.             replace anios_prim = 6 if anios_prim >= 6   
  55.             
-.             gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
- 56.             replace anios_terc = 0 if e50 == 2
- 57.             
-.             gen anios_tecn = (e51_6 + e51_7)
- 58.             replace anios_tecn = 0 if e50 == 2
- 59.             
-.             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 60.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 61.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
- 62.             
-.             if anios_terc > 0  & e53 == 2 {
- 63.                replace anios_terc = anios_terc - 1 
- 64.             }
- 65.             
-.             if anios_tecn > 0 & anios_terc == 0 & e53 == 2 {
- 66.                replace anios_tecn = anios_tecn - 1 
- 67.             }
- 68.             
-.             if anios_secun > 0 & anios_tecn == 0 & anios_terc == 0 & e53 == 2
->  {
- 69.                replace anios_secun = anios_secun - 1 
- 70.             }        
- 71.             
-.             if anios_prim > 0 & anios_secun == 0 & anios_tecn == 0 & ///
->                 anios_terc == 0 & e53 == 2 {
- 72.                replace anios_prim = anios_prim - 1 
- 73.             }   
- 74.             
-.             gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
- 75.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
->                 inlist(anios_tecn,1,2,3,4,5)
- 76.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
-> ecun) | ///
->                 anios_tecn >= 6 & !missing(anios_tecn))
- 77.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
-> c))
- 78. 
-.             gen educ_ini = (e54 == 1)
- 79. 
-.             gen live_births     = .
- 80.             gen live_births_nbr = .
- 81.             }
- 82.         else {
- 83.             gen anios_prim = (e51_2 + e51_3)
- 84.             replace anios_prim = 0 if e49 == 2
- 85.                 
 .             gen anios_secun = (e51_4 + e51_5)
- 86.             replace anios_secun = 0 if e49 == 2     
- 87.             
+ 56.             replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0
+>  | ///
+>                 e51_11 > 0)
+ 57.             replace anios_secun = 1 if (e51_4 == 9 | e51_5 == 9)
+ 58.             
 .             gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
- 88.             replace anios_terc = 0 if e49 == 2
- 89.             
+ 59.             replace anios_terc = 1 if (e51_8 == 9 | e51_9 == 9 | e51_10 ==
+>  9 | e51_11 == 9)
+ 60.             
 .             gen anios_tecn = (e51_6 + e51_7)
- 90.             replace anios_tecn = 0 if e49 == 2
- 91.             
+ 61.             replace anios_tecn = 1 if (e51_6 == 9 | e51_7 == 9)
+ 62.             
 .             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 92.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 93.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
- 94.             
+ 63.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 64.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 65.             
+.             replace anios_prim = 0 if e50 == 2
+ 66.             replace anios_secun = 0 if e50 == 2
+ 67.             replace anios_terc = 0 if e50 == 2
+ 68.             replace anios_tecn = 0 if e50 == 2
+ 69.             
 .             gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
- 95.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
+ 70.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
 >                 inlist(anios_tecn,1,2,3,4,5)
- 96.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
+ 71.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
 > ecun) | ///
 >                 anios_tecn >= 6 & !missing(anios_tecn))
- 97.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
+ 72.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
 > c))
- 98. 
-.             gen educ_ini = (e193 == 1) if edad <= 3 
- 99.             gen live_births     = e185
-100.             gen live_births_nbr = e186_1 + e186_2 + e186_3 + e186_4 
-101.         }
-102.         
+ 73.             }
+ 74.         else {
+ 75.             gen anios_prim = (e51_2 + e51_3)
+ 76.             replace anios_prim = 0 if e49 == 2
+ 77.                 
+.             gen anios_secun = (e51_4 + e51_5)
+ 78.             replace anios_secun = 0 if e49 == 2     
+ 79.             
+.             gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
+ 80.             replace anios_terc = 0 if e49 == 2
+ 81.             
+.             gen anios_tecn = (e51_6 + e51_7)
+ 82.             replace anios_tecn = 0 if e49 == 2
+ 83.             
+.             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
+ 84.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 85.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 86.             
+.             gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
+ 87.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
+>                 inlist(anios_tecn,1,2,3,4,5)
+ 88.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
+> ecun) | ///
+>                 anios_tecn >= 6 & !missing(anios_tecn))
+ 89.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
+> c))
+ 90.         }
+ 91.                 
+.         gen live_births     = .
+ 92.         gen live_births_nbr = .
+ 93.         
 .         destring numero, replace
-103.         destring anio, replace
-104.         destring secc, replace
-105.         destring segm, replace
-106.         destring estrato, replace
-107.         
+ 94.         destring anio, replace
+ 95.         destring secc, replace
+ 96.         destring segm, replace
+ 97.         destring estrato, replace
+ 98.         
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz*  ///
 >              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
 > er14    ///
 >              pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level a
 > nios_* *trabaj* ///
->              educ_ini lp_06 li_06 region_3 region_4 live_births*
-108.         save ..\temp\clean_`year', replace
-109.         }
-110. end
+>              lp_06 li_06 region_3 region_4 live_births*
+ 99.         save ..\temp\clean_`year', replace
+100.         }
+101. end
 
 . 
 . main_clean_raw
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -899,7 +896,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -908,20 +905,20 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000006.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: variable pg112 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1998_h.dta saved
 
@@ -931,8 +928,8 @@ file ..\temp\preclean_1998_h.dta saved
     matched                            56,857  
     -----------------------------------------
 file ..\temp\preclean_1998.dta saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -941,9 +938,9 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -951,7 +948,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -960,20 +957,20 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000i.tmp saved
 (note: variable pg41o was int, now long to accommodate using data's values)
 (note: variable pg111 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000j.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000l.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000m.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000o.tmp saved
 file ..\temp\preclean_1999_h.dta saved
 
     Result                           # of obs.
@@ -982,8 +979,8 @@ file ..\temp\preclean_1999_h.dta saved
     matched                            57,674  
     -----------------------------------------
 file ..\temp\preclean_1999.dta saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000p.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -993,9 +990,9 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000r.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000s.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -1003,7 +1000,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -1014,20 +1011,20 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000u.tmp saved
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: variable pg132 was byte, now int to accommodate using data's values)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000v.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a00000x.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000010.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000011.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d00000x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000010.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0a000012.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0d000012.tmp saved
 file ..\temp\preclean_2000_h.dta saved
 
     Result                           # of obs.
@@ -1181,15 +1178,19 @@ file ..\temp\preclean_2005.dta saved
 (57,410 missing values generated)
 (57,410 missing values generated)
 (3,635 missing values generated)
+(970 real changes made)
 (3,635 missing values generated)
+(1,001 real changes made)
 (3,635 missing values generated)
+(437 real changes made)
 (3,635 missing values generated)
+(232 real changes made)
 (0 real changes made)
 (0 real changes made)
 (3,651 real changes made)
 (0 real changes made)
 (34,019 missing values generated)
-(18,960 real changes made)
+(20,056 real changes made)
 (11,244 real changes made)
 (7,098 real changes made)
 file ..\temp\clean_2001.dta saved
@@ -1197,15 +1198,19 @@ file ..\temp\clean_2001.dta saved
 (56,333 missing values generated)
 (56,333 missing values generated)
 (3,428 missing values generated)
+(1,003 real changes made)
 (3,428 missing values generated)
+(922 real changes made)
 (3,428 missing values generated)
+(458 real changes made)
 (3,428 missing values generated)
+(215 real changes made)
 (0 real changes made)
 (0 real changes made)
 (3,445 real changes made)
 (0 real changes made)
 (33,759 missing values generated)
-(18,921 real changes made)
+(19,928 real changes made)
 (11,269 real changes made)
 (7,212 real changes made)
 file ..\temp\clean_2002.dta saved
@@ -1213,15 +1218,19 @@ file ..\temp\clean_2002.dta saved
 (55,369 missing values generated)
 (55,369 missing values generated)
 (3,189 missing values generated)
+(973 real changes made)
 (3,189 missing values generated)
+(912 real changes made)
 (3,189 missing values generated)
+(497 real changes made)
 (3,189 missing values generated)
+(267 real changes made)
 (0 real changes made)
 (0 real changes made)
 (3,196 real changes made)
 (0 real changes made)
 (33,163 missing values generated)
-(18,575 real changes made)
+(19,582 real changes made)
 (11,379 real changes made)
 (7,210 real changes made)
 file ..\temp\clean_2003.dta saved
@@ -1229,15 +1238,19 @@ file ..\temp\clean_2003.dta saved
 (55,587 missing values generated)
 (55,587 missing values generated)
 (3,182 missing values generated)
+(892 real changes made)
 (3,182 missing values generated)
+(896 real changes made)
 (3,182 missing values generated)
+(471 real changes made)
 (3,182 missing values generated)
+(330 real changes made)
 (0 real changes made)
 (0 real changes made)
 (3,189 real changes made)
 (0 real changes made)
 (34,113 missing values generated)
-(19,094 real changes made)
+(20,112 real changes made)
 (11,997 real changes made)
 (7,527 real changes made)
 file ..\temp\clean_2004.dta saved
@@ -1245,15 +1258,19 @@ file ..\temp\clean_2004.dta saved
 (54,330 missing values generated)
 (54,330 missing values generated)
 (3,063 missing values generated)
+(896 real changes made)
 (3,063 missing values generated)
+(947 real changes made)
 (3,063 missing values generated)
+(503 real changes made)
 (3,063 missing values generated)
+(321 real changes made)
 (0 real changes made)
 (0 real changes made)
 (3,066 real changes made)
 (0 real changes made)
 (33,373 missing values generated)
-(18,360 real changes made)
+(19,431 real changes made)
 (11,982 real changes made)
 (7,555 real changes made)
 file ..\temp\clean_2005.dta saved
@@ -1285,29 +1302,29 @@ file ..\temp\clean_2005.dta saved
 (223,745 real changes made)
 (1,116 real changes made)
 (24,821 real changes made)
-(217,460 missing values generated)
+(187,275 missing values generated)
 (30,185 real changes made)
 (170,514 real changes made)
-(471 real changes made)
-(15,423 real changes made)
-(194,156 missing values generated)
-(6,881 real changes made)
+(88,149 real changes made)
+(187,275 missing values generated)
+(17,432 real changes made)
 (170,514 real changes made)
-(432 real changes made)
-(249,980 missing values generated)
+(15,149 real changes made)
+(187,275 missing values generated)
 (170,514 real changes made)
-(194,156 missing values generated)
-(6,881 real changes made)
+(187,275 missing values generated)
 (170,514 real changes made)
-(13 real changes made)
-(575 real changes made)
-(2,901 real changes made)
-(57,488 real changes made)
-(24,841 real changes made)
-(58,550 real changes made)
-(174,496 missing values generated)
-(82,852 real changes made)
-(78,610 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(16,759 real changes made)
+(16,759 real changes made)
+(16,759 real changes made)
+(16,759 real changes made)
+(118,336 missing values generated)
+(77,376 real changes made)
+(43,200 real changes made)
 (22,030 real changes made)
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1338,29 +1355,29 @@ file ..\temp\clean_2006.dta saved
 (122,839 real changes made)
 (252 real changes made)
 (18,280 real changes made)
-(117,373 missing values generated)
+(103,537 missing values generated)
 (18,426 real changes made)
 (94,694 real changes made)
-(122 real changes made)
-(8,693 real changes made)
-(108,865 missing values generated)
+(55,809 real changes made)
+(103,537 missing values generated)
 (5,328 real changes made)
 (94,694 real changes made)
-(25 real changes made)
-(137,857 missing values generated)
+(11,713 real changes made)
+(103,537 missing values generated)
 (94,694 real changes made)
-(108,865 missing values generated)
-(5,328 real changes made)
+(103,537 missing values generated)
 (94,694 real changes made)
-(4 real changes made)
-(313 real changes made)
-(2,293 real changes made)
-(35,343 real changes made)
-(16,968 real changes made)
-(39,060 real changes made)
-(104,303 missing values generated)
-(45,583 real changes made)
-(51,257 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(8,842 real changes made)
+(8,842 real changes made)
+(8,842 real changes made)
+(8,842 real changes made)
+(69,646 missing values generated)
+(45,839 real changes made)
+(23,806 real changes made)
 (17,041 real changes made)
 numero: all characters numeric; replaced as long
 anio already numeric; no replace
@@ -1393,17 +1410,33 @@ file ..\temp\clean_2007.dta saved
 (123,894 real changes made)
 (140 real changes made)
 (18,884 real changes made)
-(0 real changes made)
-(0 real changes made)
-(0 real changes made)
-(0 real changes made)
-(0 real changes made)
-(1 real change made)
-(1 real change made)
-(72,880 missing values generated)
-(48,399 real changes made)
-(24,309 real changes made)
-(16,534 real changes made)
+(8,299 missing values generated)
+(253 real changes made)
+(1,327 real changes made)
+(2,262 real changes made)
+(7,986 real changes made)
+(8,299 missing values generated)
+(375 real changes made)
+(1,158 real changes made)
+(3,849 real changes made)
+(82,227 real changes made)
+(8,299 missing values generated)
+(613 real changes made)
+(1,351 real changes made)
+(8,299 missing values generated)
+(517 real changes made)
+(866 real changes made)
+(697 real changes made)
+(154 real changes made)
+(154 real changes made)
+(7,836 real changes made)
+(7,835 real changes made)
+(7,834 real changes made)
+(7,834 real changes made)
+(99,227 missing values generated)
+(16,794 real changes made)
+(98,561 real changes made)
+(16,686 real changes made)
 numero: all characters numeric; replaced as long
 anio already numeric; no replace
 secc: all characters numeric; replaced as byte
@@ -1413,6 +1446,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2008.dta saved
 (27,271 missing values generated)
 (10 real changes made)
+(29 real changes made)
+(2,271 real changes made)
+(22 real changes made)
+(162 real changes made)
+(4,034 real changes made)
+(1,414 real changes made)
+(927 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1421,8 +1461,8 @@ file ..\temp\clean_2008.dta saved
 (0 real changes made)
 (0 real changes made)
 (72,295 missing values generated)
-(47,058 real changes made)
-(25,184 real changes made)
+(51,361 real changes made)
+(24,602 real changes made)
 (17,108 real changes made)
 (132,599 missing values generated)
 (132,599 missing values generated)
@@ -1434,6 +1474,13 @@ estrato: all characters numeric; replaced as byte
 file ..\temp\clean_2009.dta saved
 (26,874 missing values generated)
 (4 real changes made)
+(19 real changes made)
+(2,164 real changes made)
+(15 real changes made)
+(178 real changes made)
+(4,259 real changes made)
+(1,304 real changes made)
+(884 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1441,10 +1488,9 @@ file ..\temp\clean_2009.dta saved
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
-(132,010 real changes made)
 (73,195 missing values generated)
-(48,291 real changes made)
-(24,598 real changes made)
+(52,804 real changes made)
+(24,081 real changes made)
 (16,425 real changes made)
 (132,010 missing values generated)
 (132,010 missing values generated)
@@ -1467,7 +1513,8 @@ file ..\temp\clean_2010.dta saved
 (49,041 real changes made)
 (26,436 real changes made)
 (17,658 real changes made)
-(124,570 missing values generated)
+(130,804 missing values generated)
+(130,804 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1487,7 +1534,8 @@ file ..\temp\clean_2011.dta saved
 (45,066 real changes made)
 (25,325 real changes made)
 (17,111 real changes made)
-(114,605 missing values generated)
+(120,462 missing values generated)
+(120,462 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1507,7 +1555,8 @@ file ..\temp\clean_2012.dta saved
 (47,958 real changes made)
 (27,104 real changes made)
 (18,309 real changes made)
-(121,620 missing values generated)
+(127,925 missing values generated)
+(127,925 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1527,7 +1576,8 @@ file ..\temp\clean_2013.dta saved
 (50,044 real changes made)
 (28,925 real changes made)
 (19,419 real changes made)
-(125,617 missing values generated)
+(131,857 missing values generated)
+(131,857 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1547,7 +1597,8 @@ file ..\temp\clean_2014.dta saved
 (46,248 real changes made)
 (26,915 real changes made)
 (18,563 real changes made)
-(115,566 missing values generated)
+(121,461 missing values generated)
+(121,461 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1569,7 +1620,8 @@ file ..\temp\clean_2015.dta saved
 (45,242 real changes made)
 (26,662 real changes made)
 (18,310 real changes made)
-(112,944 missing values generated)
+(118,591 missing values generated)
+(118,591 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -1817,6 +1869,10 @@ Notes:
   variable etnia was float now byte
   variable estudiante was float now byte
   variable trabajo was float now byte
+  variable anios_prim was float now byte
+  variable anios_secun was float now byte
+  variable anios_terc was float now byte
+  variable anios_tecn was float now byte
   variable educ_level was float now byte
   variable c01_hhld_computer was float now byte
   variable c01_hhld_internet was float now byte
@@ -1826,7 +1882,6 @@ Notes:
   variable c06_mat_roof was float now byte
   variable c06_mat_floor was float now byte
   variable c06_b_electr was float now byte
-  variable educ_ini was float now byte
   variable numero was double now long
   variable pers was double now byte
   variable anio was double now int
@@ -1858,14 +1913,14 @@ Notes:
   variable li_06 was double now int
   variable ccz04 was double now byte
   variable ccz10 was double now byte
-  (603,564,300 bytes saved)
+  (621,671,229 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\clean_1998_2016
 Key: numero pers anio
 ===============================================================================
 > ===================
-  2011881:75(82568):3746195559:2639921626
+  2011881:74(105227):2151403152:25952090
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1929,11 +1984,11 @@ c98_hhld_car |  2,011,881    .3664526    .4818352          0          1
      trabajo |  2,011,881    .4474072    .4972264          0          1
  y_hogar_alt |  2,011,881    27804.22    32191.49          0    7289481
 -------------+---------------------------------------------------------
-  anios_prim |  1,951,565    5.099496    1.836453         -1         18
- anios_secun |  1,951,565    2.491383    2.740993          0         12
-  anios_terc |  1,871,037    .5677501    1.714732          0         40
-  anios_tecn |  1,951,565    .3403568    1.130574          0         18
-  educ_level |  1,902,770     1.94972    1.025518          1          4
+  anios_prim |  1,977,166    5.033553    1.936339          0         18
+ anios_secun |  1,977,166    2.367297    2.695643          0         12
+  anios_terc |  1,993,658    .5156677    1.611322          0         40
+  anios_tecn |  1,977,161    .2852024    .9719175          0         18
+  educ_level |  1,945,248    1.922687    1.031275          1          4
 -------------+---------------------------------------------------------
          mes |  1,839,366    6.494094    3.444294          1         12
    trabajo_1 |  1,839,366    .4234492    .4941054          0          1
@@ -1945,9 +2000,9 @@ c01_hhld_c~v |  1,839,366    .5446029    .4980067          0          1
     region_3 |  1,560,337    1.791686    .7105442          1          3
     region_4 |  1,560,337    1.874478    .8836783          1          4
      pesomen |  1,439,875    269.4868    116.7817          1       2451
- live_births |  1,295,728    .7620025    .7370323          0          2
+ live_births |    544,628    1.037506    .6892997          0          2
 -------------+---------------------------------------------------------
-live_birth~r |  1,295,728     1.07133    1.770882          0         99
+live_birth~r |    544,628     1.42473    1.954932          0         99
        li_06 |  1,560,337    1751.036    550.9899        898       3021
        lp_06 |  1,560,337    17719.04    9722.893       2214   132026.8
 c06_mat_wa~s |  1,560,337     .971983    .1650215          0          1
@@ -1955,7 +2010,6 @@ c06_mat_roof |  1,560,337    .5369802    .4986308          0          1
 -------------+---------------------------------------------------------
 c06_mat_fl~r |  1,560,337    .7705964    .4204494          0          1
 c06_b_electr |  1,560,337    .9857172    .1186542          0          1
-    educ_ini |    300,787    .0394931    .1947652          0          1
        ccz04 |    120,462    3.528764    5.341155          0         18
        ccz10 |    120,462    3.552116    5.353865          0         18
 
@@ -1968,4 +2022,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-07-17 11:20:59
+ make.py ended: 2018-08-18 15:58:35
