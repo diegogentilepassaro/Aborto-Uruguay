@@ -697,22 +697,33 @@ program clean_09_16
             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
             }
         else {
-            gen anios_prim = (e51_2 + e51_3)
-            replace anios_prim = 0 if e49 == 2
+            gen anios_prim = (e51_2 + e51_3)			
+			replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 | ///
+                e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
+                e51_11 > 0)
+            replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
+            replace anios_prim = 6 if anios_prim >= 6 
                 
             gen anios_secun = (e51_4 + e51_5)
-            replace anios_secun = 0 if e49 == 2     
-            
+            replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
+                e51_11 > 0)
+            replace anios_secun = 1 if (e51_4 == 9 | e51_5 == 9)  
+			
             gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
-            replace anios_terc = 0 if e49 == 2
+            replace anios_terc = 1 if (e51_8 == 9 | e51_9 == 9 | e51_10 == 9 | e51_11 == 9)
             
             gen anios_tecn = (e51_6 + e51_7)
-            replace anios_tecn = 0 if e49 == 2
+            replace anios_tecn = 1 if (e51_6 == 9 | e51_7 == 9)
             
             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
             
+			replace anios_prim = 0 if e49 == 2
+            replace anios_secun = 0 if e49 == 2
+            replace anios_terc = 0 if e49 == 2
+            replace anios_tecn = 0 if e49 == 2
+			
             gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
                 inlist(anios_tecn,1,2,3,4,5)

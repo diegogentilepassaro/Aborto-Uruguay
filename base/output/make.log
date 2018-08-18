@@ -1,5 +1,5 @@
 
- make.py started: 2018-08-18 15:52:22 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
+ make.py started: 2018-08-18 16:12:51 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
 
 
 
@@ -828,41 +828,56 @@ Notes:
 > c))
  73.             }
  74.         else {
- 75.             gen anios_prim = (e51_2 + e51_3)
- 76.             replace anios_prim = 0 if e49 == 2
- 77.                 
+ 75.             gen anios_prim = (e51_2 + e51_3)                    
+ 76.                         replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 |
+>  ///
+>                 e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | 
+> ///
+>                 e51_11 > 0)
+ 77.             replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
+ 78.             replace anios_prim = 6 if anios_prim >= 6 
+ 79.                 
 .             gen anios_secun = (e51_4 + e51_5)
- 78.             replace anios_secun = 0 if e49 == 2     
- 79.             
+ 80.             replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0
+>  | ///
+>                 e51_11 > 0)
+ 81.             replace anios_secun = 1 if (e51_4 == 9 | e51_5 == 9)  
+ 82.                         
 .             gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
- 80.             replace anios_terc = 0 if e49 == 2
- 81.             
+ 83.             replace anios_terc = 1 if (e51_8 == 9 | e51_9 == 9 | e51_10 ==
+>  9 | e51_11 == 9)
+ 84.             
 .             gen anios_tecn = (e51_6 + e51_7)
- 82.             replace anios_tecn = 0 if e49 == 2
- 83.             
-.             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
- 84.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
- 85.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 85.             replace anios_tecn = 1 if (e51_6 == 9 | e51_7 == 9)
  86.             
+.             replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
+ 87.             replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
+ 88.             replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
+ 89.             
+.                         replace anios_prim = 0 if e49 == 2
+ 90.             replace anios_secun = 0 if e49 == 2
+ 91.             replace anios_terc = 0 if e49 == 2
+ 92.             replace anios_tecn = 0 if e49 == 2
+ 93.                         
 .             gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
- 87.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
+ 94.             replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
 >                 inlist(anios_tecn,1,2,3,4,5)
- 88.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
+ 95.             replace educ_level = 3 if (anios_secun == 6 & !missing(anios_s
 > ecun) | ///
 >                 anios_tecn >= 6 & !missing(anios_tecn))
- 89.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
+ 96.             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_ter
 > c))
- 90.         }
- 91.                 
+ 97.         }
+ 98.                 
 .         gen live_births     = .
- 92.         gen live_births_nbr = .
- 93.         
+ 99.         gen live_births_nbr = .
+100.         
 .         destring numero, replace
- 94.         destring anio, replace
- 95.         destring secc, replace
- 96.         destring segm, replace
- 97.         destring estrato, replace
- 98.         
+101.         destring anio, replace
+102.         destring secc, replace
+103.         destring segm, replace
+104.         destring estrato, replace
+105.         
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz*  ///
 >              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
@@ -870,9 +885,9 @@ Notes:
 >              pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level a
 > nios_* *trabaj* ///
 >              lp_06 li_06 region_3 region_4 live_births*
- 99.         save ..\temp\clean_`year', replace
-100.         }
-101. end
+106.         save ..\temp\clean_`year', replace
+107.         }
+108. end
 
 . 
 . main_clean_raw
@@ -1502,6 +1517,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2010.dta saved
 (25,574 missing values generated)
 (6 real changes made)
+(47 real changes made)
+(2,153 real changes made)
+(18 real changes made)
+(246 real changes made)
+(5,806 real changes made)
+(2,016 real changes made)
+(1,613 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1510,8 +1532,8 @@ file ..\temp\clean_2010.dta saved
 (0 real changes made)
 (0 real changes made)
 (75,631 missing values generated)
-(49,041 real changes made)
-(26,436 real changes made)
+(55,157 real changes made)
+(25,346 real changes made)
 (17,658 real changes made)
 (130,804 missing values generated)
 (130,804 missing values generated)
@@ -1523,6 +1545,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2011.dta saved
 (23,148 missing values generated)
 (2 real changes made)
+(16 real changes made)
+(1,817 real changes made)
+(12 real changes made)
+(214 real changes made)
+(5,270 real changes made)
+(1,987 real changes made)
+(1,429 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1531,8 +1560,8 @@ file ..\temp\clean_2011.dta saved
 (0 real changes made)
 (0 real changes made)
 (70,775 missing values generated)
-(45,066 real changes made)
-(25,325 real changes made)
+(50,553 real changes made)
+(24,327 real changes made)
 (17,111 real changes made)
 (120,462 missing values generated)
 (120,462 missing values generated)
@@ -1544,6 +1573,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2012.dta saved
 (24,537 missing values generated)
 (4 real changes made)
+(13 real changes made)
+(1,910 real changes made)
+(9 real changes made)
+(264 real changes made)
+(5,722 real changes made)
+(1,972 real changes made)
+(1,391 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1552,8 +1588,8 @@ file ..\temp\clean_2012.dta saved
 (0 real changes made)
 (0 real changes made)
 (75,631 missing values generated)
-(47,958 real changes made)
-(27,104 real changes made)
+(53,853 real changes made)
+(26,164 real changes made)
 (18,309 real changes made)
 (127,925 missing values generated)
 (127,925 missing values generated)
@@ -1565,6 +1601,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2013.dta saved
 (24,859 missing values generated)
 (13 real changes made)
+(22 real changes made)
+(2,008 real changes made)
+(8 real changes made)
+(303 real changes made)
+(6,013 real changes made)
+(2,158 real changes made)
+(1,458 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1573,8 +1616,8 @@ file ..\temp\clean_2013.dta saved
 (0 real changes made)
 (0 real changes made)
 (79,135 missing values generated)
-(50,044 real changes made)
-(28,925 real changes made)
+(56,154 real changes made)
+(27,947 real changes made)
 (19,419 real changes made)
 (131,857 missing values generated)
 (131,857 missing values generated)
@@ -1586,6 +1629,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2014.dta saved
 (22,759 missing values generated)
 (3 real changes made)
+(55 real changes made)
+(1,855 real changes made)
+(13 real changes made)
+(342 real changes made)
+(5,728 real changes made)
+(2,152 real changes made)
+(1,311 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1594,8 +1644,8 @@ file ..\temp\clean_2014.dta saved
 (0 real changes made)
 (0 real changes made)
 (73,580 missing values generated)
-(46,248 real changes made)
-(26,915 real changes made)
+(52,060 real changes made)
+(26,121 real changes made)
 (18,563 real changes made)
 (121,461 missing values generated)
 (121,461 missing values generated)
@@ -1609,6 +1659,13 @@ estrato already numeric; no replace
 file ..\temp\clean_2015.dta saved
 (21,747 missing values generated)
 (12 real changes made)
+(35 real changes made)
+(1,759 real changes made)
+(12 real changes made)
+(391 real changes made)
+(5,658 real changes made)
+(2,272 real changes made)
+(1,406 real changes made)
 (0 real changes made)
 (0 real changes made)
 (0 real changes made)
@@ -1617,8 +1674,8 @@ file ..\temp\clean_2015.dta saved
 (0 real changes made)
 (0 real changes made)
 (72,318 missing values generated)
-(45,242 real changes made)
-(26,662 real changes made)
+(51,002 real changes made)
+(25,826 real changes made)
 (18,310 real changes made)
 (118,591 missing values generated)
 (118,591 missing values generated)
@@ -1920,7 +1977,7 @@ File: ..\output\clean_1998_2016
 Key: numero pers anio
 ===============================================================================
 > ===================
-  2011881:74(105227):2151403152:25952090
+  2011881:74(105227):125809955:4173377234
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1984,11 +2041,11 @@ c98_hhld_car |  2,011,881    .3664526    .4818352          0          1
      trabajo |  2,011,881    .4474072    .4972264          0          1
  y_hogar_alt |  2,011,881    27804.22    32191.49          0    7289481
 -------------+---------------------------------------------------------
-  anios_prim |  1,977,166    5.033553    1.936339          0         18
- anios_secun |  1,977,166    2.367297    2.695643          0         12
-  anios_terc |  1,993,658    .5156677    1.611322          0         40
-  anios_tecn |  1,977,161    .2852024    .9719175          0         18
-  educ_level |  1,945,248    1.922687    1.031275          1          4
+  anios_prim |  1,977,166    4.986886     1.93605          0          9
+ anios_secun |  1,977,166    2.212994     2.49511          0          6
+  anios_terc |  1,993,658    .4588781    1.412284          0         40
+  anios_tecn |  1,977,161    .2500828    .7801826          0          8
+  educ_level |  1,977,166    1.920219    1.020861          1          4
 -------------+---------------------------------------------------------
          mes |  1,839,366    6.494094    3.444294          1         12
    trabajo_1 |  1,839,366    .4234492    .4941054          0          1
@@ -2022,4 +2079,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-08-18 15:58:35
+ make.py ended: 2018-08-18 16:19:27
