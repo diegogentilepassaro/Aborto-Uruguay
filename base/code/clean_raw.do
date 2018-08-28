@@ -441,6 +441,7 @@ program clean_07
         replace anios_prim = 6 if e50 == 2 & e53 == 1 & ///
             (e54_2_1 > 0 | e54_3_1 > 0 | e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 > 0 | ///
              e54_7_1 > 0)
+		replace anios_prim = 6 if anios_prim >= 6
  
         gen anios_secun = (e52_4 + e52_5) if e50 == 1
         replace anios_secun = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | ///
@@ -549,20 +550,20 @@ program clean_08
 		replace anios_prim = 1 if (e52_2 == 9 | e52_3 == 9)
 		replace anios_prim = 6 if anios_prim >= 6
 	 
-        gen anios_secun = (e52_4 + e52_5) if (e50 == 1 | e51 == 1)
+        gen anios_secun = (e52_4 + e52_5 + e52_6) if (e50 == 1 | e51 == 1)
         replace anios_secun = 6 if (e50 == 1 | e51 == 1) & (e52_8 > 0 | e52_9 > 0 | ///
 		    e52_10 > 0 | e52_11 > 0)
 		replace anios_secun = (e52_4_V + e52_5_V + e52_6_V) if ///
-            ((e52_4 + e52_5) == 0 & !missing(e52_4_V))	
-		replace anios_secun = 1 if (e52_4 == 9 | e52_5 == 9)
-		replace anios_secun = 6 if anios_prim >= 6
+            ((e52_4 + e52_5) == 0 & !missing(e52_4_V))		
+		replace anios_secun = 1 if (e52_4 == 9 | e52_5 == 9 | e52_6 == 9)
+		replace anios_secun = 6 if anios_secun >= 6
 	
 		gen anios_terc = (e52_8 + e52_9 + e52_10 + e52_11) if (e50 == 1 | e51 == 1)
 		replace anios_terc = (e52_9_V + e52_10_V + e52_11_V + e52_12_V) if ///
             ((e52_8 + e52_9 + e52_10 + e52_11) == 0 & !missing(e52_9_V))
 		replace anios_terc = 1 if (e52_8 == 9 | e52_9 == 9 | e52_10 == 9 | e52_11 == 9)
 			
-        gen anios_tecn = (e52_6 + e52_7_1) if (e50 == 1 | e51 == 1)
+        gen anios_tecn = (e52_7_1) if (e50 == 1 | e51 == 1)
 		replace anios_tecn = (e52_7_V + e52_8_V ) if ///
             ((e52_6 + e52_7_1) == 0 & !missing(e52_7_V))
 		replace anios_tecn = 1 if (e52_6 == 9 | e52_7_1 == 9)
