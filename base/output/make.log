@@ -1,5 +1,5 @@
 
- make.py started: 2018-08-28 15:59:08 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
+ make.py started: 2018-08-29 09:35:53 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
 
 
 
@@ -533,7 +533,8 @@ Notes:
 >             (e54_2_1 > 0 | e54_3_1 > 0 | e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 
 > > 0 | ///
 >              e54_7_1 > 0)
- 44.                 replace anios_prim = 6 if anios_prim >= 6
+ 44.                 replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim
+> )
  45.  
 .         gen anios_secun = (e52_4 + e52_5) if e50 == 1
  46.         replace anios_secun = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | //
@@ -658,7 +659,8 @@ Notes:
  41.                 replace anios_prim = (e52_2_V + e52_3_V) if ///
 >             ((e52_2 + e52_3) == 0 & !missing(e52_2_V))  
  42.                 replace anios_prim = 1 if (e52_2 == 9 | e52_3 == 9)
- 43.                 replace anios_prim = 6 if anios_prim >= 6
+ 43.                 replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim
+> )
  44.          
 .         gen anios_secun = (e52_4 + e52_5 + e52_6) if (e50 == 1 | e51 == 1)
  45.         replace anios_secun = 6 if (e50 == 1 | e51 == 1) & (e52_8 > 0 | e5
@@ -668,7 +670,8 @@ Notes:
 >             ((e52_4 + e52_5) == 0 & !missing(e52_4_V))          
  47.                 replace anios_secun = 1 if (e52_4 == 9 | e52_5 == 9 | e52_
 > 6 == 9)
- 48.                 replace anios_secun = 6 if anios_secun >= 6
+ 48.                 replace anios_secun = 6 if anios_secun >= 6 & !mi(anios_se
+> cun)
  49.         
 .                 gen anios_terc = (e52_8 + e52_9 + e52_10 + e52_11) if (e50 ==
 >  1 | e51 == 1)
@@ -796,7 +799,7 @@ Notes:
 > ///
 >                 e51_11 > 0)
  53.             replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
- 54.             replace anios_prim = 6 if anios_prim >= 6   
+ 54.             replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim)
  55.             
 .             gen anios_secun = (e51_4 + e51_5)
  56.             replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0
@@ -1376,7 +1379,7 @@ file ..\temp\clean_2006.dta saved
 (18,426 real changes made)
 (94,694 real changes made)
 (55,809 real changes made)
-(8,849 real changes made)
+(6 real changes made)
 (103,537 missing values generated)
 (5,328 real changes made)
 (94,694 real changes made)
@@ -1432,12 +1435,12 @@ file ..\temp\clean_2007.dta saved
 (253 real changes made)
 (1,327 real changes made)
 (2,262 real changes made)
-(7,986 real changes made)
+(147 real changes made)
 (8,299 missing values generated)
 (278 real changes made)
 (1,158 real changes made)
 (3,987 real changes made)
-(7,962 real changes made)
+(123 real changes made)
 (8,299 missing values generated)
 (613 real changes made)
 (1,351 real changes made)
@@ -1453,7 +1456,7 @@ file ..\temp\clean_2007.dta saved
 (7,834 real changes made)
 (73,790 missing values generated)
 (52,448 real changes made)
-(24,639 real changes made)
+(24,634 real changes made)
 (16,686 real changes made)
 numero: all characters numeric; replaced as long
 anio already numeric; no replace
@@ -1980,7 +1983,7 @@ File: ..\output\clean_1998_2016
 Key: numero pers anio
 ===============================================================================
 > ===================
-  2011881:74(105227):437186146:3013910082
+  2011881:74(105227):4007274593:3690317932
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2044,11 +2047,11 @@ c98_hhld_car |  2,011,881    .3664526    .4818352          0          1
      trabajo |  2,011,881    .4474072    .4972264          0          1
  y_hogar_alt |  2,011,881    27804.22    32191.49          0    7289481
 -------------+---------------------------------------------------------
-  anios_prim |  1,977,167    4.986878    1.936038          0          6
- anios_secun |  1,977,166    2.052263    2.405213          0          6
+  anios_prim |  1,977,161    4.986875     1.93604          0          6
+ anios_secun |  1,977,161    2.052253    2.405208          0          6
   anios_terc |  1,993,658    .4588781    1.412284          0         40
   anios_tecn |  1,977,161    .2488052    .7779169          0          8
-  educ_level |  1,977,166    1.869966     1.00354          1          4
+  educ_level |  1,977,161    1.869964     1.00354          1          4
 -------------+---------------------------------------------------------
          mes |  1,839,366    6.494094    3.444294          1         12
    trabajo_1 |  1,839,366    .4234492    .4941054          0          1
@@ -2082,4 +2085,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-08-28 16:06:20
+ make.py ended: 2018-08-29 09:42:30
