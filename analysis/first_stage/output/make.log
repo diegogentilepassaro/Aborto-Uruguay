@@ -1,14 +1,14 @@
 
- make.py started: 2018-08-30 14:33:43 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-08-30 16:18:24 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -82,11 +82,11 @@ The smoother applied was
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -95,8 +95,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -111,8 +111,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -336,36 +336,36 @@ Notes:
 
 . 
 end of do-file
-(102 observations deleted)
-(102 missing values generated)
-(100 missing values generated)
-(51 observations deleted)
-(51 missing values generated)
-(51 missing values generated)
-(102 observations deleted)
-(92 missing values generated)
-(87 missing values generated)
-(51 observations deleted)
-(50 missing values generated)
-(46 missing values generated)
-(68 observations deleted)
+(70 observations deleted)
 (68 missing values generated)
-(68 missing values generated)
+(69 missing values generated)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(68 observations deleted)
+(70 observations deleted)
 (68 missing values generated)
-(68 missing values generated)
+(69 missing values generated)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(102 observations deleted)
-(98 missing values generated)
-(96 missing values generated)
-(51 observations deleted)
-(50 missing values generated)
-(50 missing values generated)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
+(70 observations deleted)
+(68 missing values generated)
+(69 missing values generated)
+(34 observations deleted)
+(34 missing values generated)
+(34 missing values generated)
 (file ..\output\births_rivera_anio.pdf written in PDF format)
 (file ..\output\births_rivera_anio_sem.pdf written in PDF format)
 
@@ -373,11 +373,11 @@ end of do-file
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./state_of_birth.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./state_of_birth.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -386,8 +386,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -402,8 +402,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -414,7 +414,7 @@ Notes:
 .         use "..\..\..\assign_treatment\output\births.dta", clear
 
 .         drop if inlist(depar,20,99) // drop Extranjero, No indicado
-(0 observations deleted)
+(1,632 observations deleted)
 
 . 
 .         collapse (count) births = edadm, by(anio codep depar)
@@ -422,7 +422,6 @@ Notes:
 .         egen births_tot = total(births), by(anio depar)
 
 .         gen births_sh = births/births_tot
-(2,148 missing values generated)
 
 .         
 .         gen tag_same = depar==codep
@@ -430,10 +429,10 @@ Notes:
 .         gen tag_mvd  = codep==10
 
 .         gen births_sh_same = births/births_tot if tag_same
-(2,407 missing values generated)
+(2,122 missing values generated)
 
 .         gen births_sh_mvd  = births/births_tot if tag_mvd
-(2,407 missing values generated)
+(2,122 missing values generated)
 
 . 
 .         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
@@ -504,11 +503,11 @@ Notes:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./aggregate_births.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./aggregate_births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -517,8 +516,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -790,7 +789,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0b000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -802,7 +801,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0b000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -814,7 +813,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0b000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -836,11 +835,11 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000006.tmp saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./misoprostol.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./misoprostol.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -849,8 +848,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -874,30 +873,49 @@ Notes:
 . program import_and_process_data
   1.         import excel using "..\..\..\raw\fernandez_misoprostol.xlsx", ///
 >             sheet("Sheet1") firstrow clear
-  2.         
-.         keep Region perc
-  3.         
+  2.                 
 .         gen norm_sales2002 = 100
-  4.         gen norm_sales2007 = norm_sales2002 + perc
-  5.         
-.         reshape long norm_sales, i(Region) j(year)
-  6.         
-.         label var norm_sales "Change in Misoprostol annual sales"
-  7.         label var year "Year"
-  8. end
+  3.         gen norm_sales2007 = norm_sales2002 + perc
+  4.         gen sales_miso_only2002 = (sales_miso_only2007 * norm_sales2002) /
+>  norm_sales2007
+  5.         gen ug_per_pop2002 = sales_miso_only2002 / world_bank_pop2002
+  6.         gen ug_per_pop2007 = sales_miso_only2007 / world_bank_pop2007
+  7.         
+.         drop world_bank* sales_miso* perc
+  8.         
+.         reshape long norm_sales ug_per_pop, i(Region) j(year)
+  9.         
+.         label var ug_per_pop "Misoprostol (in µg × 10^6) / Population (in mil
+> lions)"
+ 10.         label var year "Year"
+ 11. end
 
 . 
 . program build_figure
-  1.     graph twoway line norm_sales year if Region == "Global" || ///
->             line norm_sales year if Region == "Latin America" || ///
->         line norm_sales year if Region == "Uruguay" || ///
->                 line norm_sales year if Region == "Chile", ///
+  1. 
+.     generate order = 1 if Region =="Global"
+  2.     replace order = 2 if Region =="Latin America"
+  3.     replace order = 3 if Region =="Chile"
+  4.     replace order = 4 if Region =="Uruguay"
+  5. 
+.     graph bar norm_sales, over(year) ///
+>             over(Region, sort(order) descending) ///
+>             asyvars graphregion(fcolor(white) lcolor(white)) ///
+>                 ytitle("Misoprostol annual sales (base 2002)") name(bar) 
+  6.                 
+.         graph export ../output/misoprostol_sales_2002_2007.pdf, replace
+  7.         
+.     graph twoway connected ug_per_pop year if Region == "Global" || ///
+>             connected ug_per_pop year if Region == "Latin America" || ///
+>         connected ug_per_pop year if Region == "Uruguay" || ///
+>                 connected ug_per_pop year if Region == "Chile", ///
 >                 legend(label(1 "Global") label(2 "Latin America") label(3 "Ur
 > uguay") label(4 "Chile")) ///
->                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white))
-  2. 
-.         graph export ../output/misoprostol_sales_2002_2007.pdf, replace
-  3. end
+>                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white)) 
+> name(dots)
+  8. 
+.         graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
+  9. end
 
 . 
 . main
@@ -906,14 +924,41 @@ Notes:
 Data                               wide   ->   long
 -----------------------------------------------------------------------------
 Number of obs.                        4   ->       8
-Number of variables                   4   ->       4
+Number of variables                   5   ->       4
 j variable (2 values)                     ->   year
 xij variables:
           norm_sales2002 norm_sales2007   ->   norm_sales
+          ug_per_pop2002 ug_per_pop2007   ->   ug_per_pop
 -----------------------------------------------------------------------------
+(6 missing values generated)
+(2 real changes made)
+(2 real changes made)
+(2 real changes made)
 (file ../output/misoprostol_sales_2002_2007.pdf written in PDF format)
+(file ../output/misoprostol_per_capita_2002_2007.pdf written in PDF format)
 
 . 
-end of do-file
+. 
+. main
+(note: j = 2002 2007)
 
- make.py ended: 2018-08-30 14:34:49
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                        4   ->       8
+Number of variables                   5   ->       4
+j variable (2 values)                     ->   year
+xij variables:
+          norm_sales2002 norm_sales2007   ->   norm_sales
+          ug_per_pop2002 ug_per_pop2007   ->   ug_per_pop
+-----------------------------------------------------------------------------
+(6 missing values generated)
+(2 real changes made)
+(2 real changes made)
+(2 real changes made)
+graph bar already exists
+r(110);
+
+end of do-file
+r(110);
+
+ make.py ended: 2018-08-30 16:19:22
