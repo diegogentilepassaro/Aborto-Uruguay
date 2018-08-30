@@ -1,5 +1,5 @@
 
- make.py started: 2018-05-08 16:24:25 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-08-30 14:33:43 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -126,9 +126,10 @@ Notes:
   2.         
 .         foreach var in not_married first_pregnancy age_young high_school reco
 > mm_prenatal_numvisits {
-  3.                 plot_births, treatment(rivera) by_vars(`var') time(anio_se
-> m)
-  4.                 plot_births, treatment(rivera) by_vars(`var') time(anio)
+  3.                 plot_births_case_studies, treatment(rivera) by_vars(`var')
+>  time(anio_sem)
+  4.                 plot_births_case_studies, treatment(rivera) by_vars(`var')
+>  time(anio)
   5.         }
   6. 
 .         foreach time in anio anio_sem {
@@ -145,53 +146,37 @@ Notes:
  11. end
 
 . 
-. capture program drop plot_births
+. capture program drop plot_births_case_studies
 
-. program plot_births
+. program plot_births_case_studies
   1. syntax, by_vars(string) treatment(string) time(string) 
   2.         
 .         use "..\..\..\assign_treatment\output\births.dta", clear
   3. 
-.         if "`time'" == "anio_mon" {
-  4.         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pr
-> e},tm(${m_date_`treatment'}) + ${m_post}) "
-  5.         local xtitle "Year-month"
-  6.         local vertical = tm(${m_date_`treatment'}) - 0.5    
-  7.         local vertical2= tm(${m_date_`treatment'}) - 6.5 
-  8.         local y_label = "0(250)500"
-  9.     }
- 10.         else if "`time'" == "anio_qtr" {
- 11.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
-> e},tq(${q_date_`treatment'}) + ${q_post}) "
- 12.         local xtitle "Year-quarter"
- 13.         local vertical = tq(${q_date_`treatment'}) - 0.5 
- 14.         local vertical2= tq(${q_date_`treatment'}) + 2.5   
- 15.         local y_label = "0(500)1000" 
- 16.     }
- 17.     else if "`time'" == "anio_sem" {
- 18.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+.         if "`time'" == "anio_sem" {
+  4.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
 > e},th(${s_date_`treatment'}) + ${s_post}) "
- 19.         local xtitle "Year-half"
- 20.         local vertical = th(${s_date_`treatment'}) - 0.5   
- 21.         local vertical2= th(${s_date_`treatment'}) + 1.5 
- 22.         local y_label = "0(500)1000"
- 23.     }
- 24.     else {
- 25.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+  5.         local xtitle "Year-half"
+  6.         local vertical = th(${s_date_`treatment'}) - 0.5   
+  7.         local vertical2= th(${s_date_`treatment'}) + 1.5 
+  8.         local y_label = "0(500)1000"
+  9.     }
+ 10.     else {
+ 11.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
 > ${y_date_`treatment'} + ${y_post}) "
- 26.         local xtitle "Year"
- 27.         local vertical = ${y_date_`treatment'} - 0.5  
- 28.         local vertical2= ${y_date_`treatment'} + 0.5
- 29.         local y_label = "0(600)1800"
- 30.     }
- 31.         
+ 12.         local xtitle "Year"
+ 13.         local vertical = ${y_date_`treatment'} - 0.5  
+ 14.         local vertical2= ${y_date_`treatment'} + 0.5
+ 15.         local y_label = "0(600)1800"
+ 16.     }
+ 17.         
 .         collapse (count) births=edadm , by(`time' treatment_`treatment' `by_v
 > ars')
- 32.         
+ 18.         
 .         keep if !mi(treatment)
- 33.         gen Treatment = births if treatment_`treatment'==1
- 34.         gen Control   = births if treatment_`treatment'==0
- 35.         
+ 19.         gen Treatment = births if treatment_`treatment'==1
+ 20.         gen Control   = births if treatment_`treatment'==0
+ 21.         
 .         /*tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue))
 >  ///
 >            (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) //
@@ -205,19 +190,19 @@ Notes:
 > lace*/
 . 
 .         local g_name = substr("`by_vars'",1,9)
- 36.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
+ 22.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
 > n(dot)) xsize(4) scheme(s1color) "'
- 37.         local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)
+ 23.         local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)
 > ) xtitle("`xtitle'", si(small)) legend(si(vsmall))"'
- 38.         forvalues v=0/1 {
- 39.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
+ 24.         forvalues v=0/1 {
+ 25.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
 > nect(l) mc(blue) lc(blue) ) ///
 >                    (scatter Control   `time' `range' & `by_vars'==`v', connec
 > t(l) mc(red)  lc(red)) ///
 >                         , `opt1' `opt2' title(`: label `by_vars' `v'', si(med
 > ium)) name(g_`time'_`g_name'_`v')
- 40.         }
- 41. end
+ 26.         }
+ 27. end
 
 . 
 . capture program drop diff_in_diff
@@ -231,45 +216,33 @@ Notes:
   4.         local time anio
   5.         local by_vars first_pregnancy
   6. 
-.         if "`time'" == "anio_mon" {
-  7.         local range "if inrange(`time', tm(${m_date_`treatment'}) - ${m_pr
-> e},tm(${m_date_`treatment'}) + ${m_post}) "
-  8.         local event_date         ${m_date_`treatment'}   
-  9.         gen post = (`time' >= tm(${m_date_`treatment'})) 
- 10.     }
- 11.         else if "`time'" == "anio_qtr" {
- 12.         local range "if inrange(`time', tq(${q_date_`treatment'}) - ${q_pr
-> e},tq(${q_date_`treatment'}) + ${q_post}) "
- 13.         local event_date         ${q_date_`treatment'}  
- 14.         gen post = (`time' >= tq(${q_date_`treatment'}))  
- 15.     }
- 16.     else if "`time'" == "anio_sem" {
- 17.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
+.         if "`time'" == "anio_sem" {
+  7.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
 > e},th(${s_date_`treatment'}) + ${s_post}) "
- 18.         local event_date         ${s_date_`treatment'}  
- 19.         gen post = (`time' >= th(${s_date_`treatment'}))   
- 20.     }
- 21.     else {
- 22.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
+  8.         local event_date         ${s_date_`treatment'}  
+  9.         gen post = (`time' >= th(${s_date_`treatment'}))   
+ 10.     }
+ 11.     else {
+ 12.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
 > ${y_date_`treatment'} + ${y_post}) "
- 23.         local event_date ${y_date_`treatment'}  
- 24.         gen post = (`time' >=  ${y_date_`treatment'})  
- 25.     }
- 26.         
+ 13.         local event_date ${y_date_`treatment'}  
+ 14.         gen post = (`time' >=  ${y_date_`treatment'})  
+ 15.     }
+ 16.         
 .         keep if !mi(treatment_`treatment')
- 27.         
+ 17.         
 .         reg edadm post##treatment_`treatment'
- 28. 
+ 18. 
 .         collapse (count) births=edadm , by(anio treatment_`treatment' first_p
 > regnancy not_married) //`by_vars')
- 29.                 
+ 19.                 
 .                 gen post = (anio>`event_date')
- 30.                 gen interaction = post * treatment_`treatment'
- 31.                 gen log_births = log(births)
- 32.                 
+ 20.                 gen interaction = post * treatment_`treatment'
+ 21.                 gen log_births = log(births)
+ 22.                 
 .                 reg log_births post##treatment_`treatment'##first_pregnancy##
 > not_married
- 33. end
+ 23. end
 
 . 
 . main
@@ -363,36 +336,36 @@ Notes:
 
 . 
 end of do-file
-(70 observations deleted)
+(102 observations deleted)
+(102 missing values generated)
+(100 missing values generated)
+(51 observations deleted)
+(51 missing values generated)
+(51 missing values generated)
+(102 observations deleted)
+(92 missing values generated)
+(87 missing values generated)
+(51 observations deleted)
+(50 missing values generated)
+(46 missing values generated)
+(68 observations deleted)
 (68 missing values generated)
-(69 missing values generated)
+(68 missing values generated)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(70 observations deleted)
+(68 observations deleted)
 (68 missing values generated)
-(69 missing values generated)
+(68 missing values generated)
 (34 observations deleted)
 (34 missing values generated)
 (34 missing values generated)
-(70 observations deleted)
-(68 missing values generated)
-(69 missing values generated)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
-(70 observations deleted)
-(68 missing values generated)
-(69 missing values generated)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
-(70 observations deleted)
-(68 missing values generated)
-(69 missing values generated)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
+(102 observations deleted)
+(98 missing values generated)
+(96 missing values generated)
+(51 observations deleted)
+(50 missing values generated)
+(50 missing values generated)
 (file ..\output\births_rivera_anio.pdf written in PDF format)
 (file ..\output\births_rivera_anio_sem.pdf written in PDF format)
 
@@ -441,7 +414,7 @@ Notes:
 .         use "..\..\..\assign_treatment\output\births.dta", clear
 
 .         drop if inlist(depar,20,99) // drop Extranjero, No indicado
-(1,632 observations deleted)
+(0 observations deleted)
 
 . 
 .         collapse (count) births = edadm, by(anio codep depar)
@@ -449,6 +422,7 @@ Notes:
 .         egen births_tot = total(births), by(anio depar)
 
 .         gen births_sh = births/births_tot
+(2,148 missing values generated)
 
 .         
 .         gen tag_same = depar==codep
@@ -456,10 +430,10 @@ Notes:
 .         gen tag_mvd  = codep==10
 
 .         gen births_sh_same = births/births_tot if tag_same
-(2,122 missing values generated)
+(2,407 missing values generated)
 
 .         gen births_sh_mvd  = births/births_tot if tag_mvd
-(2,122 missing values generated)
+(2,407 missing values generated)
 
 . 
 .         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
@@ -816,7 +790,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_1108_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -828,7 +802,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_1108_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -840,7 +814,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_1108_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_b1c_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -861,4 +835,85 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_1108_000006.tmp saved
 . 
 end of do-file
 
- make.py ended: 2018-05-08 16:25:39
+
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./misoprostol.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401506201178
+         Licensed to:  Brown University
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./misoprostol.do 
+
+. clear all
+
+. set more off
+
+. 
+. program main
+  1.         import_and_process_data
+  2.         build_figure
+  3. end
+
+. 
+. program import_and_process_data
+  1.         import excel using "..\..\..\raw\fernandez_misoprostol.xlsx", ///
+>             sheet("Sheet1") firstrow clear
+  2.         
+.         keep Region perc
+  3.         
+.         gen norm_sales2002 = 100
+  4.         gen norm_sales2007 = norm_sales2002 + perc
+  5.         
+.         reshape long norm_sales, i(Region) j(year)
+  6.         
+.         label var norm_sales "Change in Misoprostol annual sales"
+  7.         label var year "Year"
+  8. end
+
+. 
+. program build_figure
+  1.     graph twoway line norm_sales year if Region == "Global" || ///
+>             line norm_sales year if Region == "Latin America" || ///
+>         line norm_sales year if Region == "Uruguay" || ///
+>                 line norm_sales year if Region == "Chile", ///
+>                 legend(label(1 "Global") label(2 "Latin America") label(3 "Ur
+> uguay") label(4 "Chile")) ///
+>                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white))
+  2. 
+.         graph export ../output/misoprostol_sales_2002_2007.pdf, replace
+  3. end
+
+. 
+. main
+(note: j = 2002 2007)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                        4   ->       8
+Number of variables                   4   ->       4
+j variable (2 values)                     ->   year
+xij variables:
+          norm_sales2002 norm_sales2007   ->   norm_sales
+-----------------------------------------------------------------------------
+(file ../output/misoprostol_sales_2002_2007.pdf written in PDF format)
+
+. 
+end of do-file
+
+ make.py ended: 2018-08-30 14:34:49

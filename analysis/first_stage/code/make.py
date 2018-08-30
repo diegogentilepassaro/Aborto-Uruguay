@@ -37,6 +37,7 @@ run_stata(program = 'mortality.do')
 run_stata(program = 'vital_records.do')
 run_stata(program = 'state_of_birth.do')
 run_stata(program = 'aggregate_births.do')
+run_stata(program = 'misoprostol.do')
 
 end_make_logging()
 

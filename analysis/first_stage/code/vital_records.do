@@ -7,8 +7,8 @@ program main
 	do ../../globals.do
 	
 	foreach var in not_married first_pregnancy age_young high_school recomm_prenatal_numvisits {
-		plot_births, treatment(rivera) by_vars(`var') time(anio_sem)
-		plot_births, treatment(rivera) by_vars(`var') time(anio)
+		plot_births_case_studies, treatment(rivera) by_vars(`var') time(anio_sem)
+		plot_births_case_studies, treatment(rivera) by_vars(`var') time(anio)
 	}
 
 	foreach time in anio anio_sem {
