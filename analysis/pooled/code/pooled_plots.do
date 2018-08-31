@@ -96,23 +96,28 @@ syntax, time(str) by_vars(str) num_periods(str)
 		forvalues i=0/1 {
 			preserve
 				keep if !mi(`by_var') & `by_var'==`i'
-				collapse (count) births_`by_var'`i'=edad, by(`time' dpto treatment)
-				lab var births_`by_var'`i' "Number of births"
+				collapse (count) births_`by_var'`i'_l=edad, by(`time' dpto treatment)
+				gen births_`by_var'`i' = log(births_`by_var'`i'_l)
+				lab var births_`by_var'`i'_l "Number of births"
+				lab var births_`by_var'`i' "(log) Number of births"
 				tempfile births_`by_var'`i'
 				save `births_`by_var'`i''
 			restore
 		}
 		preserve
 			keep if !mi(`by_var')
-			collapse (count) births=edad (min) impl_date_dpto, by(`time' dpto depar treatment `by_var')
+			collapse (count) births_l=edad (min) impl_date_dpto, by(`time' dpto depar treatment `by_var')
+			gen births = log(births_l)
 			tempfile births_`by_var'
 			save `births_`by_var''
 		restore
 	}
 
-	collapse (count) births=edad (min) impl_date_dpto , by(`time' dpto depar treatment)
+	collapse (count) births_l=edad (min) impl_date_dpto , by(`time' dpto depar treatment)
+	gen births = log(births_l)
 	merge 1:1 `time' dpto using ..\temp\TFR_`time'.dta, assert(3) nogen
-	lab var births "Number of births"
+	lab var births_l "Number of births"
+	lab var births "(log) Number of births"
 	tempfile births_agg
 	save `births_agg'
 
@@ -121,15 +126,15 @@ syntax, time(str) by_vars(str) num_periods(str)
 	merge 1:1 `time' dpto using `births_kids_before0' , assert(3) nogen
 	merge 1:1 `time' dpto using `births_kids_before1' , assert(3) nogen
 	gen age_fertile = 1
-	assert births >= births_single0 + births_single1
+	assert births_l >= births_single0_l + births_single1_l
 	gen anio = year(dofh(anio_sem))
 	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
-	gen GFR = births/pop*1000
+	gen GFR = births_l/pop*1000
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
 		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
-		gen GFR_`by_var'1 = births_`by_var'1/(pop*(  pop_sh_`by_var'))*1000
-		gen GFR_`by_var'0 = births_`by_var'0/(pop*(1-pop_sh_`by_var'))*1000 
+		gen GFR_`by_var'1 = births_`by_var'1_l/(pop*(  pop_sh_`by_var'))*1000
+		gen GFR_`by_var'0 = births_`by_var'0_l/(pop*(1-pop_sh_`by_var'))*1000 
 		lab var GFR_`by_var'1 "General fertility rate"
 		lab var GFR_`by_var'0 "General fertility rate"
 		drop pop_sh_`by_var'
@@ -151,12 +156,12 @@ syntax, time(str) by_vars(str) num_periods(str)
 	}
 	gen anio = year(dofh(anio_sem))
 	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
-	gen GFR = births/pop*1000 if all_sample==1
+	gen GFR = births_l/pop*1000 if all_sample==1
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
 		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
-		replace GFR = births/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(GFR)
-		replace GFR = births/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(GFR)
+		replace GFR = births_l/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(GFR)
+		replace GFR = births_l/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(GFR)
 		drop pop_sh_`by_var'
 	}
 	save ../temp/plots_sample_births_long.dta, replace
@@ -210,7 +215,14 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 
         use ../temp/plots_sample_`data'.dta, clear
 		
-		if "`outcome'" == "horas_trabajo" {
+		if substr("`outcome'",1,7) == "births_" {
+			local ylabel = "ylabel(-1 (0.5) 1)"
+		}
+		else if substr("`outcome'",1,4) == "GFR_" {
+			local ylabel = "ylabel(-20 (10) 20)"
+		}
+
+		if inlist("`outcome'","horas_trabajo","work_part_time") {
             keep if trabajo==1
         }
 		if inlist("`outcome'","trabajo","work_part_time") | "`data'" == "births_ind" {
@@ -224,7 +236,8 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		local ES_subsample_nomvd  = " if (treatment==1)     & age_fertile==1 "
 		local DiD_subsample = " if !mi(treatment)           & age_fertile==1 "
 		local coefplot_opts = " vertical baselevels graphregion(color(white)) bgcolor(white) " + ///
-							  " xline(6.5 7.5, lcolor(black) lpattern(dot))	ytitle(`: var lab `outcome'') "
+							  " xline(6.5 7.5, lcolor(black) lpattern(dot))	`ylabel' " + ///
+							  " ytitle(`: var lab `outcome'') "
 		
 		* ES: run main regression and plot coefficients
 		`estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///

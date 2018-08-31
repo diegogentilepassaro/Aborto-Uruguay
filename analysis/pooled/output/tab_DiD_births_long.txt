@@ -1,20 +1,20 @@
 \begin{threeparttable}
 \begin{tabular}{l|cc} \hline\hline
- & Number of births & Fertility rate \\ \hline
-Baseline &   -123.152  &     -1.050 \\ 
-          & (   16.846) & (    0.472) \\ 
+ & (log) Number of births & Fertility rate \\ \hline
+Baseline &     -0.020  &     -1.050 \\ 
+          & (    0.014) & (    0.472) \\ 
           &        340  &        340 \\ 
-Had previous pregnancy &    -82.595  &      3.000 \\ 
-          & (   13.622) & (    0.794) \\ 
+Had previous pregnancy &     -0.001  &      3.000 \\ 
+          & (    0.015) & (    0.794) \\ 
           &        340  &        340 \\ 
-First pregnancy &    -43.269  &     -3.997 \\ 
-          & (    8.132) & (    0.856) \\ 
+First pregnancy &     -0.056  &     -3.997 \\ 
+          & (    0.020) & (    0.856) \\ 
           &        340  &        340 \\ 
-Not single &   -287.432  &     -5.725 \\ 
-          & (   25.283) & (    1.023) \\ 
+Not single &     -0.178  &     -5.725 \\ 
+          & (    0.024) & (    1.023) \\ 
           &        340  &        340 \\ 
-Single &     94.373  &      3.733 \\ 
-          & (   13.796) & (    1.252) \\ 
+Single &      0.169  &      3.733 \\ 
+          & (    0.049) & (    1.252) \\ 
           &        340  &        340 \\ 
 \hline\hline
 \end{tabular}

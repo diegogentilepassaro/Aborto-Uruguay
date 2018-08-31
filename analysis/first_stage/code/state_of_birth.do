@@ -5,7 +5,7 @@ adopath + ../../../library/stata/gslab_misc/ado
 	use "..\..\..\assign_treatment\output\births.dta", clear
 	drop if inlist(depar,20,99) // drop Extranjero, No indicado
 
-	collapse (count) births = edadm, by(anio codep depar)
+	collapse (count) births = edad, by(anio codep depar)
 	egen births_tot = total(births), by(anio depar)
 	gen births_sh = births/births_tot
 	

@@ -59,7 +59,7 @@ program pooled_reg
         local lab_v`i' : variable label `outcome'
         local lab1_v`i': label (`outcome') 1
 		
-        if "`outcome'" == "horas_trabajo" {
+        if inlist("`outcome'","horas_trabajo","work_part_time")  {
             keep if trabajo==1
         }
         if inlist("`outcome'","trabajo","work_part_time") | "`data'" == "births_ind" {
