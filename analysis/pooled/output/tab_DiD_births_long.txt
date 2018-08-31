@@ -1,6 +1,7 @@
 \begin{threeparttable}
 \begin{tabular}{l|cc} \hline\hline
  & (log) Number of births & Fertility rate \\ \hline
+Mean &     6.539 &    34.312 \\ \hline 
 Baseline &     -0.020  &     -1.050 \\ 
           & (    0.014) & (    0.472) \\ 
           &        340  &        340 \\ 

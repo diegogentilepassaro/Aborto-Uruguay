@@ -1,5 +1,5 @@
 
- make.py started: 2018-08-31 14:24:49 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2018-08-31 17:57:09 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -298,64 +298,67 @@ Notes:
  45.                 else if substr("`outcome'",1,4) == "GFR_" {
  46.                         local ylabel = "ylabel(-20 (10) 20)"
  47.                 }
- 48. 
+ 48.                 else {
+ 49.                         local ylabel = ""
+ 50.                 }
+ 51. 
 .                 if inlist("`outcome'","horas_trabajo","work_part_time") {
- 49.             keep if trabajo==1
- 50.         }
- 51.                 if inlist("`outcome'","trabajo","work_part_time") | "`data
+ 52.             keep if trabajo==1
+ 53.         }
+ 54.                 if inlist("`outcome'","trabajo","work_part_time") | "`data
 > '" == "births_ind" {
- 52.                         local estimation = "logit"
- 53.                 }
- 54.                 else {
- 55.                         local estimation = "reg"
+ 55.                         local estimation = "logit"
  56.                 }
- 57. 
+ 57.                 else {
+ 58.                         local estimation = "reg"
+ 59.                 }
+ 60. 
 .                 local ES_subsample  = " if (treatment==1 | dpto==1) & age_fer
 > tile==1 "
- 58.                 local ES_subsample_nomvd  = " if (treatment==1)     & age_
+ 61.                 local ES_subsample_nomvd  = " if (treatment==1)     & age_
 > fertile==1 "
- 59.                 local DiD_subsample = " if !mi(treatment)           & age_
+ 62.                 local DiD_subsample = " if !mi(treatment)           & age_
 > fertile==1 "
- 60.                 local coefplot_opts = " vertical baselevels graphregion(co
+ 63.                 local coefplot_opts = " vertical baselevels graphregion(co
 > lor(white)) bgcolor(white) " + ///
 >                                                           " xline(6.5 7.5, lc
 > olor(black) lpattern(dot)) `ylabel' " + ///
 >                                                           " ytitle(`: var lab
 >  `outcome'') "
- 61.                 
+ 64.                 
 .                 * ES: run main regression and plot coefficients
 .                 `estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///
 >                         `ES_subsample_nomvd' `pweight', vce(cluster `time')
- 62.                         * Coef plot
-.                         coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                                 drop(_cons 1.t 1000.t *.`time' *.dpto  `all_c
-> ontrols') ///
->                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
-> " 13 "6") 
- 63.                         graph export ../output/pooled_es_`outcome'_`time'_
-> nomvd.pdf, replace
- 64.                 `estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///
->                         `ES_subsample' `pweight', vce(cluster `time')
  65.                         * Coef plot
 .                         coefplot, `coefplot_opts' xtitle("`time_label'") ///
 >                                 drop(_cons 1.t 1000.t *.`time' *.dpto  `all_c
 > ontrols') ///
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6") 
- 66.                         graph export ../output/pooled_es_`outcome'_`time'.
+ 66.                         graph export ../output/pooled_es_`outcome'_`time'_
+> nomvd.pdf, replace
+ 67.                 `estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///
+>                         `ES_subsample' `pweight', vce(cluster `time')
+ 68.                         * Coef plot
+.                         coefplot, `coefplot_opts' xtitle("`time_label'") ///
+>                                 drop(_cons 1.t 1000.t *.`time' *.dpto  `all_c
+> ontrols') ///
+>                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
+> " 13 "6") 
+ 69.                         graph export ../output/pooled_es_`outcome'_`time'.
 > pdf, replace
- 67.                         * Coef plot with shift
+ 70.                         * Coef plot with shift
 .                         qui sum `outcome' if inrange(t, 1, `num_periods')
- 68.                         local target_mean = r(mean)
- 69.                         preserve
- 70.                             coefplot, omitted vertical baselevels gen ///
+ 71.                         local target_mean = r(mean)
+ 72.                         preserve
+ 73.                             coefplot, omitted vertical baselevels gen ///
 >                                         drop(_cons 1.t 1000.t *.`time' *.dpto
 >  `all_controls')
- 71.                             qui sum __b
- 72.                             local coef_mean = r(mean)
- 73.                         restore 
- 74.                         local yshift = `target_mean' - `coef_mean'
- 75.                         coefplot, `coefplot_opts' xtitle("`time_label'") /
+ 74.                             qui sum __b
+ 75.                             local coef_mean = r(mean)
+ 76.                         restore 
+ 77.                         local yshift = `target_mean' - `coef_mean'
+ 78.                         coefplot, `coefplot_opts' xtitle("`time_label'") /
 > //
 >                                 drop(_cons 1.t 1000.t *.`time' *.dpto `all_co
 > ntrols') ///
@@ -363,34 +366,34 @@ Notes:
 >  lpattern(dashed)) ///
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6")                                  
- 76.                         graph export ../output/pooled_es_shift_`outcome'_`
+ 79.                         graph export ../output/pooled_es_shift_`outcome'_`
 > time'.pdf, replace
- 77.                 
+ 80.                 
 .                 * DiD: run main regression and plot coefficientss
 .                 `estimation' `outcome' ib`omitted'.t##i.treatment i.`time' i.
 > dpto  `all_controls' ///
 >                         `DiD_subsample' `pweight', vce(cluster `time')
- 78.                         * Coef plot
+ 81.                         * Coef plot
 .                         coefplot, `coefplot_opts' xtitle("`time_label'") ///
 >                                 drop(_cons *.t 1.t#1.treatment 1000.t#1.treat
 > ment 1.treatment 0.treatment *.`time' *.dpto  `all_controls') ///
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6") 
- 79.                         graph export ../output/pooled_did_`outcome'_`time'
+ 82.                         graph export ../output/pooled_did_`outcome'_`time'
 > .pdf, replace
- 80.                         * Coef plot with shift
+ 83.                         * Coef plot with shift
 .                         qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
- 81.                         local target_mean = r(mean)
- 82.                         preserve
- 83.                             coefplot, omitted vertical baselevels gen ///
+ 84.                         local target_mean = r(mean)
+ 85.                         preserve
+ 86.                             coefplot, omitted vertical baselevels gen ///
 >                                         drop(_cons *.t 1.t#1.treatment 1000.t
 > #1.treatment 1.treatment 0.treatment *.`time' *.dpto `control_vars' ${control
 > s})
- 84.                             qui sum __b
- 85.                             local coef_mean = r(mean)
- 86.                         restore 
- 87.                         local yshift = `target_mean' - `coef_mean'
- 88.                         coefplot, `coefplot_opts' xtitle("`time_label'") /
+ 87.                             qui sum __b
+ 88.                             local coef_mean = r(mean)
+ 89.                         restore 
+ 90.                         local yshift = `target_mean' - `coef_mean'
+ 91.                         coefplot, `coefplot_opts' xtitle("`time_label'") /
 > //
 >                                 drop(_cons *.t 1.t#1.treatment 1000.t#1.treat
 > ment 1.treatment 0.treatment *.`time' *.dpto `all_controls') ///
@@ -398,10 +401,10 @@ Notes:
 >  lpattern(dashed)) ///
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6")                          
- 89.                         graph export ../output/pooled_did_shift_`outcome'_
+ 92.                         graph export ../output/pooled_did_shift_`outcome'_
 > `time'.pdf, replace
- 90.         }
- 91. end
+ 93.         }
+ 94. end
 
 . 
 . program pooled_mean_plots
@@ -508,24 +511,24 @@ file ../temp/pop_fertile_age_agg.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (232,095 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_000002.tmp saved
 (453,598 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_000004.tmp saved
 (45,584 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_000006.tmp saved
 (403,185 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_000008.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_000008.tmp saved
 (241,186 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_00000a.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_00000a.tmp saved
 (4,262 observations deleted)
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_00000c.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_00000c.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
     matched                               374  
     -----------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_3cc4_00000d.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_4da8_00000d.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -5740,53 +5743,65 @@ Notes:
 .                                 di "*** REG: `outcome' , `cond' , `age_group'
 >  ***"
  50. 
+.                                 if inlist("`cond'","&!mi(dpto)","&all_sample=
+> =1") {
+ 51.                                         sum `outcome' `ES_subsample' `cond
+> ', meanonly
+ 52.                                         local avg_v`i'_ES`age_group' = r(m
+> ean)
+ 53.                                         sum `outcome' `DiD_subsample' `con
+> d', meanonly
+ 54.                                         local avg_v`i'_DiD`age_group' = r(
+> mean)
+ 55.                                 }
+ 56. 
 .                 `estimation' `outcome' post i.dpto  ///
 >                                         `ES_subsample' `cond' `pweight', vce(
 > cluster `time')
- 51.                                 matrix COL_ES`age_group' = ((_b[post] \ _s
+ 57.                                 matrix COL_ES`age_group' = ((_b[post] \ _s
 > e[post]) \ e(N))
- 52. 
+ 58. 
 .                 gen interaction = treatment`age_group' * post
- 53. 
+ 59. 
 .                 `estimation' `outcome' i.treatment`age_group' i.post interact
 > ion ///
 >                     i.`time' i.dpto  `all_controls' ///
 >                     `DiD_subsample' `cond' `pweight', vce(cluster `time')
- 54.                 
+ 60.                 
 .                 matrix COL_DiD`age_group' = ((_b[interaction] \ _se[interacti
 > on]) \ e(N))
- 55.         
+ 61.         
 .                 drop interaction
- 56.             }
- 57.                         if "`data'" == "ech" {
- 58.                                 matrix COL_ES  = (COL_ES_fertile,  COL_ES_
+ 62.             }
+ 63.                         if "`data'" == "ech" {
+ 64.                                 matrix COL_ES  = (COL_ES_fertile,  COL_ES_
 > placebo)
- 59.                                 matrix COL_DiD = (COL_DiD_fertile, COL_DiD
+ 65.                                 matrix COL_DiD = (COL_DiD_fertile, COL_DiD
 > _placebo)
- 60.                         }
- 61.                         else {
- 62.                                 matrix COL_ES  = (COL_ES_fertile)
- 63.                                 matrix COL_DiD = (COL_DiD_fertile)
- 64.                         }
- 65.             matrix ROW_ES  = (nullmat(ROW_ES)  \ COL_ES)
- 66.             matrix ROW_DiD = (nullmat(ROW_DiD) \ COL_DiD)
- 67.                 }
- 68.                 *local stub = substr("`outcome'",1,10)
+ 66.                         }
+ 67.                         else {
+ 68.                                 matrix COL_ES  = (COL_ES_fertile)
+ 69.                                 matrix COL_DiD = (COL_DiD_fertile)
+ 70.                         }
+ 71.             matrix ROW_ES  = (nullmat(ROW_ES)  \ COL_ES)
+ 72.             matrix ROW_DiD = (nullmat(ROW_DiD) \ COL_DiD)
+ 73.                 }
+ 74.                 *local stub = substr("`outcome'",1,10)
 .         matrix TAB_ES  = (nullmat(TAB_ES) , ROW_ES)
- 69.         matrix TAB_DiD = (nullmat(TAB_DiD), ROW_DiD)
- 70.                 matrix drop ROW_ES ROW_DiD
- 71.     }
- 72. 
+ 75.         matrix TAB_DiD = (nullmat(TAB_DiD), ROW_DiD)
+ 76.                 matrix drop ROW_ES ROW_DiD
+ 77.     }
+ 78. 
 .         local cond1            = "Baseline"
- 73.         local cond4            = "Not single"
- 74.         local cond5            = "Single"
- 75.     if "`data'" == "ech" {
- 76.                 local cond2        = "Kids under 14"
- 77.                 local cond3        = "No kids under 14"
- 78.                 foreach rd in ES DiD {
- 79.                         file open myfile using "../output/tab_`rd'_`data'.
+ 79.         local cond4            = "Not single"
+ 80.         local cond5            = "Single"
+ 81.     if "`data'" == "ech" {
+ 82.                 local cond2        = "Kids under 14"
+ 83.                 local cond3        = "No kids under 14"
+ 84.                 foreach rd in ES DiD {
+ 85.                         file open myfile using "../output/tab_`rd'_`data'.
 > txt", write replace
- 80.                         file write myfile "\begin{threeparttable}" ///
+ 86.                         file write myfile "\begin{threeparttable}" ///
 >                                                         _n "\begin{tabular}{l
 > |cc|cc|cc} \hline\hline"  ///
 >                                                         _n " & \multicolumn{2
@@ -5795,13 +5810,22 @@ Notes:
 >                                                         _n " & (1)        & (
 > 2)        & (3)        & (4)        & (5)        & (6)  \\ "  ///
 >                                                         _n " & Age: 16-45 & A
-> ge: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline"
- 81.                         local r = rowsof(TAB_`rd') / 3
- 82.                         forvalues i = 1/`r' {
- 83.                                 local j1 = 3 * `i' - 2
- 84.                                 local j2 = 3 * `i' - 1
- 85.                                 local j3 = 3 * `i' 
- 86.                                 file write myfile ///
+> ge: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline" ///
+>                                                         _n "Mean (baseline) &
+>  " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v1_`rd'_placebo') " & " //
+> /
+>                                                                              
+>    %9.3f (`avg_v2_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_placebo') " & " //
+> /
+>                                                                              
+>    %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v3_`rd'_placebo') " \\ \hl
+> ine "
+ 87.                         local r = rowsof(TAB_`rd') / 3
+ 88.                         forvalues i = 1/`r' {
+ 89.                                 local j1 = 3 * `i' - 2
+ 90.                                 local j2 = 3 * `i' - 1
+ 91.                                 local j3 = 3 * `i' 
+ 92.                                 file write myfile ///
 >                                         _n "`cond`i'' &  " ///
 >                                                       %9.3f  (TAB_`rd'[`j1',1
 > ]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
@@ -5821,31 +5845,36 @@ Notes:
 > c (TAB_`rd'[`j3',4]) " & " ///
 >                                       %9.0fc (TAB_`rd'[`j3',5]) "  &  " %9.0f
 > c (TAB_`rd'[`j3',6]) " \\ "
- 87.                         }
- 88.                         file write myfile _n "\hline\hline" _n "\end{tabul
+ 93.                         }
+ 94.                         file write myfile _n "\hline\hline" _n "\end{tabul
 > ar}" 
- 89.                         file close myfile
- 90.                 }       
- 91.         }
- 92.     else if "`data'" == "births_ind" {
- 93.                 local cond2 = "Had previous pregnancy"
- 94.                 local cond3 = "First pregnancy"
- 95.                 foreach rd in ES DiD {
- 96.                         file open myfile using "../output/tab_`rd'_`data'.
+ 95.                         file close myfile
+ 96.                 }       
+ 97.         }
+ 98.     else if "`data'" == "births_ind" {
+ 99.                 local cond2 = "Had previous pregnancy"
+100.                 local cond3 = "First pregnancy"
+101.                 foreach rd in ES DiD {
+102.                         file open myfile using "../output/tab_`rd'_`data'.
 > txt", write replace
- 97.                         file write myfile "\begin{threeparttable}" ///
+103.                         file write myfile "\begin{threeparttable}" ///
 >                                                         _n "\begin{tabular}{l
 > |cccc} \hline\hline"  ///
 >                                                         _n " & `lab1_v1' & `l
 > ab1_v2' & `lab1_v3' & `lab1_v4' \\ \hline" ///
 >                                                         _n " & (1)       & (2
-> )       & (3)       & (4)       \\ \hline"
- 98.                         local r = rowsof(TAB_`rd') / 3
- 99.                         forvalues i = 1/`r' {
-100.                                 local j1 = 3 * `i' - 2
-101.                                 local j2 = 3 * `i' - 1
-102.                                 local j3 = 3 * `i' 
-103.                                 file write myfile ///
+> )       & (3)       & (4)       \\ \hline" ///
+>                                                         _n "Mean (baseline) &
+>  " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') ///
+>                                                                           " &
+>  " %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_fertile') " \\ \hl
+> ine "
+104.                         local r = rowsof(TAB_`rd') / 3
+105.                         forvalues i = 1/`r' {
+106.                                 local j1 = 3 * `i' - 2
+107.                                 local j2 = 3 * `i' - 1
+108.                                 local j3 = 3 * `i' 
+109.                                 file write myfile ///
 >                                         _n "`cond`i'' &  " ///
 >                                                       %9.3f  (TAB_`rd'[`j1',1
 > ]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
@@ -5859,49 +5888,51 @@ Notes:
 > AB_`rd'[`j3',2]) " & " ///
 >                                       %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0f
 > c (TAB_`rd'[`j3',4])  " \\ " 
-104.                         }
-105.                         file write myfile _n "\hline\hline" _n "\end{tabul
+110.                         }
+111.                         file write myfile _n "\hline\hline" _n "\end{tabul
 > ar}" 
-106.                         file close myfile
-107.                 }               
-108.         }
-109.         else {
-110.                 local cond2 = "Had previous pregnancy"
-111.                 local cond3 = "First pregnancy"
-112.                 foreach rd in ES DiD {
-113.                         file open myfile using "../output/tab_`rd'_`data'.
+112.                         file close myfile
+113.                 }               
+114.         }
+115.         else {
+116.                 local cond2 = "Had previous pregnancy"
+117.                 local cond3 = "First pregnancy"
+118.                 foreach rd in ES DiD {
+119.                         file open myfile using "../output/tab_`rd'_`data'.
 > txt", write replace
-114.                         file write myfile "\begin{threeparttable}" ///
+120.                         file write myfile "\begin{threeparttable}" ///
 >                                                         _n "\begin{tabular}{l
 > |cc} \hline\hline"  ///
 >                                                         _n " & `lab_v1' & Fer
-> tility rate \\ \hline" 
-115.                         local r = rowsof(TAB_`rd') / 3
-116.                                 forvalues i = 1/`r' {
-117.                                         local j1 = 3 * `i' - 2
-118.                                         local j2 = 3 * `i' - 1
-119.                                         local j3 = 3 * `i' 
-120.                                         file write myfile ///
+> tility rate \\ \hline"  ///
+>                                                         _n "Mean & " %9.3f (`
+> avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') " \\ \hline "
+121.                         local r = rowsof(TAB_`rd') / 3
+122.                                 forvalues i = 1/`r' {
+123.                                         local j1 = 3 * `i' - 2
+124.                                         local j2 = 3 * `i' - 1
+125.                                         local j3 = 3 * `i' 
+126.                                         file write myfile ///
 >                                                 _n "`cond`i'' &  " %9.3f  (TA
 > B_`rd'[`j1',1]) "  &  " %9.3f  (TAB_`rd'[`j1',2]) " \\ " ///
 >                                 _n "          & (" %9.3f  (TAB_`rd'[`j2',1]) 
 > ") & (" %9.3f  (TAB_`rd'[`j2',2]) ") \\ " ///
 >                                 _n "          &  " %9.0fc (TAB_`rd'[`j3',1]) 
 > "  &  " %9.0fc (TAB_`rd'[`j3',2]) " \\ "
-121.                         }
-122.                         file write myfile _n "\hline\hline" _n "\end{tabul
+127.                         }
+128.                         file write myfile _n "\hline\hline" _n "\end{tabul
 > ar}" 
-123.                         file close myfile
-124.                 }
-125.         }
-126.                 
+129.                         file close myfile
+130.                 }
+131.         }
+132.                 
 .         matrix_to_txt, matrix(TAB_ES) saving("../output/tables.txt") append /
 > //
 >                  title(<tab:es_pooled_`data'>)
-127.         matrix_to_txt, matrix(TAB_DiD) saving("../output/tables.txt") appe
+133.         matrix_to_txt, matrix(TAB_DiD) saving("../output/tables.txt") appe
 > nd ///
 >                  title(<tab:did_pooled_`data'>)
-128. end
+134. end
 
 . 
 . main
@@ -12063,4 +12094,4 @@ preg_preterm |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 . 
 end of do-file
 
- make.py ended: 2018-08-31 14:33:10
+ make.py ended: 2018-08-31 18:05:26

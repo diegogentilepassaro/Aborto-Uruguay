@@ -83,6 +83,13 @@ program pooled_reg
 
 				di "*** REG: `outcome' , `cond' , `age_group' ***"
 
+				if inlist("`cond'","&!mi(dpto)","&all_sample==1") {
+					sum `outcome' `ES_subsample' `cond', meanonly
+					local avg_v`i'_ES`age_group' = r(mean)
+					sum `outcome' `DiD_subsample' `cond', meanonly
+					local avg_v`i'_DiD`age_group' = r(mean)
+				}
+
             	`estimation' `outcome' post i.dpto  ///
 					`ES_subsample' `cond' `pweight', vce(cluster `time')
 				matrix COL_ES`age_group' = ((_b[post] \ _se[post]) \ e(N))
@@ -126,7 +133,10 @@ program pooled_reg
 							_n "\begin{tabular}{l|cc|cc|cc} \hline\hline"  ///
 							_n " & \multicolumn{2}{c|}{`lab_v1'} & \multicolumn{2}{c}{`lab_v2'} & \multicolumn{2}{c}{`lab_v3'} \\ \hline" ///
 							_n " & (1)        & (2)        & (3)        & (4)        & (5)        & (6)  \\ "  ///
-							_n " & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline"
+							_n " & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline" ///
+							_n "Mean (baseline) & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v1_`rd'_placebo') " & " ///
+							                        %9.3f (`avg_v2_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_placebo') " & " ///
+							                        %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v3_`rd'_placebo') " \\ \hline "
 			local r = rowsof(TAB_`rd') / 3
 			forvalues i = 1/`r' {
 				local j1 = 3 * `i' - 2
@@ -156,7 +166,9 @@ program pooled_reg
 			file write myfile "\begin{threeparttable}" ///
 							_n "\begin{tabular}{l|cccc} \hline\hline"  ///
 							_n " & `lab1_v1' & `lab1_v2' & `lab1_v3' & `lab1_v4' \\ \hline" ///
-							_n " & (1)       & (2)       & (3)       & (4)       \\ \hline"
+							_n " & (1)       & (2)       & (3)       & (4)       \\ \hline" ///
+							_n "Mean (baseline) & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') ///
+							                  " & " %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_fertile') " \\ \hline "
 			local r = rowsof(TAB_`rd') / 3
 			forvalues i = 1/`r' {
 				local j1 = 3 * `i' - 2
@@ -182,7 +194,8 @@ program pooled_reg
 			file open myfile using "../output/tab_`rd'_`data'.txt", write replace
 			file write myfile "\begin{threeparttable}" ///
 							_n "\begin{tabular}{l|cc} \hline\hline"  ///
-							_n " & `lab_v1' & Fertility rate \\ \hline" 
+							_n " & `lab_v1' & Fertility rate \\ \hline"  ///
+							_n "Mean & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') " \\ \hline "
 			local r = rowsof(TAB_`rd') / 3
 				forvalues i = 1/`r' {
 					local j1 = 3 * `i' - 2

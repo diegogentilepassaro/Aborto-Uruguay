@@ -221,6 +221,9 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		else if substr("`outcome'",1,4) == "GFR_" {
 			local ylabel = "ylabel(-20 (10) 20)"
 		}
+		else {
+			local ylabel = ""
+		}
 
 		if inlist("`outcome'","horas_trabajo","work_part_time") {
             keep if trabajo==1

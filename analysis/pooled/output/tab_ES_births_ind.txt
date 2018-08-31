@@ -2,6 +2,7 @@
 \begin{tabular}{l|cccc} \hline\hline
  & Low birth weight & Low APGAR score & Prenatal care & Pre-term birth \\ \hline
  & (1)       & (2)       & (3)       & (4)       \\ \hline
+Mean (baseline) &     0.086 &     0.051 &     0.795 &     0.092 \\ \hline 
 Baseline &      0.014  &     -0.108 &     0.503  &      0.002 \\ 
  & (    0.026) & (    0.023) & (    0.078) & (    0.018) \\ 
  &    430,453  &    428,885 &   426,381  &    426,455 \\ 
