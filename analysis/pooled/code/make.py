@@ -36,11 +36,6 @@ start_make_logging()
 run_stata(program = 'pooled_plots.do')
 run_stata(program = 'pooled_reg.do')
 
-from gslab_fill.tablefill import tablefill
-from gslab_fill.textfill import textfill
-
-
-
 end_make_logging()
 
 shutil.rmtree('gslab_make')

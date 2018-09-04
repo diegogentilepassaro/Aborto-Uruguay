@@ -228,12 +228,6 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		if inlist("`outcome'","horas_trabajo","work_part_time") {
             keep if trabajo==1
         }
-		if inlist("`outcome'","trabajo","work_part_time") | "`data'" == "births_ind" {
-			local estimation = "logit"
-		}
-		else {
-			local estimation = "reg"
-		}
 
 		local ES_subsample  = " if (treatment==1 | dpto==1) & age_fertile==1 "
 		local ES_subsample_nomvd  = " if (treatment==1)     & age_fertile==1 "
@@ -243,17 +237,19 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 							  " ytitle(`: var lab `outcome'') "
 		
 		* ES: run main regression and plot coefficients
-		`estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///
+		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
 			`ES_subsample_nomvd' `pweight', vce(cluster `time')
 			* Coef plot
-			coefplot, `coefplot_opts' xtitle("`time_label'") ///
+		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons 1.t 1000.t *.`time' *.dpto  `all_controls') ///
 				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
 			graph export ../output/pooled_es_`outcome'_`time'_nomvd.pdf, replace
-		`estimation' `outcome' ib`omitted'.t i.`time' i.dpto  ///
+
+		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
 			`ES_subsample' `pweight', vce(cluster `time')
 			* Coef plot
-			coefplot, `coefplot_opts' xtitle("`time_label'") ///
+
+		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons 1.t 1000.t *.`time' *.dpto  `all_controls') ///
 				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
 			graph export ../output/pooled_es_`outcome'_`time'.pdf, replace
@@ -272,9 +268,9 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 					
 			graph export ../output/pooled_es_shift_`outcome'_`time'.pdf, replace
-		
+			
 		* DiD: run main regression and plot coefficientss
-		`estimation' `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  `all_controls' ///
+		reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  `all_controls' ///
 			`DiD_subsample' `pweight', vce(cluster `time')
 			* Coef plot
 			coefplot, `coefplot_opts' xtitle("`time_label'") ///

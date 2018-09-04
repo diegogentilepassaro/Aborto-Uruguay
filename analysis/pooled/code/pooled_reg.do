@@ -62,15 +62,9 @@ program pooled_reg
         if inlist("`outcome'","horas_trabajo","work_part_time")  {
             keep if trabajo==1
         }
-        if inlist("`outcome'","trabajo","work_part_time") | "`data'" == "births_ind" {
-            local estimation = "logit" 
-        }
-        else {
-            local estimation = "reg"
-        }
         
 		* Run main regression that plots coefficients
-		/*`estimation' `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  ///
+		/*reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  ///
 				`all_controls' if !mi(treatment) & inrange(edad, 16, 45) ///
 				`pweight', vce(cluster `time')*/
 
@@ -90,13 +84,13 @@ program pooled_reg
 					local avg_v`i'_DiD`age_group' = r(mean)
 				}
 
-            	`estimation' `outcome' post i.dpto  ///
+            	reg `outcome' post i.dpto  ///
 					`ES_subsample' `cond' `pweight', vce(cluster `time')
 				matrix COL_ES`age_group' = ((_b[post] \ _se[post]) \ e(N))
 
                 gen interaction = treatment`age_group' * post
 
-                `estimation' `outcome' i.treatment`age_group' i.post interaction ///
+                reg `outcome' i.treatment`age_group' i.post interaction ///
                     i.`time' i.dpto  `all_controls' ///
                     `DiD_subsample' `cond' `pweight', vce(cluster `time')
 		
