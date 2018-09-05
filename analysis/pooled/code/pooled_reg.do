@@ -84,15 +84,15 @@ program pooled_reg
 					local avg_v`i'_DiD`age_group' = r(mean)
 				}
 
-            	reg `outcome' post i.dpto  ///
-					`ES_subsample' `cond' `pweight', vce(cluster `time')
+            	reghdfe `outcome' post i.dpto  ///
+					`ES_subsample' `cond' `pweight', absorb(i.`time') vce(cluster `time' dpto)
 				matrix COL_ES`age_group' = ((_b[post] \ _se[post]) \ e(N))
 
                 gen interaction = treatment`age_group' * post
 
-                reg `outcome' i.treatment`age_group' i.post interaction ///
-                    i.`time' i.dpto  `all_controls' ///
-                    `DiD_subsample' `cond' `pweight', vce(cluster `time')
+                reghdfe `outcome' i.treatment`age_group' i.post interaction ///
+                    i.dpto  `all_controls' ///
+                    `DiD_subsample' `cond' `pweight', absorb(i.`time') vce(cluster `time' dpto)
 		
                 matrix COL_DiD`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
         
