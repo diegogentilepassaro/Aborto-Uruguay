@@ -238,7 +238,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		
 		* ES: run main regression and plot coefficients
 		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
-			`ES_subsample_nomvd' `pweight', vce(cluster `time')
+			`ES_subsample_nomvd' `pweight', vce(cluster dpto)
 			* Coef plot
 		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons 1.t 1000.t *.`time' *.dpto  `all_controls') ///
@@ -246,7 +246,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			graph export ../output/pooled_es_`outcome'_`time'_nomvd.pdf, replace
 
 		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
-			`ES_subsample' `pweight', vce(cluster `time')
+			`ES_subsample' `pweight', vce(cluster dpto)
 			* Coef plot
 
 		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
@@ -271,7 +271,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			
 		* DiD: run main regression and plot coefficientss
 		reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  `all_controls' ///
-			`DiD_subsample' `pweight', vce(cluster `time')
+			`DiD_subsample' `pweight', vce(cluster dpto)
 			* Coef plot
 			coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto  `all_controls') ///
