@@ -13,7 +13,9 @@ program main
 	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_ind) outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm)
 	
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
-	pooled_coefplot, data(ech)    time(anio_sem) num_periods(6) outcomes(`labor_vars')
+	pooled_coefplot, data(ech_labor) time(anio_sem) num_periods(6) outcomes(`labor_vars')
+	local educ_vars   = "educ_HS_diploma educ_some_college anios_secun anios_terc"
+	pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcomes(`educ_vars')
 end
 
 capture program drop relative_time
@@ -171,10 +173,15 @@ capture program drop pooled_coefplot
 program              pooled_coefplot
 syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) restr(str)]
 
-	if "`data'" == "ech" {
+	if substr("`data'",1,3) == "ech" {
 		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
-		keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)
 		local all_controls = "c98_* ${controls}"
+		if "`data'" == "ech_labor" {
+			keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)
+		}
+		else {
+			keep if hombre == 0 
+		} 
 	}
 	else if "`data'" == "births_ind" {
 		use ../temp/plots_sample_births_ind.dta, clear
@@ -199,7 +206,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		gen post = (`time' >= yofd(impl_date_dpto))
 		local time_label "Years relative to IS implementation"
 	}
-	if "`data'" == "ech" {
+	if substr("`data'",1,3) == "ech" {
 		replace `weight' = int(`weight')
 		local pweight = "[pw = `weight']"
 	}
@@ -216,7 +223,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
         use ../temp/plots_sample_`data'.dta, clear
 		
 		if substr("`outcome'",1,7) == "births_" {
-			local ylabel = "ylabel(-1 (0.5) 1)"
+			local ylabel = "ylabel(-1 (0.5) 0.5)"
 		}
 		else if substr("`outcome'",1,4) == "GFR_" {
 			local ylabel = "ylabel(-20 (10) 20)"
@@ -229,15 +236,15 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
             keep if trabajo==1
         }
 
-		local ES_subsample  = " if (treatment==1 | dpto==1) & age_fertile==1 "
-		local ES_subsample_nomvd  = " if (treatment==1)     & age_fertile==1 "
+		//local ES_subsample  = " if (treatment==1 | dpto==1) & age_fertile==1 "
+		//local ES_subsample_nomvd  = " if (treatment==1)     & age_fertile==1 "
 		local DiD_subsample = " if !mi(treatment)           & age_fertile==1 "
 		local coefplot_opts = " vertical baselevels graphregion(color(white)) bgcolor(white) " + ///
 							  " xline(6.5 7.5, lcolor(black) lpattern(dot))	`ylabel' " + ///
 							  " ytitle(`: var lab `outcome'') "
 		
 		* ES: run main regression and plot coefficients
-		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
+		/*reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
 			`ES_subsample_nomvd' `pweight', vce(cluster dpto)
 			* Coef plot
 		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
@@ -267,7 +274,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 				drop(_cons 1.t 1000.t *.`time' *.dpto `all_controls') ///
 			    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 					
-			graph export ../output/pooled_es_shift_`outcome'_`time'.pdf, replace
+			graph export ../output/pooled_es_shift_`outcome'_`time'.pdf, replace*/
 			
 		* DiD: run main regression and plot coefficientss
 		reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  `all_controls' ///

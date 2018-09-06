@@ -119,17 +119,24 @@ program label_vars
     label var trabajo "Employment"
 	label var horas_trabajo "Hours worked"
 	label var work_part_time "Part-time work"
-	label var  educ_level "Educational attainment"
-	label define educ_level 1 "Primary school" 2 "High school" 3 "Post-secondary"
+	label var anios_prim  "Years of primary school"
+	label var anios_secun "Years of high school"
+	label var anios_tecn  "Years of technical school"
+	label var anios_terc  "Years of college"
+
+	label var    educ_level "Educational attainment"
+	label define educ_level 1 "Primary school" 2 "High school (incomplete)" 3 "High school (complete)" 4 "Post-secondary"
 	label values educ_level educ_level
     
-	gen educ_more_HS = (educ_level == 3)
-	gen educ_HS_or_more = (educ_level == 2 | educ_level == 3 )
+	gen          educ_HS_diploma = (inlist(educ_level,3,4)) if !mi(educ_level)
+	label var    educ_HS_diploma "High-school completed"
+	label define educ_HS_diploma 0 "No HS diploma" 1 "HS diploma or more"
+	label values educ_HS_diploma educ_diploma
 	
-	label var  educ_more_HS "College"
-	label var educ_HS_or_more "High-school"
-	label define educ_HS_or_more 0 "HS degree or less" 1 "More than HS diploma"
-	label values educ_HS_or_more educ_HS_or_more
+	gen          educ_some_college = (educ_level == 4) if !mi(educ_level)
+	label var    educ_some_college "Some College"
+	label define educ_some_college 0 "No College" 1 "Some College"
+	label values educ_some_college educ_some_college
 end
 
 main_prepare_for_analysis
