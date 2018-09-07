@@ -1,14 +1,14 @@
 
- make.py started: 2018-09-06 11:51:39 C:\Users\cravizza\GitHub\Aborto-Uruguay\base\code 
+ make.py started: 2018-09-07 11:01:14 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./clean_raw.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./clean_raw.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -896,17 +896,17 @@ Notes:
 
 . 
 . main_clean_raw
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000001.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000003.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000004.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -916,7 +916,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -925,20 +925,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000006.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: variable pg112 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000007.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000009.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000a.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1998_h.dta saved
 
@@ -948,8 +948,8 @@ file ..\temp\preclean_1998_h.dta saved
     matched                            56,857  
     -----------------------------------------
 file ..\temp\preclean_1998.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000d.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -958,9 +958,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000f.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000g.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -968,7 +968,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -977,20 +977,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000i.tmp saved
 (note: variable pg41o was int, now long to accommodate using data's values)
 (note: variable pg111 was int, now long to accommodate using data's values)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000j.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000l.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000m.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000o.tmp saved
 file ..\temp\preclean_1999_h.dta saved
 
     Result                           # of obs.
@@ -999,8 +999,8 @@ file ..\temp\preclean_1999_h.dta saved
     matched                            57,674  
     -----------------------------------------
 file ..\temp\preclean_1999.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000p.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -1010,9 +1010,9 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000r.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000s.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -1020,7 +1020,7 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -1031,20 +1031,20 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000u.tmp saved
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: variable pg132 was byte, now int to accommodate using data's values)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000v.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_00000x.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000010.tmp saved
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000011.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f00000x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000010.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\cravizza\AppData\Local\Temp\ST_2224_000012.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0f000012.tmp saved
 file ..\temp\preclean_2000_h.dta saved
 
     Result                           # of obs.
@@ -1696,11 +1696,11 @@ file ..\temp\clean_2016.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./append_years.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./append_years.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1709,8 +1709,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -1725,8 +1725,8 @@ Notes:
 . set more off
 
 . adopath + ../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -2085,4 +2085,4 @@ file ..\output\clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2018-09-06 11:56:33
+ make.py ended: 2018-09-07 11:08:25

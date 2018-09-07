@@ -1,14 +1,14 @@
 
- make.py started: 2018-09-06 12:22:56 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-09-07 11:14:20 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./assign_treatment.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./assign_treatment.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.0   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -33,8 +33,8 @@ Notes:
 . set more off
 
 . adopath + ../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -459,7 +459,7 @@ File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:131(104521):1419830717:740429467
+  1759109:131(21026):3395599265:2101059949
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -469,7 +469,7 @@ Key: numero pers anio
    inflation |  1,759,109    8.087328    3.618307       3.59      25.94
     cpi_2006 |  1,759,109    126.8955    48.03314   48.00595   217.6432
 -------------+---------------------------------------------------------
-    cpi_2009 |  1,759,109    100.6334    38.70388   37.53526   173.4749
+           D |          0
       semana |    171,877    24.40203    13.83498          1         48
         dpto |  1,759,109    5.324262    5.684808          1         19
         secc |  1,616,508    10.20737    16.91198          0         99
@@ -769,4 +769,4 @@ file ..\output\ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2018-09-06 12:24:14
+ make.py ended: 2018-09-07 11:15:59
