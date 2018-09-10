@@ -1,5 +1,5 @@
 
- make.py started: 2018-09-10 13:07:54 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-09-10 16:52:53 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -789,7 +789,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_92d8_000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_9c24_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -801,7 +801,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_92d8_000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_9c24_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -813,7 +813,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_92d8_000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_9c24_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1006,6 +1006,10 @@ Notes:
 .         tw line abortion misoprostol date if date<ym(2013,12), ///
 >                 tline(2004m04 2005m04 2006m10 2007m10 2008m11 2012m09 2013m06
 > , lc(black) lp(dot)) ///
+>                 tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m10 "(c)" 2007m10 "(d)"
+>  2008m11 "(e)" ///
+>                 2012m09 "(f)" 2013m06 "(g)", tp(inside) labs(*0.9) labgap(*.3
+> )) ///
 >                 tlabel(2004m01(36)2013m01) ttick(#10) lc(blue red) graphregio
 > n(fc(white) lc(white))
  11.         graph export ../output/google_trends.pdf, replace
@@ -1022,4 +1026,4 @@ misoprostoluruguay: all characters numeric; replaced as byte
 . 
 end of do-file
 
- make.py ended: 2018-09-10 13:09:08
+ make.py ended: 2018-09-10 16:54:16
