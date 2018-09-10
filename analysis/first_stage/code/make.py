@@ -38,6 +38,7 @@ run_stata(program = 'vital_records.do')
 run_stata(program = 'state_of_birth.do')
 run_stata(program = 'aggregate_births.do')
 run_stata(program = 'misoprostol.do')
+run_stata(program = 'google_trends.do')
 
 end_make_logging()
 
