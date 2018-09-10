@@ -93,9 +93,9 @@ program pooled_reg
 
                 gen interaction = treatment`age_group' * post
 
-                ivreg2 `outcome' i.treatment`age_group' i.post interaction ///
+                reghdfe `outcome' i.treatment`age_group' i.post interaction ///
                     i.`time' i.dpto  `all_controls' ///
-                    `DiD_subsample' `cond' `pweight', cluster(`time' dpto)
+                    `DiD_subsample' `cond' `pweight', noabsorb cluster(`time' dpto)
 		
                 matrix COL_DiD`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
         
