@@ -34,7 +34,7 @@ program build_figure
     graph bar norm_sales, over(year) ///
 	    over(Region, sort(order) descending) ///
 	    asyvars graphregion(fcolor(white) lcolor(white)) ///
-		ytitle("Misoprostol annual sales (base 2002)") name(bar) 
+		ytitle("Misoprostol annual sales (base 2002)")
 		
 	graph export ../output/misoprostol_sales_2002_2007.pdf, replace
 	
@@ -43,12 +43,9 @@ program build_figure
         connected ug_per_pop year if Region == "Uruguay" || ///
 		connected ug_per_pop year if Region == "Chile", ///
 		legend(label(1 "Global") label(2 "Latin America") label(3 "Uruguay") label(4 "Chile")) ///
-		xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white)) name(dots)
+		xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white))
 
 	graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
 end
-
-main
-
 
 main
