@@ -42,7 +42,7 @@ syntax, by_vars(string) treatment(string) time(string)
         local y_label = "0(600)1800"
     }
 	
-	collapse (count) births=edadm , by(`time' treatment_`treatment' `by_vars')
+	collapse (count) births=edad , by(`time' treatment_`treatment' `by_vars')
 	
 	keep if !mi(treatment)
 	gen Treatment = births if treatment_`treatment'==1
@@ -90,9 +90,9 @@ syntax, by_vars(string) treatment(string) time(string)
 	
 	keep if !mi(treatment_`treatment')
 	
-	reg edadm post##treatment_`treatment'
+	reg edad post##treatment_`treatment'
 
-	collapse (count) births=edadm , by(anio treatment_`treatment' first_pregnancy not_married) //`by_vars')
+	collapse (count) births=edad , by(anio treatment_`treatment' first_pregnancy not_married) //`by_vars')
 		
 		gen post = (anio>`event_date')
 		gen interaction = post * treatment_`treatment'

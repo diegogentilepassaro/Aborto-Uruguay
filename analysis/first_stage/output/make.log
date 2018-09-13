@@ -1,14 +1,14 @@
 
- make.py started: 2018-09-12 09:28:03 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-09-13 11:33:39 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -82,11 +82,11 @@ The smoother applied was
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -95,8 +95,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -111,8 +111,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -170,8 +170,8 @@ Notes:
  15.         local y_label = "0(600)1800"
  16.     }
  17.         
-.         collapse (count) births=edadm , by(`time' treatment_`treatment' `by_v
-> ars')
+.         collapse (count) births=edad , by(`time' treatment_`treatment' `by_va
+> rs')
  18.         
 .         keep if !mi(treatment)
  19.         gen Treatment = births if treatment_`treatment'==1
@@ -231,10 +231,10 @@ Notes:
  16.         
 .         keep if !mi(treatment_`treatment')
  17.         
-.         reg edadm post##treatment_`treatment'
+.         reg edad post##treatment_`treatment'
  18. 
-.         collapse (count) births=edadm , by(anio treatment_`treatment' first_p
-> regnancy not_married) //`by_vars')
+.         collapse (count) births=edad , by(anio treatment_`treatment' first_pr
+> egnancy not_married) //`by_vars')
  19.                 
 .                 gen post = (anio>`event_date')
  20.                 gen interaction = post * treatment_`treatment'
@@ -373,11 +373,11 @@ end of do-file
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./state_of_birth.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./state_of_birth.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -386,8 +386,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -402,8 +402,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -503,11 +503,11 @@ Notes:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./aggregate_births.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./aggregate_births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -516,8 +516,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -789,7 +789,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0h000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_26c8_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -801,7 +801,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0h000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_26c8_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -813,7 +813,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0h000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_26c8_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -835,11 +835,11 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0h000006.tmp saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./misoprostol.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./misoprostol.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -848,8 +848,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -940,11 +940,11 @@ xij variables:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./google_trends.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./google_trends.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -953,8 +953,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1004,4 +1004,4 @@ misoprostoluruguay: all characters numeric; replaced as byte
 . 
 end of do-file
 
- make.py ended: 2018-09-12 09:29:28
+ make.py ended: 2018-09-13 11:35:01
