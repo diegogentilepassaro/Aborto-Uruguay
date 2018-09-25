@@ -105,9 +105,10 @@ program plot_ratio,
 	    geo_unit == "Brasil", yaxis(1) ylabel(0.018(0.005)0.033, axis(1))) ///
         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ///
 		geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis(2))), ///
-		tlab(`start_yr'(4)`end_yr') ///
+		tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
         xline(`tline', lcolor(black) lpattern(dot)) ///
-		text(0.0335 2003.5 "IS start") text(0.0335 2011.5 "VTP law") ///
+		text(0.0335 2003.5 "IS start") ///
+		text(0.0335 2011.5 "VTP law") ///
         graphregion(fcolor(white) lcolor(white)) ///
 		legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
 		l2title("Maternal mortality over fertile women's", size(medsmall)) ///

@@ -1,5 +1,5 @@
 
- make.py started: 2018-09-25 11:33:08 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-09-25 11:58:27 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -152,10 +152,10 @@ Notes:
 > /
 >                 geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis
 > (2))), ///
->                 tlab(`start_yr'(4)`end_yr') ///
+>                 tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
 >         xline(`tline', lcolor(black) lpattern(dot)) ///
->                 text(0.0335 2003.5 "IS start") text(0.0335 2011.5 "VTP law") 
-> ///
+>                 text(0.0335 2003.5 "IS start") ///
+>                 text(0.0335 2011.5 "VTP law") ///
 >         graphregion(fcolor(white) lcolor(white)) ///
 >                 legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
 >                 l2title("Maternal mortality over fertile women's", size(medsm
@@ -1154,7 +1154,12 @@ Notes:
 >                 connected ug_per_pop year if Region == "Chile", ///
 >                 legend(label(1 "Global") label(2 "Latin America") label(3 "Ur
 > uguay") label(4 "Chile")) ///
->                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white))
+>                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white)) 
+> ///
+>                 xline(2003.5, lcolor(black) lpattern(dot)) text(8.3 2003.5 "I
+> S start") ///
+>                 ytitle("Misoprostol (in µg × 10^6) / Population (in millions)
+> ", size(small))
   8. 
 .         graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
   9. end
@@ -1247,4 +1252,4 @@ misoprostoluruguay: all characters numeric; replaced as byte
 . 
 end of do-file
 
- make.py ended: 2018-09-25 11:34:13
+ make.py ended: 2018-09-25 11:59:28
