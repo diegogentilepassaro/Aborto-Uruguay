@@ -1,5 +1,5 @@
 
- make.py started: 2018-09-25 11:58:27 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-09-25 15:15:22 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -48,7 +48,7 @@ Notes:
 .     use "..\temp\brasil_mm_data.dta", clear
   8.     append using "..\temp\uruguay_mm_data.dta"    
   9.     
-.     plot_ratio, var_ratio(ma_mm_ratio) start_yr(2001) ///
+.     plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
 >             end_yr(2014) tline(2003.5 2011.5)
  10.     /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
 >             end_yr(2016) tline(2003.5 2011.5)*/
@@ -1252,4 +1252,4 @@ misoprostoluruguay: all characters numeric; replaced as byte
 . 
 end of do-file
 
- make.py ended: 2018-09-25 11:59:28
+ make.py ended: 2018-09-25 15:16:44

@@ -14,7 +14,7 @@ program main
     use "..\temp\brasil_mm_data.dta", clear
     append using "..\temp\uruguay_mm_data.dta"    
     
-    plot_ratio, var_ratio(ma_mm_ratio) start_yr(2001) ///
+    plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
 	    end_yr(2014) tline(2003.5 2011.5)
     /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
 	    end_yr(2016) tline(2003.5 2011.5)*/
