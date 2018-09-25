@@ -1,5 +1,5 @@
 
- make.py started: 2018-09-24 23:48:33 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-09-25 11:33:08 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -48,16 +48,16 @@ Notes:
 .     use "..\temp\brasil_mm_data.dta", clear
   8.     append using "..\temp\uruguay_mm_data.dta"    
   9.     
-.     plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
+.     plot_ratio, var_ratio(ma_mm_ratio) start_yr(2001) ///
 >             end_yr(2014) tline(2003.5 2011.5)
- 10.     plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
->             end_yr(2016) tline(2003.5 2011.5)
- 11. 
+ 10.     /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
+>             end_yr(2016) tline(2003.5 2011.5)*/
+. 
 .     gen post = (year > 2003)
- 12.         gen treatment = (geo_unit == "Uruguay")
- 13.         did_reg, var_ratio(ma_mm_ratio)
- 14.         did_reg, var_ratio(mm_ratio)
- 15. end
+ 11.         gen treatment = (geo_unit == "Uruguay")
+ 12.         did_reg, var_ratio(ma_mm_ratio)
+ 13.         *did_reg, var_ratio(mm_ratio)
+. end
 
 . 
 . program import_brasil_data
@@ -146,23 +146,53 @@ Notes:
   2. 
 .     twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') &
 >  ///
->             geo_unit == "Brasil") ///
+>             geo_unit == "Brasil", yaxis(1) ylabel(0.018(0.005)0.033, axis(1))
+> ) ///
 >         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & //
 > /
->                 geo_unit == "Uruguay"), ///
+>                 geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis
+> (2))), ///
 >                 tlab(`start_yr'(4)`end_yr') ///
 >         xline(`tline', lcolor(black) lpattern(dot)) ///
+>                 text(0.0335 2003.5 "IS start") text(0.0335 2011.5 "VTP law") 
+> ///
 >         graphregion(fcolor(white) lcolor(white)) ///
->                 legend(label(1 "Brasil") label(2 "Uruguay") cols(3))
+>                 legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
+>                 l2title("Maternal mortality over fertile women's", size(medsm
+> all)) ///
+>                 l1title("mortality in Brazil", size(medsmall)) ytitle("", axi
+> s(1)) ///
+>                 r1title("Maternal mortality over fertile women's", size(medsm
+> all)) ///
+>                 r2title("mortality in Uruguay", size(medsmall)) ytitle("", ax
+> is(2))
   3.     graph export ../output/mortality_`var_ratio'.pdf, replace
   4. end
 
 . 
 . program did_reg
   1.     syntax, var_ratio(str)
-  2.         reg `var_ratio' post##treatment if ///
+  2.         qui sum `var_ratio' if (geo_unit == "Uruguay" | geo_unit == "Brasi
+> l"), meanonly
+  3.     local avg_`var_ratio' = r(mean)
+  4.         
+.         reg `var_ratio' post##treatment if ///
 >             (geo_unit == "Uruguay" | geo_unit == "Brasil")
-  3. end
+  5.                 
+.         file open myfile using "../output/tab_`var_ratio'.txt", write replace
+  6.     file write myfile "\begin{threeparttable}" ///
+>                     _n "\begin{tabular}{l|c} \hline\hline"  ///
+>                     _n " & Maternal mortality ratio \\ \hline"  ///
+>                     _n "Mean & " %9.3f (`avg_`var_ratio'') " \\ \hline " ///
+>                     _n "Coefficient  &  " %9.3f ( _b[1.post#1.treatment]) "  
+> \\ " ///
+>                     _n "Std. error   & (" %9.3f (_se[1.post#1.treatment]) ") 
+> \\ " ///
+>                     _n "Observations &  " %9.0fc (`e(N)')                 "  
+> \\ " ///
+>                     _n "\hline\hline" _n "\end{tabular}" 
+  7.     file close myfile   
+  8. end
 
 . 
 . main
@@ -269,7 +299,6 @@ The smoother applied was
 (note: file ..\temp\uruguay_mm_data.dta not found)
 file ..\temp\uruguay_mm_data.dta saved
 (file ../output/mortality_ma_mm_ratio.pdf written in PDF format)
-(file ../output/mortality_mm_ratio.pdf written in PDF format)
 
       Source |       SS           df       MS      Number of obs   =        52
 -------------+----------------------------------   F(3, 48)        =    265.45
@@ -290,26 +319,7 @@ file ..\temp\uruguay_mm_data.dta saved
              |
        _cons |    .027051   .0005667    47.73   0.000     .0259116    .0281904
 ------------------------------------------------------------------------------
-
-      Source |       SS           df       MS      Number of obs   =        52
--------------+----------------------------------   F(3, 48)        =     44.89
-       Model |  .002022188         3  .000674063   Prob > F        =    0.0000
-    Residual |  .000720793        48  .000015017   R-squared       =    0.7372
--------------+----------------------------------   Adj R-squared   =    0.7208
-       Total |  .002742981        51  .000053784   Root MSE        =    .00388
-
-------------------------------------------------------------------------------
-    mm_ratio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
--------------+----------------------------------------------------------------
-      1.post |  -.0013097   .0017413    -0.75   0.456    -.0048108    .0021915
- 1.treatment |  -.0105274   .0016332    -6.45   0.000    -.0138112   -.0072436
-             |
-        post#|
-   treatment |
-        1 1  |  -.0043652   .0022525    -1.94   0.059    -.0088942    .0001638
-             |
-       _cons |   .0268114   .0013701    19.57   0.000     .0240568    .0295661
-------------------------------------------------------------------------------
+(note: file ../output/tab_ma_mm_ratio.txt not found)
 
 . 
 end of do-file
@@ -1237,4 +1247,4 @@ misoprostoluruguay: all characters numeric; replaced as byte
 . 
 end of do-file
 
- make.py ended: 2018-09-24 23:49:44
+ make.py ended: 2018-09-25 11:34:13

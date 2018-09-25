@@ -14,15 +14,15 @@ program main
     use "..\temp\brasil_mm_data.dta", clear
     append using "..\temp\uruguay_mm_data.dta"    
     
-    plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
+    plot_ratio, var_ratio(ma_mm_ratio) start_yr(2001) ///
 	    end_yr(2014) tline(2003.5 2011.5)
-    plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
-	    end_yr(2016) tline(2003.5 2011.5)
+    /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
+	    end_yr(2016) tline(2003.5 2011.5)*/
 
     gen post = (year > 2003)
 	gen treatment = (geo_unit == "Uruguay")
 	did_reg, var_ratio(ma_mm_ratio)
-	did_reg, var_ratio(mm_ratio)
+	*did_reg, var_ratio(mm_ratio)
 end
 
 program import_brasil_data
@@ -102,20 +102,39 @@ program plot_ratio,
     syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
 
     twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ///
-	    geo_unit == "Brasil") ///
+	    geo_unit == "Brasil", yaxis(1) ylabel(0.018(0.005)0.033, axis(1))) ///
         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ///
-		geo_unit == "Uruguay"), ///
+		geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis(2))), ///
 		tlab(`start_yr'(4)`end_yr') ///
         xline(`tline', lcolor(black) lpattern(dot)) ///
+		text(0.0335 2003.5 "IS start") text(0.0335 2011.5 "VTP law") ///
         graphregion(fcolor(white) lcolor(white)) ///
-		legend(label(1 "Brasil") label(2 "Uruguay") cols(3))
+		legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
+		l2title("Maternal mortality over fertile women's", size(medsmall)) ///
+		l1title("mortality in Brazil", size(medsmall)) ytitle("", axis(1)) ///
+		r1title("Maternal mortality over fertile women's", size(medsmall)) ///
+		r2title("mortality in Uruguay", size(medsmall)) ytitle("", axis(2))
     graph export ../output/mortality_`var_ratio'.pdf, replace
 end
 
 program did_reg
     syntax, var_ratio(str)
+	qui sum `var_ratio' if (geo_unit == "Uruguay" | geo_unit == "Brasil"), meanonly
+    local avg_`var_ratio' = r(mean)
+	
 	reg `var_ratio' post##treatment if ///
 	    (geo_unit == "Uruguay" | geo_unit == "Brasil")
+		
+	file open myfile using "../output/tab_`var_ratio'.txt", write replace
+    file write myfile "\begin{threeparttable}" ///
+                    _n "\begin{tabular}{l|c} \hline\hline"  ///
+                    _n " & Maternal mortality ratio \\ \hline"  ///
+                    _n "Mean & " %9.3f (`avg_`var_ratio'') " \\ \hline " ///
+                    _n "Coefficient  &  " %9.3f ( _b[1.post#1.treatment]) "  \\ " ///
+                    _n "Std. error   & (" %9.3f (_se[1.post#1.treatment]) ") \\ " ///
+                    _n "Observations &  " %9.0fc (`e(N)')                 "  \\ " ///
+                    _n "\hline\hline" _n "\end{tabular}" 
+    file close myfile	
 end
 
 main
