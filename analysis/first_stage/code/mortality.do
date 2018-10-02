@@ -16,13 +16,13 @@ program main
     
     plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
 	    end_yr(2014) tline(2003.5 2011.5)
-    /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
-	    end_yr(2016) tline(2003.5 2011.5)*/
+    plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
+	    end_yr(2016) tline(2003.5 2011.5)
 
     gen post = (year > 2003)
 	gen treatment = (geo_unit == "Uruguay")
 	did_reg, var_ratio(ma_mm_ratio)
-	*did_reg, var_ratio(mm_ratio)
+	did_reg, var_ratio(mm_ratio)
 end
 
 program import_brasil_data
@@ -101,20 +101,19 @@ end
 program plot_ratio, 
     syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
 
-    twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ///
-	    geo_unit == "Brasil", yaxis(1) ylabel(0.018(0.005)0.033, axis(1))) ///
-        (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ///
-		geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis(2))), ///
+    twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & geo_unit == "Brasil", ///
+	    yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(red) lc(red) lp(dash)) ///
+        (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & geo_unit == "Uruguay", ///
+		yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(blue) lc(blue) lp(solid)), ///
 		tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
         xline(`tline', lcolor(black) lpattern(dot)) ///
-		text(0.0335 2003.5 "IS start") ///
-		text(0.0335 2011.5 "VTP law") ///
+		text(0.0325 2003.5 "IS start") ///
+		text(0.0325 2011.5 "VTP law") ///
         graphregion(fcolor(white) lcolor(white)) ///
-		legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
-		l2title("Maternal mortality over fertile women's", size(medsmall)) ///
-		l1title("mortality in Brazil", size(medsmall)) ytitle("", axis(1)) ///
-		r1title("Maternal mortality over fertile women's", size(medsmall)) ///
-		r2title("mortality in Uruguay", size(medsmall)) ytitle("", axis(2))
+		legend(label(1 "Brazil") label(2 "Uruguay") cols(3)) ///
+		l1title("Maternal mortality over fertile women's deaths, Brazil", size(medsmall)) ///
+        r1title("Maternal mortality over fertile women's deaths, Uruguay", size(medsmall)) ///
+		ytitle("", axis(1)) ytitle("", axis(2))
     graph export ../output/mortality_`var_ratio'.pdf, replace
 end
 

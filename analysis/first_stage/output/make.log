@@ -1,14 +1,14 @@
 
- make.py started: 2018-09-25 15:15:22 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2018-10-02 15:29:54 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -50,14 +50,14 @@ Notes:
   9.     
 .     plot_ratio, var_ratio(ma_mm_ratio) start_yr(1998) ///
 >             end_yr(2014) tline(2003.5 2011.5)
- 10.     /*plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
->             end_yr(2016) tline(2003.5 2011.5)*/
-. 
+ 10.     plot_ratio, var_ratio(mm_ratio) start_yr(1996) ///
+>             end_yr(2016) tline(2003.5 2011.5)
+ 11. 
 .     gen post = (year > 2003)
- 11.         gen treatment = (geo_unit == "Uruguay")
- 12.         did_reg, var_ratio(ma_mm_ratio)
- 13.         *did_reg, var_ratio(mm_ratio)
-. end
+ 12.         gen treatment = (geo_unit == "Uruguay")
+ 13.         did_reg, var_ratio(ma_mm_ratio)
+ 14.         did_reg, var_ratio(mm_ratio)
+ 15. end
 
 . 
 . program import_brasil_data
@@ -145,27 +145,24 @@ Notes:
   1.     syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
   2. 
 .     twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') &
->  ///
->             geo_unit == "Brasil", yaxis(1) ylabel(0.018(0.005)0.033, axis(1))
-> ) ///
->         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & //
-> /
->                 geo_unit == "Uruguay", yaxis(2) ylabel(0.005(0.005)0.02, axis
-> (2))), ///
+>  geo_unit == "Brasil", ///
+>             yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(red) lc(red) lp(das
+> h)) ///
+>         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ge
+> o_unit == "Uruguay", ///
+>                 yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(blue) lc(blue) 
+> lp(solid)), ///
 >                 tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
 >         xline(`tline', lcolor(black) lpattern(dot)) ///
->                 text(0.0335 2003.5 "IS start") ///
->                 text(0.0335 2011.5 "VTP law") ///
+>                 text(0.0325 2003.5 "IS start") ///
+>                 text(0.0325 2011.5 "VTP law") ///
 >         graphregion(fcolor(white) lcolor(white)) ///
->                 legend(label(1 "Brasil") label(2 "Uruguay") cols(3)) ///
->                 l2title("Maternal mortality over fertile women's", size(medsm
-> all)) ///
->                 l1title("mortality in Brazil", size(medsmall)) ytitle("", axi
-> s(1)) ///
->                 r1title("Maternal mortality over fertile women's", size(medsm
-> all)) ///
->                 r2title("mortality in Uruguay", size(medsmall)) ytitle("", ax
-> is(2))
+>                 legend(label(1 "Brazil") label(2 "Uruguay") cols(3)) ///
+>                 l1title("Maternal mortality over fertile women's deaths, Braz
+> il", size(medsmall)) ///
+>         r1title("Maternal mortality over fertile women's deaths, Uruguay", si
+> ze(medsmall)) ///
+>                 ytitle("", axis(1)) ytitle("", axis(2))
   3.     graph export ../output/mortality_`var_ratio'.pdf, replace
   4. end
 
@@ -299,6 +296,7 @@ The smoother applied was
 (note: file ..\temp\uruguay_mm_data.dta not found)
 file ..\temp\uruguay_mm_data.dta saved
 (file ../output/mortality_ma_mm_ratio.pdf written in PDF format)
+(file ../output/mortality_mm_ratio.pdf written in PDF format)
 
       Source |       SS           df       MS      Number of obs   =        52
 -------------+----------------------------------   F(3, 48)        =    265.45
@@ -321,15 +319,36 @@ file ..\temp\uruguay_mm_data.dta saved
 ------------------------------------------------------------------------------
 (note: file ../output/tab_ma_mm_ratio.txt not found)
 
+      Source |       SS           df       MS      Number of obs   =        52
+-------------+----------------------------------   F(3, 48)        =     44.89
+       Model |  .002022188         3  .000674063   Prob > F        =    0.0000
+    Residual |  .000720793        48  .000015017   R-squared       =    0.7372
+-------------+----------------------------------   Adj R-squared   =    0.7208
+       Total |  .002742981        51  .000053784   Root MSE        =    .00388
+
+------------------------------------------------------------------------------
+    mm_ratio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      1.post |  -.0013097   .0017413    -0.75   0.456    -.0048108    .0021915
+ 1.treatment |  -.0105274   .0016332    -6.45   0.000    -.0138112   -.0072436
+             |
+        post#|
+   treatment |
+        1 1  |  -.0043652   .0022525    -1.94   0.059    -.0088942    .0001638
+             |
+       _cons |   .0268114   .0013701    19.57   0.000     .0240568    .0295661
+------------------------------------------------------------------------------
+(note: file ../output/tab_mm_ratio.txt not found)
+
 . 
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -338,8 +357,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -354,8 +373,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -616,11 +635,11 @@ end of do-file
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./state_of_birth.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./state_of_birth.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -629,8 +648,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -645,8 +664,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -746,11 +765,11 @@ Notes:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./aggregate_births.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./aggregate_births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -759,8 +778,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1032,7 +1051,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1044,7 +1063,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1056,7 +1075,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
+file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1078,11 +1097,11 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./misoprostol.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./misoprostol.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1091,8 +1110,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1188,11 +1207,11 @@ xij variables:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./google_trends.do"
+Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./google_trends.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1201,8 +1220,8 @@ ___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
+       Serial number:  401506201178
+         Licensed to:  Brown University
                        Brown University
 
 Notes:
@@ -1218,38 +1237,84 @@ Notes:
 
 . 
 . program main
-  1.         import delimited using "..\..\..\raw\google_trends.csv", clear ///
->                  rowrange(4:180) colrange(1:3) varnames(3)   
-  2.         label var abortionuruguay "Abortion"
-  3.         label var misoprostoluruguay "Misoprostol"
-  4.         replace misoprostoluruguay = "1" if misoprostoluruguay=="<1"
-  5.         destring misoprostoluruguay, replace
-  6.         gen date = monthly(month,"YM")
-  7.         format %tm date
-  8.         label var date "Month"
-  9.         drop month
- 10.                 
-.         tw line abortion misoprostol date if date<ym(2013,12), ///
->                 tline(2004m04 2005m04 2006m10 2007m10 2008m11 2012m09 2013m06
-> , lc(black) lp(dot)) ///
->                 tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m10 "(c)" 2007m10 "(d)"
->  2008m11 "(e)" ///
->                 2012m09 "(f)" 2013m06 "(g)", tp(inside) labs(*0.9) labgap(*.3
-> )) ///
->                 tlabel(2004m01(36)2013m01) ttick(#10) lc(blue red) graphregio
-> n(fc(white) lc(white))
- 11.         graph export ../output/google_trends.pdf, replace
- 12. 
-. end
+  1.         foreach c in uruguay brazil {
+  2.                 foreach t in abortion misoprostol {
+  3.                         import delimited using "..\..\..\raw\google_trends
+> _`t'_`c'.csv", clear ///
+>                                  rowrange(4:180) colrange(1:2) varnames(3)   
+  4.                         gen date = monthly(month,"YM")
+  5.                         format %tm date
+  6.                         label var date "Month"
+  7.                         drop month
+  8.                         capture replace `t'`c' = "1" if `t'`c'=="<1"
+  9.                         destring `t'`c', replace
+ 10.                         tempfile `t'_`c'
+ 11.                         save ``t'_`c''
+ 12.                 }
+ 13.         }
+ 14.         merge 1:1 date using `misoprostol_uruguay', assert(3) nogen
+ 15.         merge 1:1 date using    `abortion_uruguay', assert(3) nogen
+ 16.         merge 1:1 date using    `abortion_brazil' , assert(3) nogen
+ 17. 
+.         local opts = "tline(2004m04 2005m04 2006m04 2007m10 2008m04 2008m11 2
+> 012m09 2013m06, lc(black) lp(dot)) " ///
+>                            + "tlabel(2004m01(36)2013m01) ttick(#10) lc(blue r
+> ed) lp(solid dash) " ///
+>                            + "graphregion(fc(white) lc(white))"
+ 18.         
+.         tw line abortionuruguay abortionbrazil date if date<ym(2013,12), `opt
+> s' ///
+>                 tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m04 "(c)" 2007m10 "(d)"
+>  2008m04 "(e)" ///
+>                 2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0
+> .9) labgap(*.3)) 
+ 19.         graph export ../output/google_trends_abortion.pdf, replace
+ 20.         
+.         tw line misoprostoluruguay misoprostolbrazil date if date<ym(2013,12)
+> , `opts' ///
+>                 tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m04 "(c)" 2007m10 "(d)"
+>  2008m04 "(e)" ///
+>                 2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0
+> .9) labgap(*.3))
+ 21.         graph export ../output/google_trends_misoprostol.pdf, replace
+ 22. end
 
 . 
 . main
-(3 vars, 177 obs)
-(1 real change made)
-misoprostoluruguay: all characters numeric; replaced as byte
-(file ../output/google_trends.pdf written in PDF format)
+(2 vars, 177 obs)
+abortionuruguay already numeric; no replace
+file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000001.tmp saved
+(2 vars, 177 obs)
+misoprostoluruguay already numeric; no replace
+file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000002.tmp saved
+(2 vars, 177 obs)
+abortionbrazil already numeric; no replace
+file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000003.tmp saved
+(2 vars, 177 obs)
+misoprostolbrazil already numeric; no replace
+file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000004.tmp saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+(file ../output/google_trends_abortion.pdf written in PDF format)
+(file ../output/google_trends_misoprostol.pdf written in PDF format)
 
 . 
 end of do-file
 
- make.py ended: 2018-09-25 15:16:44
+ make.py ended: 2018-10-02 15:30:59

@@ -1,0 +1,9 @@
+\begin{threeparttable}
+\begin{tabular}{l|c} \hline\hline
+ & Maternal mortality ratio \\ \hline
+Mean &     0.019 \\ \hline 
+Coefficient  &     -0.004  \\ 
+Std. error   & (    0.002) \\ 
+Observations &         52  \\ 
+\hline\hline
+\end{tabular}
