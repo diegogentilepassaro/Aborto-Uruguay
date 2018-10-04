@@ -14,7 +14,7 @@ program main
 	
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_coefplot, data(ech_labor) time(anio_sem) num_periods(6) outcomes(`labor_vars')
-	local educ_vars   = "educ_HS_diploma educ_some_college anios_secun anios_terc"
+	local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
 	pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcomes(`educ_vars')
 end
 

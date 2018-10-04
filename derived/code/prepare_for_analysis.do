@@ -128,12 +128,17 @@ program label_vars
 	label define educ_level 1 "Primary school" 2 "High school (incomplete)" 3 "High school (complete)" 4 "Post-secondary"
 	label values educ_level educ_level
     
-	gen          educ_HS_diploma = (inlist(educ_level,3,4)) if !mi(educ_level)
+	gen       educ_anios_secun = anios_secun if !mi(anios_secun) & educ_level<4 & inrange(edad,16,22)
+	label var educ_anios_secun "Years of high school"
+	gen       educ_anios_terc  = anios_terc  if !mi(anios_terc) & educ_level>=3 & inrange(edad,18,30)
+	label var educ_anios_terc  "Years of college"
+
+	gen          educ_HS_diploma = (educ_level == 3) if !mi(educ_level) & educ_level<4 & inrange(edad,18,22)
 	label var    educ_HS_diploma "High-school completed"
 	label define educ_HS_diploma 0 "No HS diploma" 1 "HS diploma or more"
 	label values educ_HS_diploma educ_diploma
 	
-	gen          educ_some_college = (educ_level == 4) if !mi(educ_level)
+	gen          educ_some_college = (educ_level == 4) if !mi(educ_level) & educ_level>=3 & inrange(edad,18,30)
 	label var    educ_some_college "Some College"
 	label define educ_some_college 0 "No College" 1 "Some College"
 	label values educ_some_college educ_some_college

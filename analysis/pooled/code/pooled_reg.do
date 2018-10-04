@@ -13,7 +13,7 @@ program main
 	*/
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_reg, outcomes(`labor_vars') data(ech_labor) time(anio_sem) num_periods(6)
-	local educ_vars   = "educ_HS_diploma educ_some_college anios_secun anios_terc"
+	local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
 	pooled_reg, outcomes(`educ_vars') data(ech_educ) time(anio_sem) num_periods(6)
 	pooled_reg, outcomes(births GFR) data(births_long) time(anio_sem) num_periods(6)
 	pooled_reg, outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm) data(births_ind) time(anio_sem) num_periods(6)
@@ -35,7 +35,12 @@ program pooled_reg
 		local all_controls = "c98_* ${controls}" //note: using all data, can't use c_0*
 		local pweight = "[pw = `weight']"
 		local cond_list "&!mi(dpto) &kids_before==1 &kids_before==0 &single==0 &single==1"  /*"& young == 0" "& young == 1"*/
-		local age_group_list "_fertile _placebo"
+		if "`data'" == "ech_labor" {
+			local age_group_list "_fertile _placebo"
+		}
+		else {
+			local age_group_list "_fertile"
+		}
 	}
 	else if "`data'" == "births_ind" {
 		local all_controls = ""
@@ -101,7 +106,7 @@ program pooled_reg
         
                 drop interaction
             }
-			if substr("`data'",1,3) == "ech" {
+			if "`data'" == "ech_labor" {
 				//matrix COL_ES  = (COL_ES_fertile,  COL_ES_placebo)
 				matrix COL_DiD = (COL_DiD_fertile, COL_DiD_placebo)
 			}
@@ -161,14 +166,12 @@ program pooled_reg
 		foreach rd in DiD { //ES
 			file open myfile using "../output/tab_`rd'_`data'.txt", write replace
 			file write myfile "\begin{threeparttable}" ///
-							_n "\begin{tabular}{l|cc|cc|cc|cc} \hline\hline"  ///
-							_n " & \multicolumn{2}{c|}{`lab_v1'} & \multicolumn{2}{c}{`lab_v2'} & \multicolumn{2}{c}{`lab_v3'} & \multicolumn{2}{c}{`lab_v4'} \\ \hline" ///
-							_n " & (1)        & (2)        & (3)        & (4)        & (5)        & (6)        & (7)        & (8)  \\ "  ///
-							_n " & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline" ///
-							_n "Mean (baseline) & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v1_`rd'_placebo') " & " ///
-							                        %9.3f (`avg_v2_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_placebo') " & " ///
-							                        %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v3_`rd'_placebo') " & " ///
-							                        %9.3f (`avg_v4_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_placebo') " \\ \hline "
+							_n "\begin{tabular}{l|cccc} \hline\hline"  ///
+							_n " & `lab_v1' & `lab_v2' & `lab_v3' & `lab_v4' \\ \hline" ///
+							_n " & (1)      & (2)      & (3)      & (4)      \\ "  ///
+							_n " & Age: 18-22 & Age: 16-22 & Age: 18-30 & Age: 18-30 \\ \hline" ///
+							_n "Mean (baseline) & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') ///
+							                  " & " %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_fertile') " \\ \hline "
 			local r = rowsof(TAB_`rd') / 3
 			forvalues i = 1/`r' {
 				local j1 = 3 * `i' - 2
@@ -177,17 +180,11 @@ program pooled_reg
 				file write myfile ///
 					_n "`cond`i'' &  " ///
 						      %9.3f  (TAB_`rd'[`j1',1]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
-                              %9.3f  (TAB_`rd'[`j1',3]) "  &  " %9.3f (TAB_`rd'[`j1',4]) " & " ///
-                              %9.3f  (TAB_`rd'[`j1',5]) "  &  " %9.3f (TAB_`rd'[`j1',6]) " & " ///
-                              %9.3f  (TAB_`rd'[`j1',7]) "  &  " %9.3f (TAB_`rd'[`j1',8]) " \\ " ///
+                              %9.3f  (TAB_`rd'[`j1',3]) "  &  " %9.3f (TAB_`rd'[`j1',4]) " \\ " ///
                 	_n " & (" %9.3f  (TAB_`rd'[`j2',1]) ") & (" %9.3f (TAB_`rd'[`j2',2]) ") & (" ///
-                	    	  %9.3f  (TAB_`rd'[`j2',3]) ") & (" %9.3f (TAB_`rd'[`j2',4]) ") & (" ///
-                	    	  %9.3f  (TAB_`rd'[`j2',5]) ") & (" %9.3f (TAB_`rd'[`j2',6]) ") & (" ///
-                	    	  %9.3f  (TAB_`rd'[`j2',7]) ") & (" %9.3f (TAB_`rd'[`j2',8]) ") \\ " ///
+                	    	  %9.3f  (TAB_`rd'[`j2',3]) ") & (" %9.3f (TAB_`rd'[`j2',4]) ") \\ " ///
                		_n " &  " %9.0fc (TAB_`rd'[`j3',1]) "  &  " %9.0fc (TAB_`rd'[`j3',2]) " & " ///
-                		      %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0fc (TAB_`rd'[`j3',4]) " & " ///
-                		      %9.0fc (TAB_`rd'[`j3',5]) "  &  " %9.0fc (TAB_`rd'[`j3',6]) " & " ///
-                		      %9.0fc (TAB_`rd'[`j3',7]) "  &  " %9.0fc (TAB_`rd'[`j3',8]) " \\ "
+                		      %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0fc (TAB_`rd'[`j3',4]) " \\ "
 			}
 			file write myfile _n "\hline\hline" _n "\end{tabular}" 
 			file close myfile
