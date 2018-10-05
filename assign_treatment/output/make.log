@@ -1,14 +1,14 @@
 
- make.py started: 2018-10-04 15:36:19 C:\Users\cravizza\GitHub\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2018-10-05 08:40:48 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./assign_treatment.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./assign_treatment.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -33,8 +33,8 @@ Notes:
 . set more off
 
 . adopath + ../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -459,7 +459,7 @@ File: ..\output\ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:132(71828):525129689:3812943417
+  1759109:132(71828):3119749017:3215870128
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -770,4 +770,4 @@ file ..\output\ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2018-10-04 15:37:29
+ make.py ended: 2018-10-05 08:42:26
