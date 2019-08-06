@@ -2,137 +2,12 @@ clear all
 set more off
 
 program main_clean_raw
-    *append_different_waves_98_00 
-    *clean_98_00 
     clean_01_05 
     clean_06
     clean_07
     clean_08
     clean_09_16
 end
-
-/*
-program append_different_waves_98_00
-       
-    foreach year in 1998 1999 2000 {
-        foreach t in p h {
-            foreach w in 1 2 {
-                foreach c in i m {
-                    import excel using "..\..\raw/`year'/`t'`year's`w'`c'.xls", clear first
-                    tempfile temp_`t'_`w'`c'
-                    save `temp_`t'_`w'`c''
-                    }
-                append using `temp_`t'_`w'i'
-                tempfile temp_`t'_`w'
-                save `temp_`t'_`w''
-                }
-            append using `temp_`t'_1'
-            save ..\temp\preclean_`year'_`t'.dta, replace
-        }
-         use ..\temp\preclean_`year'_p.dta, clear
-
-         rename correlativ ident
-         merge m:1 ident using ..\temp\preclean_`year'_h.dta, nogen
-         save ..\temp\preclean_`year'.dta, replace
-    }
-    
-end
-
-program clean_98_00
-    * Note: can't find: afro asia blanco indigena otro then generated raza equal missing
-    forvalues year=1998/2000 {
-        use ..\temp\preclean_`year'.dta, replace        
-        
-        rename (ident     persona   pe1        pe1a        pe1b   ///
-                pe1c      pe1d      pe1e       pe1h        locech ///
-                nomlocech ht11      hd21       hd22        ht3   ///
-                pe2       pe3       pt1 ///
-                pf37                pf06                   pf051 ///
-                pf38                pf351                  pf052)        ///
-               (numero    pers      nper       anio        semana ///
-                dpto      secc      segm       estrato     loc    ///
-                nomloc    y_hogar   nbr_people nbr_above14 nbr_under14 ///
-                hombre    edad      ytotal ///
-                meses_trabajando    horas_trabajo          horas_trabajo_p  ///
-                anios_trabajando    busca_trabajo          horas_trabajo_s)
-
-        replace pobpcoac = 1  if pobpcoac==40
-        replace pobpcoac = 2  if inlist(pobpcoac,11,12)
-        replace pobpcoac = 3  if pobpcoac==23
-        replace pobpcoac = 4  if pobpcoac==21
-        replace pobpcoac = 5  if pobpcoac==22
-        replace pobpcoac = 6  if pobpcoac==34
-        replace pobpcoac = 7  if pobpcoac==33
-        replace pobpcoac = 8  if pobpcoac==32
-        replace pobpcoac = 9  if pobpcoac==30
-        replace pobpcoac = 10 if pobpcoac==31
-        replace pobpcoac = 11 if inlist(pobpcoac,35,36,37,38)
-
-        gen    c98_resid_house        =    (hc1==1)
-        gen    c98_resid_owned        =    (hd3==1|hd3==2)
-        gen    c98_nbr_rooms        =    hd41
-        gen    c98_nbr_bedrooms    =    hd42
-        gen    c98_b_piped_water    =    (hd6==1)
-        gen    c98_hhld_toilet        =    (hd7==1)
-        gen    c98_b_sewage        =    (hd9==1)
-        gen    c98_hhld_stove        =    (hd102!=7)
-        gen    c98_hhld_hot_water    =    (hd111==1)
-        gen    c98_hhld_refrigerat    =    (hd112==1|hd113==1)
-        gen    c98_hhld_tv            =    (hd114==1|hd115==1)
-        gen    c98_hhld_vcr        =    (hd116==1)
-        gen    c98_hhld_wash_mac    =    (hd117==1)
-        gen    c98_hhld_dishwasher    =    (hd118==1)
-        gen    c98_hhld_microwave    =    (hd119==1)
-        gen    c98_hhld_car        =    (hd1110==1)
-        
-        gen     trimestre = 1 if inrange(semana, 1, 12)
-        replace trimestre = 2 if inrange(semana, 13, 24)
-        replace trimestre = 3 if inrange(semana, 25, 36)
-        replace trimestre = 4 if inrange(semana, 37, 48)
-
-        gen married = (pe5==1|pe5==2)
-        gen etnia = .
-        
-        gen estudiante = (pobpcoac==33)
-        gen trabajo    = (pobpcoac==2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
-        
-        gen anios_prim = clip(pe142,0,6) if pe141 == 1 & (pe11 == 1 | pe12 == 1)
-		replace anios_prim = 6 if inlist(pe141,2,3,4,5,6) & (pe11 == 1 | pe12 == 1)
-
-		gen anios_secun = pe142 if pe141 == 2 & (pe11 == 1 | pe12 == 1)
-		replace anios_secun = pe142 + 3  if pe141 == 3
-		replace anios_secun = 6 if anios_secun > 6 & !missing(anios_secun)	
-		replace anios_secun = 6 if inlist(pe141,5,6) & (pe11 == 1 | pe12 == 1)
-		
-		gen anios_terc = pe142 if (pe141 == 5 | pe141 == 6) & (pe11 == 1 | pe12 == 1)
-		
-		gen anios_tecn = pe142 if pe141 == 4 & (pe11 == 1 | pe12 == 1)
-		
-		replace anios_secun = 0 if missing(anios_secun) & !missing(anios_prim)
-		replace anios_terc = 0 if missing(anios_terc) & ///
-		    (!missing(anios_prim) | !mi(anios_secun))
-		replace anios_tecn = 0 if missing(anios_tecn) & ///
-		    (!missing(anios_prim) | !mi(anios_secun))
-
-		gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-		replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-			inlist(anios_tecn,1,2,3,4,5)
-		replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-		    anios_tecn >= 6 & !missing(anios_tecn))
-		replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-                
-        assert nper==pers
-        drop nper
-
-        keep numero pers anio trimestre semana dpto secc segm estrato loc nomloc ccz ///
-                peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
-                pobpcoac married etnia c98_* estudiante educ_level anios_* *trabaj*
-
-        save ..\temp\clean_`year'.dta, replace
-        }
-end
-*/
 
 program clean_01_05
     * Note: can't find: afro asia blanco indigena otro then generated etnia equal missing
@@ -196,33 +71,6 @@ program clean_01_05
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         gen meses_trabajando = .
         gen anios_trabajando = .
-
-        /*gen anios_prim = clip(e11_2,0,6) if (e9 == 1 | e10 == 1)
-        replace anios_prim = round(anios_prim)
-        
-        gen anios_secun = clip(e11_3, 0, 6) if (e9 == 1 | e10 == 1)
-        replace anios_secun = round(anios_secun)
-        
-        gen anios_terc = e11_5 + e11_6 if (e9 == 1 | e10 == 1)
-        replace anios_terc = round(anios_terc)
-        
-        gen anios_tecn = e11_4 if (e9 == 1 | e10 == 1)
-        replace anios_tecn = round(anios_tecn)
-        
-        replace anios_secun = 0 if missing(anios_secun) & !missing(anios_prim)
-        replace anios_terc = 0 if missing(anios_terc) & ///
-            (!missing(anios_prim) | !mi(anios_secun))
-        replace anios_terc = 0 if anios_secun != 6  
-        replace anios_tecn = 0 if missing(anios_tecn) & ///
-            (!missing(anios_prim) | !mi(anios_secun))
-
-        gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-        replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-            inlist(anios_tecn,1,2,3,4,5)
-        replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-            anios_tecn >= 6 & !missing(anios_tecn))
-        replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-		*/
         
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
@@ -286,48 +134,6 @@ program clean_06
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-        
-        /*gen anios_prim = (e50_2 + e50_3) if e48 == 1
-        replace anios_prim = 6 if e48 == 1 & (e50_4 > 0 | e50_5 > 0 | ///
-            e50_6 > 0 | e50_7 > 0 | e50_8 > 0 | e50_9 > 0 | e50_10 > 0 | ///
-            e50_11 > 0 | e50_12 > 0)
-        replace anios_prim = e52_1_1 if e48 == 2 & e51 == 1
-        replace anios_prim = 6 if e48 == 2 & e51 == 1 & ///
-            (e52_2_1 > 0 | e52_3_1 > 0 | e52_4_1 > 0 | e52_5_1 > 0 | e52_6_1 > 0 | ///
-             e52_7_1 > 0)
-            
-        gen anios_secun = (e50_4 + e50_5) if e48 == 1
-        replace anios_secun = 6 if e48 == 1 & (e50_6 > 0 | e50_7 > 0 | ///
-            e50_8 > 0 | e50_9 > 0 | e50_10 > 0 | e50_11 > 0 | e50_12 > 0)
-        replace anios_secun = e52_2_1 if e48 == 2 & e51 == 1
-        replace anios_secun = 6 if e48 == 2 & e51 == 1 & ///
-            (e52_4_1 > 0 | e52_5_1 > 0 | e52_6_1 > 0 | ///
-             e52_7_1 > 0)
-        
-        gen anios_terc = (e50_9 + e50_10 + e50_11 + e50_12) if e48 == 1
-        replace anios_terc = (e52_4_1 + e52_5_1 + e52_6_1 + e52_7_1) ///
-            if e48 == 2 & e51 == 1
-        
-        gen anios_tecn = (e50_5 + e50_7 + e50_8) if e48 == 1
-        replace anios_tecn = e52_3_1 if e48 == 2 & e51 == 1 
-        replace anios_tecn = (e52_3_1) if e48 == 2 & e51 == 1
-        
-        replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
-        replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
-        replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
-        
-        replace anios_prim = 0 if e51 == 2
-        replace anios_secun = 0 if e51 == 2
-        replace anios_terc = 0 if e51 == 2
-        replace anios_tecn = 0 if e51 == 2
-        
-        gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-        replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-            inlist(anios_tecn,1,2,3,4,5)
-        replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-            anios_tecn >= 6 & !missing(anios_tecn))
-        replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-		*/
 
         destring anio, replace
         destring secc, replace
@@ -394,48 +200,6 @@ program clean_07
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-        
-        /*gen anios_prim = (e52_2 + e52_3) if e50 == 1
-        replace anios_prim = 6 if e50 == 1 & (e52_4 > 0 | e52_5 > 0 | ///
-            e52_6 > 0 | e52_7 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | ///
-            e52_11 > 0 | e52_12 > 0)
-        replace anios_prim = e54_1_1 if e50 == 2 & e53 == 1 
-        replace anios_prim = 6 if e50 == 2 & e53 == 1 & ///
-            (e54_2_1 > 0 | e54_3_1 > 0 | e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 > 0 | ///
-             e54_7_1 > 0)
-		replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim)
- 
-        gen anios_secun = (e52_4 + e52_5) if e50 == 1
-        replace anios_secun = 6 if e50 == 1 & (e52_9 > 0 | e52_10 > 0 | ///
-            e52_11 > 0 | e52_12 > 0)    
-        replace anios_secun = e54_2_1 if e50 == 2 & e53 == 1 
-        replace anios_secun = 6 if e50 == 2 & e53 == 1 & ///
-            (e54_4_1 > 0 | e54_5_1 > 0 | e54_6_1 > 0 | e54_7_1 > 0)
-
-        gen anios_terc = (e52_9 + e52_10 + e52_11 + e52_12) if e50 == 1
-        replace anios_terc = (e54_4_1 + e54_5_1 + e54_6_1 + e54_7_1) ///
-            if e50 == 2 & e53 == 1
-        
-        gen anios_tecn = (e52_5 + e52_7 + e52_8) if e50 == 1
-        replace anios_tecn = e54_3_1 if e50 == 2 & e53 == 1
-        replace anios_tecn = (e54_3_1) if e50 == 2 & e53 == 1
-        
-        replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
-        replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
-        replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
-
-        replace anios_prim = 0 if e53 == 2
-        replace anios_secun = 0 if e53 == 2
-        replace anios_terc = 0 if e53 == 2
-        replace anios_tecn = 0 if e53 == 2
-        
-        gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-        replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-            inlist(anios_tecn,1,2,3,4,5)
-        replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-            anios_tecn >= 6 & !missing(anios_tecn))
-        replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-		*/
 
         destring numero, replace
         destring anio, replace
@@ -504,50 +268,6 @@ program clean_08
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         
-        /*gen anios_prim = (e52_2 + e52_3) if (e50 == 1 | e51 == 1)
-        replace anios_prim = 6 if (e50 == 1 | e51 == 1) & (e52_4 > 0 | e52_5 > 0 | ///
-            e52_6 > 0 | e52_7_1 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | ///
-            e52_11 > 0)
-		replace anios_prim = (e52_2_V + e52_3_V) if ///
-            ((e52_2 + e52_3) == 0 & !missing(e52_2_V))	
-		replace anios_prim = 1 if (e52_2 == 9 | e52_3 == 9)
-		replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim)
-	 
-        gen anios_secun = (e52_4 + e52_5 + e52_6) if (e50 == 1 | e51 == 1)
-        replace anios_secun = 6 if (e50 == 1 | e51 == 1) & (e52_8 > 0 | e52_9 > 0 | ///
-		    e52_10 > 0 | e52_11 > 0)
-		replace anios_secun = (e52_4_V + e52_5_V + e52_6_V) if ///
-            ((e52_4 + e52_5) == 0 & !missing(e52_4_V))		
-		replace anios_secun = 1 if (e52_4 == 9 | e52_5 == 9 | e52_6 == 9)
-		replace anios_secun = 6 if anios_secun >= 6 & !mi(anios_secun)
-	
-		gen anios_terc = (e52_8 + e52_9 + e52_10 + e52_11) if (e50 == 1 | e51 == 1)
-		replace anios_terc = (e52_9_V + e52_10_V + e52_11_V + e52_12_V) if ///
-            ((e52_8 + e52_9 + e52_10 + e52_11) == 0 & !missing(e52_9_V))
-		replace anios_terc = 1 if (e52_8 == 9 | e52_9 == 9 | e52_10 == 9 | e52_11 == 9)
-			
-        gen anios_tecn = (e52_7_1) if (e50 == 1 | e51 == 1)
-		replace anios_tecn = (e52_7_V + e52_8_V ) if ///
-            ((e52_6 + e52_7_1) == 0 & !missing(e52_7_V))
-		replace anios_tecn = 1 if (e52_6 == 9 | e52_7_1 == 9)
-        
-        replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
-        replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
-        replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
-
-		replace anios_prim = 0 if e51 == 2
-		replace anios_secun = 0 if e51 == 2
-		replace anios_terc = 0 if e51 == 2
-		replace anios_tecn = 0 if e51 == 2
-		
-		gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-        replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-            inlist(anios_tecn,1,2,3,4,5)
-        replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-            anios_tecn >= 6 & !missing(anios_tecn))
-        replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-		*/
-
         destring numero, replace
         destring anio, replace
         destring secc, replace
@@ -624,78 +344,6 @@ program clean_09_16
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-
-        /*if ("`year'" == "2009" | "`year'" == "2010") {
-            gen anios_prim = (e51_2 + e51_3)
-            replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 | ///
-                e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
-                e51_11 > 0)
-            replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
-            replace anios_prim = 6 if anios_prim >= 6 & !mi(anios_prim)
-            
-            gen anios_secun = (e51_4 + e51_5)
-            replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
-                e51_11 > 0)
-            replace anios_secun = 1 if (e51_4 == 9 | e51_5 == 9)
-            
-            gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
-            replace anios_terc = 1 if (e51_8 == 9 | e51_9 == 9 | e51_10 == 9 | e51_11 == 9)
-            
-            gen anios_tecn = (e51_6 + e51_7)
-            replace anios_tecn = 1 if (e51_6 == 9 | e51_7 == 9)
-            
-            replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
-            replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
-            replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
-            
-            replace anios_prim = 0 if e50 == 2
-            replace anios_secun = 0 if e50 == 2
-            replace anios_terc = 0 if e50 == 2
-            replace anios_tecn = 0 if e50 == 2
-            
-            gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-            replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-                inlist(anios_tecn,1,2,3,4,5)
-            replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-                anios_tecn >= 6 & !missing(anios_tecn))
-            replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-            }
-        else {
-            gen anios_prim = (e51_2 + e51_3)			
-			replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 | ///
-                e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
-                e51_11 > 0)
-            replace anios_prim = 1 if (e51_2 == 9 | e51_3 == 9)
-            replace anios_prim = 6 if anios_prim >= 6 
-                
-            gen anios_secun = (e51_4 + e51_5)
-            replace anios_secun = 6 if (e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
-                e51_11 > 0)
-            replace anios_secun = 1 if (e51_4 == 9 | e51_5 == 9)  
-			
-            gen anios_terc = (e51_8 + e51_9 + e51_10 + e51_11)
-            replace anios_terc = 1 if (e51_8 == 9 | e51_9 == 9 | e51_10 == 9 | e51_11 == 9)
-            
-            gen anios_tecn = (e51_6 + e51_7)
-            replace anios_tecn = 1 if (e51_6 == 9 | e51_7 == 9)
-            
-            replace anios_prim = 6 if anios_secun > 0 & anios_prim == 0
-            replace anios_prim = 6 if anios_terc > 0 & anios_prim == 0
-            replace anios_secun = 6 if anios_terc > 0 & anios_secun == 0
-            
-			replace anios_prim = 0 if e49 == 2
-            replace anios_secun = 0 if e49 == 2
-            replace anios_terc = 0 if e49 == 2
-            replace anios_tecn = 0 if e49 == 2
-			
-            gen educ_level = 1 if (anios_secun == 0 & anios_tecn == 0)
-            replace educ_level = 2 if inlist(anios_secun,1,2,3,4,5) | ///
-                inlist(anios_tecn,1,2,3,4,5)
-            replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
-                anios_tecn >= 6 & !missing(anios_tecn))
-            replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
-        }
-		*/
 		
         gen live_births     = .
         gen live_births_nbr = .

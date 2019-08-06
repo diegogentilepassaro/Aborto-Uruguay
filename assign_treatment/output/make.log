@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-06 09:40:24 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2019-08-06 14:45:25 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -195,7 +195,8 @@ Notes:
  23.         gen lowed       = (educ_level==1)         if !mi(educ_level)
  24.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
  25.         
-.     save_data ..\output\ech_final_01_2016.dta, key(numero pers anio) replace 
+.     save_data ..\output\ech_final_2001_2016.dta, key(numero pers anio) replac
+> e 
  26. end
 
 . 
@@ -319,47 +320,47 @@ file ..\temp\timeline_implementation.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       293,510
-        from master                   293,510  
+    not matched                       272,843
+        from master                   272,843  
         from using                          0  
 
-    matched                           487,302  
+    matched                           454,818  
     -----------------------------------------
 (0 observations deleted)
-(1,712 observations deleted)
-(18,622 missing values generated)
-(19239 missing values generated)
-(759,861 real changes made)
-(712,541 missing values generated)
-(701,097 missing values generated)
-(732,695 missing values generated)
-(602,495 missing values generated)
-(122,933 real changes made)
-(730,864 missing values generated)
-(721,818 missing values generated)
-(746,854 missing values generated)
-(656,831 missing values generated)
-(87,253 real changes made)
-(760,777 missing values generated)
-(758,379 missing values generated)
-(764,941 missing values generated)
-(724,764 missing values generated)
-(35,680 real changes made)
-(779,028 missing values generated)
-(779,032 missing values generated)
-(779,067 missing values generated)
-(778,975 missing values generated)
-(107 real changes made)
-(41,649 real changes made)
-(32,890 real changes made)
-(190,850 real changes made)
-(6,908 real changes made, 6,908 to missing)
-(3,058 real changes made)
-(46 real changes made)
-(6,908 observations deleted)
+(1,695 observations deleted)
+(17,191 missing values generated)
+(17772 missing values generated)
+(708,194 real changes made)
+(664,326 missing values generated)
+(653,564 missing values generated)
+(682,662 missing values generated)
+(561,744 missing values generated)
+(114,557 real changes made)
+(681,155 missing values generated)
+(672,880 missing values generated)
+(695,894 missing values generated)
+(612,385 missing values generated)
+(81,384 real changes made)
+(709,137 missing values generated)
+(706,650 missing values generated)
+(712,734 missing values generated)
+(675,325 missing values generated)
+(33,173 real changes made)
+(725,899 missing values generated)
+(725,902 missing values generated)
+(725,934 missing values generated)
+(725,845 missing values generated)
+(94 real changes made)
+(38,564 real changes made)
+(30,708 real changes made)
+(177,768 real changes made)
+(6,309 real changes made, 6,309 to missing)
+(2,854 real changes made)
+(45 real changes made)
+(6,309 observations deleted)
 (note: file ..\output\births15.dta not found)
 file ..\output\births15.dta saved
-(19,239 observations deleted)
+(17,772 observations deleted)
 (note: file ..\output\births.dta not found)
 file ..\output\births.dta saved
 
@@ -455,7 +456,7 @@ file ..\output\births.dta saved
   (213,714,020 bytes saved)
 ===============================================================================
 > ===================
-File: ..\output\ech_final_01_2016.dta
+File: ..\output\ech_final_2001_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
@@ -625,8 +626,8 @@ nbr_under1~d |  1,643,954     1.06434    1.302104          0         15
 
 
 
-(note: file ..\output\ech_final_01_2016.dta not found)
-file ..\output\ech_final_01_2016.dta saved
+(note: file ..\output\ech_final_2001_2016.dta not found)
+file ..\output\ech_final_2001_2016.dta saved
 
 . 
 . /*
@@ -770,4 +771,4 @@ file ..\output\ech_final_01_2016.dta saved
 
 end of do-file
 
- make.py ended: 2019-08-06 09:42:41
+ make.py ended: 2019-08-06 14:47:18

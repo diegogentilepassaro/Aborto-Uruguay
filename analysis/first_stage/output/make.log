@@ -1,14 +1,14 @@
 
- make.py started: 2018-10-02 15:29:54 C:\Users\cravizza\GitHub\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2019-08-06 14:56:33 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./mortality.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -17,8 +17,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -344,11 +344,11 @@ file ..\temp\uruguay_mm_data.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -357,8 +357,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -373,8 +373,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -598,36 +598,36 @@ Notes:
 
 . 
 end of do-file
-(102 observations deleted)
-(102 missing values generated)
-(100 missing values generated)
-(51 observations deleted)
-(51 missing values generated)
-(51 missing values generated)
-(102 observations deleted)
-(92 missing values generated)
-(87 missing values generated)
-(51 observations deleted)
-(50 missing values generated)
-(46 missing values generated)
-(68 observations deleted)
-(68 missing values generated)
-(68 missing values generated)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
-(68 observations deleted)
-(68 missing values generated)
-(68 missing values generated)
-(34 observations deleted)
-(34 missing values generated)
-(34 missing values generated)
-(102 observations deleted)
-(98 missing values generated)
-(96 missing values generated)
-(51 observations deleted)
-(50 missing values generated)
-(50 missing values generated)
+(90 observations deleted)
+(90 missing values generated)
+(88 missing values generated)
+(45 observations deleted)
+(45 missing values generated)
+(45 missing values generated)
+(90 observations deleted)
+(80 missing values generated)
+(75 missing values generated)
+(45 observations deleted)
+(44 missing values generated)
+(40 missing values generated)
+(60 observations deleted)
+(60 missing values generated)
+(60 missing values generated)
+(30 observations deleted)
+(30 missing values generated)
+(30 missing values generated)
+(60 observations deleted)
+(60 missing values generated)
+(60 missing values generated)
+(30 observations deleted)
+(30 missing values generated)
+(30 missing values generated)
+(90 observations deleted)
+(86 missing values generated)
+(84 missing values generated)
+(45 observations deleted)
+(44 missing values generated)
+(44 missing values generated)
 (file ..\output\births_rivera_anio.pdf written in PDF format)
 (file ..\output\births_rivera_anio_sem.pdf written in PDF format)
 
@@ -635,11 +635,11 @@ end of do-file
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./state_of_birth.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./state_of_birth.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -648,8 +648,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -664,8 +664,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata15\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata15\ado\site/"
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -691,17 +691,17 @@ Notes:
 .         gen tag_mvd  = codep==10
 
 .         gen births_sh_same = births/births_tot if tag_same
-(2,122 missing values generated)
+(1,863 missing values generated)
 
 .         gen births_sh_mvd  = births/births_tot if tag_mvd
-(2,122 missing values generated)
+(1,863 missing values generated)
 
 . 
 .         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
 
 .         xtset depar anio
        panel variable:  depar (strongly balanced)
-        time variable:  anio, 1999 to 2015
+        time variable:  anio, 2001 to 2015
                 delta:  1 unit
 
 .         label var anio "Birth year"
@@ -765,11 +765,11 @@ Notes:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./aggregate_births.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./aggregate_births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -778,8 +778,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -1051,7 +1051,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_07000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1063,7 +1063,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_07000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1075,7 +1075,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_07000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1097,11 +1097,11 @@ file C:\Users\cravizza\AppData\Local\Temp\ST_95ac_000006.tmp saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./misoprostol.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./misoprostol.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1110,8 +1110,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -1207,11 +1207,11 @@ xij variables:
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata15\StataSE-64.exe" /e do "./google_trends.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./google_trends.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
      Special Edition                  College Station, Texas 77845 USA
@@ -1220,8 +1220,8 @@ ___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
                                       979-696-4601 (fax)
 
 110-user Stata network perpetual license:
-       Serial number:  401506201178
-         Licensed to:  Brown University
+       Serial number:  401406206058
+         Licensed to:  CIS Department
                        Brown University
 
 Notes:
@@ -1281,40 +1281,10 @@ Notes:
 
 . 
 . main
-(2 vars, 177 obs)
-abortionuruguay already numeric; no replace
-file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000001.tmp saved
-(2 vars, 177 obs)
-misoprostoluruguay already numeric; no replace
-file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000002.tmp saved
-(2 vars, 177 obs)
-abortionbrazil already numeric; no replace
-file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000003.tmp saved
-(2 vars, 177 obs)
-misoprostolbrazil already numeric; no replace
-file C:\Users\cravizza\AppData\Local\Temp\ST_a560_000004.tmp saved
+file ..\..\..\raw\google_trends_abortion_uruguay.csv not found
+r(601);
 
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                               177  
-    -----------------------------------------
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                               177  
-    -----------------------------------------
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                               177  
-    -----------------------------------------
-(file ../output/google_trends_abortion.pdf written in PDF format)
-(file ../output/google_trends_misoprostol.pdf written in PDF format)
-
-. 
 end of do-file
+r(601);
 
- make.py ended: 2018-10-02 15:30:59
+ make.py ended: 2019-08-06 14:58:09

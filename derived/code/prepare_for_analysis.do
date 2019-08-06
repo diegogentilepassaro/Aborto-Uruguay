@@ -27,9 +27,6 @@ program main_prepare_for_analysis
 	gen     anio_qtr = yq(anio, trimestre)
     format  anio_qtr %tq
 
-	/*local outcomes = "trabajo horas_trabajo"
-	deseasonalize, outcomes(`outcomes')*/
-	 
 	label_vars
 	drop if (missing(numero) | missing(pers) | missing(anio))
 	replace horas_trabajo = . if horas_trabajo >= 100
@@ -79,39 +76,6 @@ program impute_poverty_lines_pre06
 		replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
 		replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
 	    save ..\temp\clean_loc_2001_2016_fixed.dta, replace
-	}
-end
-
-program deseasonalize  
-    syntax, outcomes(str)
-	
-	levelsof dpto, local(dptos)
-	
-	foreach outcome in `outcomes' {
-		gen `outcome'_des = `outcome'
-	}
-	
-	foreach dpto of local dptos {
-		foreach outcome in `outcomes' {
-
-			qui sum `outcome' if anio < 2004 & dpto == `dpto' [aw = pesotri]
-			local mean = r(mean)
-			
-			reg `outcome' i.trimestre if anio < 2004 & dpto == `dpto' [aw = pesotri]
-			predict p_`outcome', resid
-			
-			replace `outcome'_des = p_`outcome' + `mean' if anio < 2004 & dpto == `dpto'
-			drop p_`outcome'
-			
-			qui sum `outcome' if anio >= 2004 & dpto == `dpto' [aw = pesotri]
-			local mean = r(mean)
-			
-			reg `outcome' i.trimestre if anio >= 2004 & dpto == `dpto' [aw = pesotri]
-			predict p_`outcome', resid
-			
-			replace `outcome'_des = p_`outcome' + `mean' if anio >= 2004 & dpto == `dpto'
-			drop p_`outcome'	
-		}
 	}
 end
 

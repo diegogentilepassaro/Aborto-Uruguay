@@ -8,7 +8,7 @@ end
 
 program append_data
 	* Note: there is no 1998 data, but there is data for 1996 and 1997
-	forvalues year = 2000/2015 {
+	forvalues year = 2001/2015 {
 		capture import delimited "..\..\raw\vital_records\Natalidad `year'_p.csv", delim(";") clear
 		
 		*capture rename (civilm  civilp  instm   instp) (mestciv pestciv mademay pademay)
@@ -19,11 +19,11 @@ program append_data
 		save `temp_`year''
 	}
 
-	forvalues year = 2000/2014 {
+	forvalues year = 2001/2014 {
 		append using `temp_`year''
 	}
 
-	keep if inrange(anio_parto,2000,2015) //note some births in 2015 are recorded in 2016
+	keep if inrange(anio_parto,2001,2015) //note some births in 2015 are recorded in 2016
 	assert !mi(edadm)
 	*keep if inrange(edadm,16,45)
 	

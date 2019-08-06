@@ -129,7 +129,7 @@ syntax, num_periods(int)
 	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
 	
-    save_data ..\output\ech_final_01_2016.dta, key(numero pers anio) replace 
+    save_data ..\output\ech_final_2001_2016.dta, key(numero pers anio) replace 
 end
 
 main_assign_treatment
