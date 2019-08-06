@@ -278,7 +278,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			
 		* DiD: run main regression and plot coefficientss
 		reghdfe `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto `all_controls' ///
-			`DiD_subsample' `pweight', noabsorb base cluster(`time' dpto)
+			`DiD_subsample' `pweight', noabsorb base cluster(dpto)
 			* Coef plot
 			coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto  `all_controls') ///

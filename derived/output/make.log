@@ -1,5 +1,5 @@
 
- make.py started: 2018-10-05 08:34:17 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\code 
+ make.py started: 2019-08-06 09:34:49 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\code 
 
 
 
@@ -43,12 +43,12 @@ Notes:
 
 . 
 . program main_homogeneize_geo_vars 
-  1.         use ..\..\base\output\clean_1998_2016, clear
+  1.         use ..\..\base\output\clean_2001_2016, clear
   2.         
-.         fix_98_05
+.         fix_01_05
   3.         fix_2007
   4.         fix_2008
-  5.         save ../temp/98_2011_loc_homo.dta, replace
+  5.         save ../temp/2001_2011_loc_homo.dta, replace
   6.         
 .         import excel ../../raw/lista_homogen_codes_geo.xlsx, sheet("Sheet1") 
 > ///
@@ -74,11 +74,11 @@ Notes:
  18.         
 .         drop_rural_areas
  19. 
-.         save ..\temp\clean_loc_1998_2016.dta, replace
+.         save ..\temp\clean_loc_2001_2016.dta, replace
  20. end
 
 . 
-. program fix_98_05
+. program fix_01_05
   1.     * Montevideo
 .         replace loc = "010" if inrange(anio, 1998, 2005) & loc == "0101"
   2. 
@@ -287,7 +287,7 @@ Notes:
 
 . 
 . program homogeneize_loc_to_2012_2014
-  1.         use ../temp/98_2011_loc_homo.dta, clear
+  1.         use ../temp/2001_2011_loc_homo.dta, clear
   2.         
 .         merge m:1 dpto loc using ../temp/loc_xwalk.dta
   3.         
@@ -367,51 +367,51 @@ Notes:
 
 . 
 . main_homogeneize_geo_vars
-(238,595 real changes made)
-(7,863 real changes made)
-(3,840 real changes made)
-(12,718 real changes made)
-(30,695 real changes made)
-(6,467 real changes made)
-(3,652 real changes made)
+(176,891 real changes made)
+(5,776 real changes made)
+(2,997 real changes made)
+(9,206 real changes made)
+(22,881 real changes made)
+(4,725 real changes made)
+(2,797 real changes made)
 (1,126 real changes made)
-(6,487 real changes made)
-(2,709 real changes made)
-(5,940 real changes made)
-(2,568 real changes made)
-(680 real changes made)
+(4,894 real changes made)
+(2,063 real changes made)
+(4,330 real changes made)
+(1,899 real changes made)
+(0 real changes made)
 (431 real changes made)
 (2,116 real changes made)
-(4,603 real changes made)
-(1,235 real changes made)
-(4,025 real changes made)
-(3,824 real changes made)
-(1,478 real changes made)
-(6,127 real changes made)
-(221 real changes made)
-(10,192 real changes made)
-(4,344 real changes made)
-(1,535 real changes made)
+(3,453 real changes made)
+(828 real changes made)
+(2,977 real changes made)
+(2,905 real changes made)
+(1,077 real changes made)
+(4,763 real changes made)
+(0 real changes made)
+(7,477 real changes made)
+(3,285 real changes made)
+(1,093 real changes made)
 (333 real changes made)
 (167 real changes made)
-(11,982 real changes made)
-(173 real changes made)
-(3,605 real changes made)
-(2,718 real changes made)
-(11,257 real changes made)
-(1,302 real changes made)
-(7,098 real changes made)
-(1,330 real changes made)
+(9,105 real changes made)
+(0 real changes made)
+(2,705 real changes made)
+(2,061 real changes made)
+(8,556 real changes made)
+(832 real changes made)
+(5,457 real changes made)
+(928 real changes made)
 (205 real changes made)
-(12,609 real changes made)
-(5,481 real changes made)
-(3,786 real changes made)
-(1,649 real changes made)
-(6,279 real changes made)
-(2,877 real changes made)
-(7,321 real changes made)
-(1,842 real changes made)
-(5,415 real changes made)
+(9,455 real changes made)
+(4,134 real changes made)
+(2,726 real changes made)
+(1,204 real changes made)
+(4,738 real changes made)
+(2,173 real changes made)
+(5,538 real changes made)
+(1,376 real changes made)
+(4,062 real changes made)
 (143,185 real changes made)
 (57,520 real changes made)
 (1,190 real changes made)
@@ -458,7 +458,7 @@ Notes:
 (416 real changes made)
 (1,777 real changes made)
 (250 real changes made)
-(1,755,020 observations deleted)
+(1,639,362 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -469,14 +469,14 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,870,334
-        from master                 1,870,319  
+    not matched                     1,754,676
+        from master                 1,754,661  
         from using                         15  
 
     matched                           141,562  
     -----------------------------------------
 (141,577 real changes made)
-(1,755,035 observations deleted)
+(1,639,377 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -486,48 +486,48 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,867,335
-        from master                 1,867,320  
+    not matched                     1,751,677
+        from master                 1,751,662  
         from using                         15  
 
     matched                           144,576  
     -----------------------------------------
 (144,591 real changes made)
-(note: file ../temp/98_2011_loc_homo.dta not found)
-file ../temp/98_2011_loc_homo.dta saved
+(note: file ../temp/2001_2011_loc_homo.dta not found)
+file ../temp/2001_2011_loc_homo.dta saved
 (note: file ../temp/loc_xwalk.dta not found)
 file ../temp/loc_xwalk.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       383,151
-        from master                   383,151  (_merge==1)
+    not matched                       382,648
+        from master                   382,648  (_merge==1)
         from using                          0  (_merge==2)
 
-    matched                         1,628,760  (_merge==3)
+    matched                         1,513,605  (_merge==3)
     -----------------------------------------
 (358 real changes made)
-(1,628,760 real changes made)
-(838,922 real changes made)
-(2,549 real changes made)
+(1,513,605 real changes made)
+(723,264 real changes made)
+(2,046 real changes made)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     2,009,090
-        from master                 2,009,004  (_merge==1)
+    not matched                     1,893,935
+        from master                 1,893,849  (_merge==1)
         from using                         86  (_merge==2)
 
-    matched                             2,907  (_merge==3)
+    matched                             2,404  (_merge==3)
     -----------------------------------------
-(2,907 real changes made)
-(1,631,753 real changes made)
+(2,404 real changes made)
+(1,516,095 real changes made)
 (86 observations deleted)
 (120,462 real changes made)
 dpto_string generated as str2
 (128,522 observations deleted)
 loc_code: all characters numeric; replaced as long
 (5,611 observations deleted)
-(19,943 observations deleted)
+(19,440 observations deleted)
 (5,879 observations deleted)
 (5,860 observations deleted)
 (6,467 observations deleted)
@@ -544,8 +544,8 @@ loc_code: all characters numeric; replaced as long
 (7,916 observations deleted)
 (6,402 observations deleted)
 (6,010 observations deleted)
-(note: file ..\temp\clean_loc_1998_2016.dta not found)
-file ..\temp\clean_loc_1998_2016.dta saved
+(note: file ..\temp\clean_loc_2001_2016.dta not found)
+file ..\temp\clean_loc_2001_2016.dta saved
 
 . 
 . 
@@ -591,16 +591,16 @@ Notes:
 
 . 
 . program main_prepare_for_analysis 
-  1.         use ..\temp\clean_loc_1998_2016.dta, clear
+  1.         use ..\temp\clean_loc_2001_2016.dta, clear
   2.         
 .         fix_2012_weights
-  3.         save ..\temp\clean_loc_1998_2016_fixed_weights.dta, replace
+  3.         save ..\temp\clean_loc_2001_2016_fixed_weights.dta, replace
   4.         
 .         import excel ..\..\raw\inflation.xlsx, sheet("Sheet1") firstrow clear
-  5.         merge 1:m anio using ..\temp\clean_loc_1998_2016_fixed_weights.dta
+  5.         merge 1:m anio using ..\temp\clean_loc_2001_2016_fixed_weights.dta
 > , nogen ///
 >             assert(1 3)keep(3)
-  6.         save ..\temp\clean_loc_1998_2016_fixed.dta, replace
+  6.         save ..\temp\clean_loc_2001_2016_fixed.dta, replace
   7. 
 .     impute_poverty_lines_pre06
   8.         gen poor       = (y_hogar_alt <= lp_06)
@@ -623,7 +623,7 @@ Notes:
 .         label_vars
  19.         drop if (missing(numero) | missing(pers) | missing(anio))
  20.         replace horas_trabajo = . if horas_trabajo >= 100
- 21.     save_data ..\output\clean_loc_1998_2016.dta, key(numero pers anio) rep
+ 21.     save_data ..\output\clean_loc_2001_2016.dta, key(numero pers anio) rep
 > lace  
  22. end
 
@@ -639,7 +639,7 @@ Notes:
   6.         
 .         save ..\temp\pesos_2012_imputed.dta, replace
   7. 
-.         use ..\temp\clean_loc_1998_2016.dta, clear
+.         use ..\temp\clean_loc_2001_2016.dta, clear
   8. 
 .         merge m:1 `by_vars' using ..\temp\pesos_2012_imputed.dta, nogen
   9.         replace pesotri = pesotri2 if anio == 2012
@@ -652,7 +652,7 @@ Notes:
 . program impute_poverty_lines_pre06
   1.         keep if anio == 2006
   2.         
-.         forval year=1998/2005 {
+.         forval year=2001/2005 {
   3.             replace anio = `year' 
   4.         
 .             local by_vars " trimestre loc_code nbr_above14 nbr_people"
@@ -662,7 +662,7 @@ Notes:
   7.         
 .             save ..\temp\poverty_`year'_imputed.dta, replace
   8. 
-.             use ..\temp\clean_loc_1998_2016_fixed.dta, clear
+.             use ..\temp\clean_loc_2001_2016_fixed.dta, clear
   9. 
 .             merge m:1 `by_vars' using ..\temp\poverty_`year'_imputed.dta, nog
 > en
@@ -672,7 +672,7 @@ Notes:
 .             drop lp_06_2 li_06_2
  13.                 replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
  14.                 replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
- 15.             save ..\temp\clean_loc_1998_2016_fixed.dta, replace
+ 15.             save ..\temp\clean_loc_2001_2016_fixed.dta, replace
  16.         }
  17. end
 
@@ -754,159 +754,117 @@ Notes:
 
 . 
 . main_prepare_for_analysis
-(1,646,223 observations deleted)
+(1,531,068 observations deleted)
 (112,900 real changes made)
 (note: file ..\temp\pesos_2012_imputed.dta not found)
 file ..\temp\pesos_2012_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       452,454
-        from master                   452,454  
+    not matched                       404,571
+        from master                   404,571  
         from using                          0  
 
-    matched                         1,306,669  
+    matched                         1,239,397  
     -----------------------------------------
 variable pesotri was int now float
 (105,933 real changes made)
 variable pesosem was int now float
 (105,933 real changes made)
-(note: file ..\temp\clean_loc_1998_2016_fixed_weights.dta not found)
-file ..\temp\clean_loc_1998_2016_fixed_weights.dta saved
+(note: file ..\temp\clean_loc_2001_2016_fixed_weights.dta not found)
+file ..\temp\clean_loc_2001_2016_fixed_weights.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,759,123  
+    matched                         1,643,968  
     -----------------------------------------
-(note: file ..\temp\clean_loc_1998_2016_fixed.dta not found)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,582,173 observations deleted)
+(note: file ..\temp\clean_loc_2001_2016_fixed.dta not found)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(1,467,018 observations deleted)
 (176,950 real changes made)
-(note: file ..\temp\poverty_1998_imputed.dta not found)
-file ..\temp\poverty_1998_imputed.dta saved
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                        65,501
-        from master                    65,501  
-        from using                          0  
-
-    matched                         1,693,622  
-    -----------------------------------------
-(53,695 real changes made)
-variable li_06 was int now float
-(53,695 real changes made)
-(53,695 real changes made)
-(53,695 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,701,679 real changes made)
-(note: file ..\temp\poverty_1999_imputed.dta not found)
-file ..\temp\poverty_1999_imputed.dta saved
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                         1,759,123  
-    -----------------------------------------
-(56,652 real changes made)
-(56,652 real changes made)
-(56,652 real changes made)
-(56,652 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,701,412 real changes made)
-(note: file ..\temp\poverty_2000_imputed.dta not found)
-file ..\temp\poverty_2000_imputed.dta saved
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                         1,759,123  
-    -----------------------------------------
-(56,853 real changes made)
-(56,853 real changes made)
-(56,853 real changes made)
-(56,853 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,701,713 real changes made)
 (note: file ..\temp\poverty_2001_imputed.dta not found)
 file ..\temp\poverty_2001_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                             0
-    matched                         1,759,123  
+    not matched                        59,457
+        from master                    59,457  
+        from using                          0  
+
+    matched                         1,584,511  
     -----------------------------------------
-(56,694 real changes made)
-(56,694 real changes made)
-(56,694 real changes made)
-(56,694 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,702,796 real changes made)
+(54,640 real changes made)
+variable li_06 was int now float
+(54,640 real changes made)
+(54,640 real changes made)
+(54,640 real changes made)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(1,587,641 real changes made)
 (note: file ..\temp\poverty_2002_imputed.dta not found)
 file ..\temp\poverty_2002_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,759,123  
+    matched                         1,643,968  
     -----------------------------------------
 (55,620 real changes made)
 (55,620 real changes made)
 (55,620 real changes made)
 (55,620 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,703,754 real changes made)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(1,588,599 real changes made)
 (note: file ..\temp\poverty_2003_imputed.dta not found)
 file ..\temp\poverty_2003_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,759,123  
+    matched                         1,643,968  
     -----------------------------------------
 (54,650 real changes made)
 (54,650 real changes made)
 (54,650 real changes made)
 (54,650 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,703,536 real changes made)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(1,588,381 real changes made)
 (note: file ..\temp\poverty_2004_imputed.dta not found)
 file ..\temp\poverty_2004_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,759,123  
+    matched                         1,643,968  
     -----------------------------------------
 (54,842 real changes made)
 (54,842 real changes made)
 (54,842 real changes made)
 (54,842 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(1,704,793 real changes made)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(1,589,638 real changes made)
 (note: file ..\temp\poverty_2005_imputed.dta not found)
 file ..\temp\poverty_2005_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,759,123  
+    matched                         1,643,968  
     -----------------------------------------
 (53,665 real changes made)
 (53,665 real changes made)
 (53,665 real changes made)
 (53,665 real changes made)
-file ..\temp\clean_loc_1998_2016_fixed.dta saved
-(973,374 missing values generated)
-(878,228 missing values generated)
-(878,214 real changes made)
+file ..\temp\clean_loc_2001_2016_fixed.dta saved
+(905,870 missing values generated)
+(820,766 missing values generated)
+(820,752 real changes made)
 (14 missing values generated)
 (14 missing values generated)
-(1,599,755 missing values generated)
-(1,650,247 missing values generated)
-(1,657,361 missing values generated)
-(1,650,396 missing values generated)
+(1,496,114 missing values generated)
+(1,541,387 missing values generated)
+(1,550,087 missing values generated)
+(1,541,536 missing values generated)
 (14 observations deleted)
 (227 real changes made, 227 to missing)
 (data now sorted by numero pers anio)
@@ -923,85 +881,85 @@ file ..\temp\clean_loc_1998_2016_fixed.dta saved
   variable educ_HS_diploma was float now byte
   variable educ_some_college was float now byte
   variable nomloc was str104 now str1
-  (237,479,715 bytes saved)
+  (221,933,790 bytes saved)
 ===============================================================================
 > ===================
-File: ..\output\clean_loc_1998_2016.dta
+File: ..\output\clean_loc_2001_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:86(44143):4189512878:2352693844
+  1643954:86(44143):1780916574:1920562456
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,759,109    7.54e+08    9.74e+08          1   2.02e+09
-        pers |  1,759,109    2.393469    1.517999          1         27
-        anio |  1,759,109    2008.293    5.024005       1998       2016
-   inflation |  1,759,109    8.087328    3.618307       3.59      25.94
-    cpi_2006 |  1,759,109    126.8955    48.03314   48.00595   217.6432
+      numero |  1,643,954    8.07e+08    9.87e+08          1   2.02e+09
+        pers |  1,643,954     2.38189    1.507812          1         25
+        anio |  1,643,954    2008.909    4.604076       1998       2016
+   inflation |  1,643,954    8.330835     3.61799       3.59      25.94
+    cpi_2006 |  1,643,954    132.1817    45.18634   48.00595   217.6432
 -------------+---------------------------------------------------------
-      semana |    171,877    24.40203    13.83498          1         48
-        dpto |  1,759,109    5.324262    5.684808          1         19
-        secc |  1,616,508    10.20737    16.91198          0         99
-        segm |  1,616,508    65.64103    93.68596          0        845
-     estrato |  1,759,109    5.293571     2.91119          1         12
+      semana |     56,722    24.29983    13.76997          1         48
+        dpto |  1,643,954    5.371108    5.699583          1         19
+        secc |  1,554,804    9.876777    16.80689          0         99
+        segm |  1,554,804      63.446    92.98517          0        845
+     estrato |  1,643,954    5.335707    2.936456          1         12
 -------------+---------------------------------------------------------
-      hombre |  1,759,109     .466954    .4989069          0          1
-        edad |  1,759,109    36.72029    23.44052          0         99
-    pobpcoac |  1,759,109    3.830927    3.218979          1         99
-horas_trab~p |  1,759,109     17.3715    22.29389          0         99
-horas_trab~s |  1,759,109    .9028628    4.851377          0         98
+      hombre |  1,643,954     .466774     .498895          0          1
+        edad |  1,643,954    36.77514    23.44664          0         99
+    pobpcoac |  1,643,954    3.818025     3.20509          1         11
+horas_trab~p |  1,643,954    17.45033    22.23674          0         99
+horas_trab~s |  1,643,954    .9131545    4.869577          0         98
 -------------+---------------------------------------------------------
-horas_trab~o |  1,758,882    18.36416    23.38552          0         99
-busca_trab~o |  1,759,109    .0726709    .2595956          0          1
-meses_trab~o |  1,480,086    1.040192     4.05217          0         80
-anios_trab~o |  1,480,086    3.611756    7.816181          0         98
-      ytotal |  1,759,109    9136.568    17498.91          0    7244333
+horas_trab~o |  1,643,727    18.38448    23.31813          0         99
+busca_trab~o |  1,643,954    .0756378    .2644177          0          1
+meses_trab~o |  1,364,931    .5829137    2.652878          0         80
+anios_trab~o |  1,364,931    3.883855    8.068491          0         98
+      ytotal |  1,643,954    9473.466    17923.25          0    7244333
 -------------+---------------------------------------------------------
-     pesotri |  1,758,514    113.8277    51.55826          1        635
-     pesosem |  1,655,497    56.69414    26.52581          5        318
-      pesoan |  1,759,109    28.65458    13.12689          1        159
-         ccz |  1,675,778    4.484672    5.656404          0         18
+     pesotri |  1,643,359     109.736     48.5523          1        613
+     pesosem |  1,540,342    54.49511    24.99862          5        307
+      pesoan |  1,643,954    27.64555     12.4238          1        154
+         ccz |  1,614,074    4.327445    5.627882          0         18
          loc |          0
 -------------+---------------------------------------------------------
       nomloc |          0
-  nbr_people |  1,759,109    3.786697    1.891253          1         27
- nbr_above14 |  1,759,109     2.79666    1.266172          1         16
- nbr_under14 |  1,759,109    .9898903     1.28242          0         14
-     y_hogar |  1,759,109    28487.45    36065.88          0    7681180
+  nbr_people |  1,643,954    3.763537      1.8783          1         25
+ nbr_above14 |  1,643,954    2.781356    1.257403          1         16
+ nbr_under14 |  1,643,954    .9820287    1.274618          0         13
+     y_hogar |  1,643,954    29249.43    36812.85          0    7681180
 -------------+---------------------------------------------------------
-c98_resid_~e |  1,759,109    .9950901    .0698983          0          1
-c98_resid_~d |  1,759,109    .6438868    .4788494          0          1
-c98_nbr_ro~s |  1,759,109    3.573306    1.317593          0         80
-c98_nbr_be~s |  1,759,109    2.191951    .8383508          0         40
-c98_b_pipe~r |  1,759,109    .9671845    .1781534          0          1
+c98_resid_~e |  1,643,954    .9960181    .0629763          0          1
+c98_resid_~d |  1,643,954    .6407253     .479788          0          1
+c98_nbr_ro~s |  1,643,954    3.574135    1.311046          1         80
+c98_nbr_be~s |  1,643,954     2.18762    .8326299          0         40
+c98_b_pipe~r |  1,643,954    .9679504    .1761318          0          1
 -------------+---------------------------------------------------------
-c98_hhld_t~t |  1,759,109    .9253167    .2628797          0          1
-c98_b_sewage |  1,759,109    .6264308    .4837514          0          1
-c98_hhld_s~e |  1,759,109    .9527232    .2122303          0          1
-c98_hhld_h~r |  1,759,109    .8811847    .3235711          0          1
-c98_hhld_r~t |  1,759,109    .8461016    .3608514          0          1
+c98_hhld_t~t |  1,643,954    .9251329    .2631768          0          1
+c98_b_sewage |  1,643,954    .6276106    .4834415          0          1
+c98_hhld_s~e |  1,643,954    .9494621    .2190522          0          1
+c98_hhld_h~r |  1,643,954    .8829402    .3214917          0          1
+c98_hhld_r~t |  1,643,954    .8374705     .368936          0          1
 -------------+---------------------------------------------------------
- c98_hhld_tv |  1,759,109    .9652972     .183026          0          1
-c98_hhld_vcr |  1,759,109    .4939853     .499964          0          1
-c98_hhld_w~c |  1,759,109    .7164297    .4507308          0          1
-c98_hhld_d~r |  1,759,109     .045029    .2073679          0          1
-c98_hhld_m~e |  1,759,109    .4894421    .4998887          0          1
+ c98_hhld_tv |  1,643,954    .9641486    .1859195          0          1
+c98_hhld_vcr |  1,643,954    .4996466          .5          0          1
+c98_hhld_w~c |  1,643,954    .7226413    .4476952          0          1
+c98_hhld_d~r |  1,643,954    .0446558    .2065469          0          1
+c98_hhld_m~e |  1,643,954    .5049156     .499976          0          1
 -------------+---------------------------------------------------------
-c98_hhld_car |  1,759,109    .3567158      .47903          0          1
-   trimestre |  1,759,109    2.497536    1.117467          1          4
-     married |  1,496,996    .5152191    .4997685          0          1
+c98_hhld_car |  1,643,954    .3583373    .4795121          0          1
+   trimestre |  1,643,954    2.497656    1.117329          1          4
+     married |  1,381,841    .5226528    .4994868          0          1
        etnia |  1,308,209    2.310405    .9646923          0          4
-  estudiante |  1,759,109    .0633935    .2436694          0          1
+  estudiante |  1,643,954     .067834    .2514609          0          1
 -------------+---------------------------------------------------------
-     trabajo |  1,759,109    .4466744    .4971484          0          1
- y_hogar_alt |  1,759,109    28630.53    33402.05          0    7289481
-  anios_prim |  1,724,460    5.027964    1.908787          0          6
- anios_secun |  1,724,460    2.179113    2.437162          0          6
-  anios_terc |  1,740,957    .5045369    1.477558          0         40
+     trabajo |  1,643,954    .4489773      .49739          0          1
+ y_hogar_alt |  1,643,954    29574.38    33999.23          0    7289481
+  anios_prim |  1,621,216    5.008634    1.933103          0          6
+ anios_secun |  1,621,216    2.194268    2.439586          0          6
+  anios_terc |  1,637,713    .5082386    1.485491          0         40
 -------------+---------------------------------------------------------
-  anios_tecn |  1,724,460     .263751    .7992882          0          8
-  educ_level |  1,724,460    1.924235     1.02136          1          4
+  anios_tecn |  1,621,216    .2656142    .7968759          0          8
+  educ_level |  1,621,216    1.930291    1.024077          1          4
          mes |  1,587,232    6.492924    3.446314          1         12
    trabajo_1 |  1,587,232    .4217613    .4938409          0          1
 c01_hhld_c~r |  1,587,232    .5325894     .498937          0          1
@@ -1015,34 +973,34 @@ c01_hhld_c~v |  1,587,232    .5672334    .4954592          0          1
      pesomen |  1,201,681    279.6954    101.5616          1       1384
  live_births |    421,145    1.045286    .6910379          0          2
 live_birth~r |    421,145    1.394439    1.906014          0         65
-       li_06 |  1,750,880    1620.149    584.9775   363.3281       3021
-       lp_06 |  1,750,880    17111.84    9447.677   1585.694   132026.8
+       li_06 |  1,581,626    1711.574    551.4669   548.3328       3021
+       lp_06 |  1,581,626     18013.3    9552.085   1807.593   132026.8
 -------------+---------------------------------------------------------
 c06_mat_wa~s |  1,308,209    .9747227    .1569662          0          1
 c06_mat_roof |  1,308,209    .6013045      .48963          0          1
 c06_mat_fl~r |  1,308,209    .8012741    .3990414          0          1
 c06_b_electr |  1,308,209    .9971006    .0537678          0          1
-    loc_code |  1,759,109    542400.7    574611.9     101010    1919020
+    loc_code |  1,643,954    547152.4    576089.5     101010    1919020
 -------------+---------------------------------------------------------
-        poor |  1,759,109    .3697667    .4827416          0          1
-   indigente |  1,759,109    .0130191    .1133561          0          1
- ind_under14 |  1,759,109    .5127584    .4998373          0          1
-work_part_~e |    785,749    .2660239    .4418772          0          1
-    semestre |  1,759,109    1.499238    .4999996          1          2
+        poor |  1,643,954    .3891374    .4875547          0          1
+   indigente |  1,643,954    .0467562    .2111162          0          1
+ ind_under14 |  1,643,954    .5108196    .4998831          0          1
+work_part_~e |    738,098    .2675498    .4426818          0          1
+    semestre |  1,643,954    1.499255    .4999996          1          2
 -------------+---------------------------------------------------------
-    anio_sem |  1,759,109    97.08514     10.0608         76        113
-    anio_qtr |  1,759,109    194.6693    20.12793        152        227
-educ_anios~n |    159,368    2.678536    1.996945          0          6
-educ_anios~c |    108,876    1.940327    1.832347          0         40
-educ_HS_di~a |    101,762    .1147187    .3186837          0          1
+    anio_sem |  1,643,954    98.31684    9.222082         76        113
+    anio_qtr |  1,643,954    197.1328    18.45091        152        227
+educ_anios~n |    147,854     2.69196    1.983911          0          6
+educ_anios~c |    102,581    1.944658    1.828318          0         40
+educ_HS_di~a |     93,881    .1132817    .3169385          0          1
 -------------+---------------------------------------------------------
-educ_some_~e |    108,727    .7304074    .4437502          0          1
+educ_some_~e |    102,432    .7364691      .44055          0          1
 
 
 
 
-(note: file ..\output\clean_loc_1998_2016.dta not found)
-file ..\output\clean_loc_1998_2016.dta saved
+(note: file ..\output\clean_loc_2001_2016.dta not found)
+file ..\output\clean_loc_2001_2016.dta saved
 
 . 
 end of do-file
@@ -1183,459 +1141,459 @@ Notes:
  26.                 }
  27.         }
  28. }
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000010.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000011.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000012.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000013.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000014.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000015.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000016.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000017.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000018.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000019.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000020.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000021.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000022.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000023.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000024.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000025.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000026.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000027.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000028.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000029.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000030.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000031.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000032.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000033.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000034.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000035.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000036.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000037.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000038.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000039.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -1705,8 +1663,8 @@ file ..\output\population.dta saved
 
 . collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
 
-. drop if inrange(anio,1996,1998) | inrange(anio,2016,2020)
-(912 observations deleted)
+. drop if inrange(anio,1996,2000) | inrange(anio,2016,2020)
+(1,140 observations deleted)
 
 . 
 . save "..\output\population_fertile_age.dta", replace
@@ -1754,7 +1712,7 @@ Notes:
 . 
 . program append_data
   1.         * Note: there is no 1998 data, but there is data for 1996 and 1997
-.         forvalues year = 1999/2015 {
+.         forvalues year = 2000/2015 {
   2.                 capture import delimited "..\..\raw\vital_records\Natalida
 > d `year'_p.csv", delim(";") clear
   3.                 
@@ -1767,11 +1725,11 @@ Notes:
   5.                 save `temp_`year''
   6.         }
   7. 
-.         forvalues year = 1999/2014 {
+.         forvalues year = 2000/2014 {
   8.                 append using `temp_`year''
   9.         }
  10. 
-.         keep if inrange(anio_parto,1999,2015) //note some births in 2015 are 
+.         keep if inrange(anio_parto,2000,2015) //note some births in 2015 are 
 > recorded in 2016
  11.         assert !mi(edadm)
  12.         *keep if inrange(edadm,16,45)
@@ -1920,35 +1878,34 @@ Notes:
 
 . 
 . main
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000005.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000008.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000b.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000e.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000g.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
        values)
-(1,247 observations deleted)
+(1,076 observations deleted)
 (note: file ..\temp\births_append.dta not found)
 file ..\temp\births_append.dta saved
-(51,908 missing values generated)
-(51,908 missing values generated)
-(51,908 missing values generated)
-(51,908 missing values generated)
-(51,908 missing values generated)
+(51,772 missing values generated)
+(51,772 missing values generated)
+(51,772 missing values generated)
+(51,772 missing values generated)
+(51,772 missing values generated)
 (2,651 real changes made)
 (28 observations deleted)
 (32,731 real changes made)
@@ -1957,22 +1914,22 @@ file ..\temp\births_append.dta saved
 (32,843 real changes made)
 (285,978 missing values generated)
 (285,978 real changes made)
-(10,915 missing values generated)
-(52,685 missing values generated)
-(10,915 missing values generated)
-(5,192 missing values generated)
-(5,192 missing values generated)
-(4,941 missing values generated)
-(9,170 missing values generated)
-(9,188 missing values generated)
-(13,795 missing values generated)
-(617,749 missing values generated)
-(326,307 real changes made)
-(289,693 real changes made)
+(9,940 missing values generated)
+(45,459 missing values generated)
+(9,940 missing values generated)
+(4,791 missing values generated)
+(4,791 missing values generated)
+(4,198 missing values generated)
+(7,905 missing values generated)
+(7,886 missing values generated)
+(13,047 missing values generated)
+(578,955 missing values generated)
+(306,319 real changes made)
+(270,924 real changes made)
 (note: file ..\output\births_derived.dta not found)
 file ..\output\births_derived.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2018-10-05 08:39:02
+ make.py ended: 2019-08-06 09:39:55

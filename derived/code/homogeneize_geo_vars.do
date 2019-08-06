@@ -3,12 +3,12 @@ set more off
 adopath + ../../library/stata/gslab_misc/ado
 
 program main_homogeneize_geo_vars 
-	use ..\..\base\output\clean_1998_2016, clear
+	use ..\..\base\output\clean_2001_2016, clear
 	
-	fix_98_05
+	fix_01_05
 	fix_2007
 	fix_2008
-	save ../temp/98_2011_loc_homo.dta, replace
+	save ../temp/2001_2011_loc_homo.dta, replace
 	
 	import excel ../../raw/lista_homogen_codes_geo.xlsx, sheet("Sheet1") ///
 	    cellrange(B1:F100) firstrow clear
@@ -32,10 +32,10 @@ program main_homogeneize_geo_vars
 	
 	drop_rural_areas
 
-	save ..\temp\clean_loc_1998_2016.dta, replace
+	save ..\temp\clean_loc_2001_2016.dta, replace
 end
 
-program fix_98_05
+program fix_01_05
     * Montevideo
 	replace loc = "010" if inrange(anio, 1998, 2005) & loc == "0101"
 
@@ -237,7 +237,7 @@ program fill_missing_loc
 end
 
 program homogeneize_loc_to_2012_2014
-	use ../temp/98_2011_loc_homo.dta, clear
+	use ../temp/2001_2011_loc_homo.dta, clear
 	
 	merge m:1 dpto loc using ../temp/loc_xwalk.dta
 	

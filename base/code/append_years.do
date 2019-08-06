@@ -16,7 +16,7 @@ end
 program append_years
    	use ..\temp\clean_1998.dta, clear
 	
-	forval year=1999/2016{
+	forval year=2001/2016{
 	    append using ..\temp\clean_`year'.dta
 	}
 	replace anio = 1998 if anio == 98
@@ -26,7 +26,7 @@ program append_years
 	* asserting basic properties: 
 	* - that there are no missing departamentos in any year
 	* - and the primary keys
-	/*forval year=1999/2016{
+	/*forval year=2001/2016{
 	    unique dpto if anio == `year'
 		local n = r(sum)
 		assert `n' == 19
@@ -36,7 +36,7 @@ program append_years
 	
 	recode_dummies, vars(trabajo_1 hombre busca_trabajo)
 	
-	save_data ..\output\clean_1998_2016, key(numero pers anio) replace
+	save_data ..\output\clean_2001_2016, key(numero pers anio) replace
 end
 
 main_append_years

@@ -2,8 +2,8 @@ clear all
 set more off
 
 program main_clean_raw
-    append_different_waves_98_00 
-    clean_98_00 
+    *append_different_waves_98_00 
+    *clean_98_00 
     clean_01_05 
     clean_06
     clean_07
@@ -11,6 +11,7 @@ program main_clean_raw
     clean_09_16
 end
 
+/*
 program append_different_waves_98_00
        
     foreach year in 1998 1999 2000 {
@@ -131,8 +132,10 @@ program clean_98_00
         save ..\temp\clean_`year'.dta, replace
         }
 end
+*/
 
 program clean_01_05
+    * Note: can't find: afro asia blanco indigena otro then generated etnia equal missing
     * Note: there is no nomdepto for 2005: check running table nomdpto anio
     * Can't find: meses_trabajando anios_trabajando
     
@@ -194,7 +197,7 @@ program clean_01_05
         gen meses_trabajando = .
         gen anios_trabajando = .
 
-        gen anios_prim = clip(e11_2,0,6) if (e9 == 1 | e10 == 1)
+        /*gen anios_prim = clip(e11_2,0,6) if (e9 == 1 | e10 == 1)
         replace anios_prim = round(anios_prim)
         
         gen anios_secun = clip(e11_3, 0, 6) if (e9 == 1 | e10 == 1)
@@ -219,6 +222,7 @@ program clean_01_05
         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
             anios_tecn >= 6 & !missing(anios_tecn))
         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+		*/
         
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
@@ -227,40 +231,6 @@ program clean_01_05
         save ..\temp\clean_`year'.dta, replace
     }
     * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
-end
-
-program clean_etnia_variable
-    * Reorganize etnia variables
-        foreach var in asia afro blanco indigena otro {
-            replace `var'=0 if `var'!=1
-            assert  `var'==1 | `var'==0
-            gen _`var' = `var'
-        }
-        * Create mestizo if blanco and either afro or indigena or both
-        capture gen mestizo = 0
-        gen num_race0 = asia+afro+blanco+indigena+otro+mestizo
-        local cond_mestizo "(num_race==2 & _blanco==1 & (_afro==1 | _indigena==1))|(num_race==3 & _blanco==1 & _afro==1 & _indigena==1)"
-        replace mestizo  = 1 if `cond_mestizo'
-        replace afro     = 0 if `cond_mestizo'
-        replace indigena = 0 if `cond_mestizo'
-        replace blanco   = 0 if `cond_mestizo'
-        * If blanco and otro, then blanco only
-        replace otro     = 0 if num_race0==2 & _blanco==1 & _otro==1 
-        * Set to otro if more than one (updated) race
-        gen num_race1    = asia+afro+blanco+indigena+otro+mestizo
-        replace otro     = 1 if num_race1 > 1 | num_race1==0
-        foreach var in indigena afro asia blanco mestizo {
-            replace `var' = 0 if num_race1 > 1
-        }
-        assert asia+afro+blanco+indigena+otro+mestizo==1
-        drop num_race* _*
-        * Gen etnia 
-        gen etnia = .
-        local i=0
-        foreach var in otro afro asia blanco indigena mestizo {
-            replace etnia = 1 if `var'==1
-            local i=`i'+1
-        }
 end
 
 program clean_06
@@ -309,25 +279,15 @@ program clean_06
         gen    c01_hhld_cable_tv    =    (d21_7==1)
         
         gen married  = (e34==1|e37==2) if e34!=0
-        * Create mestizo dummy from otro
-        gen     mestizo  = regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")
-        replace asia     = 1   if regexm(otro,"[Aa][Ss][Ii][Aa]*")==1
-        replace blanco   = 1   if regexm(otro,"[Bb][Ll][Aa][Nn][Cc]*")==1
-        replace otro     = ""  if regexm(otro,"[Bb][Ll][Aa][Nn][Cc]*")==1 ///
-                                | regexm(otro,"[Aa][Ss][Ii][Aa]*")==1 ///
-                                | regexm(otro,"[Mm][Ee][Ss][Tt][Ii][Zz]*")==1
-        gen     otro_new = !mi(otro)
-        drop    otro
-        rename  otro_new otro
-        replace otro     = 1 if (asia!=1 & afro!=1 & blanco!=1 & indigena!=1 & otro!=1 & mestizo!=1)
-        clean_etnia_variable
 
+        replace blanco = 0 if blanco != 1
+		
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         
-        gen anios_prim = (e50_2 + e50_3) if e48 == 1
+        /*gen anios_prim = (e50_2 + e50_3) if e48 == 1
         replace anios_prim = 6 if e48 == 1 & (e50_4 > 0 | e50_5 > 0 | ///
             e50_6 > 0 | e50_7 > 0 | e50_8 > 0 | e50_9 > 0 | e50_10 > 0 | ///
             e50_11 > 0 | e50_12 > 0)
@@ -367,6 +327,7 @@ program clean_06
         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
             anios_tecn >= 6 & !missing(anios_tecn))
         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+		*/
 
         destring anio, replace
         destring secc, replace
@@ -426,14 +387,15 @@ program clean_07
         gen    c01_hhld_cable_tv    =    (d22_7==1)
         
         gen married  = (e37==1|e40==2) if e37!=0
-        clean_etnia_variable
+		
+        replace blanco = 0 if blanco != 1
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         
-        gen anios_prim = (e52_2 + e52_3) if e50 == 1
+        /*gen anios_prim = (e52_2 + e52_3) if e50 == 1
         replace anios_prim = 6 if e50 == 1 & (e52_4 > 0 | e52_5 > 0 | ///
             e52_6 > 0 | e52_7 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | ///
             e52_11 > 0 | e52_12 > 0)
@@ -473,6 +435,7 @@ program clean_07
         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
             anios_tecn >= 6 & !missing(anios_tecn))
         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+		*/
 
         destring numero, replace
         destring anio, replace
@@ -534,14 +497,14 @@ program clean_08
         gen    c01_hhld_cable_tv    =    (d22_7==1)
         
         gen married  = (e37==1|e40==2) if e37!=0
-        clean_etnia_variable
+        replace blanco = 0 if blanco != 1
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         
-        gen anios_prim = (e52_2 + e52_3) if (e50 == 1 | e51 == 1)
+        /*gen anios_prim = (e52_2 + e52_3) if (e50 == 1 | e51 == 1)
         replace anios_prim = 6 if (e50 == 1 | e51 == 1) & (e52_4 > 0 | e52_5 > 0 | ///
             e52_6 > 0 | e52_7_1 > 0 | e52_8 > 0 | e52_9 > 0 | e52_10 > 0 | ///
             e52_11 > 0)
@@ -583,6 +546,7 @@ program clean_08
         replace educ_level = 3 if (anios_secun == 6 & !missing(anios_secun) | ///
             anios_tecn >= 6 & !missing(anios_tecn))
         replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
+		*/
 
         destring numero, replace
         destring anio, replace
@@ -654,15 +618,14 @@ program clean_09_16
         capture gen pesotri = .
 
         gen married  = (e33==1|e35!=0|e36==3) if e33!=0
-        gen etnia = ascendencia
-        replace etnia=0 if ascendencia==5
+        gen blanco = (ascendencia == 3)
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
 
-        if ("`year'" == "2009" | "`year'" == "2010") {
+        /*if ("`year'" == "2009" | "`year'" == "2010") {
             gen anios_prim = (e51_2 + e51_3)
             replace anios_prim = 6 if (e51_4 > 0 | e51_5 > 0 | ///
                 e51_6 > 0 | e51_7 > 0 | e51_8 > 0 | e51_9 > 0 | e51_10 > 0 | ///
@@ -732,6 +695,7 @@ program clean_09_16
                 anios_tecn >= 6 & !missing(anios_tecn))
             replace educ_level = 4 if (anios_terc > 0 & !missing(anios_terc))
         }
+		*/
 		
         gen live_births     = .
         gen live_births_nbr = .
