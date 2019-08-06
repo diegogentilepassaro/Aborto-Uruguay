@@ -2,8 +2,8 @@ clear all
 set more off
 
 program main
-	clean_data
-	 plot_natality, rescale(1000)
+    clean_data
+    plot_natality, rescale(1000)
 end
 
 program clean_data
@@ -37,10 +37,10 @@ program clean_data
 	destring , replace
 	local nn=_N+1
 	set obs `nn'
-	replace dpto = "Area Metropolitana" in `nn'
+	replace dpto = "Montevideo, Canelones y San Jose" in `nn'
 	forvalues year = 1996/2015 {
-		replace nat_level`year' = nat_level`year'[2] + nat_level`year'[10] in `nn'
-		replace population`year' = population`year'[2] + population`year'[10] in `nn'
+		replace nat_level`year' = nat_level`year'[2] + nat_level`year'[10] + nat_level`year'[16] in `nn'
+		replace population`year' = population`year'[2] + population`year'[10] + population`year'[16] in `nn'
 	}
 
 	foreach var in nat_level nat_rate population {
@@ -51,14 +51,14 @@ program clean_data
 			save        ``var''
 		restore
 	}
-
+	
 	use `nat_level', clear
 	merge 1:1 dpto year using `nat_rate'  , nogen assert(3)
 	merge 1:1 dpto year using `population', nogen assert(3)
 
 	encode dpto, g(dpto_num)
 	xtset  dpto_num year
-	gen nat_rate2 = nat_level/population*1000
+	replace nat_rate = nat_level/population*1000
 end
 
 program plot_natality
@@ -66,19 +66,29 @@ syntax, rescale(int)
 	gen nat_level_`rescale'= nat_level/`rescale'
 	label var nat_level_`rescale' "Births (`rescale's)"
 	local opts = "overlay graphregion(fcolor(white) lcolor(white)) ylab(#3) legend(rows(1))"
-	local opt12 = "plot2(recast(con) lc(red) mc(red)) plot1(recast(con) lc(blue) mc(blue)) legend(order(1 2)) "
-	local opt21 = "plot1(recast(con) lc(red) mc(red)) plot2(recast(con) lc(blue) mc(blue)) legend(order(2 1)) "
+	local opt1 = "plot1(recast(con) lc(blue) mc(blue)) "
+    local opt2 = "plot1(recast(con) lc(red) mc(red)) "
 
-	xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & inrange(year,2000,2006) ///
-		, `opts' `opt12' tline(2003.5, lcolor(black) lpattern(dot)) name(mvd, replace)
-	xtline nat_level_`rescale' if (dpto=="Florida"|dpto=="Colonia") & inrange(year,2004,2010) ///
-		, `opts' `opt21' tline(2007.5, lcolor(black) lpattern(dot)) name(flo, replace) 
-	xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & inrange(year,2006,2012) ///
-		, `opts' `opt21' tline(2009.5, lcolor(black) lpattern(dot)) name(riv, replace) 
-	xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & inrange(year,2008,2014) ///
-		, `opts' `opt21' tline(2011.5, lcolor(black) lpattern(dot)) name(sal, replace) 
+	xtline nat_level_`rescale' if (dpto=="Montevideo") & inrange(year,2000,2009) ///
+		, `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name(mvd, replace) ///
+		subtitle("Montevideo")
+	xtline nat_level_`rescale' if (dpto=="Canelones") & inrange(year,2000,2009) ///
+		, `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name(can, replace) ///
+		subtitle("Canelones")	
+	xtline nat_level_`rescale' if (dpto=="San Jose") & inrange(year,2000,2009) ///
+		, `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name(san, replace) ///
+		subtitle("San Jose")	
+	xtline nat_level_`rescale' if (dpto=="Florida") & inrange(year,2004,2011) ///
+		, `opts' `opt1' tline(2008, lcolor(black) lpattern(dot)) name(flo, replace) ///
+		subtitle("Florida")
+	xtline nat_level_`rescale' if (dpto=="Rivera") & inrange(year,2006,2013) ///
+		, `opts' `opt1' tline(2010, lcolor(black) lpattern(dot)) name(riv, replace) ///
+		subtitle("Rivera")
+	xtline nat_level_`rescale' if (dpto=="Salto") & inrange(year,2008,2015) ///
+		, `opts' `opt2' tline(2012, lcolor(black) lpattern(dot)) name(sal, replace) ///
+		subtitle("Salto")
 		
-	graph combine mvd flo riv sal, cols(2) ysize(7) xsize(10) graphregion(fcolor(white))
+	graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) graphregion(fcolor(white))
 	graph export ../output/natality_`rescale'.pdf, replace
 	graph drop _all
 end

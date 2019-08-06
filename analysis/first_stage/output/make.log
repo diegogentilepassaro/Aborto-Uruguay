@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-06 14:56:33 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2019-08-06 17:11:04 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -507,6 +507,15 @@ Notes:
  23. end
 
 . 
+. program births_by_type
+  1.         use "..\..\..\derived\output\births.dta", clear
+  2. 
+.     collapse (count) edadm = num_nacidos, by(anio depar tipoestab)
+  3.         
+.         
+. end
+
+. 
 . main
 
 .     * Dates of treatments
@@ -795,8 +804,8 @@ Notes:
 
 . 
 . program main
-  1.         clean_data
-  2.          plot_natality, rescale(1000)
+  1.     clean_data
+  2.     plot_natality, rescale(1000)
   3. end
 
 . 
@@ -832,12 +841,12 @@ Notes:
 .         destring , replace
  23.         local nn=_N+1
  24.         set obs `nn'
- 25.         replace dpto = "Area Metropolitana" in `nn'
+ 25.         replace dpto = "Montevideo, Canelones y San Jose" in `nn'
  26.         forvalues year = 1996/2015 {
  27.                 replace nat_level`year' = nat_level`year'[2] + nat_level`y
-> ear'[10] in `nn'
+> ear'[10] + nat_level`year'[16] in `nn'
  28.                 replace population`year' = population`year'[2] + populatio
-> n`year'[10] in `nn'
+> n`year'[10] + population`year'[16] in `nn'
  29.         }
  30. 
 .         foreach var in nat_level nat_rate population {
@@ -848,14 +857,14 @@ Notes:
  35.                         save        ``var''
  36.                 restore
  37.         }
- 38. 
+ 38.         
 .         use `nat_level', clear
  39.         merge 1:1 dpto year using `nat_rate'  , nogen assert(3)
  40.         merge 1:1 dpto year using `population', nogen assert(3)
  41. 
 .         encode dpto, g(dpto_num)
  42.         xtset  dpto_num year
- 43.         gen nat_rate2 = nat_level/population*1000
+ 43.         replace nat_rate = nat_level/population*1000
  44. end
 
 . 
@@ -865,33 +874,45 @@ Notes:
   3.         label var nat_level_`rescale' "Births (`rescale's)"
   4.         local opts = "overlay graphregion(fcolor(white) lcolor(white)) yla
 > b(#3) legend(rows(1))"
-  5.         local opt12 = "plot2(recast(con) lc(red) mc(red)) plot1(recast(con
-> ) lc(blue) mc(blue)) legend(order(1 2)) "
-  6.         local opt21 = "plot1(recast(con) lc(red) mc(red)) plot2(recast(con
-> ) lc(blue) mc(blue)) legend(order(2 1)) "
+  5.         local opt1 = "plot1(recast(con) lc(blue) mc(blue)) "
+  6.     local opt2 = "plot1(recast(con) lc(red) mc(red)) "
   7. 
-.         xtline nat_level_`rescale' if (dpto=="Total"|dpto=="Montevideo") & in
-> range(year,2000,2006) ///
->                 , `opts' `opt12' tline(2003.5, lcolor(black) lpattern(dot)) n
-> ame(mvd, replace)
-  8.         xtline nat_level_`rescale' if (dpto=="Florida"|dpto=="Colonia") & 
-> inrange(year,2004,2010) ///
->                 , `opts' `opt21' tline(2007.5, lcolor(black) lpattern(dot)) n
-> ame(flo, replace) 
-  9.         xtline nat_level_`rescale' if (dpto=="Rivera"|dpto=="Artigas") & i
-> nrange(year,2006,2012) ///
->                 , `opts' `opt21' tline(2009.5, lcolor(black) lpattern(dot)) n
-> ame(riv, replace) 
- 10.         xtline nat_level_`rescale' if (dpto=="Salto"|dpto=="Paysandu") & i
-> nrange(year,2008,2014) ///
->                 , `opts' `opt21' tline(2011.5, lcolor(black) lpattern(dot)) n
-> ame(sal, replace) 
- 11.                 
-.         graph combine mvd flo riv sal, cols(2) ysize(7) xsize(10) graphregion
-> (fcolor(white))
- 12.         graph export ../output/natality_`rescale'.pdf, replace
- 13.         graph drop _all
- 14. end
+.         xtline nat_level_`rescale' if (dpto=="Montevideo") & inrange(year,200
+> 0,2009) ///
+>                 , `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name
+> (mvd, replace) ///
+>                 subtitle("Montevideo")
+  8.         xtline nat_level_`rescale' if (dpto=="Canelones") & inrange(year,2
+> 000,2009) ///
+>                 , `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name
+> (can, replace) ///
+>                 subtitle("Canelones")   
+  9.         xtline nat_level_`rescale' if (dpto=="San Jose") & inrange(year,20
+> 00,2009) ///
+>                 , `opts' `opt1' tline(2004, lcolor(black) lpattern(dot)) name
+> (san, replace) ///
+>                 subtitle("San Jose")    
+ 10.         xtline nat_level_`rescale' if (dpto=="Florida") & inrange(year,200
+> 4,2011) ///
+>                 , `opts' `opt1' tline(2008, lcolor(black) lpattern(dot)) name
+> (flo, replace) ///
+>                 subtitle("Florida")
+ 11.         xtline nat_level_`rescale' if (dpto=="Rivera") & inrange(year,2006
+> ,2013) ///
+>                 , `opts' `opt1' tline(2010, lcolor(black) lpattern(dot)) name
+> (riv, replace) ///
+>                 subtitle("Rivera")
+ 12.         xtline nat_level_`rescale' if (dpto=="Salto") & inrange(year,2008,
+> 2015) ///
+>                 , `opts' `opt2' tline(2012, lcolor(black) lpattern(dot)) name
+> (sal, replace) ///
+>                 subtitle("Salto")
+ 13.                 
+.         graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) gra
+> phregion(fcolor(white))
+ 14.         graph export ../output/natality_`rescale'.pdf, replace
+ 15.         graph drop _all
+ 16. end
 
 . 
 . main
@@ -999,6 +1020,7 @@ nat_level2015: all characters numeric; replaced as long
 population2015: all characters numeric; replaced as double
 nat_rate2015: all characters numeric; replaced as double
 number of observations (_N) was 20, now 21
+variable dpto was str26 now str32
 (1 real change made)
 (1 real change made)
 (1 real change made)
@@ -1051,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1063,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1075,7 +1097,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1091,6 +1113,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_07000006.tmp saved
        panel variable:  dpto_num (strongly balanced)
         time variable:  year, 1996 to 2015
                 delta:  1 unit
+(418 real changes made)
 (file ../output/natality_1000.pdf written in PDF format)
 
 . 
@@ -1287,4 +1310,4 @@ r(601);
 end of do-file
 r(601);
 
- make.py ended: 2019-08-06 14:58:09
+ make.py ended: 2019-08-06 17:12:24

@@ -73,6 +73,7 @@ end
 program assign_treatment_births
 syntax, num_periods(int)
 	use ..\..\derived\output\births_derived.dta, clear
+	keep if inrange(anio, 2001, 2015) 
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
 	drop if mi(fecparto)
 	drop if inlist(depar,20,99)

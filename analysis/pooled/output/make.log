@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-06 14:47:39 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2019-08-06 17:13:26 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -502,24 +502,24 @@ file ../temp/pop_fertile_age_agg.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (215,940 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000002.tmp saved
 (389,224 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000004.tmp saved
 (45,430 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000006.tmp saved
 (353,261 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_07000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_05000008.tmp saved
 (210,166 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0700000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000a.tmp saved
 (3,693 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0700000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000c.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
     matched                               330  
     -----------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0700000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0500000d.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -11122,4 +11122,4 @@ Absorbed degrees of freedom:
 . 
 end of do-file
 
- make.py ended: 2019-08-06 14:55:06
+ make.py ended: 2019-08-06 17:21:23
