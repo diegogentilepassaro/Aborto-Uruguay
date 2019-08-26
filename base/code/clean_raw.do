@@ -10,7 +10,6 @@ program main_clean_raw
 end
 
 program clean_01_05
-    * Note: can't find: afro asia blanco indigena otro then generated etnia equal missing
     * Note: there is no nomdepto for 2005: check running table nomdpto anio
     * Can't find: meses_trabajando anios_trabajando
     
@@ -56,14 +55,48 @@ program clean_01_05
         gen    c01_hhld_internet    =    (d10_11==1)
         gen    c01_hhld_phone        =    (d10_13==1)
         gen    c01_hhld_cable_tv    =    (d10_5==1)
-             
+        
+        if `year' == 2001 | `year' == 2002 | `year' == 2003 {
+            * no insurance
+            gen health_insurance = 0
+            
+            * public
+            replace health_insurance = 1 if e8_1 == 1
+            * military or police
+            replace health_insurance = 2 if e8_2 == 1
+            * municipal
+            replace health_insurance = 3 if e8_3 == 1
+            * IAMC
+            replace health_insurance = 4 if e5 == 1
+            * other
+            replace health_insurance = 5 if e8_4_1 == 1
+        }
+        else {
+            * no insurance
+            gen health_insurance = 0
+            
+            * public
+            replace health_insurance = 1 if e5_1 == 1
+            * military or police
+            replace health_insurance = 2 if e5_2 == 1
+            * municipal
+            replace health_insurance = 3 if e5_3 == 1
+            * IAMC
+            replace health_insurance = 4 if e5_5 == 1
+            * other
+            replace health_insurance = 5 if (e5_4 == 1 | e5_6_1 == 1)
+        }
+
+        gen public_health = (health_insurance == 1)
+
+        gen blanco = .
+
         capture gen     trimestre = 1 if inlist(mes, 1, 2, 3)
         capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
         capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
         capture replace trimestre = 4 if inlist(mes, 10, 11, 12)
         
         gen married = (e4==1|e4==2)
-        gen etnia = .
 
         gen estudiante = (pobpcoac==7)
         gen trabajo    = (pobpcoac==2)
@@ -74,7 +107,8 @@ program clean_01_05
         
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
-             pobpcoac married etnia c98_* c01_* estudiante educ_level anios_* *trabaj*
+             pobpcoac married c98_* c01_* estudiante anios_* *trabaj* blanco ///
+             health_insurance public_health
         
         save ..\temp\clean_`year'.dta, replace
     }
@@ -125,11 +159,27 @@ program clean_06
         gen    c01_hhld_internet    =    (d21_15==1)
         gen    c01_hhld_phone        =    (d21_16_1==1|d21_17_1==1)
         gen    c01_hhld_cable_tv    =    (d21_7==1)
+
+        * no insurance
+        gen health_insurance = 0    
+        * public
+        replace health_insurance = 1 if (e42_1 == 1 |  e42_2 == 1)
+        * military or police
+        replace health_insurance = 2 if (e42_3 == 1 | e42_4 == 1)
+        * municipal
+        replace health_insurance = 3 if e42_5 == 1
+        * IAMC
+        replace health_insurance = 4 if e42_7 == 1
+        * other
+        replace health_insurance = 5 if (e42_6 == 1 | e42_8 == 1 | ///
+            e42_9 == 1 | e42_10 == 1 | e42_11_1 == 1)
+
+        gen public_health = (health_insurance == 1)
         
         gen married  = (e34==1|e37==2) if e34!=0
 
         replace blanco = 0 if blanco != 1
-		
+        
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
@@ -142,8 +192,10 @@ program clean_06
 
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births*
+             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
+             lp_06 li_06 region_3 region_4 live_births* blanco ///
+             health_insurance public_health
+
         save ..\temp\clean_2006, replace    
 end
 
@@ -191,9 +243,25 @@ program clean_07
         gen    c01_hhld_internet    =    (d22_15_1==1|d22_15_2==1)
         gen    c01_hhld_phone        =    (d22_16_1==1|d22_17_1==1)
         gen    c01_hhld_cable_tv    =    (d22_7==1)
+
+        * no insurance
+        gen health_insurance = 0    
+        * public
+        replace health_insurance = 1 if (e43_1 == 1 |  e43_2 == 1)
+        * military or police
+        replace health_insurance = 2 if (e43_3 == 1 | e43_4 == 1)
+        * municipal
+        replace health_insurance = 3 if e43_5 == 1
+        * IAMC
+        replace health_insurance = 4 if e43_7 == 1
+        * other
+        replace health_insurance = 5 if (e43_6 == 1 | e43_8 == 1 | ///
+            e43_9 == 1 | e43_10 == 1 | e43_11_1 == 1)
+
+        gen public_health = (health_insurance == 1)
         
         gen married  = (e37==1|e40==2) if e37!=0
-		
+        
         replace blanco = 0 if blanco != 1
         
         gen estudiante = (pobpcoac == 7)
@@ -211,8 +279,10 @@ program clean_07
 
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births*    
+             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
+             lp_06 li_06 region_3 region_4 live_births* blanco ///
+             health_insurance public_health
+
         save ..\temp\clean_2007, replace
 end 
 
@@ -260,6 +330,22 @@ program clean_08
         gen    c01_hhld_phone        =    (d22_16_1==1|d22_17_1==1)
         gen    c01_hhld_cable_tv    =    (d22_7==1)
         
+        * no insurance
+        gen health_insurance = 0    
+        * public
+        replace health_insurance = 1 if (e43_1 == 1 |  e43_2 == 1)
+        * military or police
+        replace health_insurance = 2 if (e43_3 == 1 | e43_4 == 1)
+        * municipal
+        replace health_insurance = 3 if e43_5 == 1
+        * IAMC
+        replace health_insurance = 4 if e43_7 == 1
+        * other
+        replace health_insurance = 5 if (e43_6 == 1 | e43_8 == 1 | ///
+            e43_9 == 1 | e43_10 == 1 | e43_11_1 == 1)
+        
+        gen public_health = (health_insurance == 1)
+
         gen married  = (e37==1|e40==2) if e37!=0
         replace blanco = 0 if blanco != 1
         
@@ -278,14 +364,16 @@ program clean_08
 
         keep numero pers anio trimestre mes dpto  secc segm estrato loc nomloc ccz  ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births*
+             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
+             lp_06 li_06 region_3 region_4 live_births* blanco ///
+             health_insurance public_health
+
         save ..\temp\clean_2008, replace
 end 
 
 program clean_09_16
 
-    forval year=2009/2016{	
+    forval year=2009/2016{
         use ../temp/raw_`year'.dta, clear
         
         capture rename estratogeo09 estrato
@@ -330,6 +418,22 @@ program clean_09_16
         gen    c01_hhld_phone        =    (d21_17    ==1)
         gen    c01_hhld_cable_tv    =    (d21_7==1)
         
+        * no insurance
+        gen health_insurance = 0    
+        * public
+        replace health_insurance = 1 if e45_1 == 1
+        * military or police
+        replace health_insurance = 2 if e45_4 == 1
+        * municipal
+        replace health_insurance = 3 if e45_6 == 1
+        * IAMC
+        replace health_insurance = 4 if e45_2 == 1
+        * other
+        replace health_insurance = 5 if (e45_3 == 1 | e45_5 == 1 | ///
+            e45_7 == 1)
+
+        gen public_health = (health_insurance == 1)
+            
         capture gen trimestre = 1 if inlist(mes, 1, 2, 3)
         capture replace trimestre = 2 if inlist(mes, 4, 5, 6)
         capture replace trimestre = 3 if inlist(mes, 7, 8, 9)
@@ -344,7 +448,7 @@ program clean_09_16
         gen trabajo    = (pobpcoac == 2)
         bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-		
+        
         gen live_births     = .
         gen live_births_nbr = .
         
@@ -356,8 +460,10 @@ program clean_09_16
         
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married etnia c98_* c01_* c06_* estudiante educ_level anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births*
+             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
+             lp_06 li_06 region_3 region_4 live_births* blanco ///
+             health_insurance public_health
+             
         save ..\temp\clean_`year', replace
         }
 end
