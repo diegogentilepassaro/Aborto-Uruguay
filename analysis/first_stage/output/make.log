@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-06 17:11:04 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2019-08-26 15:36:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -1073,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_05000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1085,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_05000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1097,7 +1097,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_05000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1304,10 +1304,40 @@ Notes:
 
 . 
 . main
-file ..\..\..\raw\google_trends_abortion_uruguay.csv not found
-r(601);
+(2 vars, 177 obs)
+abortionuruguay already numeric; no replace
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
+(2 vars, 177 obs)
+misoprostoluruguay already numeric; no replace
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+(2 vars, 177 obs)
+abortionbrazil already numeric; no replace
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
+(2 vars, 177 obs)
+misoprostolbrazil already numeric; no replace
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               177  
+    -----------------------------------------
+(file ../output/google_trends_abortion.pdf written in PDF format)
+(file ../output/google_trends_misoprostol.pdf written in PDF format)
+
+. 
 end of do-file
-r(601);
 
- make.py ended: 2019-08-06 17:12:24
+ make.py ended: 2019-08-26 15:38:23
