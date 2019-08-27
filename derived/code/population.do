@@ -1,3 +1,5 @@
+adopath + ../../library/stata/gslab_misc/ado
+
 * Note: since the locals created in the beginning are used several times in the 
 * code, I did not create different programs (alternative: create globals?)
 
@@ -24,10 +26,7 @@ forvalues ws = `ws_1'/`ws_N' {
 	local ws_`ws'_name = "`r(worksheet_`ws')'"
 	local ws_`ws'_nbr  = `ws'
 	if `ws'==3 {
-		local ws_`ws'_dpto = 10 //Mvd
-	}
-	else if inrange(`ws',4,12) { 
-		local ws_`ws'_dpto = `ws'-3 // Alphabetically prior to Mvd
+		local ws_`ws'_dpto = 1 //Mvd
 	}
 	else {
 		local ws_`ws'_dpto = `ws'-2
@@ -107,6 +106,6 @@ save "..\output\population.dta", replace
 * Collapse to women of fertile age and save table
 gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages==0)
 collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
-drop if inrange(anio,1996,2000) | inrange(anio,2016,2020)
+drop if inrange(anio,1996,2000) | inrange(anio,2017,2020)
 
-save "..\output\population_fertile_age.dta", replace
+save_data "..\output\population_fertile_age.dta", key(depar anio age_min) replace

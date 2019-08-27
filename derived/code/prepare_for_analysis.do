@@ -30,6 +30,7 @@ program main_prepare_for_analysis
 	label_vars
 	drop if (missing(numero) | missing(pers) | missing(anio))
 	replace horas_trabajo = . if horas_trabajo >= 100
+	
     save_data ..\output\clean_loc_2001_2016.dta, key(numero pers anio) replace	
 end
 
@@ -83,29 +84,6 @@ program label_vars
     label var trabajo "Employment"
 	label var horas_trabajo "Hours worked"
 	label var work_part_time "Part-time work"
-	label var anios_prim  "Years of primary school"
-	label var anios_secun "Years of high school"
-	label var anios_tecn  "Years of technical school"
-	label var anios_terc  "Years of college"
-
-	label var    educ_level "Educational attainment"
-	label define educ_level 1 "Primary school" 2 "High school (incomplete)" 3 "High school (complete)" 4 "Post-secondary"
-	label values educ_level educ_level
-    
-	gen       educ_anios_secun = anios_secun if !mi(anios_secun) & educ_level<4 & inrange(edad,16,22)
-	label var educ_anios_secun "Years of high school"
-	gen       educ_anios_terc  = anios_terc  if !mi(anios_terc) & educ_level>=3 & inrange(edad,18,30)
-	label var educ_anios_terc  "Years of college"
-
-	gen          educ_HS_diploma = (educ_level == 3) if !mi(educ_level) & educ_level<4 & inrange(edad,18,22)
-	label var    educ_HS_diploma "High-school completed"
-	label define educ_HS_diploma 0 "No HS diploma" 1 "HS diploma or more"
-	label values educ_HS_diploma educ_diploma
-	
-	gen          educ_some_college = (educ_level == 4) if !mi(educ_level) & educ_level>=3 & inrange(edad,18,30)
-	label var    educ_some_college "Some College"
-	label define educ_some_college 0 "No College" 1 "Some College"
-	label values educ_some_college educ_some_college
 end
 
 main_prepare_for_analysis

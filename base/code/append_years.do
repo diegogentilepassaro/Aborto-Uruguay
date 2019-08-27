@@ -14,14 +14,11 @@ syntax, vars(varlist)
 end
 
 program append_years
-   	use ..\temp\clean_1998.dta, clear
+   	use ..\temp\clean_2001.dta, clear
 	
-	forval year=2001/2016{
+	forval year=2002/2016{
 	    append using ..\temp\clean_`year'.dta
 	}
-	replace anio = 1998 if anio == 98
-	replace anio = 1999 if anio == 99
-	replace anio = 2000 if anio == 0
 	
 	* asserting basic properties: 
 	* - that there are no missing departamentos in any year

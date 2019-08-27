@@ -1,5 +1,6 @@
 clear all
 set more off
+adopath + ../../library/stata/gslab_misc/ado
 
 program main_clean_raw
     clean_01_05 
@@ -110,7 +111,7 @@ program clean_01_05
              pobpcoac married c98_* c01_* estudiante anios_* *trabaj* blanco ///
              health_insurance public_health
         
-        save ..\temp\clean_`year'.dta, replace
+        save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
     }
     * Estudiante: {1=si,2=no} --> but estudiante=0 en 3.5%, would it be no response?
 end
@@ -195,8 +196,8 @@ program clean_06
              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
              lp_06 li_06 region_3 region_4 live_births* blanco ///
              health_insurance public_health
-
-        save ..\temp\clean_2006, replace    
+		
+        save_data ..\temp\clean_2006.dta, key(anio pers numero) replace   
 end
 
 program clean_07
@@ -282,8 +283,8 @@ program clean_07
              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
              lp_06 li_06 region_3 region_4 live_births* blanco ///
              health_insurance public_health
-
-        save ..\temp\clean_2007, replace
+		
+        save_data ..\temp\clean_2007.dta, key(anio pers numero) replace
 end 
 
 program clean_08
@@ -368,7 +369,7 @@ program clean_08
              lp_06 li_06 region_3 region_4 live_births* blanco ///
              health_insurance public_health
 
-        save ..\temp\clean_2008, replace
+		save_data ..\temp\clean_2008.dta, key(anio pers numero) replace
 end 
 
 program clean_09_16
@@ -463,8 +464,8 @@ program clean_09_16
              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
              lp_06 li_06 region_3 region_4 live_births* blanco ///
              health_insurance public_health
-             
-        save ..\temp\clean_`year', replace
+        
+        save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
         }
 end
 

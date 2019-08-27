@@ -1,5 +1,6 @@
 clear all
 set more off
+adopath + ../../library/stata/gslab_misc/ado
 
 program main	
 	append_data
@@ -74,9 +75,13 @@ program derived_data
 	gen preg_preterm              = (semgest<37) if !mi(semgest) & semgest!=99
 	
 	* Add variable dpto coded as in the ECH
-	gen     dpto = depar   if inrange(depar,11,19)
-	replace dpto = 1       if depar==10
-	replace dpto = depar+1 if inrange(depar,1,9)
+	gen     dpto = codep   if inrange(codep,11,19)
+	replace dpto = 1       if codep==10
+	replace dpto = codep+1 if inrange(codep,1,9)
+	
+    gen     dpto_residence = depar   if inrange(depar,11,19)
+	replace dpto_residence = 1       if depar==10
+	replace dpto_residence = depar+1 if inrange(depar,1,9)
 	
 	* Labelling
 	lab def not_married               0 "Married"                1 "Not married"
@@ -105,7 +110,9 @@ program derived_data
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
 	label_depar
 
-	save "..\output\births_derived.dta", replace
+   gen birth_id = _n
+   drop if missing(dpto)
+    save_data "..\output\births_derived.dta", key(birth_id) replace
 end
 
 program label_depar
