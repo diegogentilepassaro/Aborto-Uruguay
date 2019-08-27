@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-06 17:07:35 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2019-08-27 17:11:39 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -62,6 +62,37 @@ Notes:
   8. end
 
 . 
+. 
+. program assign_treatment_births
+  1. syntax, num_periods(int)
+  2.         use ..\..\derived\output\births_derived.dta, clear
+  3.         keep if inrange(anio, 2001, 2015) 
+  4.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
+>  3) nogen
+  5.         drop if mi(fecparto)
+  6.         drop if inlist(depar,20,99)
+  7.         rename edadm edad
+  8.         new_age_vars, age_var(edad)
+  9.         gen hombre = 0
+ 10.         create_treat_vars, restr(" & hombre==0 ")
+ 11.         *rename yob yobm
+. 
+.         preserve
+ 12.                 replace edad = .  if edad == 99
+ 13.                 replace edad = 15 if inrange(edad,0,14)
+ 14.                 replace edad = 49 if inrange(edad,50,98)
+ 15.                 keep if inrange(edad,15,49) 
+ 16.                 egen age_group15 = cut(edad) ,at(15(5)50)
+ 17.                 bys age_group15: egen age_min = min(edad)
+ 18.                 bys age_group15: egen age_max = max(edad)
+ 19.                 save "..\output\births15.dta", replace
+ 20.         restore
+ 21. 
+.         keep if inrange(edad,16,45)
+ 22.         save "..\output\births.dta", replace
+ 23. end
+
+. 
 . program new_age_vars
   1. syntax, age_var(string)
   2.         assert !mi(`age_var')
@@ -78,17 +109,6 @@ Notes:
 > 16-30"
  11.         lab val age_young                 age_young
  12. end
-
-. 
-. capture program drop assign_impl_date_mvd
-
-. program              assign_impl_date_mvd
-  1. syntax, dpto_list(str)
-  2.         qui sum impl_date_dpto if dpto==1
-  3.         replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
-  4.         qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
-  5.         assert `r(sd)'==0
-  6. end
 
 . 
 . program create_treat_vars
@@ -126,34 +146,15 @@ Notes:
  20. end
 
 . 
-. program assign_treatment_births
-  1. syntax, num_periods(int)
-  2.         use ..\..\derived\output\births_derived.dta, clear
-  3.         keep if inrange(anio, 2001, 2015) 
-  4.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
->  3) nogen
-  5.         drop if mi(fecparto)
-  6.         drop if inlist(depar,20,99)
-  7.         rename edadm edad
-  8.         new_age_vars, age_var(edad)
-  9.         gen hombre = 0
- 10.         create_treat_vars, restr(" & hombre==0 ")
- 11.         *rename yob yobm
-. 
-.         preserve
- 12.                 replace edad = .  if edad == 99
- 13.                 replace edad = 15 if inrange(edad,0,14)
- 14.                 replace edad = 49 if inrange(edad,50,98)
- 15.                 keep if inrange(edad,15,49) 
- 16.                 egen age_group15 = cut(edad) ,at(15(5)50)
- 17.                 bys age_group15: egen age_min = min(edad)
- 18.                 bys age_group15: egen age_max = max(edad)
- 19.                 save "..\output\births15.dta", replace
- 20.         restore
- 21. 
-.         keep if inrange(edad,16,45)
- 22.         save "..\output\births.dta", replace
- 23. end
+. capture program drop assign_impl_date_mvd
+
+. program              assign_impl_date_mvd
+  1. syntax, dpto_list(str)
+  2.         qui sum impl_date_dpto if dpto==1
+  3.         replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
+  4.         qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
+  5.         assert `r(sd)'==0
+  6. end
 
 . 
 . program assign_treatment_ech
@@ -193,12 +194,11 @@ Notes:
 .         * Variables for the Mvd triple diff
 .         gen female      = (hombre==0)             if !mi(hombre)
  22.         gen single      = (married==0)            if !mi(married)
- 23.         gen lowed       = (educ_level==1)         if !mi(educ_level)
- 24.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
- 25.         
+ 23.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
+ 24.         
 .     save_data ..\output\ech_final_2001_2016.dta, key(numero pers anio) replac
 > e 
- 26. end
+ 25. end
 
 . 
 . main_assign_treatment
@@ -322,93 +322,92 @@ file ..\temp\timeline_implementation.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       272,843
-        from master                   272,843  
+    not matched                       261,996
+        from master                   261,996  
         from using                          0  
 
-    matched                           454,818  
+    matched                           465,534  
     -----------------------------------------
 (0 observations deleted)
-(1,695 observations deleted)
-(17,191 missing values generated)
-(17772 missing values generated)
-(708,194 real changes made)
-(664,326 missing values generated)
-(653,564 missing values generated)
-(682,662 missing values generated)
-(561,744 missing values generated)
-(114,557 real changes made)
-(681,155 missing values generated)
-(672,880 missing values generated)
-(695,894 missing values generated)
-(612,385 missing values generated)
-(81,384 real changes made)
-(709,137 missing values generated)
-(706,650 missing values generated)
-(712,734 missing values generated)
-(675,325 missing values generated)
-(33,173 real changes made)
-(725,899 missing values generated)
-(725,902 missing values generated)
-(725,934 missing values generated)
-(725,845 missing values generated)
-(94 real changes made)
-(38,564 real changes made)
-(30,708 real changes made)
-(177,768 real changes made)
-(6,309 real changes made, 6,309 to missing)
+(1,680 observations deleted)
+(17,182 missing values generated)
+(17763 missing values generated)
+(708,087 real changes made)
+(665,453 missing values generated)
+(654,475 missing values generated)
+(686,899 missing values generated)
+(635,868 missing values generated)
+(107,759 real changes made)
+(681,766 missing values generated)
+(673,291 missing values generated)
+(698,518 missing values generated)
+(661,307 missing values generated)
+(77,165 real changes made)
+(709,537 missing values generated)
+(707,034 missing values generated)
+(714,231 missing values generated)
+(700,411 missing values generated)
+(30,594 real changes made)
+(725,789 missing values generated)
+(725,785 missing values generated)
+(725,824 missing values generated)
+(725,782 missing values generated)
+(81 real changes made)
+(37,854 real changes made)
+(27,911 real changes made)
+(100,832 real changes made)
+(6,303 real changes made, 6,303 to missing)
 (2,854 real changes made)
 (45 real changes made)
-(6,309 observations deleted)
+(6,303 observations deleted)
 (note: file ..\output\births15.dta not found)
 file ..\output\births15.dta saved
-(17,772 observations deleted)
+(17,763 observations deleted)
 (note: file ..\output\births.dta not found)
 file ..\output\births.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       549,580
-        from master                   549,580  
+    not matched                       614,482
+        from master                   614,482  
         from using                          0  
 
-    matched                         1,094,374  
+    matched                         1,096,004  
     -----------------------------------------
-(697,356 missing values generated)
-(983009 missing values generated)
-(660,945 real changes made)
-(1,619,070 missing values generated)
-(1,617,816 missing values generated)
-(1,625,656 missing values generated)
-(1,575,351 missing values generated)
-(50,483 real changes made)
-(1,631,117 missing values generated)
-(1,630,022 missing values generated)
-(1,634,698 missing values generated)
-(1,609,268 missing values generated)
-(25,409 real changes made)
-(1,631,907 missing values generated)
-(1,631,748 missing values generated)
-(1,634,912 missing values generated)
-(1,610,037 missing values generated)
-(25,074 real changes made)
-(1,632,930 missing values generated)
-(1,632,256 missing values generated)
-(1,635,160 missing values generated)
-(1,614,057 missing values generated)
-(22,831 real changes made)
-(73,729 real changes made)
-(67,393 real changes made)
-(360,429 real changes made)
-(1,586,870 missing values generated)
-(1,582,292 missing values generated)
-(1,599,765 missing values generated)
-(1,608,046 missing values generated)
-(27,092 real changes made)
-(1,127,581 real changes made)
-(262,113 missing values generated)
-(22,738 missing values generated)
-(983,009 missing values generated)
+(729,411 missing values generated)
+(1026816 missing values generated)
+(683,670 real changes made)
+(1,683,172 missing values generated)
+(1,681,833 missing values generated)
+(1,689,474 missing values generated)
+(1,636,729 missing values generated)
+(54,649 real changes made)
+(1,696,387 missing values generated)
+(1,695,242 missing values generated)
+(1,699,911 missing values generated)
+(1,673,294 missing values generated)
+(27,491 real changes made)
+(1,697,271 missing values generated)
+(1,697,077 missing values generated)
+(1,700,049 missing values generated)
+(1,673,921 missing values generated)
+(27,158 real changes made)
+(1,698,389 missing values generated)
+(1,697,854 missing values generated)
+(1,700,391 missing values generated)
+(1,677,844 missing values generated)
+(24,733 real changes made)
+(82,411 real changes made)
+(72,644 real changes made)
+(383,523 real changes made)
+(1,647,261 missing values generated)
+(1,642,137 missing values generated)
+(1,659,139 missing values generated)
+(1,671,075 missing values generated)
+(31,107 real changes made)
+(1,123,833 real changes made)
+(289,942 missing values generated)
+(1,026,816 missing values generated)
 (data now sorted by numero pers anio)
   variable yob was float now int
   variable age_young was float now byte
@@ -453,177 +452,165 @@ file ..\output\births.dta saved
   variable nbr_under14_mvd was float now byte
   variable female was float now byte
   variable single was float now byte
-  variable lowed was float now byte
   variable young was float now byte
-  (213,714,020 bytes saved)
+  (217,231,722 bytes saved)
 ===============================================================================
 > ===================
 File: ..\output\ech_final_2001_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1643954:132(71828):1642437914:199033086
+  1710486:123(102632):4223457875:2225838243
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,643,954    8.07e+08    9.87e+08          1   2.02e+09
-        pers |  1,643,954     2.38189    1.507812          1         25
-        anio |  1,643,954    2008.909    4.604076       1998       2016
-   inflation |  1,643,954    8.330835     3.61799       3.59      25.94
-    cpi_2006 |  1,643,954    132.1817    45.18634   48.00595   217.6432
+      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
+        pers |  1,710,486    2.376794    1.503466          1         25
+        anio |  1,710,486    2009.343    4.144144       2001       2016
+   inflation |  1,710,486    8.273495    3.563895       3.59      25.94
+    cpi_2006 |  1,710,486    135.5327    42.76078   54.72384   217.6432
 -------------+---------------------------------------------------------
-      semana |     56,722    24.29983    13.76997          1         48
-        dpto |  1,643,954    5.371108    5.699583          1         19
-        secc |  1,554,804    9.876777    16.80689          0         99
-        segm |  1,554,804      63.446    92.98517          0        845
-     estrato |  1,643,954    5.335707    2.936456          1         12
--------------+---------------------------------------------------------
-      hombre |  1,643,954     .466774     .498895          0          1
-        edad |  1,643,954    36.77514    23.44664          0         99
-    pobpcoac |  1,643,954    3.818025     3.20509          1         11
-horas_trab~p |  1,643,954    17.45033    22.23674          0         99
-horas_trab~s |  1,643,954    .9131545    4.869577          0         98
--------------+---------------------------------------------------------
-horas_trab~o |  1,643,727    18.38448    23.31813          0         99
-busca_trab~o |  1,643,954    .0756378    .2644177          0          1
-meses_trab~o |  1,364,931    .5829137    2.652878          0         80
-anios_trab~o |  1,364,931    3.883855    8.068491          0         98
-      ytotal |  1,643,954    9473.466    17923.25          0    7244333
--------------+---------------------------------------------------------
-     pesotri |  1,643,359     109.736     48.5523          1        613
-     pesosem |  1,540,342    54.49511    24.99862          5        307
-      pesoan |  1,643,954    27.64555     12.4238          1        154
-         ccz |  1,614,074    4.327445    5.627882          0         18
+        dpto |  1,710,486    5.712008    5.809447          1         19
+        secc |  1,641,594    9.084292    16.31907          0         99
+        segm |  1,641,594    58.71646    91.12505          0        845
          loc |          0
--------------+---------------------------------------------------------
       nomloc |          0
-  nbr_people |  1,643,954    3.763537      1.8783          1         25
- nbr_above14 |  1,643,954    2.781356    1.257403          1         16
- nbr_under14 |  1,643,954    .9820287    1.274618          0         13
-     y_hogar |  1,643,954    29249.43    36812.85          0    7681180
 -------------+---------------------------------------------------------
-c98_resid_~e |  1,643,954    .9960181    .0629763          0          1
-c98_resid_~d |  1,643,954    .6407253     .479788          0          1
-c98_nbr_ro~s |  1,643,954    3.574135    1.311046          1         80
-c98_nbr_be~s |  1,643,954     2.18762    .8326299          0         40
-c98_b_pipe~r |  1,643,954    .9679504    .1761318          0          1
+         ccz |  1,710,486    3.942653    5.511817          0         18
+         mes |  1,710,486    6.493169    3.444754          1         12
+     estrato |  1,710,486     5.56798    2.970241          1         12
+      pesoan |  1,710,486    26.61043      12.967          1       1323
+     pesosem |  1,597,607    52.57471     26.4189          3       1345
 -------------+---------------------------------------------------------
-c98_hhld_t~t |  1,643,954    .9251329    .2631768          0          1
-c98_b_sewage |  1,643,954    .6276106    .4834415          0          1
-c98_hhld_s~e |  1,643,954    .9494621    .2190522          0          1
-c98_hhld_h~r |  1,643,954    .8829402    .3214917          0          1
-c98_hhld_r~t |  1,643,954    .8374705     .368936          0          1
+     pesotri |  1,709,184    105.9654    50.02961          1       1527
+      hombre |  1,710,486    .4681652    .4989857          0          1
+        edad |  1,710,486    36.79662    23.48919          0         99
+    pobpcoac |  1,710,486    3.823276    3.206703          1         11
+   trabajo_1 |  1,710,486    .4191785    .4934248          0          1
 -------------+---------------------------------------------------------
- c98_hhld_tv |  1,643,954    .9641486    .1859195          0          1
-c98_hhld_vcr |  1,643,954    .4996466          .5          0          1
-c98_hhld_w~c |  1,643,954    .7226413    .4476952          0          1
-c98_hhld_d~r |  1,643,954    .0446558    .2065469          0          1
-c98_hhld_m~e |  1,643,954    .5049156     .499976          0          1
+horas_trab~p |  1,710,486    17.39364    22.23241          0         99
+horas_trab~s |  1,710,486    .8916115    4.810304          0         98
+busca_trab~o |  1,710,486    .0759141    .2648607          0          1
+      ytotal |  1,710,486     9452.72    17720.94          0    7244333
+ nbr_above14 |  1,710,486    2.767848    1.249137          1         16
 -------------+---------------------------------------------------------
-c98_hhld_car |  1,643,954    .3583373    .4795121          0          1
-   trimestre |  1,643,954    2.497656    1.117329          1          4
-     married |  1,381,841    .5226528    .4994868          0          1
-       etnia |  1,308,209    2.310405    .9646923          0          4
-  estudiante |  1,643,954     .067834    .2514609          0          1
+  nbr_people |  1,710,486    3.753415    1.872965          1         25
+ nbr_under14 |  1,710,486    .9853755    1.274995          0         13
+     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
+c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
+c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
 -------------+---------------------------------------------------------
-     trabajo |  1,643,954    .4489773      .49739          0          1
- y_hogar_alt |  1,643,954    29574.38    33999.23          0    7289481
-  anios_prim |  1,621,216    5.008634    1.933103          0          6
- anios_secun |  1,621,216    2.194268    2.439586          0          6
-  anios_terc |  1,637,713    .5082386    1.485491          0         40
+c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
+c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
+c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
+c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
+c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
 -------------+---------------------------------------------------------
-  anios_tecn |  1,621,216    .2656142    .7968759          0          8
-  educ_level |  1,621,216    1.930291    1.024077          1          4
-         mes |  1,587,232    6.492924    3.446314          1         12
-   trabajo_1 |  1,587,232    .4217613    .4938409          0          1
-c01_hhld_c~r |  1,587,232    .5325894     .498937          0          1
+c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
+c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
+c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
+ c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
+c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
 -------------+---------------------------------------------------------
-c01_hhld_i~t |  1,587,232    .3749754    .4841167          0          1
-c01_hhld_p~e |  1,587,232    .7338524    .4419425          0          1
-c01_hhld_c~v |  1,587,232    .5672334    .4954592          0          1
-    region_3 |  1,308,209    1.563886    .5254396          1          3
-    region_4 |  1,308,209    1.564025    .5259491          1          4
+c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
+c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
+c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
+c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
+c01_hhld_c~r |  1,710,486    .5257202    .4993382          0          1
 -------------+---------------------------------------------------------
-     pesomen |  1,201,681    279.6954    101.5616          1       1384
- live_births |    421,145    1.045286    .6910379          0          2
-live_birth~r |    421,145    1.394439    1.906014          0         65
-       li_06 |  1,581,626    1711.574    551.4669   548.3328       3021
-       lp_06 |  1,581,626     18013.3    9552.085   1807.593   132026.8
+c01_hhld_i~t |  1,710,486    .3633944    .4809772          0          1
+c01_hhld_p~e |  1,710,486    .7215955    .4482137          0          1
+c01_hhld_c~v |  1,710,486    .5669289    .4955004          0          1
+health_ins~e |  1,710,486    2.826182    1.509625          0          5
+public_hea~h |  1,710,486     .320164    .4665395          0          1
 -------------+---------------------------------------------------------
-c06_mat_wa~s |  1,308,209    .9747227    .1569662          0          1
-c06_mat_roof |  1,308,209    .6013045      .48963          0          1
-c06_mat_fl~r |  1,308,209    .8012741    .3990414          0          1
-c06_b_electr |  1,308,209    .9971006    .0537678          0          1
-    loc_code |  1,643,954    547152.4    576089.5     101010    1919020
+      blanco |  1,431,463    .9568462    .2032032          0          1
+   trimestre |  1,710,486    2.498075    1.117025          1          4
+     married |  1,420,544    .5307995    .4990507          0          1
+  estudiante |  1,710,486    .0699111    .2549972          0          1
+     trabajo |  1,710,486     .446925    .4971752          0          1
 -------------+---------------------------------------------------------
-        poor |  1,643,954    .3891374    .4875547          0          1
-   indigente |  1,643,954    .0467562    .2111162          0          1
- ind_under14 |  1,643,954    .5108196    .4998831          0          1
-work_part_~e |    738,098    .2675498    .4426818          0          1
-    semestre |  1,643,954    1.499255    .4999996          1          2
+ y_hogar_alt |  1,710,486    29503.43    33568.92          0    7289481
+horas_trab~o |  1,710,225    18.27123    23.28222          0         99
+meses_trab~o |  1,431,463    .3423372    1.422152          0         80
+anios_trab~o |  1,431,463    3.980527    8.167336          0         98
+    region_3 |  1,431,463    1.682926     .638033          1          3
 -------------+---------------------------------------------------------
-    anio_sem |  1,643,954    98.31684    9.222082         76        113
-    anio_qtr |  1,643,954    197.1328    18.45091        152        227
-educ_anios~n |    147,854     2.69196    1.983911          0          6
-educ_anios~c |    102,581    1.944658    1.828318          0         40
-educ_HS_di~a |     93,881    .1132817    .3169385          0          1
+    region_4 |  1,431,463    1.683443    .6395034          1          4
+     pesomen |  1,316,991    276.1408    110.0983          1       2451
+ live_births |    475,328    1.039613    .6913098          0          2
+live_birth~r |    475,328    1.412622    1.940563          0         65
+       li_06 |  1,704,880     1706.19    551.5225   548.3328       3021
 -------------+---------------------------------------------------------
-educ_some_~e |    102,432    .7364691      .44055          0          1
-impl_date_~o |  1,341,878    16475.05     730.224      16162      18414
-         yob |  1,643,954    1972.134    23.77581       1900       2016
-   age_young |  1,643,954    .2123131    .4089454          0          1
-   age_adult |  1,643,954    .1897328    .3920897          0          1
+       lp_06 |  1,704,880    17811.29    9468.899   1807.593   132026.8
+c06_mat_wa~s |  1,431,463    .9736368    .1602131          0          1
+c06_mat_roof |  1,431,463    .5677583    .4953877          0          1
+c06_mat_fl~r |  1,431,463    .7912199    .4064371          0          1
+c06_b_electr |  1,431,463    .9961228     .062146          0          1
 -------------+---------------------------------------------------------
- age_placebo |  1,643,954    .1737597    .3789029          0          1
- age_fertile |    946,598     .698232    .4590254          0          1
-   age_group |    660,945    29.88867    8.666488         18         43
-treatment~ra |     24,884    .3918984     .488184          0          1
-treatment~to |     26,138    .4075293    .4913842          0          1
+    loc_code |  1,710,486    582044.2    588218.4          3    1931000
+        poor |  1,710,486    .3699644    .4827949          0          1
+   indigente |  1,710,486    .0125608    .1113687          0          1
+ ind_under14 |  1,710,486    .5124608    .4998449          0          1
+work_part_~e |    764,459     .269295    .4435938          0          1
 -------------+---------------------------------------------------------
-treatment~da |     18,298    .2864247    .4521026          0          1
-   treatment |    119,086    .5760795    .4941801          0          1
-tre~ra_young |     12,837     .389577    .4876733          0          1
-trea~o_young |     13,932    .4167384    .4930365          0          1
-tre~da_young |      9,256    .2964564    .4567193          0          1
+    semestre |  1,710,486    1.499258    .4999996          1          2
+    anio_sem |  1,710,486    99.18467    8.303561         82        113
+    anio_qtr |  1,710,486    198.8689    16.61422        164        227
+impl_date_~o |  1,365,352    16507.31    757.9063      16162      18414
+         yob |  1,710,486    1972.546     23.7563       1902       2016
 -------------+---------------------------------------------------------
-trea~t_young |     60,095    .5771861    .4940105          0          1
-tre~ra_adult |     12,047     .394372    .4887357          0          1
-trea~o_adult |     12,206    .3970179    .4892998          0          1
-tre~da_adult |      9,042    .2761557    .4471195          0          1
-trea~t_adult |     58,991    .5749521    .4943545          0          1
+   age_young |  1,710,486    .2105951    .4077314          0          1
+   age_adult |  1,710,486    .1890983    .3915868          0          1
+ age_placebo |  1,710,486    .1738716    .3789992          0          1
+ age_fertile |    981,075     .696858    .4596163          0          1
+   age_group |    683,670    29.89752     8.68172         18         43
 -------------+---------------------------------------------------------
-t~ra_placebo |     11,024    .3840711    .4863969          0          1
-tr~o_placebo |     11,698    .4051975    .4909512          0          1
-t~da_placebo |      8,794    .2763248    .4472048          0          1
-tr~t_placebo |     52,728    .5670042    .4954948          0          1
-placebo_ri~a |     57,084     .387832    .4872602          0          1
+treatment~ra |     27,314    .3840887     .486388          0          1
+treatment~to |     28,653    .4055422    .4910052          0          1
+treatment~da |     21,012      .33162    .4708065          0          1
+   treatment |    128,406    .5744046    .4944349          0          1
+tre~ra_young |     14,099    .3814455    .4857588          0          1
 -------------+---------------------------------------------------------
-placebo_sa~o |     61,662    .3991924    .4897364          0          1
-placebo_fl~a |     44,189    .2775351    .4477878          0          1
-  age_rivera |  1,643,954    37.86635    23.77581         -6        110
-under14_ri~a |  1,643,954    .1823384    .3861233          0          1
-nbr_under~ra |  1,643,954    .8745975    1.192402          0         13
+trea~o_young |     15,244    .4159013    .4928928          0          1
+tre~da_young |     10,575    .3391017    .4734268          0          1
+trea~t_young |     64,683    .5749888    .4943485          0          1
+tre~ra_adult |     13,215    .3869088    .4870609          0          1
+trea~o_adult |     13,409    .3937654    .4886021          0          1
 -------------+---------------------------------------------------------
- kids_rivera |  1,643,954    .4753843    .4993939          0          1
-   age_salto |  1,643,954    40.86635    23.77581         -3        113
-under14_sa~o |  1,643,954    .1457529    .3528584          0          1
-nbr_under1~o |  1,643,954     .694764    1.053992          0         11
-  kids_salto |  1,643,954    .4049055    .4908739          0          1
+tre~da_adult |     10,437    .3240395    .4680373          0          1
+trea~t_adult |     63,723    .5738117    .4945257          0          1
+t~ra_placebo |     12,097    .3789369    .4851424          0          1
+tr~o_placebo |     12,632    .4054782    .4910038          0          1
+t~da_placebo |     10,095    .3233284      .46777          0          1
 -------------+---------------------------------------------------------
- age_florida |  1,643,954    35.86635    23.77581         -8        108
-under14_fl~a |  1,643,954    .2022897    .4017072          0          1
-nbr_under~da |  1,643,954    .9704158    1.261238          0         14
-kids_florida |  1,643,954    .5089479    .4999201          0          1
- kids_before |  1,190,581    .5283395    .4991964          0          1
+tr~t_placebo |     57,375    .5689237     .495231          0          1
+placebo_ri~a |     63,225    .3799921    .4853883          0          1
+placebo_sa~o |     68,349    .3967724    .4892316          0          1
+placebo_fl~a |     51,347    .3280425     .469505          0          1
+  age_rivera |  1,710,486    37.45391     23.7563         -6        108
 -------------+---------------------------------------------------------
-     age_mvd |  1,643,954    31.86635    23.77581        -12        104
- under14_mvd |  1,643,954    .2250641    .4176246          0          1
-nbr_under1~d |  1,643,954     1.06434    1.302104          0         15
-      female |  1,643,954     .533226     .498895          0          1
-      single |  1,381,841    .4773472    .4994868          0          1
+under14_ri~a |  1,710,486    .1898718    .3921997          0          1
+nbr_under~ra |  1,710,486    .9119987    1.213656          0         13
+ kids_rivera |  1,710,486    .4901876    .4999039          0          1
+   age_salto |  1,710,486    40.45391     23.7563         -3        111
+under14_sa~o |  1,710,486    .1528425    .3598357          0          1
 -------------+---------------------------------------------------------
-       lowed |  1,621,216    .4203505    .4936153          0          1
-       young |    660,945    .5280818    .4992112          0          1
+nbr_under1~o |  1,710,486    .7302176    1.071518          0         11
+  kids_salto |  1,710,486    .4239093    .4941764          0          1
+ age_florida |  1,710,486    35.45391     23.7563         -8        106
+under14_fl~a |  1,710,486    .2096843    .4070834          0          1
+nbr_under~da |  1,710,486    1.006707    1.282767          0         14
+-------------+---------------------------------------------------------
+kids_florida |  1,710,486     .521757    .4995266          0          1
+ kids_before |  1,194,351    .5340532    .4988392          0          1
+     age_mvd |  1,710,486    31.45391     23.7563        -12        102
+ under14_mvd |  1,710,486    .2305584    .4211904          0          1
+nbr_under1~d |  1,710,486     1.09005    1.317281          0         15
+-------------+---------------------------------------------------------
+      female |  1,710,486    .5318348    .4989857          0          1
+      single |  1,420,544    .4692005    .4990507          0          1
+       young |    683,670    .5268916    .4992767          0          1
 
 
 
@@ -773,4 +760,4 @@ file ..\output\ech_final_2001_2016.dta saved
 
 end of do-file
 
- make.py ended: 2019-08-06 17:09:22
+ make.py ended: 2019-08-27 17:13:00

@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-26 15:36:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2019-08-27 17:13:39 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -700,10 +700,10 @@ Notes:
 .         gen tag_mvd  = codep==10
 
 .         gen births_sh_same = births/births_tot if tag_same
-(1,863 missing values generated)
+(1,839 missing values generated)
 
 .         gen births_sh_mvd  = births/births_tot if tag_mvd
-(1,863 missing values generated)
+(1,839 missing values generated)
 
 . 
 .         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
@@ -1073,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1085,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1097,7 +1097,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1306,16 +1306,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1340,4 +1340,4 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2019-08-26 15:38:23
+ make.py ended: 2019-08-27 17:14:56

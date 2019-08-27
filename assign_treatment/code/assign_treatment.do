@@ -19,6 +19,35 @@ program clean_impl_date
 	save_data ..\temp\timeline_implementation.dta, key(dpto) replace
 end
 
+
+program assign_treatment_births
+syntax, num_periods(int)
+	use ..\..\derived\output\births_derived.dta, clear
+	keep if inrange(anio, 2001, 2015) 
+	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
+	drop if mi(fecparto)
+	drop if inlist(depar,20,99)
+	rename edadm edad
+	new_age_vars, age_var(edad)
+	gen hombre = 0
+	create_treat_vars, restr(" & hombre==0 ")
+	*rename yob yobm
+
+	preserve
+		replace edad = .  if edad == 99
+		replace edad = 15 if inrange(edad,0,14)
+		replace edad = 49 if inrange(edad,50,98)
+		keep if inrange(edad,15,49) 
+		egen age_group15 = cut(edad) ,at(15(5)50)
+		bys age_group15: egen age_min = min(edad)
+		bys age_group15: egen age_max = max(edad)
+		save "..\output\births15.dta", replace
+	restore
+
+	keep if inrange(edad,16,45)
+	save "..\output\births.dta", replace
+end
+
 program new_age_vars
 syntax, age_var(string)
 	assert !mi(`age_var')
@@ -32,15 +61,6 @@ syntax, age_var(string)
 
 	lab def age_young                 0 "Age: 31-45"             1 "Age: 16-30"
 	lab val age_young                 age_young
-end
-
-capture program drop assign_impl_date_mvd
-program              assign_impl_date_mvd
-syntax, dpto_list(str)
-	qui sum impl_date_dpto if dpto==1
-	replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
-	qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
-	assert `r(sd)'==0
 end
 
 program create_treat_vars
@@ -70,32 +90,13 @@ syntax, [restr(str)]
 	assign_impl_date_mvd, dpto_list(,3,16,9,10)
 end
 
-program assign_treatment_births
-syntax, num_periods(int)
-	use ..\..\derived\output\births_derived.dta, clear
-	keep if inrange(anio, 2001, 2015) 
-	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
-	drop if mi(fecparto)
-	drop if inlist(depar,20,99)
-	rename edadm edad
-	new_age_vars, age_var(edad)
-	gen hombre = 0
-	create_treat_vars, restr(" & hombre==0 ")
-	*rename yob yobm
-
-	preserve
-		replace edad = .  if edad == 99
-		replace edad = 15 if inrange(edad,0,14)
-		replace edad = 49 if inrange(edad,50,98)
-		keep if inrange(edad,15,49) 
-		egen age_group15 = cut(edad) ,at(15(5)50)
-		bys age_group15: egen age_min = min(edad)
-		bys age_group15: egen age_max = max(edad)
-		save "..\output\births15.dta", replace
-	restore
-
-	keep if inrange(edad,16,45)
-	save "..\output\births.dta", replace
+capture program drop assign_impl_date_mvd
+program              assign_impl_date_mvd
+syntax, dpto_list(str)
+	qui sum impl_date_dpto if dpto==1
+	replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
+	qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
+	assert `r(sd)'==0
 end
 
 program assign_treatment_ech
@@ -127,7 +128,6 @@ syntax, num_periods(int)
 	* Variables for the Mvd triple diff
 	gen female      = (hombre==0)             if !mi(hombre)
 	gen single      = (married==0)            if !mi(married)
-	gen lowed       = (educ_level==1)         if !mi(educ_level)
 	gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
 	
     save_data ..\output\ech_final_2001_2016.dta, key(numero pers anio) replace 
