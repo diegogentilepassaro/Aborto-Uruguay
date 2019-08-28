@@ -101,12 +101,4 @@ syntax, by_vars(string) treatment(string) time(string)
 		reg log_births post##treatment_`treatment'##first_pregnancy##not_married
 end
 
-program births_by_type
-	use "..\..\..\derived\output\births.dta", clear
-
-    collapse (count) edadm = num_nacidos, by(anio depar tipoestab)
-	
-	
-end
-
 main

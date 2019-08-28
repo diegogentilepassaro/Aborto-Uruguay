@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-27 17:11:39 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2019-08-27 18:10:42 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -62,7 +62,6 @@ Notes:
   8. end
 
 . 
-. 
 . program assign_treatment_births
   1. syntax, num_periods(int)
   2.         use ..\..\derived\output\births_derived.dta, clear
@@ -70,7 +69,7 @@ Notes:
   4.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
 >  3) nogen
   5.         drop if mi(fecparto)
-  6.         drop if inlist(depar,20,99)
+  6.         drop if inlist(dpto,20,99)
   7.         rename edadm edad
   8.         new_age_vars, age_var(edad)
   9.         gen hombre = 0
@@ -78,19 +77,16 @@ Notes:
  11.         *rename yob yobm
 . 
 .         preserve
- 12.                 replace edad = .  if edad == 99
- 13.                 replace edad = 15 if inrange(edad,0,14)
- 14.                 replace edad = 49 if inrange(edad,50,98)
- 15.                 keep if inrange(edad,15,49) 
- 16.                 egen age_group15 = cut(edad) ,at(15(5)50)
- 17.                 bys age_group15: egen age_min = min(edad)
- 18.                 bys age_group15: egen age_max = max(edad)
- 19.                 save "..\output\births15.dta", replace
- 20.         restore
- 21. 
+ 12.                 keep if inrange(edad,15,49) 
+ 13.                 egen age_group15 = cut(edad) ,at(15(5)50)
+ 14.                 bys age_group15: egen age_min = min(edad)
+ 15.                 bys age_group15: egen age_max = max(edad)
+ 16.                 save_data "..\output\births15.dta", key(birth_id) replace
+ 17.         restore
+ 18. 
 .         keep if inrange(edad,16,45)
- 22.         save "..\output\births.dta", replace
- 23. end
+ 19.         save "..\output\births.dta", replace
+ 20. end
 
 . 
 . program new_age_vars
@@ -329,40 +325,221 @@ file ..\temp\timeline_implementation.dta saved
     matched                           465,534  
     -----------------------------------------
 (0 observations deleted)
-(1,680 observations deleted)
-(17,182 missing values generated)
-(17763 missing values generated)
-(708,087 real changes made)
-(665,453 missing values generated)
-(654,475 missing values generated)
-(686,899 missing values generated)
-(635,868 missing values generated)
-(107,759 real changes made)
-(681,766 missing values generated)
-(673,291 missing values generated)
-(698,518 missing values generated)
-(661,307 missing values generated)
-(77,165 real changes made)
-(709,537 missing values generated)
-(707,034 missing values generated)
-(714,231 missing values generated)
-(700,411 missing values generated)
-(30,594 real changes made)
-(725,789 missing values generated)
-(725,785 missing values generated)
-(725,824 missing values generated)
-(725,782 missing values generated)
+(0 observations deleted)
+(17,289 missing values generated)
+(17874 missing values generated)
+(709,656 real changes made)
+(666,650 missing values generated)
+(656,116 missing values generated)
+(688,542 missing values generated)
+(637,048 missing values generated)
+(107,937 real changes made)
+(683,106 missing values generated)
+(674,946 missing values generated)
+(700,172 missing values generated)
+(662,632 missing values generated)
+(77,284 real changes made)
+(711,074 missing values generated)
+(708,700 missing values generated)
+(715,900 missing values generated)
+(701,946 missing values generated)
+(30,653 real changes made)
+(727,468 missing values generated)
+(727,465 missing values generated)
+(727,504 missing values generated)
+(727,461 missing values generated)
 (81 real changes made)
-(37,854 real changes made)
-(27,911 real changes made)
-(100,832 real changes made)
-(6,303 real changes made, 6,303 to missing)
-(2,854 real changes made)
-(45 real changes made)
-(6,303 observations deleted)
+(37,963 real changes made)
+(27,950 real changes made)
+(101,002 real changes made)
+(9,290 observations deleted)
+(data now sorted by birth_id)
+  variable yob was float now int
+  variable age_young was float now byte
+  variable age_adult was float now byte
+  variable age_placebo was float now byte
+  variable age_fertile was float now byte
+  variable age_group was float now byte
+  variable hombre was float now byte
+  variable treatment_rivera was float now byte
+  variable treatment_salto was float now byte
+  variable treatment_florida was float now byte
+  variable treatment was float now byte
+  variable treatment_rivera_young was float now byte
+  variable treatment_salto_young was float now byte
+  variable treatment_florida_young was float now byte
+  variable treatment_young was float now byte
+  variable treatment_rivera_adult was float now byte
+  variable treatment_salto_adult was float now byte
+  variable treatment_florida_adult was float now byte
+  variable treatment_adult was float now byte
+  variable treatment_rivera_placebo was float now byte
+  variable treatment_salto_placebo was float now byte
+  variable treatment_florida_placebo was float now byte
+  variable treatment_placebo was float now byte
+  variable age_group15 was float now byte
+  variable age_min was float now byte
+  variable age_max was float now byte
+  (55,304,480 bytes saved)
+===============================================================================
+> ===================
+File: ..\output\births15.dta
+Key: birth_id
+===============================================================================
+> ===================
+  718240:119(19634):2531123495:2561281772
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    birth_id |    718,240    464046.1    223637.8          1     834638
+        anio |    718,240    2007.938    4.377685       2001       2015
+anio_regis~o |    718,240    2007.958    4.378216       2001       2016
+    cnvserie |    718,240     1.59638    .4906233          1          2
+       codep |    718,240    9.844275    3.971558          1         19
+-------------+---------------------------------------------------------
+      estab2 |    718,240    85.97841     52.9029          1        999
+   tipoestab |    718,240    1.794021    .9943663          1          9
+       paism |    718,240    12.43137    103.9476          1        999
+        edad |    718,240    26.83391     6.67805         15         49
+       depar |    718,240    9.265613    5.608984          1         99
+-------------+---------------------------------------------------------
+       paisp |    718,240    367.6102     480.721          1        999
+       edadp |    718,240    57.97924    33.48422         10         99
+    numemban |    718,240    1.995898    7.730922          0         99
+     semprim |    718,240    17.76829    19.92016          1         99
+     totcons |    718,240    9.583593    10.60276          0         99
+-------------+---------------------------------------------------------
+     atendio |    718,240    1.313894    .5009259          1          9
+     cesopar |    718,240    1.438898     .948125          1          9
+     tipoces |    718,240    5.805119    3.111642          1          9
+     tipoman |    718,240    1.183067     1.08874          1          9
+      esmult |    718,240    1.023261    .1548143          1          9
+-------------+---------------------------------------------------------
+multiplici~d |    239,585    1.027109    .1774357          1          9
+       orden |    718,240    .0386737    .3123133          0          9
+        sexo |    718,240    1.490803    .5201465          1          9
+        peso |    718,240    3270.332    747.2886        200       9999
+     semgest |    718,240    39.56699    8.105417         17         99
+-------------+---------------------------------------------------------
+      apgar1 |    718,240    9.168137    7.813981          0         99
+      apgar2 |    718,240    10.27783    7.702149          0         99
+      mdepna |    292,074    11.12681    9.780776          1         99
+     mestciv |    292,074    2.617761    2.907612          1          9
+     convpad |    292,074    1.428665    .5025749          1          9
+-------------+---------------------------------------------------------
+      tunion |    292,074    3.719335    3.290427          1          9
+     madecur |    292,074    2.809538     2.30459          1          9
+     mademay |    292,074    3.719828    1.686697          1          9
+     madeult |    292,074    4.000472    2.402566          0          9
+     paismat |    292,074    1.519916    21.52544          1        999
+-------------+---------------------------------------------------------
+      pdepna |    292,074    43.69018    43.07436          1         99
+     pestciv |    292,074    4.590333    3.757184          1          9
+     padecur |    292,074     4.11406    3.236592          1          9
+     pademay |    292,074    5.697224     2.89479          1          9
+     padeult |    292,074    5.970086    3.023627          0          9
+-------------+---------------------------------------------------------
+     pdomdep |    292,074    45.27504     44.1005          1         99
+     paispat |    292,074    398.2181    488.4489          1        999
+     partlug |    292,074    1.008101    .1942326          1          9
+     madfnac |    289,916    1985.064    6.941015       1960       2001
+     padfnac |    206,383    3016.645    2689.492       1932       9999
+-------------+---------------------------------------------------------
+    fecparto |          0
+      civilm |    426,166    2.178144    1.008321          1          9
+       ocupm |    426,166    2.377684    1.434683          1          9
+       instm |    426,166    2.624773    1.539927          1          9
+      civilp |    426,166    4.409587    3.191611          1          9
+-------------+---------------------------------------------------------
+       ocupp |    426,166    4.192634    3.880614          1          9
+       instp |    426,166    5.158591     3.30908          1          9
+        prim |    426,166    2.141454    12.23089          0         99
+         seg |    426,166    3.630853    12.13833          0         99
+         ter |    426,166    6.785706     11.9171          0         99
+-------------+---------------------------------------------------------
+       vivos |    426,166    1.498339    5.176892          0         99
+       falle |    426,166    .4336573    5.630972          0         99
+     nacmuer |    426,166    .3243525    5.496049          0         99
+numemban_imp |    379,127     1.48799    1.831683          0         99
+   vivos_imp |    379,127    1.275726    1.645367          0         99
+-------------+---------------------------------------------------------
+   falle_imp |    379,127    .0454861     .293643          0         99
+  imputa_num |    379,127    .0066389    .0812089          0          1
+imputa_vivos |    379,127    .0072667    .0849347          0          1
+imputa_falle |    379,127    .0420967    .2008101          0          1
+      imputa |    379,127    .0487277    .2152985          0          1
+-------------+---------------------------------------------------------
+edadm_ajus~a |          0
+     yeavivo |    399,349    5473.957     3932.42       1972       9999
+     yeamuer |    399,349    9171.805    2355.425       1956       9999
+     mesvivo |    399,349    46.73169    45.60468          1         99
+     mesmuer |    399,349    90.37579    26.10896          1         99
+-------------+---------------------------------------------------------
+   atenparto |    426,166    2.165023    1.391839          1          9
+     married |    667,745    .3458835    .4756558          0          1
+ not_married |    667,745    .6541165    .4756558          0          1
+     partner |    667,745    .7581712    .4281915          0          1
+  no_partner |    667,745    .2418288    .4281915          0          1
+-------------+---------------------------------------------------------
+      single |    667,745    .3392687    .4734615          0          1
+ prim_school |    718,240    .6257477    .4839296          0          1
+ high_school |    718,240    .1520536    .3590731          0          1
+    anio_mon |    718,240    580.7205    52.64103        492        671
+    anio_qtr |    718,240    193.2405     17.5443        164        223
+-------------+---------------------------------------------------------
+    anio_sem |    718,240    96.37266    8.768406         82        111
+recomm_pre~s |    709,236    .8215657    .3828782          0          1
+recomm_pre~t |    680,863    .5686034    .4952716          0          1
+no_prenata~e |    709,236    .0283361    .1659314          0          1
+first_preg~y |    713,934    .3721661    .4833827          0          1
+-------------+---------------------------------------------------------
+ kids_before |    713,934    .6278339    .4833827          0          1
+lowbirthwe~t |    714,476    .0823191    .2748504          0          1
+  apgar1_low |    711,293    .0456408    .2087051          0          1
+  apgar2_low |    711,297    .0095108    .0970585          0          1
+preg_preterm |    705,866    .0921761    .2892746          0          1
+-------------+---------------------------------------------------------
+        dpto |    718,240    5.466354    5.871755          1         19
+dpto_resid~e |    716,648    5.927515    5.822739          1         19
+impl_date_~o |    569,650    16516.55    774.3002      16162      18414
+         yob |    718,240    1981.104    7.900285       1952       2000
+   age_young |    718,240    .6801125    .4664331          0          1
+-------------+---------------------------------------------------------
+   age_adult |    718,240    .3079361    .4616403          0          1
+ age_placebo |    718,240    .0007518    .0274094          0          1
+ age_fertile |    710,196    .9992396     .027564          0          1
+   age_group |    709,656    26.98034    6.659528         18         43
+      hombre |    718,240           0           0          0          0
+-------------+---------------------------------------------------------
+treatment~ra |     60,880    .4006242     .490029          0          1
+treatment~to |     71,414    .4531744     .497806          0          1
+treatment~da |     38,988    .2968862    .4568918          0          1
+   treatment |    198,419    .4560148    .4980628          0          1
+tre~ra_young |     44,424    .3939312    .4886254          0          1
+-------------+---------------------------------------------------------
+trea~o_young |     52,584    .4573254    .4981803          0          1
+tre~da_young |     27,358    .2995102    .4580519          0          1
+trea~t_young |    142,182    .4564432    .4981009          0          1
+tre~ra_adult |     16,456    .4186923    .4933598          0          1
+trea~o_adult |     18,830    .4415826    .4965889          0          1
+-------------+---------------------------------------------------------
+tre~da_adult |     11,630    .2907137    .4541112          0          1
+trea~t_adult |     56,237    .4549318    .4979691          0          1
+t~ra_placebo |         59    .4745763    .5036396          0          1
+tr~o_placebo |         58    .4827586    .5040669          0          1
+t~da_placebo |         23    .3043478     .470472          0          1
+-------------+---------------------------------------------------------
+tr~t_placebo |        141    .4609929    .5002532          0          1
+ age_group15 |    718,240    24.84321    6.810577         15         45
+     age_min |    718,240    24.84321    6.810577         15         45
+     age_max |    718,240    28.84321    6.810577         19         49
+
+
+
+
 (note: file ..\output\births15.dta not found)
 file ..\output\births15.dta saved
-(17,763 observations deleted)
+(17,874 observations deleted)
 (note: file ..\output\births.dta not found)
 file ..\output\births.dta saved
 
@@ -760,4 +937,4 @@ file ..\output\ech_final_2001_2016.dta saved
 
 end of do-file
 
- make.py ended: 2019-08-27 17:13:00
+ make.py ended: 2019-08-27 18:12:12

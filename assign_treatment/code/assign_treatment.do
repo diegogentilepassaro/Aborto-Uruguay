@@ -19,14 +19,13 @@ program clean_impl_date
 	save_data ..\temp\timeline_implementation.dta, key(dpto) replace
 end
 
-
 program assign_treatment_births
 syntax, num_periods(int)
 	use ..\..\derived\output\births_derived.dta, clear
 	keep if inrange(anio, 2001, 2015) 
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
 	drop if mi(fecparto)
-	drop if inlist(depar,20,99)
+	drop if inlist(dpto,20,99)
 	rename edadm edad
 	new_age_vars, age_var(edad)
 	gen hombre = 0
@@ -34,14 +33,11 @@ syntax, num_periods(int)
 	*rename yob yobm
 
 	preserve
-		replace edad = .  if edad == 99
-		replace edad = 15 if inrange(edad,0,14)
-		replace edad = 49 if inrange(edad,50,98)
 		keep if inrange(edad,15,49) 
 		egen age_group15 = cut(edad) ,at(15(5)50)
 		bys age_group15: egen age_min = min(edad)
 		bys age_group15: egen age_max = max(edad)
-		save "..\output\births15.dta", replace
+		save_data "..\output\births15.dta", key(birth_id) replace
 	restore
 
 	keep if inrange(edad,16,45)

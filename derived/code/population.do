@@ -107,5 +107,6 @@ save "..\output\population.dta", replace
 gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages==0)
 collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
 drop if inrange(anio,1996,2000) | inrange(anio,2017,2020)
+rename depar dpto
 
-save_data "..\output\population_fertile_age.dta", key(depar anio age_min) replace
+save_data "..\output\population_fertile_age.dta", key(dpto anio age_min) replace

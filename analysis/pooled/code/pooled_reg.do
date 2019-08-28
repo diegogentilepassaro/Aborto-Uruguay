@@ -13,8 +13,8 @@ program main
 	*/
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_reg, outcomes(`labor_vars') data(ech_labor) time(anio_sem) num_periods(6)
-	local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
-	pooled_reg, outcomes(`educ_vars') data(ech_educ) time(anio_sem) num_periods(6)
+	/*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
+	pooled_reg, outcomes(`educ_vars') data(ech_educ) time(anio_sem) num_periods(6)*/
 	pooled_reg, outcomes(births GFR) data(births_long) time(anio_sem) num_periods(6)
 	pooled_reg, outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm) data(births_ind) time(anio_sem) num_periods(6)
 end
