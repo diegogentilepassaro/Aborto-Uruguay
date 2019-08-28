@@ -4,7 +4,7 @@ adopath + ../../../library/stata/gslab_misc/ado
 
 program main
 	qui do ..\..\globals.do
-	global controls = "nbr_people ind_under14 edad married poor"
+	global controls = "nbr_people ind_under14 edad married poor blanco public_health"
 	/*
 	local outcomes     = "trabajo horas_trabajo"
 	local data        = "ech"
@@ -33,7 +33,7 @@ program pooled_reg
 	}
 	if substr("`data'",1,3) == "ech" {
 		local all_controls = "c98_* ${controls}" //note: using all data, can't use c_0*
-		local pweight = "[pw = `weight']"
+		local aweight = "[aw = `weight']"
 		local cond_list "&!mi(dpto) &kids_before==1 &kids_before==0 &single==0 &single==1"  /*"& young == 0" "& young == 1"*/
 		if "`data'" == "ech_labor" {
 			local age_group_list "_fertile _placebo"
@@ -44,13 +44,13 @@ program pooled_reg
 	}
 	else if "`data'" == "births_ind" {
 		local all_controls = ""
-		local pweight = ""
+		local aweight = ""
 		local age_group_list "_fertile"
 		local cond_list "&!mi(dpto) &kids_before==1 &kids_before==0 &single==0 &single==1"
 	}
 	else {
 		local all_controls = ""
-		local pweight = ""
+		local aweight = ""
 		local age_group_list "_fertile"
 		local cond_list "&all_sample==1 &kids_before==1 &kids_before==0 &single==0 &single==1"
 	}
@@ -74,7 +74,7 @@ program pooled_reg
 		* Run main regression that plots coefficients
 		/*reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  ///
 				`all_controls' if !mi(treatment) & inrange(edad, 16, 45) ///
-				`pweight', vce(cluster `time')*/
+				`aweight', vce(cluster `time')*/
 
 		* Run regressions by subsamples
 		foreach cond in `cond_list' {
@@ -93,14 +93,14 @@ program pooled_reg
 				}
 
             	/*reg `outcome' post i.dpto  ///
-					`ES_subsample' `cond' `pweight', vce(cluster dpto)
+					`ES_subsample' `cond' `aweight', vce(cluster dpto)
 				matrix COL_ES`age_group' = ((_b[post] \ _se[post]) \ e(N))*/
 
                 gen interaction = treatment`age_group' * post
 
                 reghdfe `outcome' i.treatment`age_group' i.post interaction ///
                     i.`time' i.dpto  `all_controls' ///
-                    `DiD_subsample' `cond' `pweight', noabsorb cluster(`time' dpto)
+                    `DiD_subsample' `cond' `aweight', noabsorb cluster(`time' dpto)
 		
                 matrix COL_DiD`age_group' = ((_b[interaction] \ _se[interaction]) \ e(N))
         

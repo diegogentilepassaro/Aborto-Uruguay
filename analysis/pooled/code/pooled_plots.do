@@ -3,86 +3,21 @@ set more off
 
 program main
 	qui do ../../globals.do
-	global controls = "nbr_people ind_under14 edad single poor"
+	global controls = "nbr_people ind_under14 edad single poor blanco public_health"
 	
 	create_births_data,     time(anio_sem) num_periods(6) by_vars(single kids_before)
 	local outcomes = "GFR GFR_single0    GFR_single1    GFR_kids_before0    GFR_kids_before1 " + ///
 				  " births births_single0 births_single1 births_kids_before0 births_kids_before1 "
-	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide) outcomes(`outcomes')
+	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide) ///
+	    outcomes(`outcomes')
 	pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
-	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_ind) outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm)
+	pooled_coefplot,   time(anio_sem) num_periods(6) data(births_ind) ///
+	    outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg_preterm)
 	
 	local labor_vars   = "trabajo horas_trabajo work_part_time"
 	pooled_coefplot, data(ech_labor) time(anio_sem) num_periods(6) outcomes(`labor_vars')
 	/*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
 	pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcomes(`educ_vars')*/
-end
-
-capture program drop relative_time
-program              relative_time
-syntax, num_periods(int) time(str) event_date(str)
-	if "`time'" == "anio_qtr" { //+1 since impl_date marks beginning of post
-		gen t = `time' - qofd(`event_date')
-	}
-	else if "`time'" == "anio_sem" {
-		gen t = `time' - hofd(`event_date')
-	}
-	else {
-		gen t = `time' - yofd(`event_date')
-	}
-	replace t = t + `num_periods' + 1  //t>=0. t>0 for the event window (1 is -6, 13 is 6)
-	replace t = 0    if t < 0
-	replace t = 1000 if t >  2*`num_periods' + 1
-	assert !mi(t)
-	tab t,m
-	replace t = t+1 if t<1000 //t>=1: hence 1 groups all pre-periods before the event window
-	tab t,m
-end
-
-program compute_TFR
-syntax, time(str) by_vars(str)
-	use ..\..\..\assign_treatment\output\births15.dta, clear
-	drop if inrange(edad,45,49)
-
-	if "`time'" == "anio_sem" {
-		local time_label "Semesters"
-		local times "anio anio_sem"
-	}
-	else {
-		local time_label "Years"
-		local times "anio"
-	}
-	keep if !mi(treatment) | dpto==1
-	collapse (count) births=edad, by(`times' age_min age_max dpto impl_date_dpto treatment)	
-	isid `time' age_min age_max dpto
-
-	merge m:1 dpto age_min age_max anio using ..\..\..\derived\output\population_fertile_age.dta, keep(3)
-	gen TFR_agegroup = births/pop
-
-	collapse (sum) TFR = TFR_agegroup, by(`times' dpto impl_date_dpto treatment)
-	isid `time' dpto
-	replace TFR = 5 * TFR
-	lab var TFR "Total Fertility Rate"
-	keep `time' dpto TFR
-	save ../temp/TFR_`time'.dta, replace
-
-	foreach outcome in `by_vars' {
-		use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
-		keep if hombre==0 & age_fertile==1
-		collapse (count) pop_`outcome'=pers [aw=pesoan], by(anio dpto `outcome')
-		sort anio dpto `outcome'
-		egen tot_`outcome' = total(pop), by(anio dpto)
-		gen pop_sh_`outcome' = pop/tot
-		keep if `outcome'==1
-		isid anio dpto
-		keep anio dpto pop_sh_`outcome'
-		keep if inrange(anio,2001,2015)
-		save ../temp/sh_`outcome'.dta, replace
-	}
-
-	use ..\..\..\derived\output\population_fertile_age.dta, clear
-	collapse (sum) pop, by(dpto anio)
-	save ../temp/pop_fertile_age_agg.dta, replace
 end
 
 program create_births_data
@@ -167,15 +102,61 @@ syntax, time(str) by_vars(str) num_periods(str)
 	save ../temp/plots_sample_births_long.dta, replace
 end
 
+program compute_TFR
+syntax, time(str) by_vars(str)
+	use ..\..\..\assign_treatment\output\births15.dta, clear
+	drop if inrange(edad,45,49)
+
+	if "`time'" == "anio_sem" {
+		local time_label "Semesters"
+		local times "anio anio_sem"
+	}
+	else {
+		local time_label "Years"
+		local times "anio"
+	}
+	keep if !mi(treatment) | dpto==1
+	collapse (count) births=edad, by(`times' age_min age_max dpto impl_date_dpto treatment)	
+	isid `time' age_min age_max dpto
+
+	merge m:1 dpto age_min age_max anio using ..\..\..\derived\output\population_fertile_age.dta, keep(3)
+	gen TFR_agegroup = births/pop
+
+	collapse (sum) TFR = TFR_agegroup, by(`times' dpto impl_date_dpto treatment)
+	isid `time' dpto
+	replace TFR = 5 * TFR
+	lab var TFR "Total Fertility Rate"
+	keep `time' dpto TFR
+	save ../temp/TFR_`time'.dta, replace
+
+	foreach outcome in `by_vars' {
+		use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
+		keep if hombre==0 & age_fertile==1
+		collapse (count) pop_`outcome'=pers [aw=pesoan], by(anio dpto `outcome')
+		sort anio dpto `outcome'
+		egen tot_`outcome' = total(pop), by(anio dpto)
+		gen pop_sh_`outcome' = pop/tot
+		keep if `outcome'==1
+		isid anio dpto
+		keep anio dpto pop_sh_`outcome'
+		keep if inrange(anio,2001,2015)
+		save ../temp/sh_`outcome'.dta, replace
+	}
+
+	use ..\..\..\derived\output\population_fertile_age.dta, clear
+	collapse (sum) pop, by(dpto anio)
+	save ../temp/pop_fertile_age_agg.dta, replace
+end
+
 capture program drop pooled_coefplot
 program              pooled_coefplot
 syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) restr(str)]
 
 	if substr("`data'",1,3) == "ech" {
 		use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
-		local all_controls = "c98_* ${controls}"
+		local all_controls = "c98_* c01_* ${controls}"
 		if "`data'" == "ech_labor" {
-			keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)
+			keep if hombre == 0 & inrange(horas_trabajo,0,100) // & inrange(edad, 16, 45)
 		}
 		else {
 			keep if hombre == 0 
@@ -183,7 +164,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 	}
 	else if "`data'" == "births_ind" {
 		use ../temp/plots_sample_births_ind.dta, clear
-		local all_controls = ""
+		local all_controls = "c.edad i.tipoestab i.married i.high_school"
 	}
 	else  {
 		use  ..\temp\plots_sample_births_wide.dta, clear
@@ -191,7 +172,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		tab dpto
 	}
 	relative_time, num_periods(`num_periods') time(`time') event_date(impl_date_dpto)
-	local omitted = `num_periods'+1 //tr_t = treatment*t
+	local omitted = `num_periods' //tr_t = treatment*t
 	di "Omitted period: -1 (prior to implementation) or t=`omitted'."
 
 	if "`time'" == "anio_sem" {
@@ -205,13 +186,12 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		local time_label "Years relative to IS implementation"
 	}
 	if substr("`data'",1,3) == "ech" {
-		replace `weight' = int(`weight')
-		local pweight = "[pw = `weight']"
+		local aweight = "[aw = `weight']"
 	}
 	else {
-		local pweight = ""
+		local aweight = ""
 	}
-	drop if anio_sem >=hofd(td(01jul2013))
+	
 	save ../temp/plots_sample_`data'.dta, replace
 
 	local n_outcomes: word count `outcomes'
@@ -243,7 +223,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		
 		* ES: run main regression and plot coefficients
 		/*reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
-			`ES_subsample_nomvd' `pweight', vce(cluster dpto)
+			`ES_subsample_nomvd' `aweight', vce(cluster dpto)
 			* Coef plot
 		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
 				drop(_cons 1.t 1000.t *.`time' *.dpto  `all_controls') ///
@@ -251,7 +231,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			graph export ../output/pooled_es_`outcome'_`time'_nomvd.pdf, replace
 
 		reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
-			`ES_subsample' `pweight', vce(cluster dpto)
+			`ES_subsample' `aweight', vce(cluster dpto)
 			* Coef plot
 
 		    coefplot, `coefplot_opts' xtitle("`time_label'") ///
@@ -276,28 +256,47 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 			
 		* DiD: run main regression and plot coefficientss
 		reghdfe `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto `all_controls' ///
-			`DiD_subsample' `pweight', noabsorb base cluster(dpto)
-			* Coef plot
-			coefplot, `coefplot_opts' xtitle("`time_label'") ///
-				drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto  `all_controls') ///
-				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
-			graph export ../output/pooled_did_`outcome'_`time'.pdf, replace
-			* Coef plot with shift
-			qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
-			local target_mean = r(mean)
-			preserve
-			    coefplot, omitted vertical baselevels gen ///
-					drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto `control_vars' ${controls})
-			    qui sum __b
-			    local coef_mean = r(mean)
-			restore 
-			local yshift = `target_mean' - `coef_mean'
-			coefplot, `coefplot_opts' xtitle("`time_label'") ///
-				drop(_cons *.t 1.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto `all_controls') ///
-			    transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
-				xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 				
-			graph export ../output/pooled_did_shift_`outcome'_`time'.pdf, replace
+			`DiD_subsample' `aweight', noabsorb base cluster(dpto)
+			
+		* Coef plot
+		coefplot, `coefplot_opts' xtitle("`time_label'") ///
+			drop(_cons *.t 0.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto `all_controls') ///
+            xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
+		graph export ../output/pooled_did_`outcome'_`time'.pdf, replace
+		
+		* Coef plot with shift
+		qui sum `outcome' if inrange(t, 1, `num_periods')
+		local target_mean = r(mean)
+		preserve
+			coefplot, omitted vertical baselevels gen ///
+				drop(_cons *.t 0.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto `all_controls')
+			qui sum __b
+			local coef_mean = r(mean)
+		restore 
+		local yshift = `target_mean' - `coef_mean'
+		coefplot, `coefplot_opts' xtitle("`time_label'") ///
+			drop(_cons *.t 0.t#1.treatment 1000.t#1.treatment 1.treatment 0.treatment *.`time' *.dpto `all_controls') ///
+			transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
+			xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 		
+		graph export ../output/pooled_did_shift_`outcome'_`time'.pdf, replace
 	}
+end
+
+capture program drop relative_time
+program              relative_time
+syntax, num_periods(int) time(str) event_date(str)
+	if "`time'" == "anio_sem" {
+		gen t = `time' - hofd(`event_date')
+	}
+	else {
+		gen t = `time' - yofd(`event_date')
+	}
+	replace t = -1000    if t < -`num_periods'
+	replace t = 1000 if t >  `num_periods'
+	replace t = t + `num_periods' + 1 if (t != -1000 & t != 1000)
+	replace t = 0 if t == -1000
+	assert !mi(t)
+	tab t, m
 end
 
 program pooled_mean_plots
