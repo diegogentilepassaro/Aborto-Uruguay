@@ -1,6 +1,6 @@
 clear all
 set more off
-adopath + ../../library/stata/gslab_misc/ado
+adopath + ../../../library/stata/gslab_misc/ado
 
 program main_clean_raw
     clean_01_05 
@@ -12,11 +12,10 @@ end
 
 program clean_01_05
     * Note: there is no nomdepto for 2005: check running table nomdpto anio
-    * Can't find: meses_trabajando anios_trabajando
     
     foreach year in 2001 2002 2003 2004 2005 {
         foreach t in p h {
-            import excel using "..\..\raw/`year'/`t'`year'.xls", clear first
+            import excel using "..\..\..\raw/`year'/`t'`year'.xls", clear first
             save ..\temp\preclean_`year'_`t'.dta, replace
         }
         use ..\temp\preclean_`year'_p.dta, clear
@@ -29,11 +28,11 @@ program clean_01_05
         
         rename (correlativ nper  locech          nomlocech ///
                 e1         e2    pt1             ht11 ///
-                f17_1            f17_2           f1_1      f23 ///
+                f17_1            f17_2           f23 ///
                 d14              d16             ht3) ///               
                (numero     pers  loc             nomloc ///
                 hombre     edad  ytotal          y_hogar ///
-                horas_trabajo_p  horas_trabajo_s trabajo_1 busca_trabajo ///
+                horas_trabajo_p  horas_trabajo_s busca_trabajo ///
                 nbr_above14      nbr_people      nbr_under14)
 
         gen    c98_resid_house        =    (c1==1)
@@ -101,15 +100,16 @@ program clean_01_05
 
         gen estudiante = (pobpcoac==7)
         gen trabajo    = (pobpcoac==2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-        gen meses_trabajando = .
-        gen anios_trabajando = .
-        
+
+        foreach var in hombre busca_trabajo {
+            replace `var' = 0 if `var' == 2
+        }
+
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
-             peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14 ///
-             pobpcoac married c98_* c01_* estudiante anios_* *trabaj* blanco ///
-             health_insurance public_health
+            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14 ///
+            married c98_* c01_* estudiante *trabaj* blanco ///
+            health_insurance public_health
         
         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
     }
@@ -127,14 +127,16 @@ program clean_06
         capture rename HT3 ht3
         capture rename Pobpcoac pobpcoac
 
-        rename (nper  locagr nom_locagr e27  e26    pesoano  pt1              ht11             ///
-                f62          f81             f93             f82_1            f82_2            ///
-                d23          d25             ht3             f102                              ///
-                e38          e39_1           e30_1  e30_2    e30_3  e30_4     e30_5_2)        ///
-               (pers   loc   nomloc     edad hombre pesoan   ytotal     y_hogar                ///
-                trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
-                nbr_above14  nbr_people      nbr_under14     busca_trabajo                     ///
-                live_births  live_births_nbr afro   asia     blanco indigena  otro)
+        rename (nper            locagr            nom_locagr        e27   ///
+                e26             pesoano           pt1               ht11             ///
+                f62             f81               f93               d25   ///
+                ht3             f102              e30_1             e30_2  ///
+                e30_3             e30_4     e30_5_2)        ///
+               (pers            loc               nomloc            edad  ///
+                hombre          pesoan            ytotal            y_hogar                ///
+                horas_trabajo_p horas_trabajo_s   nbr_above14       nbr_people      ///
+                nbr_under14     busca_trabajo     afro              asia     ///
+                blanco            indigena          otro)
 
         gen    c98_resid_house        =    (c1!=5)
         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -183,19 +185,21 @@ program clean_06
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
 
         destring anio, replace
         destring secc, replace
         destring segm, replace
         destring estrato, replace
+        
+        foreach var in hombre busca_trabajo {
+            replace `var' = 0 if `var' == 2
+        }
 
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
-             peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births* blanco ///
-             health_insurance public_health
+            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+            married c98_* c01_* c06_* estudiante *trabaj* ///
+            lp_06 li_06 blanco health_insurance public_health
 		
         save_data ..\temp\clean_2006.dta, key(anio pers numero) replace   
 end
@@ -211,14 +215,16 @@ program clean_07
         capture rename HT3  ht3
         capture rename Pobpcoac pobpcoac
                     
-        rename (nper loc_agr pesoano e27      e28   pt1       ht11                              ///
-                f68          f88              f101            f89_1            f89_2            ///
-                d24          d26              ht3             f102                              ///
-                e41          e42_1            e31_1 e31_2     e31_3   e31_4    e31_5_1)         ///
-               (pers loc     pesoan  hombre   edad  ytotal    y_hogar                           ///
-                trabajo_1    horas_trabajo_p  horas_trabajo_s meses_trabajando anios_trabajando ///
-                nbr_above14  nbr_people       nbr_under14     busca_trabajo                     ///
-                live_births  live_births_nbr  afro  asia      blanco  indigena otro)
+        rename (nper             loc_agr          pesoano         e27  ///
+                e28              pt1              ht11            f88  ///
+                f101             d24              d26             ht3  ///
+                f102             e31_1            e31_2           e31_3  ///
+                e31_4            e31_5_1)    ///
+               (pers             loc              pesoan          hombre   ///
+                edad             ytotal           y_hogar         horas_trabajo_p  ///
+                horas_trabajo_s  nbr_above14     nbr_people       nbr_under14      ///
+                busca_trabajo    afro            asia             blanco           ///
+                indigena         otro)
 
         gen    c98_resid_house        =    (c1!=5)
         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -267,7 +273,6 @@ program clean_07
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
 
         destring numero, replace
@@ -277,12 +282,15 @@ program clean_07
         destring estrato, replace
         
         gen nomloc = ""
+        
+        foreach var in hombre busca_trabajo {
+            replace `var' = 0 if `var' == 2
+        }
 
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
-             peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births* blanco ///
-             health_insurance public_health
+            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+            married c98_* c01_* c06_* estudiante *trabaj* ///
+            lp_06 li_06 blanco health_insurance public_health
 		
         save_data ..\temp\clean_2007.dta, key(anio pers numero) replace
 end 
@@ -297,14 +305,16 @@ program clean_08
         capture rename HT11 ht11
         capture rename HT3  ht3
             
-        rename (nper e28     nom_locagr      pesoano e27     pt1    ht11                       ///
-                f68          f88_1           f101            f89_1            f89_2            ///
-                d24          d26             ht3     f102                                      ///
-                e41          e42_1           e31_1   e31_2   e31_3  e31_4    e31_5_1)          ///
-               (pers edad    nomloc          pesoan  hombre  ytotal  y_hogar                   ///
-                trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
-                nbr_above14  nbr_people      nbr_under14     busca_trabajo                     ///
-                live_births  live_births_nbr afro    asia    blanco indigena otro )
+        rename (nper            e28             nom_locagr      pesoano  ///    
+                e27             pt1             ht11            f88_1    ///
+                f101            d24             d26             ht3      ///
+                f102            e31_1           e31_2           e31_3    ///
+                e31_4           e31_5_1)          ///
+               (pers            edad            nomloc          pesoan   ///
+                hombre          ytotal          y_hogar         horas_trabajo_p ///
+                horas_trabajo_s nbr_above14     nbr_people      nbr_under14  ///
+                busca_trabajo   afro            asia            blanco       ///
+                indigena        otro )
 
         gen    c98_resid_house        =    (c1!=5)
         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -352,7 +362,6 @@ program clean_08
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
         
         destring numero, replace
@@ -362,12 +371,15 @@ program clean_08
         destring estrato, replace
         
         gen loc = ""    
+        
+        foreach var in hombre busca_trabajo {
+            replace `var' = 0 if `var' == 2
+        }
 
         keep numero pers anio trimestre mes dpto  secc segm estrato loc nomloc ccz  ///
-             peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births* blanco ///
-             health_insurance public_health
+             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+             married c98_* c01_* c06_* estudiante *trabaj* ///
+             lp_06 li_06 blanco health_insurance public_health
 
 		save_data ..\temp\clean_2008.dta, key(anio pers numero) replace
 end 
@@ -387,12 +399,14 @@ program clean_09_16
         capture rename Nom_loc_agr_13 nom_locagr
         capture rename POBPCOAC pobpcoac
             
-        rename (nper e27    e26      locagr nom_locagr      pesoano pt1      ht11             ///
-                f66         f85             f98             f88_1            f88_2            ///
-                d23         d25             ht3             f99              e29_6)           ///
-               (pers edad   hombre   loc    nomloc          pesoan  ytotal   y_hogar          ///
-                trabajo_1   horas_trabajo_p horas_trabajo_s meses_trabajando anios_trabajando ///
-                nbr_above14 nbr_people      nbr_under14     busca_trabajo    ascendencia)
+        rename (nper            e27             e26          locagr    ///
+                nom_locagr      pesoano         pt1          ht11             ///
+                f85             f98             d23          d25       ///
+                ht3             f99             e29_6)      ///
+               (pers            edad            hombre       loc    ///
+                nomloc          pesoan          ytotal       y_hogar          ///
+                horas_trabajo_p horas_trabajo_s nbr_above14  nbr_people  ///
+                nbr_under14     busca_trabajo    ascendencia)
         
         gen    c98_resid_house        =    (c1!=5)
         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -447,23 +461,22 @@ program clean_09_16
         
         gen estudiante = (pobpcoac == 7)
         gen trabajo    = (pobpcoac == 2)
-        bysort numero: egen y_hogar_alt = sum(ytotal) 
         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
-        
-        gen live_births     = .
-        gen live_births_nbr = .
         
         destring numero, replace
         destring anio, replace
         destring secc, replace
         destring segm, replace
         destring estrato, replace
-        
+
+        foreach var in hombre busca_trabajo {
+            replace `var' = 0 if `var' == 2
+        }
+                
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
-             peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_under14    ///
-             pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* ///
-             lp_06 li_06 region_3 region_4 live_births* blanco ///
-             health_insurance public_health
+             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+             married c98_* c01_* c06_* estudiante *trabaj* ///
+             lp_06 li_06 blanco health_insurance public_health
         
         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
         }

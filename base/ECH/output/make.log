@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-27 15:41:00 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\code 
+ make.py started: 2019-09-03 16:55:47 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\ECH\code 
 
 
 
@@ -32,14 +32,14 @@ Notes:
 
 . set more off
 
-. adopath + ../../library/stata/gslab_misc/ado
+. adopath + ../../../library/stata/gslab_misc/ado
   [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
   [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
   [6]  (OLDPLACE)  "c:\ado/"
-  [7]              "../../library/stata/gslab_misc/ado"
+  [7]              "../../../library/stata/gslab_misc/ado"
 
 . 
 . program main_clean_raw
@@ -54,12 +54,11 @@ Notes:
 . program clean_01_05
   1.     * Note: there is no nomdepto for 2005: check running table nomdpto ani
 > o
-.     * Can't find: meses_trabajando anios_trabajando
 .     
 .     foreach year in 2001 2002 2003 2004 2005 {
   2.         foreach t in p h {
-  3.             import excel using "..\..\raw/`year'/`t'`year'.xls", clear fir
-> st
+  3.             import excel using "..\..\..\raw/`year'/`t'`year'.xls", clear 
+> first
   4.             save ..\temp\preclean_`year'_`t'.dta, replace
   5.         }
   6.         use ..\temp\preclean_`year'_p.dta, clear
@@ -72,11 +71,11 @@ Notes:
  12.         
 .         rename (correlativ nper  locech          nomlocech ///
 >                 e1         e2    pt1             ht11 ///
->                 f17_1            f17_2           f1_1      f23 ///
+>                 f17_1            f17_2           f23 ///
 >                 d14              d16             ht3) ///               
 >                (numero     pers  loc             nomloc ///
 >                 hombre     edad  ytotal          y_hogar ///
->                 horas_trabajo_p  horas_trabajo_s trabajo_1 busca_trabajo ///
+>                 horas_trabajo_p  horas_trabajo_s busca_trabajo ///
 >                 nbr_above14      nbr_people      nbr_under14)
  13. 
 .         gen    c98_resid_house        =    (c1==1)
@@ -144,18 +143,18 @@ Notes:
  56. 
 .         gen estudiante = (pobpcoac==7)
  57.         gen trabajo    = (pobpcoac==2)
- 58.         bysort numero: egen y_hogar_alt = sum(ytotal) 
- 59.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
- 60.         gen meses_trabajando = .
- 61.         gen anios_trabajando = .
- 62.         
+ 58.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 59. 
+.         foreach var in hombre busca_trabajo {
+ 60.             replace `var' = 0 if `var' == 2
+ 61.         }
+ 62. 
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz ///
->              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
-> er14 ///
->              pobpcoac married c98_* c01_* estudiante anios_* *trabaj* blanco 
-> ///
->              health_insurance public_health
+>             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under
+> 14 ///
+>             married c98_* c01_* estudiante *trabaj* blanco ///
+>             health_insurance public_health
  63.         
 .         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
  64.     }
@@ -175,22 +174,21 @@ Notes:
   7.         capture rename HT3 ht3
   8.         capture rename Pobpcoac pobpcoac
   9. 
-.         rename (nper  locagr nom_locagr e27  e26    pesoano  pt1             
->  ht11             ///
->                 f62          f81             f93             f82_1           
->  f82_2            ///
->                 d23          d25             ht3             f102            
->                   ///
->                 e38          e39_1           e30_1  e30_2    e30_3  e30_4    
->  e30_5_2)        ///
->                (pers   loc   nomloc     edad hombre pesoan   ytotal     y_hog
-> ar                ///
->                 trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando
->  anios_trabajando ///
->                 nbr_above14  nbr_people      nbr_under14     busca_trabajo   
->                   ///
->                 live_births  live_births_nbr afro   asia     blanco indigena 
->  otro)
+.         rename (nper            locagr            nom_locagr        e27   ///
+>                 e26             pesoano           pt1               ht11     
+>         ///
+>                 f62             f81               f93               d25   ///
+>                 ht3             f102              e30_1             e30_2  //
+> /
+>                 e30_3             e30_4     e30_5_2)        ///
+>                (pers            loc               nomloc            edad  ///
+>                 hombre          pesoan            ytotal            y_hogar  
+>               ///
+>                 horas_trabajo_p horas_trabajo_s   nbr_above14       nbr_peopl
+> e      ///
+>                 nbr_under14     busca_trabajo     afro              asia     
+> ///
+>                 blanco            indigena          otro)
  10. 
 .         gen    c98_resid_house        =    (c1!=5)
  11.         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -241,25 +239,26 @@ Notes:
  43.         
 .         gen estudiante = (pobpcoac == 7)
  44.         gen trabajo    = (pobpcoac == 2)
- 45.         bysort numero: egen y_hogar_alt = sum(ytotal) 
- 46.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
- 47. 
+ 45.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 46. 
 .         destring anio, replace
- 48.         destring secc, replace
- 49.         destring segm, replace
- 50.         destring estrato, replace
- 51. 
+ 47.         destring secc, replace
+ 48.         destring segm, replace
+ 49.         destring estrato, replace
+ 50.         
+.         foreach var in hombre busca_trabajo {
+ 51.             replace `var' = 0 if `var' == 2
+ 52.         }
+ 53. 
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz    ///
->              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
-> er14    ///
->              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* /
-> //
->              lp_06 li_06 region_3 region_4 live_births* blanco ///
->              health_insurance public_health
- 52.                 
+>             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under
+> 14    ///
+>             married c98_* c01_* c06_* estudiante *trabaj* ///
+>             lp_06 li_06 blanco health_insurance public_health
+ 54.                 
 .         save_data ..\temp\clean_2006.dta, key(anio pers numero) replace   
- 53. end
+ 55. end
 
 . 
 . program clean_07
@@ -273,22 +272,20 @@ Notes:
   7.         capture rename HT3  ht3
   8.         capture rename Pobpcoac pobpcoac
   9.                     
-.         rename (nper loc_agr pesoano e27      e28   pt1       ht11           
->                    ///
->                 f68          f88              f101            f89_1          
->   f89_2            ///
->                 d24          d26              ht3             f102           
->                    ///
->                 e41          e42_1            e31_1 e31_2     e31_3   e31_4  
->   e31_5_1)         ///
->                (pers loc     pesoan  hombre   edad  ytotal    y_hogar        
->                    ///
->                 trabajo_1    horas_trabajo_p  horas_trabajo_s meses_trabajand
-> o anios_trabajando ///
->                 nbr_above14  nbr_people       nbr_under14     busca_trabajo  
->                    ///
->                 live_births  live_births_nbr  afro  asia      blanco  indigen
-> a otro)
+.         rename (nper             loc_agr          pesoano         e27  ///
+>                 e28              pt1              ht11            f88  ///
+>                 f101             d24              d26             ht3  ///
+>                 f102             e31_1            e31_2           e31_3  ///
+>                 e31_4            e31_5_1)    ///
+>                (pers             loc              pesoan          hombre   //
+> /
+>                 edad             ytotal           y_hogar         horas_traba
+> jo_p  ///
+>                 horas_trabajo_s  nbr_above14     nbr_people       nbr_under14
+>       ///
+>                 busca_trabajo    afro            asia             blanco     
+>       ///
+>                 indigena         otro)
  10. 
 .         gen    c98_resid_house        =    (c1!=5)
  11.         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -339,28 +336,29 @@ Notes:
  43.         
 .         gen estudiante = (pobpcoac == 7)
  44.         gen trabajo    = (pobpcoac == 2)
- 45.         bysort numero: egen y_hogar_alt = sum(ytotal) 
- 46.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
- 47. 
+ 45.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 46. 
 .         destring numero, replace
- 48.         destring anio, replace
- 49.         destring secc, replace
- 50.         destring segm, replace
- 51.         destring estrato, replace
- 52.         
+ 47.         destring anio, replace
+ 48.         destring secc, replace
+ 49.         destring segm, replace
+ 50.         destring estrato, replace
+ 51.         
 .         gen nomloc = ""
- 53. 
+ 52.         
+.         foreach var in hombre busca_trabajo {
+ 53.             replace `var' = 0 if `var' == 2
+ 54.         }
+ 55. 
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz    ///
->              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
-> er14    ///
->              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* /
-> //
->              lp_06 li_06 region_3 region_4 live_births* blanco ///
->              health_insurance public_health
- 54.                 
+>             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under
+> 14    ///
+>             married c98_* c01_* c06_* estudiante *trabaj* ///
+>             lp_06 li_06 blanco health_insurance public_health
+ 56.                 
 .         save_data ..\temp\clean_2007.dta, key(anio pers numero) replace
- 55. end 
+ 57. end 
 
 . 
 . program clean_08
@@ -373,22 +371,20 @@ Notes:
   6.         capture rename HT11 ht11
   7.         capture rename HT3  ht3
   8.             
-.         rename (nper e28     nom_locagr      pesoano e27     pt1    ht11     
->                   ///
->                 f68          f88_1           f101            f89_1           
->  f89_2            ///
->                 d24          d26             ht3     f102                    
->                   ///
->                 e41          e42_1           e31_1   e31_2   e31_3  e31_4    
-> e31_5_1)          ///
->                (pers edad    nomloc          pesoan  hombre  ytotal  y_hogar 
->                   ///
->                 trabajo_1    horas_trabajo_p horas_trabajo_s meses_trabajando
->  anios_trabajando ///
->                 nbr_above14  nbr_people      nbr_under14     busca_trabajo   
->                   ///
->                 live_births  live_births_nbr afro    asia    blanco indigena 
-> otro )
+.         rename (nper            e28             nom_locagr      pesoano  /// 
+>    
+>                 e27             pt1             ht11            f88_1    ///
+>                 f101            d24             d26             ht3      ///
+>                 f102            e31_1           e31_2           e31_3    ///
+>                 e31_4           e31_5_1)          ///
+>                (pers            edad            nomloc          pesoan   ///
+>                 hombre          ytotal          y_hogar         horas_trabajo
+> _p ///
+>                 horas_trabajo_s nbr_above14     nbr_people      nbr_under14  
+> ///
+>                 busca_trabajo   afro            asia            blanco       
+> ///
+>                 indigena        otro )
   9. 
 .         gen    c98_resid_house        =    (c1!=5)
  10.         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -438,29 +434,30 @@ Notes:
  42.         
 .         gen estudiante = (pobpcoac == 7)
  43.         gen trabajo    = (pobpcoac == 2)
- 44.         bysort numero: egen y_hogar_alt = sum(ytotal) 
- 45.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
- 46.         
+ 44.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 45.         
 .         destring numero, replace
- 47.         destring anio, replace
- 48.         destring secc, replace
- 49.         destring segm, replace
- 50.         destring estrato, replace
- 51.         
+ 46.         destring anio, replace
+ 47.         destring secc, replace
+ 48.         destring segm, replace
+ 49.         destring estrato, replace
+ 50.         
 .         gen loc = ""    
- 52. 
+ 51.         
+.         foreach var in hombre busca_trabajo {
+ 52.             replace `var' = 0 if `var' == 2
+ 53.         }
+ 54. 
 .         keep numero pers anio trimestre mes dpto  secc segm estrato loc nomlo
 > c ccz  ///
->              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
-> er14    ///
->              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* /
-> //
->              lp_06 li_06 region_3 region_4 live_births* blanco ///
->              health_insurance public_health
- 53. 
+>              peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_unde
+> r14    ///
+>              married c98_* c01_* c06_* estudiante *trabaj* ///
+>              lp_06 li_06 blanco health_insurance public_health
+ 55. 
 .                 save_data ..\temp\clean_2008.dta, key(anio pers numero) repla
 > ce
- 54. end 
+ 56. end 
 
 . 
 . program clean_09_16
@@ -478,18 +475,16 @@ Notes:
  10.         capture rename Nom_loc_agr_13 nom_locagr
  11.         capture rename POBPCOAC pobpcoac
  12.             
-.         rename (nper e27    e26      locagr nom_locagr      pesoano pt1      
-> ht11             ///
->                 f66         f85             f98             f88_1            
-> f88_2            ///
->                 d23         d25             ht3             f99              
-> e29_6)           ///
->                (pers edad   hombre   loc    nomloc          pesoan  ytotal   
-> y_hogar          ///
->                 trabajo_1   horas_trabajo_p horas_trabajo_s meses_trabajando 
-> anios_trabajando ///
->                 nbr_above14 nbr_people      nbr_under14     busca_trabajo    
-> ascendencia)
+.         rename (nper            e27             e26          locagr    ///
+>                 nom_locagr      pesoano         pt1          ht11            
+>  ///
+>                 f85             f98             d23          d25       ///
+>                 ht3             f99             e29_6)      ///
+>                (pers            edad            hombre       loc    ///
+>                 nomloc          pesoan          ytotal       y_hogar         
+>  ///
+>                 horas_trabajo_p horas_trabajo_s nbr_above14  nbr_people  ///
+>                 nbr_under14     busca_trabajo    ascendencia)
  13.         
 .         gen    c98_resid_house        =    (c1!=5)
  14.         gen    c06_mat_walls        =    (c2==1|c2==2)
@@ -545,26 +540,24 @@ Notes:
  52.         
 .         gen estudiante = (pobpcoac == 7)
  53.         gen trabajo    = (pobpcoac == 2)
- 54.         bysort numero: egen y_hogar_alt = sum(ytotal) 
- 55.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
- 56.         
-.         gen live_births     = .
- 57.         gen live_births_nbr = .
- 58.         
+ 54.         gen horas_trabajo =  horas_trabajo_p + horas_trabajo_s
+ 55.         
 .         destring numero, replace
- 59.         destring anio, replace
- 60.         destring secc, replace
- 61.         destring segm, replace
- 62.         destring estrato, replace
- 63.         
+ 56.         destring anio, replace
+ 57.         destring secc, replace
+ 58.         destring segm, replace
+ 59.         destring estrato, replace
+ 60. 
+.         foreach var in hombre busca_trabajo {
+ 61.             replace `var' = 0 if `var' == 2
+ 62.         }
+ 63.                 
 .         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc
 >  ccz*  ///
->              peso* hombre edad ytotal y_hogar* nbr_people nbr_above14 nbr_und
-> er14    ///
->              pobpcoac married c98_* c01_* c06_* estudiante anios_* *trabaj* /
-> //
->              lp_06 li_06 region_3 region_4 live_births* blanco ///
->              health_insurance public_health
+>              peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_unde
+> r14    ///
+>              married c98_* c01_* c06_* estudiante *trabaj* ///
+>              lp_06 li_06 blanco health_insurance public_health
  64.         
 .         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
  65.         }
@@ -623,8 +616,8 @@ file ..\temp\preclean_2005.dta saved
 (30,311 real changes made)
 (1,849 real changes made)
 (57,410 missing values generated)
-(57,410 missing values generated)
-(57,410 missing values generated)
+(30,684 real changes made)
+(18,191 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
@@ -654,16 +647,14 @@ file ..\temp\preclean_2005.dta saved
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now byte
-  variable meses_trabajando was float now byte
-  variable anios_trabajando was float now byte
-  (5,166,900 bytes saved)
+  (4,822,440 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2001.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  57410:57(109124):1057905285:2620708126
+  57410:52(25699):2599199254:4165844673
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -683,58 +674,52 @@ Key: anio pers numero
       pesoan |     57,410    42.46771    12.69897         20        154
      pesosem |     57,410    84.94309    25.36861         41        307
      pesotri |     57,410    169.9058    50.74088         83        613
-      hombre |     57,410    1.534471    .4988147          1          2
+      hombre |     57,410    .4655287    .4988147          0          1
 -------------+---------------------------------------------------------
         edad |     57,410    36.20495    23.36714          0         99
-    pobpcoac |     57,410    3.894287    3.217391          1         11
-   trabajo_1 |     57,410    1.196569    .7601981          0          2
 horas_trab~p |     57,410    16.62989      22.678          0         98
 horas_trab~s |     57,410    .8133775     4.69312          0         84
--------------+---------------------------------------------------------
-busca_trab~o |     57,410    .6974221    .9191091          0          2
+busca_trab~o |     57,410    .0636997    .2442193          0          1
       ytotal |     57,410    4357.608     8001.78          0     370120
+-------------+---------------------------------------------------------
  nbr_above14 |     57,410    2.968525    1.323168          1         10
   nbr_people |     57,410    4.057098    2.008564          1         18
  nbr_under14 |     57,410    1.088573    1.387948          0         10
--------------+---------------------------------------------------------
      y_hogar |     57,410    17375.63    17232.38        167     390654
 c98_resid_~e |     57,410    .9824247     .131403          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |     57,410     .689723     .462611          0          1
 c98_nbr_ro~s |     57,410      3.5305    1.278735          1         20
 c98_nbr_be~s |     57,410      2.2081     .854036          1         16
--------------+---------------------------------------------------------
 c98_b_pipe~r |     57,410    .9579864    .2006219          0          1
 c98_hhld_t~t |     57,410    .9313534    .2528544          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |     57,410    .6276433    .4834369          0          1
 c98_hhld_s~e |     57,410      .99892    .0328451          0          1
 c98_hhld_h~r |     57,410    .8735412    .3323686          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |     57,410    .9691691    .1728608          0          1
  c98_hhld_tv |     57,410    .9432503    .2313657          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |     57,410    .4102247    .4918787          0          1
 c98_hhld_w~c |     57,410    .6584045    .4742488          0          1
 c98_hhld_d~r |     57,410    .0634036    .2436896          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |     57,410    .3460199    .4757037          0          1
 c98_hhld_car |     57,410    .3366138    .4725557          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |     57,410    .2203449    .4144828          0          1
 c01_hhld_i~t |     57,410    .1672008    .3731583          0          1
 c01_hhld_p~e |     57,410    .7391221    .4391173          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |     57,410    .5155025     .499764          0          1
 health_ins~e |     57,410    2.678819     1.53499          0          5
+-------------+---------------------------------------------------------
 public_hea~h |     57,410     .353266    .4779886          0          1
       blanco |          0
    trimestre |     57,410    2.496621    1.118957          1          4
--------------+---------------------------------------------------------
      married |     57,410    .4304128    .4951383          0          1
   estudiante |     57,410    .0641874    .2450886          0          1
-     trabajo |     57,410    .4091273    .4916771          0          1
- y_hogar_alt |     57,410     14842.2    15916.37          1     396204
-horas_trab~o |     57,410    17.44327    23.68997          0         98
 -------------+---------------------------------------------------------
-meses_trab~o |          0
-anios_trab~o |          0
+     trabajo |     57,410    .4091273    .4916771          0          1
+horas_trab~o |     57,410    17.44327    23.68997          0         98
 
 
 
@@ -746,8 +731,8 @@ file ..\temp\clean_2001.dta saved
 (28,520 real changes made)
 (1,930 real changes made)
 (56,333 missing values generated)
-(56,333 missing values generated)
-(56,333 missing values generated)
+(30,030 real changes made)
+(18,593 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
@@ -777,16 +762,14 @@ file ..\temp\clean_2001.dta saved
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now byte
-  variable meses_trabajando was float now byte
-  variable anios_trabajando was float now byte
-  (5,069,970 bytes saved)
+  (4,731,972 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2002.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  56333:57(109124):2619130104:3937225289
+  56333:52(25699):1772585606:43217143
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -806,58 +789,52 @@ Key: anio pers numero
       pesoan |     56,333    42.55021     12.6546         20        154
      pesosem |     56,333    85.07544    25.28934         41        307
      pesotri |     56,333    170.1545    50.57208         83        613
-      hombre |     56,333     1.53308    .4989089          1          2
+      hombre |     56,333    .4669199    .4989089          0          1
 -------------+---------------------------------------------------------
         edad |     56,333    36.75322     23.5032          0         99
-    pobpcoac |     56,333    3.989331    3.239857          1         11
-   trabajo_1 |     56,333    1.221327    .7629971          0          2
 horas_trab~p |     56,333    15.72847    22.07784          0         99
 horas_trab~s |     56,333    .7709158    4.583069          0         80
--------------+---------------------------------------------------------
-busca_trab~o |     56,333     .730602    .9257151          0          2
+busca_trab~o |     56,333    .0704915    .2559759          0          1
       ytotal |     56,333    4311.502     7935.09          0     348426
+-------------+---------------------------------------------------------
  nbr_above14 |     56,333    2.947597    1.308373          1         11
   nbr_people |     56,333    3.999805    1.964089          1         22
  nbr_under14 |     56,333    1.052207    1.362932          0         12
--------------+---------------------------------------------------------
      y_hogar |     56,333    16964.35    17229.58          1     356426
 c98_resid_~e |     56,333    .9848046    .1223304          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |     56,333    .6832407    .4652168          0          1
 c98_nbr_ro~s |     56,333     3.56624    1.276067          1         30
 c98_nbr_be~s |     56,333    2.205563    .8227873          1          8
--------------+---------------------------------------------------------
 c98_b_pipe~r |     56,333    .9603785    .1950701          0          1
 c98_hhld_t~t |     56,333    .9421121    .2335335          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |     56,333     .644702    .4786078          0          1
 c98_hhld_s~e |     56,333    .9989882    .0317936          0          1
 c98_hhld_h~r |     56,333    .8795555    .3254835          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |     56,333    .9727513    .1628087          0          1
  c98_hhld_tv |     56,333    .9402659    .2369956          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |     56,333      .36973    .4827358          0          1
 c98_hhld_w~c |     56,333    .6610512    .4733566          0          1
 c98_hhld_d~r |     56,333     .058669    .2350062          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |     56,333    .3587063     .479625          0          1
 c98_hhld_car |     56,333     .330073    .4702433          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |     56,333    .2188415    .4134646          0          1
 c01_hhld_i~t |     56,333    .1700602     .375689          0          1
 c01_hhld_p~e |     56,333    .7343475    .4416839          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |     56,333    .4551151    .4979857          0          1
 health_ins~e |     56,333    2.623436    1.539908          0          5
+-------------+---------------------------------------------------------
 public_hea~h |     56,333    .3703513     .482903          0          1
       blanco |          0
    trimestre |     56,333    2.492802    1.113255          1          4
--------------+---------------------------------------------------------
      married |     56,333    .4279374    .4947841          0          1
   estudiante |     56,333    .0679886    .2517285          0          1
-     trabajo |     56,333    .3944757    .4887421          0          1
- y_hogar_alt |     56,333    14430.39     15566.1          1     348426
-horas_trab~o |     56,333    16.49939    23.07219          0        100
 -------------+---------------------------------------------------------
-meses_trab~o |          0
-anios_trab~o |          0
+     trabajo |     56,333    .3944757    .4887421          0          1
+horas_trab~o |     56,333    16.49939    23.07219          0        100
 
 
 
@@ -869,8 +846,8 @@ file ..\temp\clean_2002.dta saved
 (26,881 real changes made)
 (2,006 real changes made)
 (55,369 missing values generated)
-(55,369 missing values generated)
-(55,369 missing values generated)
+(29,550 real changes made)
+(18,903 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
@@ -900,16 +877,14 @@ file ..\temp\clean_2002.dta saved
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now byte
-  variable meses_trabajando was float now byte
-  variable anios_trabajando was float now byte
-  (4,983,210 bytes saved)
+  (4,650,996 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2003.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  55369:57(109124):3833025737:3279978909
+  55369:52(25699):718323835:2916482880
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -929,58 +904,52 @@ Key: anio pers numero
       pesoan |     55,369    42.72232    13.04306         20        154
      pesosem |     55,369    85.42719    26.07932         41        307
      pesotri |     55,369    170.8444    52.15185         83        613
-      hombre |     55,369    1.533692    .4988681          1          2
+      hombre |     55,369    .4663079    .4988681          0          1
 -------------+---------------------------------------------------------
         edad |     55,369    37.16867    23.67392          0         99
-    pobpcoac |     55,369    4.054417    3.262985          1         11
-   trabajo_1 |     55,369    1.230147    .7607563          0          2
 horas_trab~p |     55,369    15.28536    21.69562          0         99
 horas_trab~s |     55,369    .7397099    4.455208          0         78
--------------+---------------------------------------------------------
-busca_trab~o |     55,369    .7509617    .9326493          0          2
+busca_trab~o |     55,369    .0681609    .2520241          0          1
       ytotal |     55,369     4477.22    8522.037          0     419167
+-------------+---------------------------------------------------------
  nbr_above14 |     55,369    2.934909    1.310141          1         10
   nbr_people |     55,369    3.961404    1.952683          1         16
  nbr_under14 |     55,369    1.026495    1.346436          0          9
--------------+---------------------------------------------------------
      y_hogar |     55,369    17261.13    18753.56          2     467319
 c98_resid_~e |     55,369    .9904098    .0974598          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |     55,369    .6693276    .4704595          0          1
 c98_nbr_ro~s |     55,369    3.544492    1.316187          1         40
 c98_nbr_be~s |     55,369    2.196969     .821193          1          8
--------------+---------------------------------------------------------
 c98_b_pipe~r |     55,369    .9657931    .1817618          0          1
 c98_hhld_t~t |     55,369    .9418628    .2340049          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |     55,369    .6415142    .4795601          0          1
 c98_hhld_s~e |     55,369    .9991873    .0284971          0          1
 c98_hhld_h~r |     55,369    .8762846    .3292596          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |     55,369    .9638065    .1867731          0          1
  c98_hhld_tv |     55,369    .9270169    .2601111          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |     55,369    .3438567    .4749982          0          1
 c98_hhld_w~c |     55,369    .6447471    .4785942          0          1
 c98_hhld_d~r |     55,369    .0555907    .2291316          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |     55,369    .3711102    .4831062          0          1
 c98_hhld_car |     55,369    .3126118    .4635618          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |     55,369     .226914    .4188403          0          1
 c01_hhld_i~t |     55,369    .1654717     .371609          0          1
 c01_hhld_p~e |     55,369    .7206198    .4486987          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |     55,369     .396666      .48921          0          1
 health_ins~e |     55,369    2.604147    1.527062          0          5
+-------------+---------------------------------------------------------
 public_hea~h |     55,369    .3673536    .4820883          0          1
       blanco |          0
    trimestre |     55,369    2.515939    1.115577          1          4
--------------+---------------------------------------------------------
      married |     55,369    .4244975     .494271          0          1
   estudiante |     55,369    .0724774     .259279          0          1
-     trabajo |     55,369    .3896043    .4876649          0          1
- y_hogar_alt |     55,369    14947.36    17233.85          1     457319
-horas_trab~o |     55,369    16.02507    22.64997          0        100
 -------------+---------------------------------------------------------
-meses_trab~o |          0
-anios_trab~o |          0
+     trabajo |     55,369    .3896043    .4876649          0          1
+horas_trab~o |     55,369    16.02507    22.64997          0        100
 
 
 
@@ -992,8 +961,8 @@ file ..\temp\clean_2003.dta saved
 (26,665 real changes made)
 (411 real changes made)
 (55,587 missing values generated)
-(55,587 missing values generated)
-(55,587 missing values generated)
+(29,605 real changes made)
+(18,877 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
@@ -1023,16 +992,14 @@ file ..\temp\clean_2003.dta saved
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now byte
-  variable meses_trabajando was float now byte
-  variable anios_trabajando was float now byte
-  (5,002,830 bytes saved)
+  (4,669,308 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2004.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  55587:57(109124):1792133954:497996694
+  55587:52(25699):1583847595:3756396182
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1052,58 +1019,52 @@ Key: anio pers numero
       pesoan |     55,587    42.53372    12.73145         20        154
      pesosem |     55,587     85.0596    25.45323         41        307
      pesotri |     55,587    170.1198    50.89842         83        613
-      hombre |     55,587    1.532589    .4989413          1          2
+      hombre |     55,587    .4674114    .4989413          0          1
 -------------+---------------------------------------------------------
         edad |     55,587    37.09423    23.65232          0         99
-    pobpcoac |     55,587    3.998561    3.256113          1         11
-   trabajo_1 |     55,587    1.208232    .7517441          0          2
 horas_trab~p |     55,587    16.35591    22.32388          0         99
 horas_trab~s |     55,587    .7998273    4.585173          0         80
--------------+---------------------------------------------------------
-busca_trab~o |     55,587    .7295591     .936219          0          2
+busca_trab~o |     55,587    .0503715    .2187123          0          1
       ytotal |     55,587    4988.446    9386.207          0     438100
+-------------+---------------------------------------------------------
  nbr_above14 |     55,587    2.947812    1.323733          1         11
   nbr_people |     55,587    3.973249    1.965847          1         15
  nbr_under14 |     55,587    1.025438    1.341206          0         10
--------------+---------------------------------------------------------
      y_hogar |     55,587    19147.16    21481.78          2     539491
 c98_resid_~e |     55,587    .9881447    .1082356          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |     55,587    .6685916    .4707238          0          1
 c98_nbr_ro~s |     55,587    3.564323    1.408814          1         50
 c98_nbr_be~s |     55,587    2.204598    .8407987          1          8
--------------+---------------------------------------------------------
 c98_b_pipe~r |     55,587    .9647579    .1843927          0          1
 c98_hhld_t~t |     55,587    .9464803    .2250695          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |     55,587    .6645978    .4721351          0          1
 c98_hhld_s~e |     55,587    .9995862    .0203372          0          1
 c98_hhld_h~r |     55,587    .8809254    .3238792          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |     55,587    .9606023     .194541          0          1
  c98_hhld_tv |     55,587     .929318    .2562952          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |     55,587    .3475093    .4761834          0          1
 c98_hhld_w~c |     55,587    .6503139    .4768751          0          1
 c98_hhld_d~r |     55,587    .0581971    .2341178          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |     55,587    .3980967      .48951          0          1
 c98_hhld_car |     55,587    .3211362    .4669172          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |     55,587     .254448    .4355544          0          1
 c01_hhld_i~t |     55,587    .1670175    .3729948          0          1
 c01_hhld_p~e |     55,587     .742134    .4374638          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |     55,587    .4306942    .4951779          0          1
 health_ins~e |     55,587    2.562056    1.494293          0          5
+-------------+---------------------------------------------------------
 public_hea~h |     55,587    .3671182    .4820235          0          1
       blanco |          0
    trimestre |     55,587    2.496663    1.117403          1          4
--------------+---------------------------------------------------------
      married |     55,587    .4219512    .4938753          0          1
   estudiante |     55,587    .0737223    .2613207          0          1
-     trabajo |     55,587      .40988    .4918158          0          1
- y_hogar_alt |     55,587     16621.6    19269.51          2     529826
-horas_trab~o |     55,587    17.15574    23.30042          0        100
 -------------+---------------------------------------------------------
-meses_trab~o |          0
-anios_trab~o |          0
+     trabajo |     55,587      .40988    .4918158          0          1
+horas_trab~o |     55,587    17.15574    23.30042          0        100
 
 
 
@@ -1115,8 +1076,8 @@ file ..\temp\clean_2004.dta saved
 (26,548 real changes made)
 (333 real changes made)
 (54,330 missing values generated)
-(54,330 missing values generated)
-(54,330 missing values generated)
+(29,040 real changes made)
+(18,468 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c98_resid_owned was float now byte
@@ -1146,16 +1107,14 @@ file ..\temp\clean_2004.dta saved
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now byte
-  variable meses_trabajando was float now byte
-  variable anios_trabajando was float now byte
-  (4,889,700 bytes saved)
+  (4,563,720 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2005.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  54330:57(50319):2524996345:1725869928
+  54330:52(34961):1270247765:1740528680
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1173,60 +1132,54 @@ Key: anio pers numero
 -------------+---------------------------------------------------------
      pesosem |     54,330    84.97916    25.30505         41        307
      pesotri |     54,330    169.9576    50.59938         83        613
-      hombre |     54,330    1.534511    .4988121          1          2
+      hombre |     54,330    .4654887    .4988121          0          1
         edad |     54,330    37.32803    23.68041          0         99
-    pobpcoac |     54,330    4.004215    3.265864          1         11
--------------+---------------------------------------------------------
-   trabajo_1 |     54,330    1.205172    .7498022          0          2
 horas_trab~p |     54,330    16.33488    22.19341          0         99
-horas_trab~s |     54,330    .8359286    4.700802          0         78
-busca_trab~o |     54,330    .7270017    .9371936          0          2
-      ytotal |     54,330    5383.414    9380.143          0     486750
 -------------+---------------------------------------------------------
+horas_trab~s |     54,330    .8359286    4.700802          0         78
+busca_trab~o |     54,330    .0471563     .211975          0          1
+      ytotal |     54,330    5383.414    9380.143          0     486750
          loc |          0
       nomloc |          0
+-------------+---------------------------------------------------------
  nbr_above14 |     54,330    2.860942    1.275316          1         10
   nbr_people |     54,330     3.86004    1.915149          1         17
  nbr_under14 |     54,330    .9990981    1.318103          0         11
--------------+---------------------------------------------------------
      y_hogar |     54,330    19953.83    19360.03          2     532250
 c98_resid_~e |     54,330    .9858642     .118052          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |     54,330    .6367753    .4809332          0          1
 c98_nbr_ro~s |     54,330    3.490006    1.292353          1         63
 c98_nbr_be~s |     54,330    2.160556    .8357374          1          9
--------------+---------------------------------------------------------
 c98_b_pipe~r |     54,330    .9647524    .1844066          0          1
 c98_hhld_t~t |     54,330    .9360574    .2446529          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |     54,330    .6636481    .4724653          0          1
 c98_hhld_s~e |     54,330    .9995214    .0218709          0          1
 c98_hhld_h~r |     54,330    .8794589    .3255963          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |     54,330     .955623    .2059331          0          1
  c98_hhld_tv |     54,330    .9333886    .2493502          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |     54,330      .33164    .4708067          0          1
 c98_hhld_w~c |     54,330    .6384686    .4804484          0          1
 c98_hhld_d~r |     54,330     .056212    .2303328          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |     54,330     .397552    .4893964          0          1
 c98_hhld_car |     54,330    .3136205    .4639684          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |     54,330    .2681944    .4430234          0          1
 c01_hhld_i~t |     54,330    .1679551    .3738298          0          1
 c01_hhld_p~e |     54,330    .7504141    .4327773          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |     54,330    .4373458    .4960635          0          1
 health_ins~e |     54,330    2.544708    1.503307          0          5
+-------------+---------------------------------------------------------
 public_hea~h |     54,330     .386582     .486971          0          1
       blanco |          0
    trimestre |     54,330    2.491055    1.117794          1          4
--------------+---------------------------------------------------------
      married |     54,330    .4185717    .4933294          0          1
   estudiante |     54,330    .0717099    .2580094          0          1
-     trabajo |     54,330    .4133444    .4924381          0          1
- y_hogar_alt |     54,330    17405.29    17498.89          1     523250
-horas_trab~o |     54,330    17.17081    23.21342          0        100
 -------------+---------------------------------------------------------
-meses_trab~o |          0
-anios_trab~o |          0
+     trabajo |     54,330    .4133444    .4924381          0          1
+horas_trab~o |     54,330    17.17081    23.21342          0        100
 
 
 
@@ -1243,6 +1196,8 @@ anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato: all characters numeric; replaced as byte
+(133,026 real changes made)
+(80,758 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -1273,12 +1228,10 @@ estrato: all characters numeric; replaced as byte
   variable married was float now byte
   variable estudiante was float now byte
   variable trabajo was float now byte
-  variable horas_trabajo was float now int
+  variable horas_trabajo was float now byte
   variable pers was double now byte
   variable numero was double now long
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -1289,27 +1242,21 @@ estrato: all characters numeric; replaced as byte
   variable hombre was double now byte
   variable edad was double now byte
   variable blanco was double now byte
-  variable live_births was double now byte
-  variable live_births_nbr was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
-  variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
+  variable busca_trabajo was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (71,664,219 bytes saved)
+  (57,536,864 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2006.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  256861:68(31709):2090416480:285286541
+  256861:59(76428):1264368844:823129439
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1317,83 +1264,72 @@ Key: anio pers numero
         pers |    256,861    2.479076    1.577222          1         19
       numero |    256,861    42801.78    24636.21          1      85313
         dpto |    256,861    6.935187    6.186498          1         19
-    region_3 |    256,861    1.961917    .8079634          1          3
--------------+---------------------------------------------------------
-    region_4 |    256,861    2.144728     1.08708          1          4
          loc |          0
+-------------+---------------------------------------------------------
       nomloc |          0
         secc |    256,861    7.149742    16.19311          0         99
         segm |    256,861    38.89332     77.6894          0        538
--------------+---------------------------------------------------------
          ccz |    256,861    3.509419    5.570878          0         18
    trimestre |    256,861       2.497    1.118403          1          4
+-------------+---------------------------------------------------------
          mes |    256,861    6.489385    3.454918          1         12
      estrato |    256,861    5.585683    2.814726          1          9
       pesoan |    256,861    11.93464    8.301733          3         46
--------------+---------------------------------------------------------
      pesosem |    256,861    23.86936     16.5919          7         91
      pesotri |    256,861    47.73597    33.18871         13        183
+-------------+---------------------------------------------------------
      pesomen |    256,861    143.1846    99.68032          1        554
-      hombre |    256,861    1.517891    .4996808          1          2
+      hombre |    256,861     .482109    .4996808          0          1
         edad |    256,861    35.61328    23.41008          0         99
--------------+---------------------------------------------------------
       blanco |    256,861    .9686289    .1743188          0          1
- live_births |    256,861    1.026847    .6903154          0          2
-live_birth~r |    256,861    1.454382    2.037539          0         99
-   trabajo_1 |    256,861    1.147227    .7587156          0          2
-horas_trab~p |    256,861    17.45835    23.59858          0         99
+horas_trab~p |    256,861    1.147227    .7587156          0          2
 -------------+---------------------------------------------------------
-meses_trab~o |    256,861    .3209829    1.543879          0         80
-anios_trab~o |    256,861    3.997286    8.448289          0         98
-horas_trab~s |    256,861      .72074    4.488325          0         98
-busca_trab~o |    256,861    .6669288    .9224669          0          2
-    pobpcoac |    256,861    3.752407    3.162047          1         11
--------------+---------------------------------------------------------
+horas_trab~s |    256,861    17.45835    23.59858          0         99
+ nbr_above14 |    256,861      .72074    4.488325          0         98
+busca_trab~o |    256,861    .0381218    .1914906          0          1
       ytotal |    256,861    4556.123    8379.009          0   567666.7
- nbr_above14 |    256,861    2.817489    1.251659          1         11
   nbr_people |    256,861    3.958145    1.948349          1         19
+-------------+---------------------------------------------------------
  nbr_under14 |    256,861    1.140656    1.395032          0         11
      y_hogar |    256,861    18468.48    18121.75          0   861796.3
--------------+---------------------------------------------------------
        li_06 |    256,861    1054.262    65.22614        898       1158
        lp_06 |    256,861    12239.97    6230.327       2214   61569.75
 c98_resid_~e |    256,861    .9972125    .0527232          0          1
+-------------+---------------------------------------------------------
 c06_mat_wa~s |    256,861    .9605584    .1946435          0          1
 c06_mat_roof |    256,861    .4582634     .498256          0          1
--------------+---------------------------------------------------------
 c06_mat_fl~r |    256,861    .6820888    .4656657          0          1
 c98_resid_~d |    256,861    .6746606    .4685024          0          1
 c98_nbr_ro~s |    256,861    3.454421    1.466552          1         80
+-------------+---------------------------------------------------------
 c98_nbr_be~s |    256,861    2.115697    .8912828          1         40
 c98_b_pipe~r |    256,861    .8855918     .318307          0          1
--------------+---------------------------------------------------------
 c98_hhld_t~t |    256,861    .8502147    .3568615          0          1
 c98_b_sewage |    256,861    .4387042    .4962296          0          1
 c06_b_electr |    256,861    .9624505    .1901044          0          1
+-------------+---------------------------------------------------------
 c98_hhld_s~e |    256,861    .8780936    .3271783          0          1
 c98_hhld_h~r |    256,861    .7788882    .4149964          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |    256,861    .9293665    .2562122          0          1
  c98_hhld_tv |    256,861    .8835129    .3208088          0          1
 c98_hhld_vcr |    256,861    .3443769    .4751656          0          1
+-------------+---------------------------------------------------------
 c98_hhld_w~c |    256,861    .5625533    .4960726          0          1
 c98_hhld_d~r |    256,861    .0261698    .1596403          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |    256,861    .3130798    .4637474          0          1
 c98_hhld_car |    256,861    .3342898    .4717425          0          1
 c01_hhld_c~r |    256,861    .2136642    .4098932          0          1
+-------------+---------------------------------------------------------
 c01_hhld_i~t |    256,861    .1034996    .3046108          0          1
 c01_hhld_p~e |    256,861    .7906066    .4068765          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |    256,861    .3697292    .4827322          0          1
 health_ins~e |    256,861    2.470613    1.525203          0          5
 public_hea~h |    256,861    .4162718    .4929407          0          1
+-------------+---------------------------------------------------------
      married |    199,017    .5815935    .4932988          0          1
   estudiante |    256,861     .063622    .2440788          0          1
--------------+---------------------------------------------------------
      trabajo |    256,861    .4222868    .4939247          0          1
- y_hogar_alt |    256,861    15243.35    16070.33          0   567666.7
-horas_trab~o |    256,861    18.17909    24.49783          0        180
+horas_trab~o |    256,861    18.60558    23.53071          0        100
 
 
 
@@ -1412,6 +1348,8 @@ secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
 (143,185 missing values generated)
+(75,433 real changes made)
+(48,083 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -1446,8 +1384,6 @@ estrato already numeric; no replace
   variable anio was double now int
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -1459,27 +1395,21 @@ estrato already numeric; no replace
   variable hombre was double now byte
   variable edad was double now byte
   variable blanco was double now byte
-  variable live_births was double now byte
-  variable live_births_nbr was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (41,237,280 bytes saved)
+  (33,218,920 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2007.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  143185:68(7152):2659998484:252974894
+  143185:59(61854):3540214640:2602950925
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1487,81 +1417,70 @@ Key: anio pers numero
         pers |    143,185    2.427272    1.544546          1         18
       numero |    143,185    25014.56    14132.88          1      49136
         dpto |    143,185    5.994867    5.882222          1         19
-    region_3 |    143,185    1.731941    .6808267          1          3
--------------+---------------------------------------------------------
-    region_4 |    143,185    1.800517    .8374458          1          4
          loc |          0
+-------------+---------------------------------------------------------
         secc |    143,185    7.891679    15.90356          0         99
         segm |    143,185    46.65982    82.00314          0        538
          ccz |    143,185    3.687761    5.431738          0         18
--------------+---------------------------------------------------------
    trimestre |    143,185    2.494409    1.119213          1          4
          mes |    143,185    6.475308    3.453204          1         12
+-------------+---------------------------------------------------------
      estrato |    143,185    5.314789    2.684853          1          9
       pesoan |    143,185    20.94617    4.075227          5         31
      pesosem |    143,185    41.91271    7.970257         11         63
--------------+---------------------------------------------------------
      pesotri |    143,185     84.0407    16.07612         22        130
      pesomen |    143,185     251.929    48.66454         68        476
-      hombre |    143,185    1.526822    .4992818          1          2
+-------------+---------------------------------------------------------
+      hombre |    143,185    .4731781    .4992818          0          1
         edad |    143,185    35.75409    23.35537          0         99
       blanco |    143,185    .9868282    .1140104          0          1
--------------+---------------------------------------------------------
- live_births |    143,185    1.040842    .6920984          0          2
-live_birth~r |    143,185    1.392499    1.879803          0         27
-   trabajo_1 |    143,185     1.14431    .7505405          0          2
 horas_trab~p |    143,185    17.49265    22.83932          0         99
-meses_trab~o |    143,185    .3416349    1.385575          0         11
--------------+---------------------------------------------------------
-anios_trab~o |    143,185    4.000622    8.322348          0         70
 horas_trab~s |    143,185     .967769    5.055798          0         98
-busca_trab~o |    143,185    .7781821     .918826          0          2
-    pobpcoac |    143,185    3.673695    3.111437          1         11
-      ytotal |    143,185    6010.408    11220.23          0   826046.7
 -------------+---------------------------------------------------------
+busca_trab~o |    143,185    .1065614    .3085559          0          1
+      ytotal |    143,185    6010.408    11220.23          0   826046.7
  nbr_above14 |    143,185    2.759249    1.234963          1         12
   nbr_people |    143,185    3.854538    1.921576          1         18
  nbr_under14 |    143,185    1.095038    1.362549          0         12
+-------------+---------------------------------------------------------
      y_hogar |    143,185    23992.34    25973.78          0    1342471
        li_06 |    143,185    1237.114    97.87484        973       1414
--------------+---------------------------------------------------------
        lp_06 |    143,185    13687.21    6558.807       2351   58375.16
 c98_resid_~e |    143,185    .9982051    .0423281          0          1
 c06_mat_wa~s |    143,185    .9683347    .1751081          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |    143,185    .5452038    .4979542          0          1
 c06_mat_fl~r |    143,185     .735084      .44129          0          1
--------------+---------------------------------------------------------
 c98_resid_~d |    143,185    .6675071    .4711082          0          1
 c98_nbr_ro~s |    143,185    3.501547    1.362439          1         53
 c98_nbr_be~s |    143,185    2.133778    .8271976          1         10
+-------------+---------------------------------------------------------
 c98_b_pipe~r |    143,185    .9362014    .2443946          0          1
 c98_hhld_t~t |    143,185    .8767748    .3286967          0          1
--------------+---------------------------------------------------------
 c98_b_sewage |    143,185    .5270524    .4992694          0          1
 c06_b_electr |    143,185    .9840765    .1251799          0          1
 c98_hhld_s~e |    143,185      .89457    .3071078          0          1
+-------------+---------------------------------------------------------
 c98_hhld_h~r |    143,185    .8222509    .3823027          0          1
 c98_hhld_r~t |    143,185    .1076649    .3099578          0          1
--------------+---------------------------------------------------------
  c98_hhld_tv |    143,185    .9272969    .2596495          0          1
 c98_hhld_vcr |    143,185    .4914272    .4999282          0          1
 c98_hhld_w~c |    143,185    .6236268    .4844771          0          1
+-------------+---------------------------------------------------------
 c98_hhld_d~r |    143,185    .0381953    .1916682          0          1
 c98_hhld_m~e |    143,185    .3983029    .4895502          0          1
--------------+---------------------------------------------------------
 c98_hhld_car |    143,185    .3352167    .4720678          0          1
 c01_hhld_c~r |    143,185    .3044732    .4601856          0          1
 c01_hhld_i~t |    143,185    .1628034    .3691875          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |    143,185    .9246639    .2639338          0          1
 c01_hhld_c~v |    143,185    .4452492     .496995          0          1
--------------+---------------------------------------------------------
 health_ins~e |    143,185    2.637755    1.559634          0          5
 public_hea~h |    143,185    .3675036    .4821269          0          1
      married |    111,697    .5722356    .4947567          0          1
+-------------+---------------------------------------------------------
   estudiante |    143,185    .0647205    .2460328          0          1
      trabajo |    143,185    .4423857    .4966712          0          1
--------------+---------------------------------------------------------
- y_hogar_alt |    143,185    19349.32    20874.12          0   826046.7
 horas_trab~o |    143,185    18.46042    24.00602          0        157
       nomloc |          0
 
@@ -1582,6 +1501,8 @@ secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
 (144,582 missing values generated)
+(76,472 real changes made)
+(52,220 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -1616,8 +1537,6 @@ estrato already numeric; no replace
   variable anio was double now int
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -1629,27 +1548,21 @@ estrato already numeric; no replace
   variable hombre was double now byte
   variable edad was double now byte
   variable blanco was double now byte
-  variable live_births was double now byte
-  variable live_births_nbr was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (41,350,452 bytes saved)
+  (33,253,860 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2008.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  144582:68(18086):1481846685:3550470328
+  144582:59(61064):1661347802:3039865715
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1657,81 +1570,70 @@ Key: anio pers numero
         pers |    144,582    2.392684    1.514143          1         25
       numero |    144,582    25607.33    14503.97          1      50397
         dpto |    144,582      6.0408    5.752081          1         19
-    region_3 |    144,582    1.771562    .6879126          1          3
--------------+---------------------------------------------------------
-    region_4 |    144,582    1.858143    .8746588          1          4
         secc |    144,582    7.258663    14.98182          0         99
+-------------+---------------------------------------------------------
         segm |    144,582    44.65556    81.43845          0        538
          ccz |    144,582     3.39534    5.261854          0         18
    trimestre |    144,582     2.49935    1.115368          1          4
--------------+---------------------------------------------------------
          mes |    144,582    6.498499    3.439859          1         12
      estrato |    144,582    5.572893    2.671652          1          9
+-------------+---------------------------------------------------------
       pesoan |    144,582    20.78801    13.47589          1       1323
      pesosem |    144,582    41.48871    19.22088          3       1323
      pesotri |    144,582    82.82599    35.44082          6       1527
--------------+---------------------------------------------------------
      pesomen |    144,582    248.1116    82.45123         15       2370
-      hombre |    144,582    1.528918    .4991648          1          2
+      hombre |    144,582    .4710822    .4991648          0          1
+-------------+---------------------------------------------------------
         edad |    144,582     36.6504    23.53435          0         99
       blanco |    144,582    .9896529    .1011933          0          1
- live_births |    144,582    1.053139    .6843722          0          2
--------------+---------------------------------------------------------
-live_birth~r |    144,582    1.403971    1.875682          0         83
-   trabajo_1 |    144,582    1.153671     .740342          0          2
 horas_trab~p |    144,582    17.90686    22.76416          0         99
-meses_trab~o |    144,582    .3562269    1.417991          0         11
-anios_trab~o |    144,582    4.244152    8.646673          0         80
--------------+---------------------------------------------------------
 horas_trab~s |    144,582    1.065326    5.262392          0         98
-busca_trab~o |    144,582    .8171833    .9336804          0          2
-    pobpcoac |    144,582    3.708083    3.130289          1         11
+busca_trab~o |    144,582    .0948251    .2929742          0          1
+-------------+---------------------------------------------------------
       ytotal |    144,582    7194.194    13641.79          0   965833.3
       nomloc |          0
--------------+---------------------------------------------------------
  nbr_above14 |    144,582    2.761056     1.24636          1         16
   nbr_people |    144,582    3.785284    1.882848          1         25
  nbr_under14 |    144,582    1.024145     1.31098          0          9
+-------------+---------------------------------------------------------
      y_hogar |    144,582     29092.2    31256.51          0    1279333
        li_06 |    144,582    1411.282     78.6567       1182       1541
--------------+---------------------------------------------------------
        lp_06 |    144,582    14506.32    6994.813       2621   97113.32
 c98_resid_~e |    144,582    .9985475    .0380836          0          1
 c06_mat_wa~s |    144,582    .9720643    .1647892          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |    144,582    .5467278    .4978134          0          1
 c06_mat_fl~r |    144,582    .7537176    .4308464          0          1
--------------+---------------------------------------------------------
 c98_resid_~d |    144,582    .6609191     .473399          0          1
 c98_nbr_ro~s |    144,582    3.613258    1.347071          1         14
 c98_nbr_be~s |    144,582    2.197929    .8375283          1         10
+-------------+---------------------------------------------------------
 c98_b_pipe~r |    144,582    .9421505    .2334595          0          1
 c98_hhld_t~t |    144,582     .890339    .3124678          0          1
--------------+---------------------------------------------------------
 c98_b_sewage |    144,582    .5465203    .4978329          0          1
 c06_b_electr |    144,582    .9851503    .1209516          0          1
 c98_hhld_s~e |    144,582    .8994273    .3007631          0          1
+-------------+---------------------------------------------------------
 c98_hhld_h~r |    144,582    .8367847    .3695633          0          1
 c98_hhld_r~t |    144,582    .1176426    .3221855          0          1
--------------+---------------------------------------------------------
  c98_hhld_tv |    144,582     .945837    .2263399          0          1
 c98_hhld_vcr |    144,582    .5704306    .4950164          0          1
 c98_hhld_w~c |    144,582     .658851    .4740969          0          1
+-------------+---------------------------------------------------------
 c98_hhld_d~r |    144,582    .0398874    .1956953          0          1
 c98_hhld_m~e |    144,582     .439626    .4963433          0          1
--------------+---------------------------------------------------------
 c98_hhld_car |    144,582    .3430233    .4747209          0          1
 c01_hhld_c~r |    144,582    .4129975    .4923741          0          1
 c01_hhld_i~t |    144,582    .2245439     .417283          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |    144,582    .9543719    .2086779          0          1
 c01_hhld_c~v |    144,582    .4923019    .4999425          0          1
--------------+---------------------------------------------------------
 health_ins~e |    144,582    2.865958    1.517049          0          5
 public_hea~h |    144,582    .3026518    .4594074          0          1
      married |    114,361     .565455    .4956993          0          1
+-------------+---------------------------------------------------------
   estudiante |    144,582    .0664813    .2491224          0          1
      trabajo |    144,582    .4560042    .4980623          0          1
--------------+---------------------------------------------------------
- y_hogar_alt |    144,582    23289.84    26142.41          0    1272461
 horas_trab~o |    144,582    18.97219    24.00505          0        130
          loc |          0
 
@@ -1745,13 +1647,13 @@ file ..\temp\clean_2008.dta saved
 (73,377 real changes made)
 (6,404 real changes made)
 (27,271 missing values generated)
-(132,599 missing values generated)
-(132,599 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato: all characters numeric; replaced as byte
+(69,976 real changes made)
+(49,174 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -1784,12 +1686,8 @@ estrato: all characters numeric; replaced as byte
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -1799,25 +1697,21 @@ estrato: all characters numeric; replaced as byte
   variable pesomen was double now int
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (34,608,339 bytes saved)
+  (28,243,587 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2009.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  132599:68(88107):2271225076:1717019589
+  132599:59(20882):3133147439:4011088030
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1825,83 +1719,72 @@ Key: anio pers numero
         pers |    132,599    2.367507     1.49819          1         20
       numero |    132,599    40934.11    23679.95          1      81789
         dpto |    132,599    5.791107    5.843001          1         19
-    region_3 |    132,599     1.70539    .6777824          1          3
--------------+---------------------------------------------------------
-    region_4 |    132,599    1.775096    .8394781          1          4
          loc |          0
+-------------+---------------------------------------------------------
       nomloc |          0
         secc |    132,599    8.138734    15.76613          0         99
         segm |    132,599    49.69044    84.25578          0        538
--------------+---------------------------------------------------------
          ccz |    132,599    3.793083    5.442015          0         18
    trimestre |    132,599    2.499732    1.116212          1          4
+-------------+---------------------------------------------------------
          mes |    132,599    6.500124    3.443213          1         12
      estrato |    132,599    5.226005     2.62899          1          9
       pesoan |    132,599    22.80301    11.56739          1        371
--------------+---------------------------------------------------------
      pesosem |    132,599    45.45227    22.00028          3       1345
      pesotri |    132,599    90.65188    38.70653          3       1345
-     pesomen |    132,599    271.5975    95.36219         23       2451
-      hombre |    132,599    1.527726    .4992325          1          2
-        edad |    132,599    36.49369    23.35328          0         98
 -------------+---------------------------------------------------------
-   trabajo_1 |    132,599    1.152535    .7352568          0          2
+     pesomen |    132,599    271.5975    95.36219         23       2451
+      hombre |    132,599    .4722735    .4992325          0          1
+        edad |    132,599    36.49369    23.35328          0         98
 horas_trab~p |    132,599    18.38239    22.84412          0         98
-meses_trab~o |    132,599    .3450705     1.39681          0         11
-anios_trab~o |    132,599    4.220213    8.519333          0         70
 horas_trab~s |    132,599    .9673074    5.000288          0         74
 -------------+---------------------------------------------------------
-busca_trab~o |    132,599    .8361526    .9373916          0          2
-    pobpcoac |    132,599    3.672712    3.102679          1         11
+busca_trab~o |    132,599    .0944577    .2924656          0          1
       ytotal |    132,599    8352.715    15123.89          0    1150021
  nbr_above14 |    132,599    2.737947     1.23236          1         10
   nbr_people |    132,599    3.734877    1.869743          1         20
--------------+---------------------------------------------------------
  nbr_under14 |    132,599    .9953921     1.27918          0         13
+-------------+---------------------------------------------------------
      y_hogar |    132,599    32813.69    31929.91          0    1177802
        li_06 |    132,599    1493.786    85.24347       1181       1583
        lp_06 |    132,599     15705.4    7578.861       2764   78662.42
 c98_resid_~e |    132,599    .9990045    .0315357          0          1
--------------+---------------------------------------------------------
 c06_mat_wa~s |    132,599     .974487    .1576778          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |    132,599    .5568669    .4967575          0          1
 c06_mat_fl~r |    132,599    .7661445    .4232829          0          1
 c98_resid_~d |    132,599    .6176291    .4859683          0          1
 c98_nbr_ro~s |    132,599    3.604394    1.357745          1         52
--------------+---------------------------------------------------------
 c98_nbr_be~s |    132,599    2.211005    .8423228          1         31
+-------------+---------------------------------------------------------
 c98_b_pipe~r |    132,599    .9518322    .2141214          0          1
 c98_hhld_t~t |    132,599    .9000445    .2999418          0          1
 c98_b_sewage |    132,599    .5617388    .4961756          0          1
 c06_b_electr |    132,599    .9855278    .1194273          0          1
--------------+---------------------------------------------------------
 c98_hhld_s~e |    132,599    .9081516    .2888129          0          1
+-------------+---------------------------------------------------------
 c98_hhld_h~r |    132,599    .8457379    .3612012          0          1
 c98_hhld_r~t |    132,599      .95279    .2120886          0          1
  c98_hhld_tv |    132,599    .9571867    .2024367          0          1
 c98_hhld_vcr |    132,599    .6239564     .484393          0          1
--------------+---------------------------------------------------------
 c98_hhld_w~c |    132,599    .6806235    .4662368          0          1
+-------------+---------------------------------------------------------
 c98_hhld_d~r |    132,599    .0417499     .200018          0          1
 c98_hhld_m~e |    132,599     .486708    .4998252          0          1
 c98_hhld_car |    132,599    .3468427     .475967          0          1
 c01_hhld_c~r |    132,599    .5833377    .4930078          0          1
--------------+---------------------------------------------------------
 c01_hhld_i~t |    132,599     .305319    .4605442          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |    132,599    .6152535    .4865372          0          1
 c01_hhld_c~v |    132,599    .5060521    .4999653          0          1
 health_ins~e |    132,599    2.877571    1.509205          0          5
 public_hea~h |    132,599    .3035242    .4597813          0          1
--------------+---------------------------------------------------------
      married |    105,328    .5638861    .4959041          0          1
+-------------+---------------------------------------------------------
       blanco |    132,599    .9560555    .2049725          0          1
   estudiante |    132,599    .0677456    .2513098          0          1
      trabajo |    132,599    .4653052    .4987967          0          1
- y_hogar_alt |    132,599    26242.99    27125.33          0    1150021
--------------+---------------------------------------------------------
 horas_trab~o |    132,599    19.34969    23.95674          0        130
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -1913,13 +1796,13 @@ file ..\temp\clean_2009.dta saved
 (74,090 real changes made)
 (6,408 real changes made)
 (26,874 missing values generated)
-(132,010 missing values generated)
-(132,010 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(69,304 real changes made)
+(50,461 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -1952,12 +1835,8 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -1968,25 +1847,21 @@ estrato already numeric; no replace
   variable pesomen was double now int
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (35,510,690 bytes saved)
+  (29,174,210 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2010.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  132010:68(88107):1063696838:1147422933
+  132010:59(20882):4007544944:2976044390
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1994,83 +1869,72 @@ Key: anio pers numero
         pers |    132,010    2.375184     1.50577          1         15
       numero |    132,010    35585.74       20533          1      71038
         dpto |    132,010    5.843072     5.72603          1         19
-    region_3 |    132,010    1.760102    .6792794          1          3
--------------+---------------------------------------------------------
-    region_4 |    132,010    1.833467    .8434082          1          4
          loc |          0
+-------------+---------------------------------------------------------
       nomloc |          0
         secc |    132,010    7.337762    15.15474          0         99
         segm |    132,010    44.22474    80.73024          0        538
--------------+---------------------------------------------------------
          ccz |    132,010    3.428914    5.290593          0         18
    trimestre |    132,010    2.500848    1.116126          1          4
+-------------+---------------------------------------------------------
          mes |    132,010    6.504765    3.439291          1         12
      estrato |    132,010    6.331414    3.168582          1         12
       pesoan |    132,010    25.51775    13.91974          3        100
--------------+---------------------------------------------------------
      pesosem |    132,010    46.57896    35.41122          5        300
      pesotri |    132,010    95.00461    62.89922          9        600
-     pesomen |    132,010    286.1002    122.2005          3       1296
-      hombre |    132,010    1.524991     .499377          1          2
-        edad |    132,010    36.53929    23.34423          0         98
 -------------+---------------------------------------------------------
-   trabajo_1 |    132,010    1.152913    .7325882          0          2
+     pesomen |    132,010    286.1002    122.2005          3       1296
+      hombre |    132,010    .4750095     .499377          0          1
+        edad |    132,010    36.53929    23.34423          0         98
 horas_trab~p |    132,010    18.51532    22.79417          0         98
-meses_trab~o |    132,010    .3517309    1.406723          0         11
-anios_trab~o |    132,010    4.195796    8.478774          0         70
 horas_trab~s |    132,010    .9775775    5.061615          0         86
 -------------+---------------------------------------------------------
-busca_trab~o |    132,010    .8523218    .9435988          0          2
-    pobpcoac |    132,010    3.726748    3.187416          1         11
+busca_trab~o |    132,010    .0878191    .2830327          0          1
       ytotal |    132,010     9195.75    15454.05          0    1033831
  nbr_above14 |    132,010    2.761435    1.247682          1         10
   nbr_people |    132,010    3.750367    1.880344          1         15
--------------+---------------------------------------------------------
  nbr_under14 |    132,010    .9888948    1.264957          0         10
+-------------+---------------------------------------------------------
      y_hogar |    132,010    36349.84    34985.29          0    2077094
        li_06 |    132,010    1590.976    86.62212       1286       1753
        lp_06 |    132,010    16608.13    7962.064       2948   69910.33
 c98_resid_~e |    132,010    .9992198    .0279221          0          1
--------------+---------------------------------------------------------
 c06_mat_wa~s |    132,010    .9746534     .157176          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |    132,010    .5549504    .4969732          0          1
 c06_mat_fl~r |    132,010    .7676009    .4223637          0          1
 c98_resid_~d |    132,010    .6154231     .486497          0          1
 c98_nbr_ro~s |    132,010    3.659367    1.294548          1         15
--------------+---------------------------------------------------------
 c98_nbr_be~s |    132,010    2.229339    .8255193          1         10
+-------------+---------------------------------------------------------
 c98_b_pipe~r |    132,010    .9580108    .2005653          0          1
 c98_hhld_t~t |    132,010    .9086433    .2881168          0          1
 c98_b_sewage |    132,010    .5389061    .4984859          0          1
 c06_b_electr |    132,010    .9887736    .1053588          0          1
--------------+---------------------------------------------------------
 c98_hhld_s~e |    132,010    .9139156    .2804897          0          1
+-------------+---------------------------------------------------------
 c98_hhld_h~r |    132,010    .8605333    .3464342          0          1
 c98_hhld_r~t |    132,010    .9608742     .193895          0          1
  c98_hhld_tv |    132,010    .9636846    .1870745          0          1
 c98_hhld_vcr |    132,010     .638944    .4803086          0          1
--------------+---------------------------------------------------------
 c98_hhld_w~c |    132,010     .715264    .4512903          0          1
+-------------+---------------------------------------------------------
 c98_hhld_d~r |    132,010    .0393985     .194542          0          1
 c98_hhld_m~e |    132,010    .5188243    .4996474          0          1
 c98_hhld_car |    132,010    .3631846    .4809192          0          1
 c01_hhld_c~r |    132,010    .6624498     .472876          0          1
--------------+---------------------------------------------------------
 c01_hhld_i~t |    132,010    .3807287    .4855679          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |    132,010    .6032498    .4892252          0          1
 c01_hhld_c~v |    132,010    .5451178    .4979621          0          1
 health_ins~e |    132,010    2.900773    1.501164          0          5
 public_hea~h |    132,010    .3012954    .4588225          0          1
--------------+---------------------------------------------------------
      married |    105,136    .5661334    .4956094          0          1
+-------------+---------------------------------------------------------
       blanco |    132,010    .9537308    .2100684          0          1
   estudiante |    132,010    .0689569    .2533818          0          1
      trabajo |    132,010    .4700704    .4991053          0          1
- y_hogar_alt |    132,010    29065.59    28520.76          0    1033831
--------------+---------------------------------------------------------
 horas_trab~o |    132,010     19.4929    23.91881          0        120
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2082,13 +1946,13 @@ file ..\temp\clean_2010.dta saved
 (75,518 real changes made)
 (6,999 real changes made)
 (25,574 missing values generated)
-(130,804 missing values generated)
-(130,804 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(68,757 real changes made)
+(51,927 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2121,12 +1985,8 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz was double now byte
   variable trimestre was double now byte
   variable mes was double now byte
@@ -2137,25 +1997,21 @@ estrato already numeric; no replace
   variable pesomen was double now int
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (35,186,276 bytes saved)
+  (28,907,684 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2011.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  130804:68(88107):3530505719:4086724037
+  130804:59(20882):1967226300:2136719704
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2163,83 +2019,72 @@ Key: anio pers numero
         pers |    130,804    2.342895    1.475425          1         17
       numero |    130,804    2.01e+09    20426.47   2.01e+09   2.01e+09
         dpto |    130,804    5.966683    5.745262          1         19
-    region_3 |    130,804    1.757423    .6657048          1          3
--------------+---------------------------------------------------------
-    region_4 |    130,804    1.823576    .8181319          1          4
          loc |          0
+-------------+---------------------------------------------------------
       nomloc |          0
         secc |    130,804    7.258494    15.20495          0         99
         segm |    130,804     44.1548    81.04675          0        538
--------------+---------------------------------------------------------
          ccz |    130,804    3.351771    5.246534          0         18
    trimestre |    130,804    2.495153    1.115214          1          4
+-------------+---------------------------------------------------------
          mes |    130,804    6.484481    3.436408          1         12
      estrato |    130,804    6.409483    3.169572          1         12
       pesoan |    130,804    25.75349    11.17462          3         50
--------------+---------------------------------------------------------
      pesosem |    130,804    51.50631    24.64278          5        150
      pesotri |    130,804    103.0139    48.02187          1        250
-     pesomen |    130,804    308.4342    141.7839          2        720
-      hombre |    130,804    1.525649    .4993436          1          2
-        edad |    130,804    37.20939     23.4161          0         98
 -------------+---------------------------------------------------------
-   trabajo_1 |    130,804    1.164162    .7268043          0          2
+     pesomen |    130,804    308.4342    141.7839          2        720
+      hombre |    130,804    .4743509    .4993436          0          1
+        edad |    130,804    37.20939     23.4161          0         98
 horas_trab~p |    130,804    18.55173    22.53618          0         98
-meses_trab~o |    130,804    .3559065    1.418766          0         11
-anios_trab~o |    130,804    4.207647    8.469864          0         70
 horas_trab~s |    130,804    .9047506     4.81899          0         92
 -------------+---------------------------------------------------------
-busca_trab~o |    130,804    .8713036    .9518966          0          2
-    pobpcoac |    130,804    3.778401    3.210531          1         11
+busca_trab~o |    130,804    .0773371    .2671266          0          1
       ytotal |    130,804    10341.03    16034.46          0   876330.5
  nbr_above14 |    130,804    2.751338     1.23956          1         11
   nbr_people |    130,804    3.685789    1.839662          1         17
--------------+---------------------------------------------------------
  nbr_under14 |    130,804     .934184    1.225743          0          9
+-------------+---------------------------------------------------------
      y_hogar |    130,804    40865.88    34524.72          0   944827.7
        li_06 |    130,804    1747.304    89.55496       1466       1899
        lp_06 |    130,804    17751.33    8490.651       3221   88368.19
 c98_resid_~e |    130,804    .9991132    .0297665          0          1
--------------+---------------------------------------------------------
 c06_mat_wa~s |    130,804    .9753601    .1550257          0          1
+-------------+---------------------------------------------------------
 c06_mat_roof |    130,804    .5664353    .4955686          0          1
 c06_mat_fl~r |    130,804    .7867879    .4095778          0          1
 c98_resid_~d |    130,804    .6153329    .4865184          0          1
 c98_nbr_ro~s |    130,804    3.663588    1.275078          1         14
--------------+---------------------------------------------------------
 c98_nbr_be~s |    130,804    2.235734    .8201967          1         10
+-------------+---------------------------------------------------------
 c98_b_pipe~r |    130,804    .9647182    .1844919          0          1
 c98_hhld_t~t |    130,804    .9168833    .2760596          0          1
 c98_b_sewage |    130,804     .562781    .4960448          0          1
 c06_b_electr |    130,804    .9888688    .1049159          0          1
--------------+---------------------------------------------------------
 c98_hhld_s~e |    130,804    .9265389    .2608928          0          1
+-------------+---------------------------------------------------------
 c98_hhld_h~r |    130,804    .8796673    .3253514          0          1
 c98_hhld_r~t |    130,804    .9702914    .1697828          0          1
  c98_hhld_tv |    130,804    .9740604    .1589557          0          1
 c98_hhld_vcr |    130,804    .6371135    .4808343          0          1
--------------+---------------------------------------------------------
 c98_hhld_w~c |    130,804    .7530198    .4312568          0          1
+-------------+---------------------------------------------------------
 c98_hhld_d~r |    130,804    .0429039    .2026412          0          1
 c98_hhld_m~e |    130,804    .5641188    .4958736          0          1
 c98_hhld_car |    130,804    .3803401    .4854722          0          1
 c01_hhld_c~r |    130,804    .6969282    .4595877          0          1
--------------+---------------------------------------------------------
 c01_hhld_i~t |    130,804    .4637549    .4986865          0          1
+-------------+---------------------------------------------------------
 c01_hhld_p~e |    130,804    .6179857    .4858819          0          1
 c01_hhld_c~v |    130,804    .5969007    .4905223          0          1
 health_ins~e |    130,804    2.960651     1.48748          0          5
 public_hea~h |    130,804    .2886915    .4531559          0          1
--------------+---------------------------------------------------------
      married |    105,230    .5603915    .4963418          0          1
+-------------+---------------------------------------------------------
       blanco |    130,804    .9541375    .2091877          0          1
   estudiante |    130,804    .0685224    .2526411          0          1
      trabajo |    130,804    .4743204     .499342          0          1
- y_hogar_alt |    130,804    32534.63    29316.66          0     925161
--------------+---------------------------------------------------------
 horas_trab~o |    130,804    19.45648    23.56725          0        108
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2251,13 +2096,13 @@ file ..\temp\clean_2011.dta saved
 (70,931 real changes made)
 (6,399 real changes made)
 (23,148 missing values generated)
-(120,462 missing values generated)
-(120,462 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(63,683 real changes made)
+(48,012 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2292,12 +2137,8 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable ccz04 was double now byte
   variable ccz10 was double now byte
   variable trimestre was double now byte
@@ -2306,25 +2147,21 @@ estrato already numeric; no replace
   variable pesoan was double now byte
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (31,801,968 bytes saved)
+  (26,019,792 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2012.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  120462:68(44997):2673831515:3197673380
+  120462:59(112752):2560332867:3334189508
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2332,83 +2169,72 @@ Key: anio pers numero
         pers |    120,462    2.313659     1.45235          1         15
       numero |    120,462    2.01e+09    14554.58   2.01e+09   2.01e+09
         dpto |    120,462    5.948639    5.822948          1         19
-    region_3 |    120,462    1.759816    .6981349          1          3
--------------+---------------------------------------------------------
-    region_4 |    120,462    1.815037    .8225163          1          4
          loc |          0
+-------------+---------------------------------------------------------
       nomloc |          0
         secc |    120,462    7.851879    16.26727          0         99
         segm |    120,462    47.96443    85.08126          0        633
--------------+---------------------------------------------------------
        ccz04 |    120,462    3.528764    5.341155          0         18
        ccz10 |    120,462    3.552116    5.353865          0         18
+-------------+---------------------------------------------------------
    trimestre |    120,462    2.507729     1.11538          1          4
          mes |    120,462    6.516553    3.436737          1         12
      estrato |    120,462    6.252578    3.222391          1         12
--------------+---------------------------------------------------------
       pesoan |    120,462    27.17303    11.18849          1         60
-      hombre |    120,462    1.528656    .4991802          1          2
+      hombre |    120,462    .4713437    .4991802          0          1
+-------------+---------------------------------------------------------
         edad |    120,462    37.28348    23.41747          0         98
-   trabajo_1 |    120,462     1.17217    .7258461          0          2
 horas_trab~p |    120,462    18.43478     22.2523          0         98
--------------+---------------------------------------------------------
-meses_trab~o |    120,462    .3626123    1.426492          0         11
-anios_trab~o |    120,462    4.127185    8.367654          0         73
 horas_trab~s |    120,462     .907091    4.838026          0         82
-busca_trab~o |    120,462    .8728064    .9529711          0          2
-    pobpcoac |    120,462    3.805914    3.222441          1         11
--------------+---------------------------------------------------------
+busca_trab~o |    120,462    .0756753     .264479          0          1
       ytotal |    120,462    11540.39       16875          0   842012.7
+-------------+---------------------------------------------------------
  nbr_above14 |    120,462    2.719223    1.233198          1         13
   nbr_people |    120,462    3.627219    1.813449          1         15
  nbr_under14 |    120,462    .9079627    1.203484          0         10
      y_hogar |    120,462    45072.98    35623.28          0   972453.2
--------------+---------------------------------------------------------
        li_06 |    120,462    1895.555    106.8772       1589       2099
+-------------+---------------------------------------------------------
        lp_06 |    120,462    19163.82    9177.123       3493   82199.26
 c98_resid_~e |    120,462    .9990536    .0307485          0          1
 c06_mat_wa~s |    120,462    .9744069    .1579188          0          1
 c06_mat_roof |    120,462    .5577111    .4966603          0          1
--------------+---------------------------------------------------------
 c06_mat_fl~r |    120,462    .7987083    .4009672          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |    120,462    .6146171    .4866877          0          1
 c98_nbr_ro~s |    120,462    3.621391    1.265288          1         17
 c98_nbr_be~s |    120,462    2.218766    .8377466          1         16
 c98_b_pipe~r |    120,462    .9727549    .1627975          0          1
--------------+---------------------------------------------------------
 c98_hhld_t~t |    120,462    .9257525    .2621743          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |    120,462     .585969    .4925559          0          1
 c06_b_electr |    120,462    .9927031    .0851101          0          1
 c98_hhld_s~e |    120,462    .9346101    .2472136          0          1
 c98_hhld_h~r |    120,462    .8946556     .306998          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |    120,462    .9765486    .1513328          0          1
+-------------+---------------------------------------------------------
  c98_hhld_tv |    120,462    .9784911    .1450738          0          1
 c98_hhld_vcr |    120,462    .5979064    .4903227          0          1
 c98_hhld_w~c |    120,462    .7801464     .414149          0          1
 c98_hhld_d~r |    120,462    .0389085    .1933778          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |    120,462    .5925935    .4913537          0          1
+-------------+---------------------------------------------------------
 c98_hhld_car |    120,462    .3817884    .4858271          0          1
 c01_hhld_c~r |    120,462     .724494    .4467707          0          1
 c01_hhld_i~t |    120,462     .507712    .4999426          0          1
 c01_hhld_p~e |    120,462    .6220634    .4848737          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |    120,462    .6278328    .4833846          0          1
+-------------+---------------------------------------------------------
 health_ins~e |    120,462    3.001702    1.470803          0          5
 public_hea~h |    120,462    .2779383    .4479847          0          1
      pesosem |          0
      pesotri |          0
--------------+---------------------------------------------------------
      married |     97,314    .5541238    .4970645          0          1
+-------------+---------------------------------------------------------
       blanco |    120,462    .9434261    .2310275          0          1
   estudiante |    120,462    .0702794    .2556184          0          1
      trabajo |    120,462    .4742408    .4993381          0          1
- y_hogar_alt |    120,462    35636.84    30567.63          0   904119.9
--------------+---------------------------------------------------------
 horas_trab~o |    120,462    19.34187    23.30459          0        104
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2420,13 +2246,13 @@ file ..\temp\clean_2012.dta saved
 (76,801 real changes made)
 (6,273 real changes made)
 (24,537 missing values generated)
-(127,925 missing values generated)
-(127,925 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(67,856 real changes made)
+(51,482 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2460,40 +2286,32 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
   variable ccz was double now byte
   variable mes was double now byte
   variable estrato was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable pesoan was double now byte
   variable pesotri was double now int
   variable pesosem was double now int
   variable pesomen was double now int
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (33,900,125 bytes saved)
+  (27,759,725 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2013.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  127925:68(70720):879984179:2393338861
+  127925:59(37168):3320815005:2952921422
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2510,74 +2328,63 @@ Key: anio pers numero
          mes |    127,925    6.490405    3.425563          1         12
 -------------+---------------------------------------------------------
      estrato |    127,925    6.362877    3.183797          1         12
-    region_3 |    127,925    1.768755    .6817867          1          3
-    region_4 |    127,925    1.817229    .7939298          1          4
       pesoan |    127,925    26.61769    5.978089          5         78
      pesotri |    127,925    106.4639    26.58916          2        298
--------------+---------------------------------------------------------
      pesosem |    127,925    53.22952    12.38622          5        131
      pesomen |    127,925    319.3853    88.65548          5       1023
-      hombre |    127,925    1.530436    .4990748          1          2
+-------------+---------------------------------------------------------
+      hombre |    127,925    .4695642    .4990748          0          1
         edad |    127,925     37.2801    23.35413          0         98
-   trabajo_1 |    127,925    1.173625    .7260158          0          2
--------------+---------------------------------------------------------
 horas_trab~p |    127,925    18.33151    22.07158          0         98
-meses_trab~o |    127,925    .3370569     1.38409          0         11
-anios_trab~o |    127,925    4.198155    8.409874          0         73
 horas_trab~s |    127,925    .8438538    4.607588          0         78
-busca_trab~o |    127,925    .8751612    .9561062          0          2
+busca_trab~o |    127,925    .0702834     .255625          0          1
 -------------+---------------------------------------------------------
-    pobpcoac |    127,925    3.807942    3.215266          1         11
       ytotal |    127,925    12792.41    18715.79          0    1893333
  nbr_above14 |    127,925    2.702404    1.211385          1         11
   nbr_people |    127,925    3.594489    1.754639          1         15
  nbr_under14 |    127,925     .892007    1.169271          0          9
--------------+---------------------------------------------------------
        li_06 |    127,925    2100.663    107.1978       1759       2304
+-------------+---------------------------------------------------------
        lp_06 |    127,925    20709.55    9797.352       3765   95370.86
      y_hogar |    127,925    16499.49    31039.11          0    2181667
 c98_resid_~e |    127,925    .9993121     .026219          0          1
 c06_mat_wa~s |    127,925     .972609    .1632207          0          1
--------------+---------------------------------------------------------
 c06_mat_roof |    127,925    .5435372    .4981028          0          1
+-------------+---------------------------------------------------------
 c06_mat_fl~r |    127,925     .807223     .394481          0          1
 c98_resid_~d |    127,925    .6172914      .48605          0          1
 c98_nbr_ro~s |    127,925    3.626531    1.225476          1         14
 c98_nbr_be~s |    127,925    2.223412     .811918          1          9
--------------+---------------------------------------------------------
 c98_b_pipe~r |    127,925    .9766504    .1510119          0          1
+-------------+---------------------------------------------------------
 c98_hhld_t~t |    127,925    .9355091    .2456264          0          1
 c98_b_sewage |    127,925    .5883056    .4921423          0          1
 c06_b_electr |    127,925    .9944577    .0742404          0          1
 c98_hhld_s~e |    127,925    .9414579    .2347666          0          1
--------------+---------------------------------------------------------
 c98_hhld_h~r |    127,925    .9052726    .2928392          0          1
+-------------+---------------------------------------------------------
 c98_hhld_r~t |    127,925    .9781278    .1462668          0          1
  c98_hhld_tv |    127,925    .9796834    .1410815          0          1
 c98_hhld_vcr |    127,925    .5415282    .4982744          0          1
 c98_hhld_w~c |    127,925    .8034004    .3974285          0          1
--------------+---------------------------------------------------------
 c98_hhld_d~r |    127,925    .0374751    .1899236          0          1
+-------------+---------------------------------------------------------
 c98_hhld_m~e |    127,925    .6146727    .4866745          0          1
 c98_hhld_car |    127,925    .4083096    .4915229          0          1
 c01_hhld_c~r |    127,925    .7515185    .4321341          0          1
 c01_hhld_i~t |    127,925    .5606488      .49631          0          1
--------------+---------------------------------------------------------
 c01_hhld_p~e |    127,925     .630127     .482772          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~v |    127,925    .6787493    .4669587          0          1
 health_ins~e |    127,925     3.01085    1.460546          0          5
 public_hea~h |    127,925    .2817901    .4498733          0          1
    trimestre |    127,925    2.498659    1.110689          1          4
--------------+---------------------------------------------------------
      married |    103,388    .5574922    .4966861          0          1
+-------------+---------------------------------------------------------
       blanco |    127,925    .9451632    .2276624          0          1
   estudiante |    127,925    .0713543    .2574168          0          1
      trabajo |    127,925    .4727223    .4992573          0          1
- y_hogar_alt |    127,925    39437.65    33783.79          0    1973333
--------------+---------------------------------------------------------
 horas_trab~o |    127,925    19.17537    23.04409          0        112
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2589,13 +2396,13 @@ file ..\temp\clean_2013.dta saved
 (80,360 real changes made)
 (6,784 real changes made)
 (24,859 missing values generated)
-(131,857 missing values generated)
-(131,857 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(69,854 real changes made)
+(53,189 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2629,40 +2436,32 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable dpto was double now byte
   variable ccz was double now byte
   variable mes was double now byte
   variable estrato was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable pesomen was double now int
   variable pesotri was double now int
   variable pesosem was double now int
   variable pesoan was double now byte
   variable hombre was double now byte
   variable edad was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (34,942,105 bytes saved)
+  (28,612,969 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2014.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  131857:68(81430):2809186442:1650931243
+  131857:59(47878):4105451731:1892352766
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2679,74 +2478,63 @@ Key: anio pers numero
          mes |    131,857    6.506518    3.434563          1         12
 -------------+---------------------------------------------------------
      estrato |    131,857    6.385091    3.143121          1         12
-    region_3 |    131,857    1.770312    .6714558          1          3
-    region_4 |    131,857    1.819107    .7856682          1          4
      pesomen |    131,857    310.5993    81.99723          1        800
      pesotri |    131,857    103.6101     23.7754         17        262
--------------+---------------------------------------------------------
      pesosem |    131,857     51.8192    11.37806         12        118
       pesoan |    131,857    25.90063    5.671286          7         58
-      hombre |    131,857    1.529771    .4991148          1          2
+-------------+---------------------------------------------------------
+      hombre |    131,857    .4702291    .4991148          0          1
         edad |    131,857    37.76955    23.52083          0         98
-   trabajo_1 |    131,857    1.179717     .724212          0          2
--------------+---------------------------------------------------------
 horas_trab~p |    131,857    18.25329    21.99984          0         98
-meses_trab~o |    131,857    .3372441    1.392917          0         11
-anios_trab~o |    131,857    4.199003    8.405566          0         75
 horas_trab~s |    131,857     .864755    4.690433          0         82
-busca_trab~o |    131,857    .8769652    .9563849          0          2
+busca_trab~o |    131,857    .0701973    .2554801          0          1
 -------------+---------------------------------------------------------
-    pobpcoac |    131,857    3.835784    3.233415          1         11
       ytotal |    131,857    14638.27    21152.85          0   766666.7
  nbr_above14 |    131,857    2.678182    1.191123          1         12
   nbr_people |    131,857    3.544469    1.711887          1         15
  nbr_under14 |    131,857    .8662415    1.137449          0          9
--------------+---------------------------------------------------------
        li_06 |    131,857    2320.095    121.9154       1920       2542
+-------------+---------------------------------------------------------
        lp_06 |    131,857    22236.01    10386.72       4089   103313.2
      y_hogar |    131,857    18988.89    35948.83          0    1894499
 c98_resid_~e |    131,857    .9987031    .0359887          0          1
 c06_mat_wa~s |    131,857    .9763077    .1520894          0          1
--------------+---------------------------------------------------------
 c06_mat_roof |    131,857    .5446734    .4980022          0          1
+-------------+---------------------------------------------------------
 c06_mat_fl~r |    131,857    .8194787    .3846225          0          1
 c98_resid_~d |    131,857    .6139227    .4868505          0          1
 c98_nbr_ro~s |    131,857    3.643735    1.245219          1         14
 c98_nbr_be~s |    131,857     2.21581    .8155622          1          8
--------------+---------------------------------------------------------
 c98_b_pipe~r |    131,857    .9795081    .1416761          0          1
+-------------+---------------------------------------------------------
 c98_hhld_t~t |    131,857    .9380693    .2410306          0          1
 c98_b_sewage |    131,857    .5905185      .49174          0          1
 c06_b_electr |    131,857    .9952904    .0684653          0          1
 c98_hhld_s~e |    131,857    .9469653    .2241036          0          1
--------------+---------------------------------------------------------
 c98_hhld_h~r |    131,857    .9124961    .2825731          0          1
+-------------+---------------------------------------------------------
 c98_hhld_r~t |    131,857    .9816771    .1341167          0          1
  c98_hhld_tv |    131,857    .9814875    .1347958          0          1
 c98_hhld_vcr |    131,857    .4982064    .4999987          0          1
 c98_hhld_w~c |    131,857    .8244993    .3803963          0          1
--------------+---------------------------------------------------------
 c98_hhld_d~r |    131,857    .0372449     .189362          0          1
+-------------+---------------------------------------------------------
 c98_hhld_m~e |    131,857    .6333149    .4819013          0          1
 c98_hhld_car |    131,857    .4322865    .4953955          0          1
 c01_hhld_c~r |    131,857    .7618101    .4259775          0          1
 c01_hhld_i~t |    131,857    .6100928    .4877309          0          1
--------------+---------------------------------------------------------
 c01_hhld_p~e |    131,857    .6480581    .4775778          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~v |    131,857    .7179369    .4500056          0          1
 health_ins~e |    131,857    3.044821    1.449204          0          5
 public_hea~h |    131,857    .2781801    .4481043          0          1
    trimestre |    131,857    2.500815    1.116989          1          4
--------------+---------------------------------------------------------
      married |    106,998     .559403    .4964611          0          1
+-------------+---------------------------------------------------------
       blanco |    131,857    .9382816    .2406443          0          1
   estudiante |    131,857    .0711604    .2570936          0          1
      trabajo |    131,857    .4735812    .4993035          0          1
- y_hogar_alt |    131,857    44792.31    39352.34          0    1548069
--------------+---------------------------------------------------------
 horas_trab~o |    131,857    19.11804    23.01198          0        129
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2758,8 +2546,6 @@ file ..\temp\clean_2014.dta saved
 (74,978 real changes made)
 (5,926 real changes made)
 (22,759 missing values generated)
-(121,461 missing values generated)
-(121,461 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
@@ -2767,6 +2553,8 @@ secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 (75245 missing values generated)
 estrato already numeric; no replace
+(64,282 real changes made)
+(48,392 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2800,20 +2588,14 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable hombre was double now byte
   variable edad was double now byte
   variable estrato was double now byte
   variable ccz was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable nbr_above14 was double now byte
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
@@ -2824,16 +2606,14 @@ estrato already numeric; no replace
   variable pesoan was double now byte
   variable pesosem was double now byte
   variable li_06 was double now int
-  variable region_4 was double now byte
-  variable region_3 was double now byte
-  (32,308,626 bytes saved)
+  (26,478,498 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2015.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  121461:68(65453):2975698239:1615885248
+  121461:59(77138):3956463410:1315756610
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -2843,81 +2623,70 @@ Key: anio pers numero
         secc |     46,216    19.40839    19.61622          1         99
         segm |     46,216     120.938    95.67686          1        633
 -------------+---------------------------------------------------------
-      hombre |    121,461     1.52924    .4991464          1          2
+      hombre |    121,461    .4707602    .4991464          0          1
         edad |    121,461    37.78927    23.44139          0         98
      estrato |    121,461     6.29621    3.153247          1         12
          ccz |    121,461    3.466825    5.316292          0         18
          loc |          0
 -------------+---------------------------------------------------------
       nomloc |          0
-   trabajo_1 |    121,461    1.185088    .7249751          0          2
 horas_trab~p |    121,461    18.01904    21.76663          0         98
-meses_trab~o |    121,461    .3130305     1.35041          0         11
-anios_trab~o |    121,461    4.183483    8.339463          0         79
--------------+---------------------------------------------------------
 horas_trab~s |    121,461    .8729633     4.64631          0         80
-busca_trab~o |    121,461    .8686904    .9544144          0          2
-    pobpcoac |    121,461    3.855822    3.241698          1         11
+busca_trab~o |    121,461    .0718585    .2582545          0          1
       ytotal |    121,461    16301.71    31528.57          0    7244333
- nbr_above14 |    121,461    2.648875     1.17915          1         10
 -------------+---------------------------------------------------------
+ nbr_above14 |    121,461    2.648875     1.17915          1         10
   nbr_people |    121,461    3.500934    1.702598          1         15
  nbr_under14 |    121,461    .8520595    1.122494          0          8
          mes |    121,461     6.46638    3.453585          1         12
         dpto |    121,461    5.974486    5.794182          1         19
-     pesomen |    121,461    342.5322    77.47259         49        767
 -------------+---------------------------------------------------------
+     pesomen |    121,461    342.5322    77.47259         49        767
      pesotri |    121,461    114.1754    22.28173         16        221
       pesoan |    121,461    28.54021    5.110847          9         53
      pesosem |    121,461    57.08699    10.05234         10         97
        li_06 |    121,461    2549.292    129.6206       2153       2784
-       lp_06 |    121,461    23924.12    11278.48       4449   99717.97
 -------------+---------------------------------------------------------
-    region_4 |    121,461    1.832786    .8168623          1          4
-    region_3 |    121,461     1.78207    .7039759          1          3
+       lp_06 |    121,461    23924.12    11278.48       4449   99717.97
      y_hogar |    121,461     21045.2    48999.61          0    7681180
 c98_resid_~e |    121,461    .9991602    .0289668          0          1
 c06_mat_wa~s |    121,461    .9769144     .150176          0          1
--------------+---------------------------------------------------------
 c06_mat_roof |    121,461    .5513045    .4973629          0          1
+-------------+---------------------------------------------------------
 c06_mat_fl~r |    121,461    .8286034    .3768567          0          1
 c98_resid_~d |    121,461    .6066556    .4884942          0          1
 c98_nbr_ro~s |    121,461    3.633257    1.229617          1         14
 c98_nbr_be~s |    121,461    2.202855    .8141716          1          7
--------------+---------------------------------------------------------
 c98_b_pipe~r |    121,461    .9823812    .1315619          0          1
+-------------+---------------------------------------------------------
 c98_hhld_t~t |    121,461     .946419    .2251899          0          1
 c98_b_sewage |    121,461    .5918278    .4914973          0          1
 c06_b_electr |    121,461    .9951836     .069233          0          1
 c98_hhld_s~e |    121,461    .9551132    .2070564          0          1
--------------+---------------------------------------------------------
 c98_hhld_h~r |    121,461     .923177    .2663115          0          1
+-------------+---------------------------------------------------------
 c98_hhld_r~t |    121,461    .9839784    .1255589          0          1
  c98_hhld_tv |    121,461    .9783223    .1456296          0          1
 c98_hhld_vcr |    121,461    .4250829    .4943576          0          1
 c98_hhld_w~c |    121,461    .8357168    .3705339          0          1
--------------+---------------------------------------------------------
 c98_hhld_d~r |    121,461    .0413384    .1990724          0          1
+-------------+---------------------------------------------------------
 c98_hhld_m~e |    121,461    .6476153     .477715          0          1
 c98_hhld_car |    121,461     .445641    .4970384          0          1
 c01_hhld_c~r |    121,461    .7579388    .4283329          0          1
 c01_hhld_i~t |    121,461    .6211706    .4850975          0          1
--------------+---------------------------------------------------------
 c01_hhld_p~e |    121,461     .648949    .4773008          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~v |    121,461    .7221166    .4479575          0          1
 health_ins~e |    121,461    3.061123    1.439345          0          5
 public_hea~h |    121,461    .2717498    .4448634          0          1
    trimestre |    121,461    2.490635    1.121371          1          4
--------------+---------------------------------------------------------
      married |     98,702    .5543859    .4970359          0          1
+-------------+---------------------------------------------------------
       blanco |    121,461    .9411251    .2353913          0          1
   estudiante |    121,461    .0718502    .2582408          0          1
      trabajo |    121,461    .4702744    .4991177          0          1
- y_hogar_alt |    121,461    49100.75    52194.17          0    7289481
--------------+---------------------------------------------------------
 horas_trab~o |    121,461    18.89201    22.79179          0        132
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -2929,13 +2698,13 @@ file ..\temp\clean_2015.dta saved
 (73,040 real changes made)
 (4,996 real changes made)
 (21,747 missing values generated)
-(118,591 missing values generated)
-(118,591 missing values generated)
 numero: all characters numeric; replaced as long
 anio: all characters numeric; replaced as int
 secc: all characters numeric; replaced as byte
 segm: all characters numeric; replaced as int
 estrato already numeric; no replace
+(63,214 real changes made)
+(46,692 real changes made)
 (data now sorted by anio pers numero)
   variable c98_resid_house was float now byte
   variable c06_mat_walls was float now byte
@@ -2970,24 +2739,16 @@ estrato already numeric; no replace
   variable estudiante was float now byte
   variable trabajo was float now byte
   variable horas_trabajo was float now int
-  variable live_births was float now byte
-  variable live_births_nbr was float now byte
   variable pers was double now byte
   variable hombre was double now byte
   variable edad was double now byte
   variable estrato was double now byte
   variable ccz was double now byte
-  variable trabajo_1 was double now byte
   variable horas_trabajo_p was double now byte
-  variable meses_trabajando was double now byte
-  variable anios_trabajando was double now byte
   variable horas_trabajo_s was double now byte
   variable busca_trabajo was double now byte
-  variable pobpcoac was double now byte
   variable mes was double now byte
   variable dpto was double now byte
-  variable region_3 was double now byte
-  variable region_4 was double now byte
   variable pesoan was double now byte
   variable pesomen was double now int
   variable pesotri was double now int
@@ -2995,14 +2756,14 @@ estrato already numeric; no replace
   variable nbr_people was double now byte
   variable nbr_under14 was double now byte
   variable li_06 was double now int
-  (31,070,842 bytes saved)
+  (25,378,474 bytes saved)
 ===============================================================================
 > ===================
 File: ..\temp\clean_2016.dta
 Key: anio pers numero
 ===============================================================================
 > ===================
-  118591:68(47524):2560583171:27163168
+  118591:59(79701):1259118972:583476278
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -3012,81 +2773,70 @@ Key: anio pers numero
         secc |    118,591    11.72511    14.59495          1         99
         segm |    118,591    119.4847    115.5742          1        845
 -------------+---------------------------------------------------------
-      hombre |    118,591    1.533042    .4989091          1          2
+      hombre |    118,591    .4669579    .4989091          0          1
         edad |    118,591    38.32815    23.63141          0         98
      estrato |    118,591    6.302148    3.153018          1         12
          ccz |    118,591    3.410419    5.256829          0         18
          loc |          0
 -------------+---------------------------------------------------------
       nomloc |          0
-   trabajo_1 |    118,591    1.199239     .725468          0          2
 horas_trab~p |    118,591    17.55717    21.42345          0         98
-meses_trab~o |    118,591    .2876778    1.293166          0         11
-anios_trab~o |    118,591    4.256453    8.427222          0         86
--------------+---------------------------------------------------------
 horas_trab~s |    118,591    .8214198    4.509186          0         78
-busca_trab~o |    118,591    .8588088    .9532627          0          2
-    pobpcoac |    118,591    3.927499    3.279133          1         11
+busca_trab~o |    118,591    .0713629    .2574312          0          1
          mes |    118,591     6.49981    3.458374          1         12
-        dpto |    118,591    5.924084     5.76482          1         19
 -------------+---------------------------------------------------------
+        dpto |    118,591    5.924084     5.76482          1         19
       ytotal |    118,591    17775.97     26717.9          0    2824440
-    region_3 |    118,591    1.779806    .7001324          1          3
-    region_4 |    118,591    1.837661    .8281794          1          4
       pesoan |    118,591     29.3331    5.738249          9         46
      pesomen |    118,591    352.1464    86.73986         70       1264
--------------+---------------------------------------------------------
      pesotri |    118,591    117.3802    24.62445         28        227
+-------------+---------------------------------------------------------
  nbr_above14 |    118,591    2.624179    1.181594          1         10
   nbr_people |    118,591    3.451518    1.706535          1         17
  nbr_under14 |    118,591    .8272719    1.100797          0          8
      y_hogar |    118,591    66705.07    57682.07          0    2863259
--------------+---------------------------------------------------------
        li_06 |    118,591    2790.607    151.2324       2337       3021
+-------------+---------------------------------------------------------
        lp_06 |    118,591    25752.67    12367.74       4842   132026.8
 c98_resid_~e |    118,591    .9993676    .0251402          0          1
 c06_mat_wa~s |    118,591    .9785397    .1449136          0          1
 c06_mat_roof |    118,591    .5595787    .4964398          0          1
--------------+---------------------------------------------------------
 c06_mat_fl~r |    118,591    .8343803    .3717404          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |    118,591    .5899773    .4918395          0          1
 c98_nbr_ro~s |    118,591    3.602887    1.211723          1         15
 c98_nbr_be~s |    118,591    2.188286    .8078832          1          9
 c98_b_pipe~r |    118,591    .9831269    .1287966          0          1
--------------+---------------------------------------------------------
 c98_hhld_t~t |    118,591    .9484447    .2211285          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |    118,591    .5954752    .4908019          0          1
 c06_b_electr |    118,591    .9952526     .068738          0          1
 c98_hhld_s~e |    118,591    .9591706    .1978957          0          1
 c98_hhld_h~r |    118,591    .9246823    .2639044          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |    118,591    .9830426    .1291125          0          1
+-------------+---------------------------------------------------------
  c98_hhld_tv |    118,591    .9774013    .1486209          0          1
 c98_hhld_vcr |    118,591    .3511228    .4773233          0          1
 c98_hhld_w~c |    118,591    .8404601    .3661804          0          1
 c98_hhld_d~r |    118,591    .0384852    .1923653          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |    118,591    .6466511    .4780119          0          1
+-------------+---------------------------------------------------------
 c98_hhld_car |    118,591    .4546382    .4979402          0          1
 c01_hhld_c~r |    118,591    .7560776    .4294483          0          1
 c01_hhld_i~t |    118,591    .6323498    .4821675          0          1
 c01_hhld_p~e |    118,591    .6412375    .4796393          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |    118,591    .7163528    .4507695          0          1
+-------------+---------------------------------------------------------
 health_ins~e |    118,591     3.03125    1.443094          0          5
 public_hea~h |    118,591    .2818005    .4498785          0          1
    trimestre |    118,591    2.499271    1.120001          1          4
      pesosem |          0
--------------+---------------------------------------------------------
      married |     96,844    .5562967    .4968231          0          1
+-------------+---------------------------------------------------------
       blanco |    118,591     .944414    .2291215          0          1
   estudiante |    118,591    .0720712    .2586069          0          1
      trabajo |    118,591    .4650859    .4987816          0          1
- y_hogar_alt |    118,591    52686.67    49775.11          0    2846213
--------------+---------------------------------------------------------
 horas_trab~o |    118,591    18.37859    22.40872          0        118
- live_births |          0
-live_birth~r |          0
 
 
 
@@ -3125,51 +2875,30 @@ Notes:
 
 . set more off
 
-. adopath + ../../library/stata/gslab_misc/ado
+. adopath + ../../../library/stata/gslab_misc/ado
   [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
   [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
   [6]  (OLDPLACE)  "c:\ado/"
-  [7]              "../../library/stata/gslab_misc/ado"
+  [7]              "../../../library/stata/gslab_misc/ado"
 
 . 
 . program main_append_years
-  1.         append_years
+  1.     append_years
   2. end
 
 . 
-. program recode_dummies
-  1. syntax, vars(varlist)
-  2.         foreach var in `vars' {
-  3.                 replace `var'=0 if `var'==2
-  4.         }
-  5. end
-
-. 
 . program append_years
-  1.         use ..\temp\clean_2001.dta, clear
-  2.         
-.         forval year=2002/2016{
-  3.             append using ..\temp\clean_`year'.dta
-  4.         }
+  1.     use ..\temp\clean_2001.dta, clear
+  2.     
+.     forval year=2002/2016{
+  3.         append using ..\temp\clean_`year'.dta
+  4.     }
   5.         
-.         * asserting basic properties: 
-.         * - that there are no missing departamentos in any year
-.         * - and the primary keys
-.         /*forval year=2001/2016{
->             unique dpto if anio == `year'
->                 local n = r(sum)
->                 assert `n' == 19
->         }
->         
->         isid numero pers anio*/
-.         
-.         recode_dummies, vars(trabajo_1 hombre busca_trabajo)
-  6.         
-.         save_data ..\output\clean_2001_2016, key(numero pers anio) replace
-  7. end
+.     save_data ..\output\clean_2001_2016, key(numero pers anio) replace
+  6. end
 
 . 
 . main_append_years
@@ -3178,90 +2907,50 @@ Notes:
        values)
 (note: variable y_hogar was long, now double to accommodate using data's
        values)
+(note: variable loc was str4, now str5 to accommodate using data's values)
 (note: variable horas_trabajo was byte, now int to accommodate using data's
        values)
-(note: variable loc was str4, now str5 to accommodate using data's values)
-(label Pobpcoac already defined)
 (label f102 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label f102 already defined)
-(label f68 already defined)
-(label e41 already defined)
 (label e31_3 already defined)
 (label e27 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label e26 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label e26 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label e26 already defined)
 (label estratogeo09 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label dpto already defined)
 (note: variable nomloc was str43, now str104 to accommodate using data's
        values)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label e26 already defined)
 (label mes already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label dpto already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label e26 already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label mes already defined)
 (label dpto already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label e26 already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label estred13 already defined)
 (label mes already defined)
 (label dpto already defined)
-(label region_3 already defined)
-(label region_4 already defined)
 (label dpto already defined)
 (label mes already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label estred13 already defined)
 (label e26 already defined)
-(label region_4 already defined)
-(label region_3 already defined)
 (label dpto already defined)
 (label mes already defined)
-(label pobpcoac already defined)
 (label f99 already defined)
-(label f66 already defined)
 (label estred13 already defined)
 (label e26 already defined)
-(687,523 real changes made)
-(970,766 real changes made)
-(673,422 real changes made)
 (data now sorted by numero pers anio)
   (0 bytes saved)
 ===============================================================================
@@ -3270,7 +2959,7 @@ File: ..\output\clean_2001_2016
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1839366:70(85472):3907095483:2368839275
+  1839366:61(39286):1160636046:809541149
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -3293,69 +2982,59 @@ Key: numero pers anio
       hombre |  1,839,366    .4722279    .4992283          0          1
 -------------+---------------------------------------------------------
         edad |  1,839,366    36.84341    23.46671          0         99
-    pobpcoac |  1,839,366    3.804171    3.197387          1         11
-   trabajo_1 |  1,839,366    .4234492    .4941054          0          1
-horas_trab~p |  1,839,366    17.73081    22.52669          0         99
-horas_trab~s |  1,839,366    .8747748    4.777166          0         98
--------------+---------------------------------------------------------
+horas_trab~p |  1,839,366    15.45302    21.51674          0         99
+horas_trab~s |  1,839,366    3.212124    11.43304          0         99
 busca_trab~o |  1,839,366    .0730208    .2601707          0          1
       ytotal |  1,839,366    9297.118    17409.05          0    7244333
- nbr_above14 |  1,839,366     2.76349    1.242189          1         16
+-------------+---------------------------------------------------------
+ nbr_above14 |  1,839,366    2.470686    2.152676          0         98
   nbr_people |  1,839,366    3.748663    1.864476          1         25
  nbr_under14 |  1,839,366    .9849992    1.273693          0         13
--------------+---------------------------------------------------------
      y_hogar |  1,839,366    28514.52    35667.32          0    7681180
 c98_resid_~e |  1,839,366    .9967886    .0565785          0          1
+-------------+---------------------------------------------------------
 c98_resid_~d |  1,839,366    .6374849    .4807266          0          1
 c98_nbr_ro~s |  1,839,366     3.58171    1.318514          1         80
 c98_nbr_be~s |  1,839,366    2.191079    .8366119          1         40
--------------+---------------------------------------------------------
 c98_b_pipe~r |  1,839,366    .9527256    .2122253          0          1
 c98_hhld_t~t |  1,839,366    .9113765    .2841996          0          1
+-------------+---------------------------------------------------------
 c98_b_sewage |  1,839,366     .561874     .496157          0          1
 c98_hhld_s~e |  1,839,366    .9309719     .253502          0          1
 c98_hhld_h~r |  1,839,366    .8645609     .342192          0          1
--------------+---------------------------------------------------------
 c98_hhld_r~t |  1,839,366     .831082    .3746796          0          1
  c98_hhld_tv |  1,839,366    .9493402    .2193022          0          1
+-------------+---------------------------------------------------------
 c98_hhld_vcr |  1,839,366    .4853477    .4997854          0          1
 c98_hhld_w~c |  1,839,366     .707005    .4551363          0          1
 c98_hhld_d~r |  1,839,366    .0405553    .1972576          0          1
--------------+---------------------------------------------------------
 c98_hhld_m~e |  1,839,366    .4898677    .4998975          0          1
 c98_hhld_car |  1,839,366    .3699807    .4827993          0          1
+-------------+---------------------------------------------------------
 c01_hhld_c~r |  1,839,366    .5143044    .4997955          0          1
 c01_hhld_i~t |  1,839,366     .350274    .4770558          0          1
 c01_hhld_p~e |  1,839,366    .7160603     .450908          0          1
--------------+---------------------------------------------------------
 c01_hhld_c~v |  1,839,366    .5446029    .4980067          0          1
 health_ins~e |  1,839,366    2.818566     1.51163          0          5
+-------------+---------------------------------------------------------
 public_hea~h |  1,839,366     .324359     .468135          0          1
       blanco |  1,560,337    .9582879    .1999307          0          1
    trimestre |  1,839,366    2.498386    1.116879          1          4
--------------+---------------------------------------------------------
      married |  1,523,044     .538882    .4984861          0          1
   estudiante |  1,839,366    .0685252    .2526451          0          1
+-------------+---------------------------------------------------------
      trabajo |  1,839,366    .4503628    .4975302          0          1
- y_hogar_alt |  1,839,366    29055.64    32987.28          0    7289481
-horas_trab~o |  1,839,366    18.60558    23.56676          0        180
--------------+---------------------------------------------------------
-meses_trab~o |  1,560,337    .3364754    1.415769          0         80
-anios_trab~o |  1,560,337    4.151576    8.443421          0         98
-    region_3 |  1,560,337    1.791686    .7105442          1          3
-    region_4 |  1,560,337    1.874478    .8836783          1          4
+horas_trab~o |  1,839,366    18.66514    23.42811          0        157
      pesomen |  1,439,875    269.4868    116.7817          1       2451
--------------+---------------------------------------------------------
- live_births |    544,628    1.037506    .6892997          0          2
-live_birth~r |    544,628     1.42473    1.954932          0         99
        li_06 |  1,560,337    1751.036    550.9899        898       3021
        lp_06 |  1,560,337    17719.04    9722.893       2214   132026.8
-c06_mat_wa~s |  1,560,337     .971983    .1650215          0          1
 -------------+---------------------------------------------------------
+c06_mat_wa~s |  1,560,337     .971983    .1650215          0          1
 c06_mat_roof |  1,560,337    .5369802    .4986308          0          1
 c06_mat_fl~r |  1,560,337    .7705964    .4204494          0          1
 c06_b_electr |  1,560,337    .9857172    .1186542          0          1
        ccz04 |    120,462    3.528764    5.341155          0         18
+-------------+---------------------------------------------------------
        ccz10 |    120,462    3.552116    5.353865          0         18
 
 
@@ -3367,4 +3046,4 @@ file ..\output\clean_2001_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-08-27 15:46:01
+ make.py ended: 2019-09-03 17:01:04

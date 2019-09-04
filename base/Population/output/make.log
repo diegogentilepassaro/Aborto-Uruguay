@@ -1,0 +1,723 @@
+
+ make.py started: 2019-09-04 17:51:45 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Population\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./population.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./population.do 
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main
+  1.     import_and_append
+  2.     rename_years
+  3.     reshape_agg_and_save
+  4. end
+
+. 
+. program import_and_append
+  1.     local S_all   = 0
+  2.     local S_men   = 22
+  3.     local S_women = 44
+  4. 
+.     * Create the cell range for each of the 6 tables in each worksheet
+.     foreach gender in all men women {
+  5.         local S0_`gender' = 8 + `S_`gender''
+  6.         local S1_`gender' = `S0_`gender''+2
+  7.         local E1_`gender' = `S0_`gender''+2+18
+  8.         local cr1_`gender' = "A`S0_`gender'':Z`S0_`gender''"
+  9.         local cr2_`gender' = "A`S1_`gender'':Z`E1_`gender''"
+ 10.     }
+ 11. 
+.     * Get names and number of worksheets to be later used as indicators
+.     import excel "../../../raw/Departamentos_poblacion_por_sexo_y_edad_1996-2
+> 025.xls" , describe
+ 12.     local ws_N = `r(N_worksheet)'-1
+ 13.     local ws_1 = 3
+ 14. 
+.     forvalues ws = `ws_1'/`ws_N' {
+ 15.         local ws_`ws'_name = "`r(worksheet_`ws')'"
+ 16.         local ws_`ws'_nbr  = `ws'
+ 17.         if `ws'==3 {
+ 18.             local ws_`ws'_dpto = 1 //Mvd
+ 19.         }
+ 20.         else {
+ 21.             local ws_`ws'_dpto = `ws'-2
+ 22.         }
+ 23.     }
+ 24. 
+.     * Import the 6 tables from each worksheet and create the relevant variabl
+> es 
+.     forvalues ws = `ws_1'/`ws_N' {
+ 25.         foreach gender in all men women {
+ 26.             foreach cr in 1 2 {
+ 27.                 import excel "../../../raw/Departamentos_poblacion_por_sex
+> o_y_edad_1996-2025.xls" ///
+>                  , clear sheet("`ws_`ws'_name'") cellrange(`cr`cr'_`gender'')
+ 28.                 
+.                 gen depar = `ws_`ws'_dpto'
+ 29.                 gen gender_all = "`gender'"
+ 30.                 
+.                 if "`cr'" == "1" {
+ 31.                     gen age_min    = 0
+ 32.                     gen age_max    = 99
+ 33.                     gen all_ages   = 1
+ 34.                 }
+ 35.                 else {        
+ 36.                     qui replace A="90-99" if A=="90 y más"
+ 37.                     gen splitat    = strpos(A,"-")    
+ 38.                     gen age_min    = substr(A,1,splitat-1)
+ 39.                     gen age_max    = substr(A,splitat+1,.)
+ 40.                     qui destring age_min age_max, replace
+ 41.                     drop splitat
+ 42.                     gen all_ages   = 0
+ 43.                 }
+ 44.                 
+.                 tempfile pop_`ws_`ws'_nbr'_`gender'_`cr'
+ 45.                 save `pop_`ws_`ws'_nbr'_`gender'_`cr''
+ 46.                 
+.                 di "*******"
+ 47.                 di "pop_`ws_`ws'_nbr'_`gender'_`cr'"
+ 48.                 di "*******"
+ 49.             }
+ 50.         }
+ 51.     }
+ 52. 
+.     * Append all tables
+.     use `pop_`ws_1'_all_1', clear
+ 53.     forvalues ws = `ws_1'/`ws_N' {
+ 54.         foreach gender in all men women {
+ 55.             foreach cr in 1 2 {
+ 56.                 if "`ws_`ws'_nbr'_`gender'_`cr'" == "`ws_1'_all_1" {
+ 57.                     continue
+ 58.                 }
+ 59.                 else {
+ 60.                     append using `pop_`ws_`ws'_nbr'_`gender'_`cr''
+ 61.                 }
+ 62.             }
+ 63.         }
+ 64.     }
+ 65.     drop A    
+ 66. end
+
+. 
+. program rename_years
+  1.     local year = 1996
+  2.     foreach k in `c(ALPHA)' {
+  3.         if "`k'" == "A" {
+  4.             continue
+  5.         }
+  6.         else {
+  7.             rename `k' pop`year'
+  8.             local year = `year' + 1
+  9.         }
+ 10.     }
+ 11. end 
+
+. 
+. program reshape_agg_and_save
+  1.     * Reshape, aggregate dy depto, and save table
+.     rename (depar gender_all) (dpto category)
+  2.     reshape long pop, i(dpto category age_min age_max) j(anio)
+  3.     save_data "../output/population.dta", key(anio dpto category age_min a
+> ge_max) replace
+  4. 
+.     * Collapse to women of fertile age and save table
+.     gen fertile_age = (category=="women" & age_min>=15 & age_max<45 & all_age
+> s==0)
+  5.     collapse (sum) pop if fertile_age==1, by(dpto anio age_min age_max)
+  6.     drop if inrange(anio,1996,2000) | inrange(anio,2017,2020)
+  7. 
+.     save_data "../output/population_fertile_age.dta", key(dpto anio age_min) 
+> replace
+  8. end
+
+. 
+. * EXECUTE
+. main
+
+                Sheet | Range
+  --------------------+--------------------
+                 Nota | A1:L35
+  Sexo y Departamento | A1:AE74
+           Montevideo | A1:BD76
+              Artigas | A1:BD76
+            Canelones | A1:BD76
+          Cerro Largo | A1:BD76
+              Colonia | A1:BD76
+              Durazno | A1:BD76
+               Flores | A1:BD76
+              Florida | A1:BD76
+            Lavalleja | A1:BD76
+            Maldonado | A1:BD76
+            Paysandú | A1:BD76
+           Río Negro | A1:BD76
+               Rivera | A1:BD76
+                Rocha | A1:BD76
+                Salto | A1:BD76
+            San José | A1:BD76
+              Soriano | A1:BD76
+          Tacuarembó | A1:BD76
+       Treinta y Tres | A1:BD76
+               Hoja21 | 
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000001.tmp saved
+*******
+pop_3_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
+*******
+pop_3_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000003.tmp saved
+*******
+pop_3_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
+*******
+pop_3_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000005.tmp saved
+*******
+pop_3_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
+*******
+pop_3_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000007.tmp saved
+*******
+pop_4_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000008.tmp saved
+*******
+pop_4_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000009.tmp saved
+*******
+pop_4_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000a.tmp saved
+*******
+pop_4_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000b.tmp saved
+*******
+pop_4_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000c.tmp saved
+*******
+pop_4_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000d.tmp saved
+*******
+pop_5_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000e.tmp saved
+*******
+pop_5_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000f.tmp saved
+*******
+pop_5_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000g.tmp saved
+*******
+pop_5_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000h.tmp saved
+*******
+pop_5_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000i.tmp saved
+*******
+pop_5_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000j.tmp saved
+*******
+pop_6_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000k.tmp saved
+*******
+pop_6_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000l.tmp saved
+*******
+pop_6_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000m.tmp saved
+*******
+pop_6_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000n.tmp saved
+*******
+pop_6_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000o.tmp saved
+*******
+pop_6_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000p.tmp saved
+*******
+pop_7_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000q.tmp saved
+*******
+pop_7_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000r.tmp saved
+*******
+pop_7_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000s.tmp saved
+*******
+pop_7_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000t.tmp saved
+*******
+pop_7_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000u.tmp saved
+*******
+pop_7_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000v.tmp saved
+*******
+pop_8_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000w.tmp saved
+*******
+pop_8_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000x.tmp saved
+*******
+pop_8_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000010.tmp saved
+*******
+pop_8_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000011.tmp saved
+*******
+pop_8_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000012.tmp saved
+*******
+pop_8_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000013.tmp saved
+*******
+pop_9_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000014.tmp saved
+*******
+pop_9_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000015.tmp saved
+*******
+pop_9_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000016.tmp saved
+*******
+pop_9_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000017.tmp saved
+*******
+pop_9_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000018.tmp saved
+*******
+pop_9_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000019.tmp saved
+*******
+pop_10_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001a.tmp saved
+*******
+pop_10_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001b.tmp saved
+*******
+pop_10_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001c.tmp saved
+*******
+pop_10_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001d.tmp saved
+*******
+pop_10_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001e.tmp saved
+*******
+pop_10_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001f.tmp saved
+*******
+pop_11_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001g.tmp saved
+*******
+pop_11_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001h.tmp saved
+*******
+pop_11_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001i.tmp saved
+*******
+pop_11_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001j.tmp saved
+*******
+pop_11_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001k.tmp saved
+*******
+pop_11_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001l.tmp saved
+*******
+pop_12_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001m.tmp saved
+*******
+pop_12_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001n.tmp saved
+*******
+pop_12_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001o.tmp saved
+*******
+pop_12_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001p.tmp saved
+*******
+pop_12_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001q.tmp saved
+*******
+pop_12_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001r.tmp saved
+*******
+pop_13_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001s.tmp saved
+*******
+pop_13_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001t.tmp saved
+*******
+pop_13_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001u.tmp saved
+*******
+pop_13_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001v.tmp saved
+*******
+pop_13_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001w.tmp saved
+*******
+pop_13_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200001x.tmp saved
+*******
+pop_14_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000020.tmp saved
+*******
+pop_14_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000021.tmp saved
+*******
+pop_14_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000022.tmp saved
+*******
+pop_14_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000023.tmp saved
+*******
+pop_14_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000024.tmp saved
+*******
+pop_14_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000025.tmp saved
+*******
+pop_15_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000026.tmp saved
+*******
+pop_15_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000027.tmp saved
+*******
+pop_15_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000028.tmp saved
+*******
+pop_15_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000029.tmp saved
+*******
+pop_15_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002a.tmp saved
+*******
+pop_15_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002b.tmp saved
+*******
+pop_16_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002c.tmp saved
+*******
+pop_16_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002d.tmp saved
+*******
+pop_16_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002e.tmp saved
+*******
+pop_16_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002f.tmp saved
+*******
+pop_16_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002g.tmp saved
+*******
+pop_16_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002h.tmp saved
+*******
+pop_17_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002i.tmp saved
+*******
+pop_17_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002j.tmp saved
+*******
+pop_17_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002k.tmp saved
+*******
+pop_17_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002l.tmp saved
+*******
+pop_17_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002m.tmp saved
+*******
+pop_17_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002n.tmp saved
+*******
+pop_18_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002o.tmp saved
+*******
+pop_18_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002p.tmp saved
+*******
+pop_18_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002q.tmp saved
+*******
+pop_18_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002r.tmp saved
+*******
+pop_18_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002s.tmp saved
+*******
+pop_18_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002t.tmp saved
+*******
+pop_19_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002u.tmp saved
+*******
+pop_19_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002v.tmp saved
+*******
+pop_19_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002w.tmp saved
+*******
+pop_19_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200002x.tmp saved
+*******
+pop_19_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000030.tmp saved
+*******
+pop_19_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000031.tmp saved
+*******
+pop_20_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000032.tmp saved
+*******
+pop_20_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000033.tmp saved
+*******
+pop_20_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000034.tmp saved
+*******
+pop_20_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000035.tmp saved
+*******
+pop_20_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000036.tmp saved
+*******
+pop_20_women_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000037.tmp saved
+*******
+pop_21_all_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000038.tmp saved
+*******
+pop_21_all_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000039.tmp saved
+*******
+pop_21_men_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200003a.tmp saved
+*******
+pop_21_men_2
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200003b.tmp saved
+*******
+pop_21_women_1
+*******
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0200003c.tmp saved
+*******
+pop_21_women_2
+*******
+(note: variable gender_all was str3, now str5 to accommodate using data's
+       values)
+(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
+> 9 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020)
+
+Data                               wide   ->   long
+-----------------------------------------------------------------------------
+Number of obs.                     1140   ->   28500
+Number of variables                  30   ->       7
+j variable (25 values)                    ->   anio
+xij variables:
+            pop1996 pop1997 ... pop2020   ->   pop
+-----------------------------------------------------------------------------
+(data now sorted by anio dpto category age_min age_max)
+  variable dpto was float now byte
+  variable age_min was float now byte
+  variable age_max was float now byte
+  variable all_ages was float now byte
+  (342,000 bytes saved)
+===============================================================================
+> ===================
+File: ../output/population.dta
+Key: anio dpto category age_min age_max
+===============================================================================
+> ===================
+  28500:7(110902):2192047666:4208669740
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |     28,500        2008    7.211229       1996       2020
+        dpto |     28,500          10    5.477322          1         19
+    category |          0
+     age_min |     28,500       42.75    28.43793          0         90
+     age_max |     28,500       51.75    29.21844          4         99
+-------------+---------------------------------------------------------
+         pop |     28,500    11909.46    55826.78   29.08208    1397549
+    all_ages |     28,500         .05    .2179488          0          1
+
+
+
+
+(note: file ../output/population.dta not found)
+file ../output/population.dta saved
+(1,026 observations deleted)
+(data already sorted by dpto anio age_min)
+  variable dpto was float now byte
+  variable age_min was float now byte
+  variable age_max was float now byte
+  (16,416 bytes saved)
+===============================================================================
+> ===================
+File: ../output/population_fertile_age.dta
+Key: dpto anio age_min
+===============================================================================
+> ===================
+  1824:5(80019):1077897849:3176307448
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |      1,824          10    5.478728          1         19
+        anio |      1,824      2008.5    4.611036       2001       2016
+     age_min |      1,824        27.5    8.541467         15         40
+     age_max |      1,824        31.5    8.541467         19         44
+         pop |      1,824    6332.672    11133.99   715.6553   60362.63
+
+
+
+
+(note: file ../output/population_fertile_age.dta not found)
+file ../output/population_fertile_age.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2019-09-04 17:51:53
