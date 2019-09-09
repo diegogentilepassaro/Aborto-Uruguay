@@ -19,15 +19,13 @@ program main
         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
         stove hot_water refrigerat tv car computer internet ///
         trabajo estudiante horas_trabajo work_part_time ///
-        yob young adult fertile infertile ///
-        pesoan pesosem pesotri
+        young adult fertile infertile pesoan pesosem pesotri
     order numero pers anio anio_sem anio_qtr semestre trimestre mes ///
         dpto loc_code ccz hombre edad blanco poor public_health married ///
         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
         stove hot_water refrigerat tv car computer internet ///
         trabajo estudiante horas_trabajo work_part_time ///
-        yob young adult fertile infertile ///
-        pesoan pesosem pesotri
+        young adult fertile infertile pesoan pesosem pesotri
 
     save_data ../temp/clean_loc_2001_2015_with_vars.dta, key(numero pers anio) replace
 end

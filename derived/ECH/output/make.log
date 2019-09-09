@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-09 18:50:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
+ make.py started: 2019-09-09 18:58:25 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
 
 
 
@@ -631,15 +631,13 @@ Notes:
 >         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
 >         stove hot_water refrigerat tv car computer internet ///
 >         trabajo estudiante horas_trabajo work_part_time ///
->         yob young adult fertile infertile ///
->         pesoan pesosem pesotri
+>         young adult fertile infertile pesoan pesosem pesotri
   9.     order numero pers anio anio_sem anio_qtr semestre trimestre mes ///
 >         dpto loc_code ccz hombre edad blanco poor public_health married ///
 >         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
 >         stove hot_water refrigerat tv car computer internet ///
 >         trabajo estudiante horas_trabajo work_part_time ///
->         yob young adult fertile infertile ///
->         pesoan pesosem pesotri
+>         young adult fertile infertile pesoan pesosem pesotri
  10. 
 .     save_data ../temp/clean_loc_2001_2015_with_vars.dta, key(numero pers anio
 > ) replace
@@ -853,19 +851,18 @@ file ../temp/clean_loc_2001_2016_fixed.dta saved
   variable poor was float now byte
   variable horas_trabajo was int now byte
   variable work_part_time was float now byte
-  variable yob was float now int
   variable young was float now byte
   variable adult was float now byte
   variable fertile was float now byte
   variable infertile was float now byte
-  (27,493,860 bytes saved)
+  (25,660,936 bytes saved)
 ===============================================================================
 > ===================
 File: ../temp/clean_loc_2001_2015_with_vars.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  916462:42(124614):1913730666:3591233976
+  916462:41(37257):1141249185:784047568
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -909,15 +906,14 @@ public_hea~h |    916,462    .3024523    .4593203          0          1
   estudiante |    916,462    .0735382    .2610181          0          1
 horas_trab~o |    916,372    29.51899    23.41669          0        100
 work_part_~e |    648,383    .2529662    .4347121          0          1
-         yob |    916,462    1972.138    13.55946       1941       1999
--------------+---------------------------------------------------------
        young |    916,462    .3680338    .4822709          0          1
+-------------+---------------------------------------------------------
        adult |    916,462     .329455    .4700156          0          1
      fertile |    916,462    .6974888    .4593456          0          1
    infertile |    916,462    .3025112    .4593456          0          1
       pesoan |    916,462    26.64411    13.13578          1       1323
--------------+---------------------------------------------------------
      pesosem |    911,468    52.98671    26.11367          3       1345
+-------------+---------------------------------------------------------
      pesotri |    911,468    106.0525    50.70616          1       1527
 
 
@@ -1203,7 +1199,7 @@ File: ../output/main_ECH_panel.dta
 Key: anio numero pers
 ===============================================================================
 > ===================
-  916462:46(50001):43936608:3141279075
+  916462:45(76287):4200239707:2745294522
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1247,20 +1243,18 @@ public_hea~h |    916,462    .3024523    .4593203          0          1
   estudiante |    916,462    .0735382    .2610181          0          1
 horas_trab~o |    916,372    29.51899    23.41669          0        100
 work_part_~e |    648,383    .2529662    .4347121          0          1
-         yob |    916,462    1972.138    13.55946       1941       1999
--------------+---------------------------------------------------------
        young |    916,462    .3680338    .4822709          0          1
+-------------+---------------------------------------------------------
        adult |    916,462     .329455    .4700156          0          1
      fertile |    916,462    .6974888    .4593456          0          1
    infertile |    916,462    .3025112    .4593456          0          1
       pesoan |    916,462    26.64411    13.13578          1       1323
--------------+---------------------------------------------------------
      pesosem |    911,468    52.98671    26.11367          3       1345
+-------------+---------------------------------------------------------
      pesotri |    911,468    106.0525    50.70616          1       1527
 IS_impl_date |    648,623    16663.75    765.7674      16162      18414
 rel_t_anio~r |    648,623    548.3761    491.8763          0       1000
 rel_t_anio~m |    648,623    545.0026    494.7674          0       1000
--------------+---------------------------------------------------------
   rel_t_anio |    648,623    425.3749     491.178          0       1000
 
 
@@ -1272,4 +1266,4 @@ file ../output/main_ECH_panel.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-09 18:53:38
+ make.py ended: 2019-09-09 19:01:37
