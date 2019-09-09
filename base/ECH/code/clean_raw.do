@@ -7,7 +7,7 @@ program main_clean_raw
     clean_06
     clean_07
     clean_08
-    clean_09_16
+    clean_09_15
 end
 
 program clean_01_05
@@ -35,26 +35,16 @@ program clean_01_05
                 horas_trabajo_p  horas_trabajo_s busca_trabajo ///
                 nbr_above14      nbr_people      nbr_under14)
 
-        gen    c98_resid_house        =    (c1==1)
-        gen    c98_resid_owned        =    (d2==1|d2==2)
-        gen    c98_nbr_rooms        =    d3
-        gen    c98_nbr_bedrooms    =    d4
-        gen    c98_b_piped_water    =    (d6==1)
-        gen    c98_hhld_toilet        =    (d7==1)
-        gen    c98_b_sewage        =    (d8==1)
-        gen    c98_hhld_stove        =    (d9!=5)
-        gen    c98_hhld_hot_water    =    (d10_1==1|d10_2==1)
-        gen    c98_hhld_refrigerat    =    (d10_3==1)
-        gen    c98_hhld_tv            =    (d10_4==1)
-        gen    c98_hhld_vcr        =    (d10_6==1)
-        gen    c98_hhld_wash_mac    =    (d10_7==1)
-        gen    c98_hhld_dishwasher    =    (d10_8==1)
-        gen    c98_hhld_microwave    =    (d10_9==1)
-        gen    c98_hhld_car        =    (d10_12==1)
-        gen    c01_hhld_computer    =    (d10_10==1)
-        gen    c01_hhld_internet    =    (d10_11==1)
-        gen    c01_hhld_phone        =    (d10_13==1)
-        gen    c01_hhld_cable_tv    =    (d10_5==1)
+        gen    piped_water        =    (d6==1)
+        gen    toilet        =    (d7==1)
+        gen    sewage             =    (d8==1)
+        gen    stove         =    (d9!=5)        
+        gen    hot_water     =    (d10_1==1|d10_2==1)
+        gen    refrigerat    =    (d10_3==1)
+        gen    tv            =    (d10_4==1)
+        gen    car           =    (d10_12==1)
+        gen    computer      =    (d10_10==1)
+        gen    internet      =    (d10_11==1)
         
         if `year' == 2001 | `year' == 2002 | `year' == 2003 {
             * no insurance
@@ -106,10 +96,11 @@ program clean_01_05
             replace `var' = 0 if `var' == 2
         }
 
-        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz ///
-            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14 ///
-            married c98_* c01_* estudiante *trabaj* blanco ///
-            health_insurance public_health
+        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
+             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+             married estudiante trabajo horas_trabajo blanco health_insurance ///
+             public_health piped_water toilet sewage stove hot_water refrigerat tv /// 
+             car computer internet
         
         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
     }
@@ -138,30 +129,16 @@ program clean_06
                 nbr_under14     busca_trabajo     afro              asia     ///
                 blanco            indigena          otro)
 
-        gen    c98_resid_house        =    (c1!=5)
-        gen    c06_mat_walls        =    (c2==1|c2==2)
-        gen    c06_mat_roof        =    (c3==1|c3==2)
-        gen    c06_mat_floor        =    (c4==1|c4==2)
-        gen    c98_resid_owned        =    (d7_1==1|d7_1==2|d7_1==3|d7_1==4)
-        gen    c98_nbr_rooms        =    d8
-        gen    c98_nbr_bedrooms    =    d9
-        gen    c98_b_piped_water    =    (d13==1)
-        gen    c98_hhld_toilet        =    (d14==1)
-        gen    c98_b_sewage        =    (d17==1)
-        gen    c06_b_electr        =    (d18_1==1|d18_1==2)
-        gen    c98_hhld_stove        =    (d19!=3)
-        gen    c98_hhld_hot_water    =    (d21_1_1==1|d21_1_2==1|d21_1_3==1|d21_2_1==1|d21_2_2==1)
-        gen    c98_hhld_refrigerat    =    (d21_3==1|d21_4==1)
-        gen    c98_hhld_tv            =    (d21_5_1==1)
-        gen    c98_hhld_vcr        =    (d21_8==1|d21_9==1)
-        gen    c98_hhld_wash_mac    =    (d21_10==1)
-        gen    c98_hhld_dishwasher    =    (d21_12==1)
-        gen    c98_hhld_microwave    =    (d21_13==1)
-        gen    c98_hhld_car        =    (d21_18_1==1)
-        gen    c01_hhld_computer    =    (d21_14_1==1)
-        gen    c01_hhld_internet    =    (d21_15==1)
-        gen    c01_hhld_phone        =    (d21_16_1==1|d21_17_1==1)
-        gen    c01_hhld_cable_tv    =    (d21_7==1)
+        gen    piped_water        =    (d13==1)
+        gen    toilet        =    (d14==1)
+        gen    sewage             =    (d17==1)
+        gen    stove              =    (d19!=3)
+        gen    hot_water          =    (d21_1_1==1|d21_1_2==1|d21_1_3==1|d21_2_1==1|d21_2_2==1)
+        gen    refrigerat         =    (d21_3==1|d21_4==1)
+        gen    tv                 =    (d21_5_1==1)
+        gen    car                =    (d21_18_1==1)
+        gen    computer           =    (d21_14_1==1)
+        gen    internet           =    (d21_15==1)
 
         * no insurance
         gen health_insurance = 0    
@@ -196,10 +173,11 @@ program clean_06
             replace `var' = 0 if `var' == 2
         }
 
-        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
-            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
-            married c98_* c01_* c06_* estudiante *trabaj* ///
-            lp_06 li_06 blanco health_insurance public_health
+        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
+             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+             married estudiante trabajo horas_trabajo lp_06 blanco health_insurance ///
+             public_health piped_water toilet sewage stove hot_water refrigerat tv /// 
+             car computer internet
 		
         save_data ..\temp\clean_2006.dta, key(anio pers numero) replace   
 end
@@ -226,30 +204,16 @@ program clean_07
                 busca_trabajo    afro            asia             blanco           ///
                 indigena         otro)
 
-        gen    c98_resid_house        =    (c1!=5)
-        gen    c06_mat_walls        =    (c2==1|c2==2)
-        gen    c06_mat_roof        =    (c3==1|c3==2)
-        gen    c06_mat_floor        =    (c4==1|c4==2)
-        gen    c98_resid_owned        =    (d8_1==1|d8_1==2|d8_1==3|d8_1==4)
-        gen    c98_nbr_rooms        =    d9
-        gen    c98_nbr_bedrooms    =    d10
-        gen    c98_b_piped_water    =    (d14_1==1)
-        gen    c98_hhld_toilet        =    (d15==1)
-        gen    c98_b_sewage        =    (d18_1==1)
-        gen    c06_b_electr        =    (d19_1==1|d19_1==2)
-        gen    c98_hhld_stove        =    (d20!=3)
-        gen    c98_hhld_hot_water    =    (d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
-        gen    c98_hhld_refrigerat    =    (d22_1_2==1|d22_4==1)
-        gen    c98_hhld_tv            =    (d22_5_1==1)
-        gen    c98_hhld_vcr        =    (d22_8==1|d22_9==1)
-        gen    c98_hhld_wash_mac    =    (d22_10==1)
-        gen    c98_hhld_dishwasher    =    (d22_12==1)
-        gen    c98_hhld_microwave    =    (d22_13==1)
-        gen    c98_hhld_car        =    (d22_18_1==1)
-        gen    c01_hhld_computer    =    (d22_14_1==1)
-        gen    c01_hhld_internet    =    (d22_15_1==1|d22_15_2==1)
-        gen    c01_hhld_phone        =    (d22_16_1==1|d22_17_1==1)
-        gen    c01_hhld_cable_tv    =    (d22_7==1)
+        gen    piped_water    =    (d14_1==1)
+        gen    toilet         =    (d15==1)
+        gen    sewage         =    (d18_1==1)
+        gen    stove          =    (d20!=3)
+        gen    hot_water      =    (d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+        gen    refrigerat     =    (d22_1_2==1|d22_4==1)
+        gen    tv             =    (d22_5_1==1)
+        gen    car            =    (d22_18_1==1)
+        gen    computer       =    (d22_14_1==1)
+        gen    internet       =    (d22_15_1==1|d22_15_2==1)
 
         * no insurance
         gen health_insurance = 0    
@@ -287,10 +251,11 @@ program clean_07
             replace `var' = 0 if `var' == 2
         }
 
-        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz    ///
-            peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
-            married c98_* c01_* c06_* estudiante *trabaj* ///
-            lp_06 li_06 blanco health_insurance public_health
+        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
+             peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
+             married estudiante trabajo horas_trabajo lp_06 blanco health_insurance ///
+             public_health piped_water toilet sewage stove hot_water refrigerat tv /// 
+             car computer internet
 		
         save_data ..\temp\clean_2007.dta, key(anio pers numero) replace
 end 
@@ -316,30 +281,16 @@ program clean_08
                 busca_trabajo   afro            asia            blanco       ///
                 indigena        otro )
 
-        gen    c98_resid_house        =    (c1!=5)
-        gen    c06_mat_walls        =    (c2==1|c2==2)
-        gen    c06_mat_roof        =    (c3==1|c3==2)
-        gen    c06_mat_floor        =    (c4==1|c4==2)
-        gen    c98_resid_owned        =    (d8_1==1|d8_1==2|d8_1==3|d8_1==4)
-        gen    c98_nbr_rooms        =    d9
-        gen    c98_nbr_bedrooms    =    d10
-        gen    c98_b_piped_water    =    (d14_1==1)
-        gen    c98_hhld_toilet        =    (d15==1)
-        gen    c98_b_sewage        =    (d18_1==1)
-        gen    c06_b_electr        =    (d19_1==1|d19_1==2)
-        gen    c98_hhld_stove        =    (d20!=3)
-        gen    c98_hhld_hot_water    =    (d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
-        gen    c98_hhld_refrigerat    =    (d22_1_2==1|d22_4==1)
-        gen    c98_hhld_tv            =    (d22_5_1==1)
-        gen    c98_hhld_vcr        =    (d22_8==1|d22_9==1)
-        gen    c98_hhld_wash_mac    =    (d22_10==1)
-        gen    c98_hhld_dishwasher    =    (d22_12==1)
-        gen    c98_hhld_microwave    =    (d22_13==1)
-        gen    c98_hhld_car        =    (d22_18_1==1)
-        gen    c01_hhld_computer    =    (d22_14_1==1)
-        gen    c01_hhld_internet    =    (d22_15_1==1|d22_15_2==1)
-        gen    c01_hhld_phone        =    (d22_16_1==1|d22_17_1==1)
-        gen    c01_hhld_cable_tv    =    (d22_7==1)
+        gen    piped_water    =    (d14_1==1)
+        gen    toilet         =    (d15==1)
+        gen    sewage         =    (d18_1==1)
+        gen    stove          =    (d20!=3)
+        gen    hot_water      =    (d22_1_1==1|d22_1_2==1|d22_1_3==1|d22_2_1==1|d22_2_2==1)
+        gen    refrigerat     =    (d22_1_2==1|d22_4==1)
+        gen    tv             =    (d22_5_1==1)
+        gen    car            =    (d22_18_1==1)
+        gen    computer       =    (d22_14_1==1)
+        gen    internet       =    (d22_15_1==1|d22_15_2==1)
         
         * no insurance
         gen health_insurance = 0    
@@ -376,17 +327,18 @@ program clean_08
             replace `var' = 0 if `var' == 2
         }
 
-        keep numero pers anio trimestre mes dpto  secc segm estrato loc nomloc ccz  ///
+        keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
              peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
-             married c98_* c01_* c06_* estudiante *trabaj* ///
-             lp_06 li_06 blanco health_insurance public_health
+             married estudiante trabajo horas_trabajo lp_06 blanco health_insurance ///
+             public_health piped_water toilet sewage stove hot_water refrigerat tv /// 
+             car computer internet
 
 		save_data ..\temp\clean_2008.dta, key(anio pers numero) replace
 end 
 
-program clean_09_16
+program clean_09_15
 
-    forval year=2009/2016{
+    forval year=2009/2015{
         use ../temp/raw_`year'.dta, clear
         
         capture rename estratogeo09 estrato
@@ -408,30 +360,17 @@ program clean_09_16
                 horas_trabajo_p horas_trabajo_s nbr_above14  nbr_people  ///
                 nbr_under14     busca_trabajo    ascendencia)
         
-        gen    c98_resid_house        =    (c1!=5)
-        gen    c06_mat_walls        =    (c2==1|c2==2)
-        gen    c06_mat_roof        =    (c3==1|c3==2)
-        gen    c06_mat_floor        =    (c4==1|c4==2)
-        gen    c98_resid_owned        =    (d8_1==1|d8_1==2|d8_1==3|d8_1==4)
-        gen    c98_nbr_rooms        =    d9
-        gen    c98_nbr_bedrooms    =    d10
-        gen    c98_b_piped_water    =    (d12==1)
-        gen    c98_hhld_toilet        =    (d13==1)
-        gen    c98_b_sewage        =    (d16==1)
-        gen    c06_b_electr        =    (d18==1)
-        gen    c98_hhld_stove        =    (d19!=3)
-        gen    c98_hhld_hot_water    =    (d21_1==1|d21_2==1)
-        gen    c98_hhld_refrigerat    =    (d21_3==1)
-        gen    c98_hhld_tv            =    (d21_4==1|d21_5==1)
-        gen    c98_hhld_vcr        =    (d21_8==1|d21_9==1)
-        gen    c98_hhld_wash_mac    =    (d21_10==1)
-        gen    c98_hhld_dishwasher    =    (d21_12==1)
-        gen    c98_hhld_microwave    =    (d21_13==1)
-        gen    c98_hhld_car        =    (d21_18==1)
-        gen    c01_hhld_computer    =    (d21_15==1)
-        gen    c01_hhld_internet    =    (d21_16==1)
-        gen    c01_hhld_phone        =    (d21_17    ==1)
-        gen    c01_hhld_cable_tv    =    (d21_7==1)
+
+        gen    piped_water    =    (d12==1)
+        gen    toilet         =    (d13==1)
+        gen    sewage         =    (d16==1)
+        gen    stove          =    (d19!=3)
+        gen    hot_water      =    (d21_1==1|d21_2==1)
+        gen    refrigerat     =    (d21_3==1)
+        gen    tv             =    (d21_4==1|d21_5==1)
+        gen    car            =    (d21_18==1)
+        gen    computer       =    (d21_15==1)
+        gen    internet       =    (d21_16==1)
         
         * no insurance
         gen health_insurance = 0    
@@ -475,8 +414,9 @@ program clean_09_16
                 
         keep numero pers anio trimestre mes dpto secc segm estrato loc nomloc ccz*  ///
              peso* hombre edad ytotal y_hogar nbr_people nbr_above14 nbr_under14    ///
-             married c98_* c01_* c06_* estudiante *trabaj* ///
-             lp_06 li_06 blanco health_insurance public_health
+             married estudiante trabajo horas_trabajo lp_06 blanco health_insurance ///
+             public_health piped_water toilet sewage stove hot_water refrigerat tv /// 
+             car computer internet
         
         save_data ..\temp\clean_`year'.dta, key(anio pers numero) replace
         }

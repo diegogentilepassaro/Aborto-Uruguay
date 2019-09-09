@@ -29,10 +29,11 @@ if stata_exe:
 set_option(link_logs_dir = '../output/')
 set_option(output_dir = '../output/', temp_dir = '../temp/')
 delete_files('../output/*')
+clear_dirs('../temp/')
 
 start_make_logging()
 
-run_stata(program = 'inflation_by_year.do')
+run_stata(program = 'mortality_brazil.do')
 
 end_make_logging()
 

@@ -1,0 +1,111 @@
+
+ make.py started: 2019-09-05 12:08:36 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Mortality_Uruguay\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./mortality_uruguay.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./mortality_uruguay.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main
+  1.     import_and_process_uruguay_data
+  2.     save_data "../output/uruguay_mm_data.dta", key(geo_unit year) replace
+  3. end
+
+. 
+. program import_and_process_uruguay_data
+  1.     import excel using "../../../raw/Cuadro 7. Mortalidad Materna 1900-201
+> 5.xlsx", clear cellrange(a9:h125) firstrow
+  2.     rename Año year
+  3.     label var year "Year"
+  4.     keep if year>=1985
+  5.     gen geo_unit = "Uruguay"
+  6.     
+.     gen mm_ratio = Cifras/Muertesdemujeres
+  7. 
+.     tsset year
+  8. 
+.     tssmooth ma ma_muertes = MuertesMaternas, window(2 1 2) //5-year average
+  9.     tssmooth ma ma_razon   = Raz, window(2 1 2) //5-year average
+ 10.     tssmooth ma ma_mm_ratio  = mm_ratio, window(2 1 2)
+ 11.     label var   ma_mm_ratio "Maternal mortality over fertile women's morta
+> lity"
+ 12. 
+.     keep geo_unit year mm_ratio ma_mm_ratio
+ 13. end
+
+. 
+. *EXECUTE
+. main
+(85 observations deleted)
+        time variable:  year, 1985 to 2015
+                delta:  1 unit
+The smoother applied was
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)=
+     MuertesMaternas
+The smoother applied was
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= Raz
+The smoother applied was
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= mm_ratio
+(data now sorted by geo_unit year)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/uruguay_mm_data.dta
+Key: geo_unit year
+===============================================================================
+> ===================
+  31:4(53433):3225826947:531403887
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    geo_unit |          0
+        year |         31        2000    9.092121       1985       2015
+    mm_ratio |         31    .0140873    .0054469    .004896    .028083
+ ma_mm_ratio |         31    .0139923    .0032246   .0085059   .0208528
+
+
+
+
+(note: file ../output/uruguay_mm_data.dta not found)
+file ../output/uruguay_mm_data.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2019-09-05 12:08:37

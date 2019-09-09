@@ -2,8 +2,8 @@ clear all
 set more off
 adopath + ../../../library/stata/gslab_misc/ado
 
-program main_homogeneize_geo_vars 
-    use ../../../base/ECH/output/clean_2001_2016, clear
+program main 
+    use ../../../base/ECH/output/clean_2001_2015, clear
     
     convert_01_05_to_06_11_cod
     convert_07_to_06_11_cod
@@ -19,13 +19,15 @@ program main_homogeneize_geo_vars
     replace dpto_string = "0" + dpto_string if  dpto < 10
     gen loc_code = dpto_string + loc
     drop dpto_string
-    destring loc_code, replace
     
+	destring loc_code, gen(loc_code_destring)
     drop_rural_areas
+	drop loc_code_destring loc
     
+	drop if missing(loc_code)
     drop if (missing(anio) | missing(numero) | missing(pers))
 
-    save_data ../temp/clean_loc_2001_2016.dta, key(numero pers anio) replace    
+    save_data ../temp/clean_loc_2001_2015.dta, key(numero pers anio) replace    
 end
 
 program convert_01_05_to_06_11_cod
@@ -224,7 +226,7 @@ program homogeneize_loc_to_2012_2014
     
     merge m:1 dpto loc using ../../../base/Geo_Xwalk/output/loc_xwalk.dta, ///
         keepusing(loc12_14)
-    replace loc12_14 = loc if inrange(anio, 2012,2014)    
+    replace loc12_14 = loc if inrange(anio, 2012,2014) 
     drop if missing(loc)    
         
     replace loc = loc12_14
@@ -233,59 +235,59 @@ end
 
 program drop_rural_areas
     * Artigas
-    drop if dpto == 2 & loc_code == 0231900
+    drop if dpto == 2 & loc_code_destring == 0231900
 
      * Canelones
-    drop if dpto == 3 & loc_code == 0303900
+    drop if dpto == 3 & loc_code_destring == 0303900
     
     * Cerro Largo
-    drop if dpto == 4 & loc_code == 0431900
+    drop if dpto == 4 & loc_code_destring == 0431900
 
     * Colonia
-    drop if dpto == 5 & loc_code == 0532900
+    drop if dpto == 5 & loc_code_destring == 0532900
 
     * Durazno
-    drop if dpto == 6 & loc_code == 0633900
+    drop if dpto == 6 & loc_code_destring == 0633900
 
     * Flores
-    drop if dpto == 7 & loc_code == 0734900
+    drop if dpto == 7 & loc_code_destring == 0734900
 
     * Florida
-    drop if dpto == 8 & loc_code == 0834900
+    drop if dpto == 8 & loc_code_destring == 0834900
 
     * Lavalleja
-    drop if dpto == 9 & loc_code == 0934900
+    drop if dpto == 9 & loc_code_destring == 0934900
 
     * Maldonado
-    drop if dpto == 10 & loc_code == 1035900
+    drop if dpto == 10 & loc_code_destring == 1035900
 
     * Paysandu
-    drop if dpto == 11 & loc_code == 1136900
+    drop if dpto == 11 & loc_code_destring == 1136900
 
     * Rio Negro
-    drop if dpto == 12 & loc_code == 1236900
+    drop if dpto == 12 & loc_code_destring == 1236900
     
     *Rivera
-    drop if dpto == 13 & loc_code == 1331900
+    drop if dpto == 13 & loc_code_destring == 1331900
     
     *Rocha
-    drop if dpto == 14 & loc_code == 1435900
+    drop if dpto == 14 & loc_code_destring == 1435900
     
     * Salto
-    drop if dpto == 15 & loc_code == 1536900
+    drop if dpto == 15 & loc_code_destring == 1536900
 
     *San Jose
-    drop if dpto == 16 & loc_code == 1632900
+    drop if dpto == 16 & loc_code_destring == 1632900
 
     *Soriano
-    drop if dpto == 17 & loc_code == 1732900
+    drop if dpto == 17 & loc_code_destring == 1732900
 
     *Tacuarembo
-    drop if dpto == 18 & loc_code == 1833900
+    drop if dpto == 18 & loc_code_destring == 1833900
 
     *Treinta y Tres
-    drop if dpto == 19 & loc_code == 1931900
+    drop if dpto == 19 & loc_code_destring == 1931900
 end
 
-main_homogeneize_geo_vars
-
+* EXECUTE
+main

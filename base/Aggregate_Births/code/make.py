@@ -32,11 +32,9 @@ delete_files('../output/*')
 
 start_make_logging()
 
-run_stata(program = 'inflation_by_year.do')
+run_stata(program = 'agg_births.do')
 
 end_make_logging()
 
 shutil.rmtree('gslab_make')
-shutil.rmtree('gslab_fill')
 input('\n Press <Enter> to exit.')
-

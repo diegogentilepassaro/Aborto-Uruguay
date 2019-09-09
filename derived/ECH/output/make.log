@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-03 17:41:42 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
+ make.py started: 2019-09-09 18:50:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
 
 
 
@@ -42,8 +42,8 @@ Notes:
   [7]              "../../../library/stata/gslab_misc/ado"
 
 . 
-. program main_homogeneize_geo_vars 
-  1.     use ../../../base/ECH/output/clean_2001_2016, clear
+. program main 
+  1.     use ../../../base/ECH/output/clean_2001_2015, clear
   2.     
 .     convert_01_05_to_06_11_cod
   3.     convert_07_to_06_11_cod
@@ -59,15 +59,17 @@ Notes:
  11.     replace dpto_string = "0" + dpto_string if  dpto < 10
  12.     gen loc_code = dpto_string + loc
  13.     drop dpto_string
- 14.     destring loc_code, replace
- 15.     
-.     drop_rural_areas
- 16.     
-.     drop if (missing(anio) | missing(numero) | missing(pers))
- 17. 
-.     save_data ../temp/clean_loc_2001_2016.dta, key(numero pers anio) replace 
+ 14.     
+.         destring loc_code, gen(loc_code_destring)
+ 15.     drop_rural_areas
+ 16.         drop loc_code_destring loc
+ 17.     
+.         drop if missing(loc_code)
+ 18.     drop if (missing(anio) | missing(numero) | missing(pers))
+ 19. 
+.     save_data ../temp/clean_loc_2001_2015.dta, key(numero pers anio) replace 
 >    
- 18. end
+ 20. end
 
 . 
 . program convert_01_05_to_06_11_cod
@@ -270,7 +272,7 @@ Notes:
 .     merge m:1 dpto loc using ../../../base/Geo_Xwalk/output/loc_xwalk.dta, //
 > /
 >         keepusing(loc12_14)
-  3.     replace loc12_14 = loc if inrange(anio, 2012,2014)    
+  3.     replace loc12_14 = loc if inrange(anio, 2012,2014) 
   4.     drop if missing(loc)    
   5.         
 .     replace loc = loc12_14
@@ -280,62 +282,63 @@ Notes:
 . 
 . program drop_rural_areas
   1.     * Artigas
-.     drop if dpto == 2 & loc_code == 0231900
+.     drop if dpto == 2 & loc_code_destring == 0231900
   2. 
 .      * Canelones
-.     drop if dpto == 3 & loc_code == 0303900
+.     drop if dpto == 3 & loc_code_destring == 0303900
   3.     
 .     * Cerro Largo
-.     drop if dpto == 4 & loc_code == 0431900
+.     drop if dpto == 4 & loc_code_destring == 0431900
   4. 
 .     * Colonia
-.     drop if dpto == 5 & loc_code == 0532900
+.     drop if dpto == 5 & loc_code_destring == 0532900
   5. 
 .     * Durazno
-.     drop if dpto == 6 & loc_code == 0633900
+.     drop if dpto == 6 & loc_code_destring == 0633900
   6. 
 .     * Flores
-.     drop if dpto == 7 & loc_code == 0734900
+.     drop if dpto == 7 & loc_code_destring == 0734900
   7. 
 .     * Florida
-.     drop if dpto == 8 & loc_code == 0834900
+.     drop if dpto == 8 & loc_code_destring == 0834900
   8. 
 .     * Lavalleja
-.     drop if dpto == 9 & loc_code == 0934900
+.     drop if dpto == 9 & loc_code_destring == 0934900
   9. 
 .     * Maldonado
-.     drop if dpto == 10 & loc_code == 1035900
+.     drop if dpto == 10 & loc_code_destring == 1035900
  10. 
 .     * Paysandu
-.     drop if dpto == 11 & loc_code == 1136900
+.     drop if dpto == 11 & loc_code_destring == 1136900
  11. 
 .     * Rio Negro
-.     drop if dpto == 12 & loc_code == 1236900
+.     drop if dpto == 12 & loc_code_destring == 1236900
  12.     
 .     *Rivera
-.     drop if dpto == 13 & loc_code == 1331900
+.     drop if dpto == 13 & loc_code_destring == 1331900
  13.     
 .     *Rocha
-.     drop if dpto == 14 & loc_code == 1435900
+.     drop if dpto == 14 & loc_code_destring == 1435900
  14.     
 .     * Salto
-.     drop if dpto == 15 & loc_code == 1536900
+.     drop if dpto == 15 & loc_code_destring == 1536900
  15. 
 .     *San Jose
-.     drop if dpto == 16 & loc_code == 1632900
+.     drop if dpto == 16 & loc_code_destring == 1632900
  16. 
 .     *Soriano
-.     drop if dpto == 17 & loc_code == 1732900
+.     drop if dpto == 17 & loc_code_destring == 1732900
  17. 
 .     *Tacuarembo
-.     drop if dpto == 18 & loc_code == 1833900
+.     drop if dpto == 18 & loc_code_destring == 1833900
  18. 
 .     *Treinta y Tres
-.     drop if dpto == 19 & loc_code == 1931900
+.     drop if dpto == 19 & loc_code_destring == 1931900
  19. end
 
 . 
-. main_homogeneize_geo_vars
+. * EXECUTE
+. main
 (150,049 real changes made)
 (4,669 real changes made)
 (2,565 real changes made)
@@ -427,7 +430,7 @@ Notes:
 (416 real changes made)
 (1,777 real changes made)
 (250 real changes made)
-(1,582,505 observations deleted)
+(1,463,914 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -438,14 +441,14 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,697,819
-        from master                 1,697,804  
+    not matched                     1,579,228
+        from master                 1,579,213  
         from using                         15  
 
     matched                           141,562  
     -----------------------------------------
 (141,577 real changes made)
-(1,582,520 observations deleted)
+(1,463,929 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -455,8 +458,8 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,694,820
-        from master                 1,694,805  
+    not matched                     1,576,229
+        from master                 1,576,214  
         from using                         15  
 
     matched                           144,576  
@@ -467,134 +470,112 @@ file ../temp/2001_2011_loc_homo.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       382,513
-        from master                   382,513  (_merge==1)
+    not matched                       382,336
+        from master                   382,336  (_merge==1)
         from using                          0  (_merge==2)
 
-    matched                         1,456,883  (_merge==3)
+    matched                         1,338,469  (_merge==3)
     -----------------------------------------
 (380,244 real changes made)
-(358 observations deleted)
-(1,458,794 real changes made)
+(205 observations deleted)
+(1,340,356 real changes made)
 (120,462 real changes made)
 dpto_string generated as str2
-(1,287,298 real changes made)
-loc_code: all characters numeric; replaced as long
-(4,082 observations deleted)
-(35,350 observations deleted)
-(5,511 observations deleted)
-(9,215 observations deleted)
-(4,382 observations deleted)
-(2,627 observations deleted)
-(7,533 observations deleted)
-(4,696 observations deleted)
-(4,041 observations deleted)
-(4,404 observations deleted)
-(4,227 observations deleted)
-(6,010 observations deleted)
-(4,173 observations deleted)
-(6,460 observations deleted)
-(10,739 observations deleted)
-(5,002 observations deleted)
-(6,706 observations deleted)
-(3,364 observations deleted)
+(1,204,699 real changes made)
+loc_code: all characters numeric; loc_code_destring generated as long
+(3,915 observations deleted)
+(33,558 observations deleted)
+(5,276 observations deleted)
+(8,650 observations deleted)
+(4,137 observations deleted)
+(2,542 observations deleted)
+(7,162 observations deleted)
+(4,481 observations deleted)
+(3,860 observations deleted)
+(4,117 observations deleted)
+(3,911 observations deleted)
+(5,688 observations deleted)
+(3,881 observations deleted)
+(6,119 observations deleted)
+(10,197 observations deleted)
+(4,703 observations deleted)
+(6,234 observations deleted)
+(3,230 observations deleted)
+(0 observations deleted)
 (30 observations deleted)
 (data now sorted by numero pers anio)
   (0 bytes saved)
 ===============================================================================
 > ===================
-File: ../temp/clean_loc_2001_2016.dta
+File: ../temp/clean_loc_2001_2015.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1710486:60(84528):1782333236:2296849576
+  1598909:41(69643):1073242442:2246420586
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
-        pers |  1,710,486    2.376794    1.503466          1         25
-        anio |  1,710,486    2009.343    4.144144       2001       2016
-        dpto |  1,710,486    5.712008    5.809447          1         19
-        secc |  1,641,594    9.084292    16.31907          0         99
+      numero |  1,598,909    7.54e+08    9.74e+08          1   2.02e+09
+        pers |  1,598,909    2.387442    1.511543          1         25
+        anio |  1,598,909    2008.878    3.881211       2001       2015
+        dpto |  1,598,909    5.712067    5.816534          1         19
+        secc |  1,530,017    8.863976    16.39425          0         99
 -------------+---------------------------------------------------------
-        segm |  1,641,594    58.71646    91.12505          0        845
-         loc |          0
+        segm |  1,530,017     54.1696    87.34097          0        633
       nomloc |          0
-         ccz |  1,710,486    3.942653    5.511817          0         18
-         mes |  1,710,486    6.493169    3.444754          1         12
+         ccz |  1,598,909    3.964833    5.522429          0         18
+         mes |  1,598,909    6.493027    3.443719          1         12
+     estrato |  1,598,909    5.529117    2.953739          1         12
 -------------+---------------------------------------------------------
-     estrato |  1,710,486     5.56798    2.970241          1         12
-      pesoan |  1,710,486    26.61043      12.967          1       1323
+      pesoan |  1,598,909    26.41639     13.3075          1       1323
      pesosem |  1,484,437    52.49311    27.27095          3       1345
-     pesotri |  1,596,014    105.8702    51.49798          1       1527
-      hombre |  1,710,486    .4681652    .4989857          0          1
+     pesotri |  1,484,437     104.999    52.88186          1       1527
+      hombre |  1,598,909    .4684807    .4990057          0          1
+        edad |  1,598,909    36.69525    23.47538          0         99
 -------------+---------------------------------------------------------
-        edad |  1,710,486    36.79662    23.48919          0         99
-horas_trab~p |  1,710,486    15.53235     21.4424          0         99
-horas_trab~s |  1,710,486     2.80454    10.46661          0         99
-busca_trab~o |  1,710,486    .0759141    .2648607          0          1
-      ytotal |  1,710,486     9452.72    17720.94          0    7244333
+      ytotal |  1,598,909    8856.935    16709.96          0    7244333
+ nbr_above14 |  1,598,909    2.502423    2.116018          0         98
+  nbr_people |  1,598,909    3.774765    1.881805          1         25
+ nbr_under14 |  1,598,909    .9962481    1.285341          0         13
+     y_hogar |  1,598,909    26366.11     32621.1          0    7681180
 -------------+---------------------------------------------------------
- nbr_above14 |  1,710,486     2.50995    2.068164          0         98
-  nbr_people |  1,710,486    3.753415    1.872965          1         25
- nbr_under14 |  1,710,486    .9853755    1.274995          0         13
-     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
-c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
+ piped_water |  1,598,909    .9650299    .1837041          0          1
+      toilet |  1,598,909    .9214483    .2690379          0          1
+      sewage |  1,598,909    .6011318    .4896657          0          1
+       stove |  1,598,909    .9421155    .2335249          0          1
+   hot_water |  1,598,909    .8762031    .3293498          0          1
 -------------+---------------------------------------------------------
-c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
-c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
-c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
-c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
-c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
+  refrigerat |  1,598,909    .8210305    .3833269          0          1
+          tv |  1,598,909    .9584692    .1995145          0          1
+         car |  1,598,909    .3517724    .4775235          0          1
+    computer |  1,598,909    .5092848    .4999139          0          1
+    internet |  1,598,909    .3440071    .4750435          0          1
 -------------+---------------------------------------------------------
-c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
-c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
-c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
-c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
- c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
+health_ins~e |  1,598,909    2.811117    1.513185          0          5
+public_hea~h |  1,598,909     .323131    .4676724          0          1
+      blanco |  1,319,886    .9579759    .2006442          0          1
+   trimestre |  1,598,909     2.49807    1.116784          1          4
+     married |  1,329,494     .529418     .499134          0          1
 -------------+---------------------------------------------------------
-c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
-c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
-c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
-c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
-c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
+  estudiante |  1,598,909    .0697394    .2547074          0          1
+     trabajo |  1,598,909    .4458052    .4970544          0          1
+horas_trab~o |  1,598,909      18.345     23.2429          0        157
+     pesomen |  1,205,414    269.0785    109.4869          1       2451
+       lp_06 |  1,319,886    17772.87    9149.163       3274   103313.2
 -------------+---------------------------------------------------------
-c01_hhld_c~r |  1,710,486    .5257202    .4993382          0          1
-c01_hhld_i~t |  1,710,486    .3633944    .4809772          0          1
-c01_hhld_p~e |  1,710,486    .7215955    .4482137          0          1
-c01_hhld_c~v |  1,710,486    .5669289    .4955004          0          1
-health_ins~e |  1,710,486    2.826182    1.509625          0          5
--------------+---------------------------------------------------------
-public_hea~h |  1,710,486     .320164    .4665395          0          1
-      blanco |  1,431,463    .9568462    .2032032          0          1
-   trimestre |  1,710,486    2.498075    1.117025          1          4
-     married |  1,420,544    .5307995    .4990507          0          1
-  estudiante |  1,710,486    .0699111    .2549972          0          1
--------------+---------------------------------------------------------
-     trabajo |  1,710,486     .446925    .4971752          0          1
-horas_trab~o |  1,710,486    18.33689     23.1807          0        157
-     pesomen |  1,316,991    276.1408    110.0983          1       2451
-       li_06 |  1,431,463    1786.062    544.0301       1002       3021
-       lp_06 |  1,431,463    18442.54    9717.829       3274   132026.8
--------------+---------------------------------------------------------
-c06_mat_wa~s |  1,431,463    .9736368    .1602131          0          1
-c06_mat_roof |  1,431,463    .5677583    .4953877          0          1
-c06_mat_fl~r |  1,431,463    .7912199    .4064371          0          1
-c06_b_electr |  1,431,463    .9961228     .062146          0          1
-    loc_code |  1,710,486    582044.2    588218.4          3    1931000
+    loc_code |          0
 
 
 
 
-(note: file ../temp/clean_loc_2001_2016.dta not found)
-file ../temp/clean_loc_2001_2016.dta saved
+(note: file ../temp/clean_loc_2001_2015.dta not found)
+file ../temp/clean_loc_2001_2015.dta saved
 
-. 
 . 
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./prepare_for_analysis.do"
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./gen_analysis_vars.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
@@ -616,7 +597,7 @@ Notes:
       2.  Unicode is supported; see help unicode_advice.
       3.  Maximum number of variables is set to 5000; see help set_maxvar.
 
-. do ./prepare_for_analysis.do 
+. do ./gen_analysis_vars.do 
 
 . clear all
 
@@ -633,43 +614,58 @@ Notes:
 
 . 
 . program main
-  1.     use ../temp/clean_loc_2001_2016.dta, clear
+  1.     use ../temp/clean_loc_2001_2015.dta, clear
   2.     
-.     fix_2012_weights, by_vars(loc_code edad hombre estrato segm y_hogar)
+.     fix_2012_weights, by_vars(loc_code trimestre edad hombre)
   3.     
 .     add_cpi_2006
   4.     impute_poverty_lines_pre06, by_vars(trimestre loc_code nbr_above14 nbr
 > _people)
-  5.     
-.     gen_vars
-  6.     label_vars
-  7. 
-.     drop if (missing(numero) | missing(pers) | missing(anio))
-  8.     replace horas_trabajo = . if horas_trabajo > 100
-  9.     
-.     save_data ../output/clean_loc_2001_2016.dta, key(numero pers anio) replac
-> e    
- 10. end
+  5. 
+.     sample_restrictions
+  6.     gen_and_modify_vars
+  7.     label_vars
+  8. 
+.     keep numero pers anio anio_sem anio_qtr semestre trimestre mes ///
+>         dpto loc_code ccz hombre edad blanco poor public_health married ///
+>         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
+>         stove hot_water refrigerat tv car computer internet ///
+>         trabajo estudiante horas_trabajo work_part_time ///
+>         yob young adult fertile infertile ///
+>         pesoan pesosem pesotri
+  9.     order numero pers anio anio_sem anio_qtr semestre trimestre mes ///
+>         dpto loc_code ccz hombre edad blanco poor public_health married ///
+>         y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
+>         stove hot_water refrigerat tv car computer internet ///
+>         trabajo estudiante horas_trabajo work_part_time ///
+>         yob young adult fertile infertile ///
+>         pesoan pesosem pesotri
+ 10. 
+.     save_data ../temp/clean_loc_2001_2015_with_vars.dta, key(numero pers anio
+> ) replace
+ 11. end
 
 . 
 . program fix_2012_weights
   1.     syntax, by_vars(str)
-  2.     keep if anio == 2013
-  3.     replace anio = 2012 
-  4.         
+  2.     
+.         keep if anio == 2013
+  3.         
 .     rename (pesotri pesosem) (pesotri2 pesosem2)
-  5.     collapse (mean) pesotri pesosem, by(`by_vars')
-  6.     
+  4.     collapse (mean) pesotri2 pesosem2, by(`by_vars')
+  5.     gen anio = 2012
+  6.         
 .     save ../temp/pesos_2012_imputed.dta, replace
   7. 
-.     use ../temp/clean_loc_2001_2016.dta, clear
-  8. 
-.     merge m:1 `by_vars' using ../temp/pesos_2012_imputed.dta, nogen
-  9.     replace pesotri = pesotri2 if anio == 2012
- 10.     replace pesosem = pesosem2 if anio == 2012
- 11.     
-.     drop pesotri2 pesosem2
- 12.     save ../temp/clean_loc_2001_2016_fixed_weights.dta, replace
+.     use ../temp/clean_loc_2001_2015.dta, clear
+  8.         
+.     merge m:1 anio `by_vars' using ../temp/pesos_2012_imputed.dta, ///
+>             keepusing(pesosem2 pesotri2) keep(1 3)
+  9.     replace pesotri = pesotri2 if _merge == 3
+ 10.     replace pesosem = pesosem2 if _merge == 3
+ 11.     drop pesotri2 pesosem2
+ 12.     
+.     save ../temp/clean_loc_2001_2016_fixed_weights.dta, replace
  13. end
 
 . 
@@ -678,7 +674,7 @@ Notes:
   2.     merge 1:m anio using ../temp/clean_loc_2001_2016_fixed_weights.dta, no
 > gen ///
 >         assert(1 3)keep(3)
-  3.     save ../temp/clean_loc_2001_2016_cpi.dta, replace
+  3.     save ../temp/clean_loc_2001_2015_cpi.dta, replace
   4. end
 
 . 
@@ -689,272 +685,591 @@ Notes:
 .     forval year=2001/2005 {
   4.         replace anio = `year' 
   5.     
-.         rename (lp_06 li_06) (lp_06_2 li_06_2)
-  6.         collapse (mean) lp_06_2 li_06_2, by(`by_vars')
+.         rename lp_06 lp_06_2
+  6.         collapse (mean) lp_06_2, by(`by_vars')
   7.     
 .         save ../temp/poverty_`year'_imputed.dta, replace
   8. 
-.         use ../temp/clean_loc_2001_2016_cpi.dta, clear
+.         use ../temp/clean_loc_2001_2015_cpi.dta, clear
   9. 
 .         merge m:1 `by_vars' using ../temp/poverty_`year'_imputed.dta, nogen
  10.         replace lp_06 = lp_06_2 if anio == `year'
- 11.         replace li_06 = li_06_2 if anio == `year'
- 12.     
-.         drop lp_06_2 li_06_2
- 13.         replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
- 14.         replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
- 15.         save ../temp/clean_loc_2001_2016_fixed.dta, replace
- 16.     }
- 17. end
+ 11.     
+.         drop lp_06_2
+ 12.         replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
+ 13.         save ../temp/clean_loc_2001_2016_fixed.dta, replace
+ 14.     }
+ 15. end
 
 . 
-. program gen_vars
-  1.     gen poor       = (y_hogar <= lp_06)
-  2.     gen indigente   = (y_hogar <= li_06)
-  3.     gen ind_under14 = (nbr_under14>0)
-  4.     gen work_part_time = (horas_trabajo<32) if !mi(horas_trabajo) & trabaj
+. program sample_restrictions
+  1.     keep if inrange(edad, 16, 60)
+  2. end
+
+. 
+. program gen_and_modify_vars
+  1.     replace horas_trabajo = . if horas_trabajo > 100
+  2.     replace nbr_people = . if (nbr_people < nbr_under14)
+  3.     replace nbr_under14 = . if (nbr_people < nbr_under14) 
+  4. 
+.     gen poor       = (y_hogar <= lp_06)
+  5.     gen ind_under14 = (nbr_under14>0)
+  6.     gen work_part_time = (horas_trabajo<32) if !mi(horas_trabajo) & trabaj
 > o==1
-  5.     
+  7. 
+.     assert !mi(edad)
+  8.     gen yob = anio - edad
+  9.     gen young   = inrange(edad,16,30)
+ 10.     gen adult   = inrange(edad,31,45)
+ 11.     gen infertile = inrange(edad,46,60)
+ 12.     gen fertile = inrange(edad,16,45)
+ 13.     
 .     gen     semestre = 1 if inlist(trimestre, 1, 2)
-  6.     replace semestre = 2 if inlist(trimestre, 3, 4)
-  7.     gen     anio_sem = yh(anio, semestre)
-  8.     format  anio_sem %th
-  9.     gen     anio_qtr = yq(anio, trimestre)
- 10.     format  anio_qtr %tq
- 11. end
+ 14.     replace semestre = 2 if inlist(trimestre, 3, 4)
+ 15.     gen     anio_sem = yh(anio, semestre)
+ 16.     format  anio_sem %th
+ 17.     gen     anio_qtr = yq(anio, trimestre)
+ 18.     format  anio_qtr %tq
+ 19. end
 
 . 
 . program label_vars
   1.     label var trabajo "Employment"
   2.     label var horas_trabajo "Hours worked"
   3.     label var work_part_time "Part-time work"
-  4. end
+  4.     
+.     lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
+  5.     lab val young                 age_young    
+  6. end
 
 . 
 . * EXECUTE
 . main
-(1,588,763 observations deleted)
-(121,723 real changes made)
+(1,477,186 observations deleted)
 (note: file ../temp/pesos_2012_imputed.dta not found)
 file ../temp/pesos_2012_imputed.dta saved
+(note: variable anio was int, now float to accommodate using data's values)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,517,891
-        from master                 1,517,891  
-        from using                          0  
+    not matched                     1,494,852
+        from master                 1,494,852  (_merge==1)
+        from using                          0  (_merge==2)
 
-    matched                           192,595  
+    matched                           104,057  (_merge==3)
     -----------------------------------------
 variable pesotri was int now float
-(24 real changes made)
+(104,057 real changes made)
 variable pesosem was int now float
-(24 real changes made)
+(104,057 real changes made)
 (note: file ../temp/clean_loc_2001_2016_fixed_weights.dta not found)
 file ../temp/clean_loc_2001_2016_fixed_weights.dta saved
+(note: variable anio was int, now float to accommodate using data's values)
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,598,909  
     -----------------------------------------
-(note: file ../temp/clean_loc_2001_2016_cpi.dta not found)
-file ../temp/clean_loc_2001_2016_cpi.dta saved
-(1,500,582 observations deleted)
+(note: file ../temp/clean_loc_2001_2015_cpi.dta not found)
+file ../temp/clean_loc_2001_2015_cpi.dta saved
+(1,389,005 observations deleted)
 (209,904 real changes made)
 (note: file ../temp/poverty_2001_imputed.dta not found)
 file ../temp/poverty_2001_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       768,241
-        from master                   768,241  
+    not matched                       709,407
+        from master                   709,407  
         from using                          0  
 
-    matched                           942,245  
+    matched                           889,502  
     -----------------------------------------
-(32,518 real changes made)
-variable li_06 was int now float
-(32,518 real changes made)
 (32,518 real changes made)
 (32,518 real changes made)
 (note: file ../temp/clean_loc_2001_2016_fixed.dta not found)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,654,159 real changes made)
+(1,542,582 real changes made)
 (note: file ../temp/poverty_2002_imputed.dta not found)
 file ../temp/poverty_2002_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,598,909  
     -----------------------------------------
-(55,579 real changes made)
-variable li_06 was int now float
-(55,579 real changes made)
-(55,579 real changes made)
-(55,579 real changes made)
+(55,555 real changes made)
+(55,555 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,655,117 real changes made)
+(1,543,540 real changes made)
 (note: file ../temp/poverty_2003_imputed.dta not found)
 file ../temp/poverty_2003_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,598,909  
     -----------------------------------------
-(54,609 real changes made)
-variable li_06 was int now float
-(54,609 real changes made)
-(54,609 real changes made)
-(54,609 real changes made)
+(54,565 real changes made)
+(54,565 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,654,899 real changes made)
+(1,543,322 real changes made)
 (note: file ../temp/poverty_2004_imputed.dta not found)
 file ../temp/poverty_2004_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,598,909  
     -----------------------------------------
-(54,752 real changes made)
-variable li_06 was int now float
-(54,752 real changes made)
-(54,752 real changes made)
-(54,752 real changes made)
+(54,712 real changes made)
+(54,712 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,656,156 real changes made)
+(1,544,579 real changes made)
 (note: file ../temp/poverty_2005_imputed.dta not found)
 file ../temp/poverty_2005_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,598,909  
     -----------------------------------------
-(53,563 real changes made)
-variable li_06 was int now float
-(53,563 real changes made)
-(53,563 real changes made)
-(53,563 real changes made)
+(53,528 real changes made)
+(53,528 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(946,027 missing values generated)
-(853,973 missing values generated)
-(853,973 real changes made)
-(0 observations deleted)
-(99 real changes made, 99 to missing)
+(682,447 observations deleted)
+(90 real changes made, 90 to missing)
+(0 real changes made)
+(0 real changes made)
+(268,079 missing values generated)
+(457,507 missing values generated)
+(457,507 real changes made)
 (data now sorted by numero pers anio)
-  variable horas_trabajo was int now byte
-  variable poor was float now byte
-  variable indigente was float now byte
-  variable ind_under14 was float now byte
-  variable work_part_time was float now byte
-  variable semestre was float now byte
+  variable anio was float now int
   variable anio_sem was float now int
   variable anio_qtr was float now int
-  (34,209,720 bytes saved)
+  variable semestre was float now byte
+  variable poor was float now byte
+  variable horas_trabajo was int now byte
+  variable work_part_time was float now byte
+  variable yob was float now int
+  variable young was float now byte
+  variable adult was float now byte
+  variable fertile was float now byte
+  variable infertile was float now byte
+  (27,493,860 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/clean_loc_2001_2016.dta
+File: ../temp/clean_loc_2001_2015_with_vars.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1710486:69(47588):1363005679:321728613
+  916462:42(124614):1913730666:3591233976
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
-        pers |  1,710,486    2.376794    1.503466          1         25
-        anio |  1,710,486    2009.343    4.144144       2001       2016
-   inflation |  1,710,486    8.273495    3.563895       3.59      25.94
-    cpi_2006 |  1,710,486    135.5327    42.76078   54.72384   217.6432
+      numero |    916,462    7.66e+08    9.77e+08          1   2.02e+09
+        pers |    916,462      1.9898    1.076788          1         18
+        anio |    916,462    2008.925    3.884909       2001       2015
+    anio_sem |    916,462    98.34956    7.786501         82        111
+    anio_qtr |    916,462    197.1988    15.58079        164        223
 -------------+---------------------------------------------------------
-        dpto |  1,710,486    5.712008    5.809447          1         19
-        secc |  1,641,594    9.084292    16.31907          0         99
-        segm |  1,641,594    58.71646    91.12505          0        845
-         loc |          0
-      nomloc |          0
+    semestre |    916,462     1.49921    .4999996          1          2
+   trimestre |    916,462    2.498052    1.116093          1          4
+         mes |    916,462    6.493477    3.440954          1         12
+        dpto |    916,462    5.596134    5.783979          1         19
+    loc_code |          0
 -------------+---------------------------------------------------------
-         ccz |  1,710,486    3.942653    5.511817          0         18
-         mes |  1,710,486    6.493169    3.444754          1         12
-     estrato |  1,710,486     5.56798    2.970241          1         12
-      pesoan |  1,710,486    26.61043      12.967          1       1323
-     pesosem |  1,484,461    52.49302    27.27078          3       1345
+         ccz |    916,462    4.013946     5.52138          0         18
+      hombre |    916,462    .4729711    .4992692          0          1
+        edad |    916,462    36.78673    13.05068         16         60
+      blanco |    758,063    .9536529    .2102358          0          1
+        poor |    916,462    .4350961    .4957699          0          1
 -------------+---------------------------------------------------------
-     pesotri |  1,596,038      105.87    51.49771          1       1527
-      hombre |  1,710,486    .4681652    .4989857          0          1
-        edad |  1,710,486    36.79662    23.48919          0         99
-horas_trab~p |  1,710,486    15.53235     21.4424          0         99
-horas_trab~s |  1,710,486     2.80454    10.46661          0         99
+public_hea~h |    916,462    .3024523    .4593203          0          1
+     married |    916,462    .5860308    .4925434          0          1
+     y_hogar |    916,462     28611.4    33560.86          0    2077094
+  nbr_people |    916,462    3.779122    1.729491          1         25
+ nbr_under14 |    916,462    .8174807    1.110861          0         13
 -------------+---------------------------------------------------------
-busca_trab~o |  1,710,486    .0759141    .2648607          0          1
-      ytotal |  1,710,486     9452.72    17720.94          0    7244333
- nbr_above14 |  1,710,486     2.50995    2.068164          0         98
-  nbr_people |  1,710,486    3.753415    1.872965          1         25
- nbr_under14 |  1,710,486    .9853755    1.274995          0         13
+ piped_water |    916,462    .9696507    .1715467          0          1
+      toilet |    916,462    .9303015    .2546383          0          1
+      sewage |    916,462    .6098267    .4877893          0          1
+       stove |    916,462    .9486591    .2206923          0          1
+   hot_water |    916,462    .8908651    .3118086          0          1
 -------------+---------------------------------------------------------
-     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
-c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
-c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
-c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
-c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
+  refrigerat |    916,462    .8261848    .3789507          0          1
+          tv |    916,462    .9635642    .1873719          0          1
+         car |    916,462    .3825167     .486002          0          1
+    computer |    916,462    .5613195    .4962259          0          1
+    internet |    916,462    .3980176    .4894894          0          1
 -------------+---------------------------------------------------------
-c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
-c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
-c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
-c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
-c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
+     trabajo |    916,462    .7075831    .4548731          0          1
+  estudiante |    916,462    .0735382    .2610181          0          1
+horas_trab~o |    916,372    29.51899    23.41669          0        100
+work_part_~e |    648,383    .2529662    .4347121          0          1
+         yob |    916,462    1972.138    13.55946       1941       1999
 -------------+---------------------------------------------------------
-c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
- c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
-c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
-c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
-c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
+       young |    916,462    .3680338    .4822709          0          1
+       adult |    916,462     .329455    .4700156          0          1
+     fertile |    916,462    .6974888    .4593456          0          1
+   infertile |    916,462    .3025112    .4593456          0          1
+      pesoan |    916,462    26.64411    13.13578          1       1323
 -------------+---------------------------------------------------------
-c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
-c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
-c01_hhld_c~r |  1,710,486    .5257202    .4993382          0          1
-c01_hhld_i~t |  1,710,486    .3633944    .4809772          0          1
-c01_hhld_p~e |  1,710,486    .7215955    .4482137          0          1
--------------+---------------------------------------------------------
-c01_hhld_c~v |  1,710,486    .5669289    .4955004          0          1
-health_ins~e |  1,710,486    2.826182    1.509625          0          5
-public_hea~h |  1,710,486     .320164    .4665395          0          1
-      blanco |  1,431,463    .9568462    .2032032          0          1
-   trimestre |  1,710,486    2.498075    1.117025          1          4
--------------+---------------------------------------------------------
-     married |  1,420,544    .5307995    .4990507          0          1
-  estudiante |  1,710,486    .0699111    .2549972          0          1
-     trabajo |  1,710,486     .446925    .4971752          0          1
-horas_trab~o |  1,710,387    18.33153    23.17054          0        100
-     pesomen |  1,316,991    276.1408    110.0983          1       2451
--------------+---------------------------------------------------------
-       li_06 |  1,485,026    1786.048    534.5349       1002       3021
-       lp_06 |  1,485,026     18476.6    9671.025       3274   132026.8
-c06_mat_wa~s |  1,431,463    .9736368    .1602131          0          1
-c06_mat_roof |  1,431,463    .5677583    .4953877          0          1
-c06_mat_fl~r |  1,431,463    .7912199    .4064371          0          1
--------------+---------------------------------------------------------
-c06_b_electr |  1,431,463    .9961228     .062146          0          1
-    loc_code |  1,710,486    582044.2    588218.4          3    1931000
-        poor |  1,710,486    .4328916    .4954761          0          1
-   indigente |  1,710,486    .2655783    .4416408          0          1
- ind_under14 |  1,710,486    .5124608    .4998449          0          1
--------------+---------------------------------------------------------
-work_part_~e |    764,459    .2723599    .4451744          0          1
-    semestre |  1,710,486    1.499258    .4999996          1          2
-    anio_sem |  1,710,486    99.18467    8.303561         82        113
-    anio_qtr |  1,710,486    198.8689    16.61422        164        227
+     pesosem |    911,468    52.98671    26.11367          3       1345
+     pesotri |    911,468    106.0525    50.70616          1       1527
 
 
 
 
-(note: file ../output/clean_loc_2001_2016.dta not found)
-file ../output/clean_loc_2001_2016.dta saved
+(note: file ../temp/clean_loc_2001_2015_with_vars.dta not found)
+file ../temp/clean_loc_2001_2015_with_vars.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2019-09-03 17:45:35
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./assign_treatment.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./assign_treatment.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main
+  1.     import_treatment_dates
+  2.     assign_treatment
+  3.     save_data ../output/main_ECH_panel.dta, key(anio numero pers) replace
+  4. end
+
+. 
+. program import_treatment_dates
+  1.     import excel ../../../raw/timeline_implementation.xlsx, clear firstrow
+>  cellrange(D1:E14)
+  2.     keep if !mi(impl_date)
+  3.     
+.     bys dpto: egen impl_date_dpto = min(impl_date)
+  4.     gen IS_impl_date = impl_date_dpto
+  5.     format %td IS_impl_date
+  6. 
+.     keep dpto IS_impl_date
+  7.     duplicates drop
+  8.     save_data ../temp/timeline_implementation.dta, key(dpto) replace
+  9. 
+.     import excel ../../../raw/control_impl_dates.xlsx, clear firstrow
+ 10.     keep dpto impl_date
+ 11.     save_data ../temp/timeline_control_implementation.dta, key(dpto) repla
+> ce
+ 12. end
+
+. 
+. program assign_treatment
+  1.     use ../temp/clean_loc_2001_2015_with_vars.dta, clear
+  2.     merge m:1 dpto using ../temp/timeline_implementation.dta, ///
+>         nogen keepusing(IS_impl_date)
+  3.     merge m:1 dpto using ../temp/timeline_control_implementation.dta, keep
+> using(impl_date)
+  4.     replace IS_impl_date = impl_date if _merge == 3
+  5.     drop impl_date _merge
+  6.     
+.     relative_time, event_date(IS_impl_date) time(anio_qtr) time_fun(qofd) win
+> dow(12)
+  7.     relative_time, event_date(IS_impl_date) time(anio_sem) time_fun(hofd) 
+> window(6)
+  8.     relative_time, event_date(IS_impl_date) time(anio) time_fun(yofd) wind
+> ow(4)
+  9. 
+.     /*gen VTP_impl_date = td(01jan2013)
+>     format %td VTP_impl_date*/
+. end
+
+. 
+. program relative_time
+  1.     syntax, event_date(str) time(str) time_fun(str) window(int) 
+  2.   
+.     gen rel_t_`time' = `time' - `time_fun'(`event_date') if !missing(IS_impl_
+> date)
+  3.     replace rel_t_`time' = -1000    if rel_t_`time' < -`window' & !missing
+> (IS_impl_date)
+  4.     replace rel_t_`time' = 1000 if rel_t_`time' >  `window' & !missing(IS_
+> impl_date)
+  5.     replace rel_t_`time' = rel_t_`time' + `window' + 1 if ///
+>             (rel_t_`time' != -1000 & rel_t_`time' != 1000 & !missing(IS_impl_
+> date)) ///
+>             
+  6.     replace rel_t_`time' = 0 if rel_t_`time' == -1000 & !missing(IS_impl_d
+> ate)
+  7.     assert !mi(rel_t_`time') if !missing(IS_impl_date)
+  8.     tab rel_t_`time', m
+  9. end
+
+. 
+. 
+. * EXECUTE
+. main
+(3 observations deleted)
+
+Duplicates in terms of all variables
+
+(5 observations deleted)
+(data already sorted by dpto)
+  variable IS_impl_date was float now int
+  (10 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/timeline_implementation.dta
+Key: dpto
+===============================================================================
+> ===================
+  5:2(47831):3244004639:1048402393
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |          5         8.2    6.379655          1         16
+IS_impl_date |          5     17373.2    865.7868      16162      18414
+
+
+
+
+(note: file ../temp/timeline_implementation.dta not found)
+file ../temp/timeline_implementation.dta saved
+(data now sorted by dpto)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/timeline_control_implementation.dta
+Key: dpto
+===============================================================================
+> ===================
+  3:2(32042):413296471:4236999062
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |          3    4.333333    2.516611          2          7
+   impl_date |          3       18191    386.2473      17745      18414
+
+
+
+
+(note: file ../temp/timeline_control_implementation.dta not found)
+file ../temp/timeline_control_implementation.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       320,212
+        from master                   320,212  
+        from using                          0  
+
+    matched                           596,250  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       864,089
+        from master                   864,089  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                            52,373  (_merge==3)
+    -----------------------------------------
+(52,373 real changes made)
+(267,839 missing values generated)
+(41,959 real changes made)
+(351,911 real changes made)
+(254,753 real changes made)
+(41,959 real changes made)
+
+rel_t_anio_ |
+        qtr |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     41,959        4.58        4.58
+          1 |      7,125        0.78        5.36
+          2 |      7,005        0.76        6.12
+          3 |      8,086        0.88        7.00
+          4 |      8,440        0.92        7.92
+          5 |      8,577        0.94        8.86
+          6 |      8,409        0.92        9.78
+          7 |      7,852        0.86       10.63
+          8 |      7,958        0.87       11.50
+          9 |      8,080        0.88       12.38
+         10 |      8,119        0.89       13.27
+         11 |      7,980        0.87       14.14
+         12 |      8,714        0.95       15.09
+         13 |      8,780        0.96       16.05
+         14 |      8,792        0.96       17.01
+         15 |      8,549        0.93       17.94
+         16 |      9,166        1.00       18.94
+         17 |      9,421        1.03       19.97
+         18 |      9,166        1.00       20.97
+         19 |      8,845        0.97       21.93
+         20 |     17,300        1.89       23.82
+         21 |     17,564        1.92       25.74
+         22 |     17,232        1.88       27.62
+         23 |     17,410        1.90       29.52
+         24 |     13,272        1.45       30.97
+         25 |     12,911        1.41       32.38
+       1000 |    351,911       38.40       70.77
+          . |    267,839       29.23      100.00
+------------+-----------------------------------
+      Total |    916,462      100.00
+(267,839 missing values generated)
+(35,150 real changes made)
+(351,418 real changes made)
+(262,055 real changes made)
+(35,150 real changes made)
+
+rel_t_anio_ |
+        sem |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     35,150        3.84        3.84
+          1 |     14,096        1.54        5.37
+          2 |     16,110        1.76        7.13
+          3 |     17,046        1.86        8.99
+          4 |     15,745        1.72       10.71
+          5 |     16,059        1.75       12.46
+          6 |     16,165        1.76       14.23
+          7 |     17,577        1.92       16.14
+          8 |     17,144        1.87       18.01
+          9 |     18,561        2.03       20.04
+         10 |     17,846        1.95       21.99
+         11 |     34,824        3.80       25.79
+         12 |     34,723        3.79       29.58
+         13 |     26,159        2.85       32.43
+       1000 |    351,418       38.35       70.77
+          . |    267,839       29.23      100.00
+------------+-----------------------------------
+      Total |    916,462      100.00
+(267,839 missing values generated)
+(19,368 real changes made)
+(273,834 real changes made)
+(355,421 real changes made)
+(19,368 real changes made)
+
+ rel_t_anio |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     19,368        2.11        2.11
+          1 |     15,487        1.69        3.80
+          2 |     28,161        3.07        6.88
+          3 |     33,695        3.68       10.55
+          4 |     32,083        3.50       14.05
+          5 |     35,051        3.82       17.88
+          6 |     36,725        4.01       21.89
+          7 |     69,523        7.59       29.47
+          8 |     51,796        5.65       35.12
+          9 |     52,900        5.77       40.90
+       1000 |    273,834       29.88       70.77
+          . |    267,839       29.23      100.00
+------------+-----------------------------------
+      Total |    916,462      100.00
+(data now sorted by anio numero pers)
+  variable rel_t_anio_qtr was float now int
+  variable rel_t_anio_sem was float now int
+  variable rel_t_anio was float now int
+  (5,498,772 bytes saved)
+===============================================================================
+> ===================
+File: ../output/main_ECH_panel.dta
+Key: anio numero pers
+===============================================================================
+> ===================
+  916462:46(50001):43936608:3141279075
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |    916,462    2008.925    3.884909       2001       2015
+      numero |    916,462    7.66e+08    9.77e+08          1   2.02e+09
+        pers |    916,462      1.9898    1.076788          1         18
+    anio_sem |    916,462    98.34956    7.786501         82        111
+    anio_qtr |    916,462    197.1988    15.58079        164        223
+-------------+---------------------------------------------------------
+    semestre |    916,462     1.49921    .4999996          1          2
+   trimestre |    916,462    2.498052    1.116093          1          4
+         mes |    916,462    6.493477    3.440954          1         12
+        dpto |    916,462    5.596134    5.783979          1         19
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |    916,462    4.013946     5.52138          0         18
+      hombre |    916,462    .4729711    .4992692          0          1
+        edad |    916,462    36.78673    13.05068         16         60
+      blanco |    758,063    .9536529    .2102358          0          1
+        poor |    916,462    .4350961    .4957699          0          1
+-------------+---------------------------------------------------------
+public_hea~h |    916,462    .3024523    .4593203          0          1
+     married |    916,462    .5860308    .4925434          0          1
+     y_hogar |    916,462     28611.4    33560.86          0    2077094
+  nbr_people |    916,462    3.779122    1.729491          1         25
+ nbr_under14 |    916,462    .8174807    1.110861          0         13
+-------------+---------------------------------------------------------
+ piped_water |    916,462    .9696507    .1715467          0          1
+      toilet |    916,462    .9303015    .2546383          0          1
+      sewage |    916,462    .6098267    .4877893          0          1
+       stove |    916,462    .9486591    .2206923          0          1
+   hot_water |    916,462    .8908651    .3118086          0          1
+-------------+---------------------------------------------------------
+  refrigerat |    916,462    .8261848    .3789507          0          1
+          tv |    916,462    .9635642    .1873719          0          1
+         car |    916,462    .3825167     .486002          0          1
+    computer |    916,462    .5613195    .4962259          0          1
+    internet |    916,462    .3980176    .4894894          0          1
+-------------+---------------------------------------------------------
+     trabajo |    916,462    .7075831    .4548731          0          1
+  estudiante |    916,462    .0735382    .2610181          0          1
+horas_trab~o |    916,372    29.51899    23.41669          0        100
+work_part_~e |    648,383    .2529662    .4347121          0          1
+         yob |    916,462    1972.138    13.55946       1941       1999
+-------------+---------------------------------------------------------
+       young |    916,462    .3680338    .4822709          0          1
+       adult |    916,462     .329455    .4700156          0          1
+     fertile |    916,462    .6974888    .4593456          0          1
+   infertile |    916,462    .3025112    .4593456          0          1
+      pesoan |    916,462    26.64411    13.13578          1       1323
+-------------+---------------------------------------------------------
+     pesosem |    911,468    52.98671    26.11367          3       1345
+     pesotri |    911,468    106.0525    50.70616          1       1527
+IS_impl_date |    648,623    16663.75    765.7674      16162      18414
+rel_t_anio~r |    648,623    548.3761    491.8763          0       1000
+rel_t_anio~m |    648,623    545.0026    494.7674          0       1000
+-------------+---------------------------------------------------------
+  rel_t_anio |    648,623    425.3749     491.178          0       1000
+
+
+
+
+(note: file ../output/main_ECH_panel.dta not found)
+file ../output/main_ECH_panel.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2019-09-09 18:53:38
