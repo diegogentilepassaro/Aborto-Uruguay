@@ -5,7 +5,7 @@ adopath + ../../../library/stata/gslab_misc/ado
 program main
     import_and_merge_data
 	rename date month
-    save_data ../output/googler_trends.dta, key(month) 
+    save_data ../output/google_trends.dta, key(month) 
 end
 
 program import_and_merge_data

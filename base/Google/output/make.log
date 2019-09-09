@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-04 18:07:41 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Google\code 
+ make.py started: 2019-09-09 19:11:33 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Google\code 
 
 
 
@@ -45,7 +45,7 @@ Notes:
 . program main
   1.     import_and_merge_data
   2.         rename date month
-  3.     save_data ../output/googler_trends.dta, key(month) 
+  3.     save_data ../output/google_trends.dta, key(month) 
   4. end
 
 . 
@@ -108,7 +108,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
   (354 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/googler_trends.dta
+File: ../output/google_trends.dta
 Key: month
 ===============================================================================
 > ===================
@@ -125,10 +125,10 @@ abortionbr~l |        177     46.9209     17.1144         25        100
 
 
 
-file ../output/googler_trends.dta saved
+file ../output/google_trends.dta saved
 
 . 
 . 
 end of do-file
 
- make.py ended: 2019-09-04 18:07:42
+ make.py ended: 2019-09-09 19:11:36
