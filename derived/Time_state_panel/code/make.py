@@ -27,16 +27,12 @@ if stata_exe:
 #****************************************************
 # SET DEFAULT OPTIONS
 set_option(link_logs_dir = '../output/')
-set_option(output_dir = '../output/', temp_dir = '../temp/')
-clear_dirs('../temp/')
+set_option(output_dir = '../output/')
 delete_files('../output/*')
 
 start_make_logging()
 
-run_stata(program = 'homogeneize_geo_vars.do')
-run_stata(program = 'gen_analysis_vars.do')
-run_stata(program = 'assign_treatment.do')
-run_stata(program = 'create_panels.do')
+run_stata(program = 'create_time_dpto_panels.do')
 
 end_make_logging()
 

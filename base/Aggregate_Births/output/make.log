@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-05 12:15:14 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Aggregate_Births\code 
+ make.py started: 2019-09-12 19:46:34 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Aggregate_Births\code 
 
 
 
@@ -44,67 +44,100 @@ Notes:
 . 
 . program main
   1.     clean_data
-  2.     save_data ../output/aggregate_births.dta, key(dpto year) replace
-  3. end
+  2. 
+.     preserve
+  3.     keep if dpto == 99
+  4.     drop dpto
+  5.     save_data ../output/total_aggregate_births.dta, key(anio) replace
+  6.     restore
+  7. 
+.     keep if dpto != 99
+  8.     save_data ../output/by_year_dpto_aggregate_births.dta, key(anio dpto) 
+> replace
+  9. end
 
 . 
 . program clean_data
-  1.         import excel using "../../../raw/Cuadro 5. Tasas Brutas de Mortali
-> dad y Natalidad. Uruguay, 1996-2015.xlsx" ///
->                   , clear cellrange(a39:bi62)
+  1.     import excel using "../../../raw/Cuadro 5. Tasas Brutas de Mortalidad 
+> y Natalidad. Uruguay, 1996-2015.xlsx" ///
+>           , clear cellrange(a39:bi62)
   2. 
-.         local i = 0
-  3.         foreach x of varlist * {
-  4.            rename `x' var`i'
-  5.            local i = `i' + 1
-  6.         }
+.     local i = 0
+  3.     foreach x of varlist * {
+  4.        rename `x' var`i'
+  5.        local i = `i' + 1
+  6.     }
   7. 
-.         rename var0 dpto
+.     rename var0 dpto
   8. 
-.         local j1 = 2
-  9.         forvalues year = 1996/2015 {
- 10.                 local j0 = `j1' - 1
- 11.                 local j2 = `j1' + 1
- 12.                 replace var`j1' = "`year'" if mi(var`j1') in 1
- 13.                 replace var`j2' = "`year'" if mi(var`j2') in 1
- 14.                 assert var`j0'[1] == var`j1'[1] & var`j1'[1] == var`j2'[1]
- 15.                 rename var`j0' nat_level`year'
- 16.                 rename var`j1' population`year'
- 17.                 rename var`j2' nat_rate`year'
- 18.                 local j1 = `j1' + 3
- 19.         }
+.     local j1 = 2
+  9.     forvalues year = 1996/2015 {
+ 10.         local j0 = `j1' - 1
+ 11.         local j2 = `j1' + 1
+ 12.         replace var`j1' = "`year'" if mi(var`j1') in 1
+ 13.         replace var`j2' = "`year'" if mi(var`j2') in 1
+ 14.         assert var`j0'[1] == var`j1'[1] & var`j1'[1] == var`j2'[1]
+ 15.         rename var`j0' nat_level`year'
+ 16.         rename var`j1' population`year'
+ 17.         rename var`j2' nat_rate`year'
+ 18.         local j1 = `j1' + 3
+ 19.     }
  20. 
-.         drop in 22/23
- 21.         drop in 1/2 
+.     drop in 22/23
+ 21.     drop in 1/2 
  22. 
-.         destring , replace
- 23.         local nn=_N+1
- 24.         set obs `nn'
- 25.         replace dpto = "Montevideo, Canelones y San Jose" in `nn'
- 26.         forvalues year = 1996/2015 {
- 27.                 replace nat_level`year' = nat_level`year'[2] + nat_level`y
-> ear'[10] + nat_level`year'[16] in `nn'
- 28.                 replace population`year' = population`year'[2] + populatio
-> n`year'[10] + population`year'[16] in `nn'
- 29.         }
+.     destring , replace
+ 23.     local nn=_N+1
+ 24.     set obs `nn'
+ 25.     replace dpto = "Montevideo, Canelones y San Jose" in `nn'
+ 26.     forvalues year = 1996/2015 {
+ 27.         replace nat_level`year' = nat_level`year'[2] + nat_level`year'[10]
+>  + nat_level`year'[16] in `nn'
+ 28.         replace population`year' = population`year'[2] + population`year'[
+> 10] + population`year'[16] in `nn'
+ 29.     }
  30. 
-.         foreach var in nat_level nat_rate population {
- 31.                 preserve 
- 32.                         keep    dpto `var'*
- 33.                         reshape long `var', i(dpto) j(year)
- 34.                         tempfile     `var'
- 35.                         save        ``var''
- 36.                 restore
- 37.         }
- 38.         
-.         use `nat_level', clear
- 39.         merge 1:1 dpto year using `nat_rate'  , nogen assert(3)
- 40.         merge 1:1 dpto year using `population', nogen assert(3)
+.     foreach var in nat_level nat_rate population {
+ 31.         preserve 
+ 32.             keep    dpto `var'*
+ 33.             reshape long `var', i(dpto) j(year)
+ 34.             tempfile     `var'
+ 35.             save        ``var''
+ 36.         restore
+ 37.     }
+ 38.     
+.     use `nat_level', clear
+ 39.     merge 1:1 dpto year using `nat_rate'  , nogen assert(3)
+ 40.     merge 1:1 dpto year using `population', nogen assert(3)
  41. 
-.         encode dpto, g(dpto_num)
- 42.         xtset  dpto_num year
- 43.         replace nat_rate = nat_level/population*1000
- 44. end
+.     gen dpto_num = 1 if dpto == "Montevideo"
+ 42.     replace dpto_num = 2 if dpto == "Artigas"
+ 43.     replace dpto_num = 3 if dpto == "Canelones"
+ 44.     replace dpto_num = 4 if dpto == "Cerro Largo"
+ 45.     replace dpto_num = 5 if dpto == "Colonia"
+ 46.     replace dpto_num = 6 if dpto == "Durazno"
+ 47.     replace dpto_num = 7 if dpto == "Flores"
+ 48.     replace dpto_num = 8 if dpto == "Florida"
+ 49.     replace dpto_num = 9 if dpto == "Lavalleja"
+ 50.     replace dpto_num = 10 if dpto == "Maldonado"
+ 51.     replace dpto_num = 11 if dpto == "Paysandu"
+ 52.     replace dpto_num = 12 if dpto == "Rio Negro"
+ 53.     replace dpto_num = 13 if dpto == "Rivera"
+ 54.     replace dpto_num = 14 if dpto == "Rocha"
+ 55.     replace dpto_num = 15 if dpto == "Salto"
+ 56.     replace dpto_num = 16 if dpto == "San Jose"
+ 57.     replace dpto_num = 17 if dpto == "Soriano"
+ 58.     replace dpto_num = 18 if dpto == "Tacuarembo"
+ 59.     replace dpto_num = 19 if dpto == "Treinta y tres"
+ 60.         replace dpto_num = 99 if dpto == "Total"
+ 61.     drop if missing(dpto_num)
+ 62.     drop dpto
+ 63.     rename dpto_num dpto
+ 64. 
+.     rename year anio
+ 65.     xtset  dpto anio
+ 66.     replace nat_rate = nat_level/population*1000
+ 67. end
 
 . 
 . *EXECUTE
@@ -266,7 +299,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -278,7 +311,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -290,7 +323,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -303,38 +336,82 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
     not matched                             0
     matched                               420  
     -----------------------------------------
-       panel variable:  dpto_num (strongly balanced)
-        time variable:  year, 1996 to 2015
+(400 missing values generated)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 real changes made)
+(20 observations deleted)
+       panel variable:  dpto (strongly balanced)
+        time variable:  anio, 1996 to 2015
                 delta:  1 unit
-(418 real changes made)
-(data now sorted by dpto year)
-  variable dpto_num was long now byte
-  (1,260 bytes saved)
+(398 real changes made)
+(380 observations deleted)
+(data now sorted by anio)
+  (0 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/aggregate_births.dta
-Key: dpto year
+File: ../output/total_aggregate_births.dta
+Key: anio
 ===============================================================================
 > ===================
-  420:6(79364):805774506:845074913
+  20:4(66028):3934772966:3698257443
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-        dpto |          0
-        year |        420      2005.5    5.773158       1996       2015
-   nat_level |        420    6138.831    12038.14        307      58718
-    nat_rate |        420    15.37198    2.263491   11.09572   23.26173
-  population |        420    415652.6    817398.9   25684.83    3467054
+        anio |         20      2005.5     5.91608       1996       2015
+   nat_level |         20     50287.1    3504.758      46712      58718
+    nat_rate |         20    14.95363    1.241755   13.68795   18.02159
+  population |         20     3366300    53666.75    3258203    3467054
+
+
+
+
+(note: file ../output/total_aggregate_births.dta not found)
+file ../output/total_aggregate_births.dta saved
+(20 observations deleted)
+(data now sorted by anio dpto)
+  variable dpto was float now byte
+  variable nat_level was long now int
+  (1,900 bytes saved)
+===============================================================================
+> ===================
+File: ../output/by_year_dpto_aggregate_births.dta
+Key: anio dpto
+===============================================================================
+> ===================
+  380:5(65913):2916432935:653440360
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-    dpto_num |        420          11    6.062522          1         21
+        anio |        380      2005.5    5.773884       1996       2015
+        dpto |        380          10    5.484447          1         19
+   nat_level |        380    2641.832     4259.19        307      23287
+    nat_rate |        380    15.45286    2.337763   11.09572   23.26173
+  population |        380    177173.7    300323.4   25684.83    1397549
 
 
 
 
-(note: file ../output/aggregate_births.dta not found)
-file ../output/aggregate_births.dta saved
+(note: file ../output/by_year_dpto_aggregate_births.dta not found)
+file ../output/by_year_dpto_aggregate_births.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2019-09-05 12:15:15
+ make.py ended: 2019-09-12 19:46:36

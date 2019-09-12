@@ -1,0 +1,117 @@
+
+ make.py started: 2019-09-12 19:52:07 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\Time_state_panel\code 
+
+
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./create_time_dpto_panels.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./create_time_dpto_panels.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main 
+  1.     create_year_panel
+  2. end
+
+. 
+. program create_year_panel
+  1.     use ../../ECH/output/main_ECH_panel.dta, clear
+  2.     collapse (mean) share_women_public_health = public_health [aw = pesoan
+> ], by(anio dpto)
+  3. 
+.     merge 1:1 anio dpto using ../../../base/Aggregate_Births/output/by_year_d
+> pto_aggregate_births.dta, ///
+>         nogen keepusing(nat_level nat_rate population)
+  4.     merge 1:1 anio dpto using ../../../base/Population/output/by_year_dpto
+> _population.dta, ///
+>         nogen keepusing(women_pop fertile_women pop)
+  5.     save_data ../output/year_dpto_panel.dta, key(anio dpto) replace
+  6. end
+
+. 
+. * EXECUTE
+. main
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           260
+        from master                         0  
+        from using                        260  
+
+    matched                               120  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            95
+        from master                         0  
+        from using                         95  
+
+    matched                               380  
+    -----------------------------------------
+(data now sorted by anio dpto)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/year_dpto_panel.dta
+Key: anio dpto
+===============================================================================
+> ===================
+  475:9(60039):3551080967:2090036016
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |        475        2008    7.218705       1996       2020
+        dpto |        475          10       5.483          1         19
+share_wome~h |        120    .5215064    .0969357   .2615403   .7201281
+   nat_level |        380    2641.832     4259.19        307      23287
+    nat_rate |        380    15.45286    2.337763   11.09572   23.26173
+-------------+---------------------------------------------------------
+  population |        380    177173.7    300323.4   25684.83    1397549
+         pop |        475    178641.8    301380.1   25684.83    1397549
+   women_pop |        475    92175.12    159979.4   12840.16     743337
+fertile_wo~p |        475     38129.4    67011.37   5049.727   314105.6
+
+
+
+
+(note: file ../output/year_dpto_panel.dta not found)
+file ../output/year_dpto_panel.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2019-09-12 19:52:08
