@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-04 17:31:41 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Vital Statistics\code 
+ make.py started: 2019-09-12 14:08:26 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Vitals\code 
 
 
 
@@ -55,7 +55,7 @@ Notes:
 >         recomm_prenatal_1stvisit  no_prenatal_care first_pregnancy kids_befor
 > e ///
 >         lowbirthweight apgar1_low apgar2_low preg_preterm 
-  7.     save_data ../output/births_derived.dta, key(birth_id) replace
+  7.     save_data ../output/vital_birth_records.dta, key(birth_id) replace
   8. end
 
 . 
@@ -227,23 +227,23 @@ Notes:
 
 . 
 . main
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000005.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000008.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000b.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000c.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000e.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -303,7 +303,7 @@ file ../temp/births_append.dta saved
   (46,732,784 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/births_derived.dta
+File: ../output/vital_birth_records.dta
 Key: birth_id
 ===============================================================================
 > ===================
@@ -340,10 +340,10 @@ preg_preterm |    820,722    .0921883    .2892918          0          1
 
 
 
-(note: file ../output/births_derived.dta not found)
-file ../output/births_derived.dta saved
+(note: file ../output/vital_birth_records.dta not found)
+file ../output/vital_birth_records.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2019-09-04 17:32:31
+ make.py ended: 2019-09-12 14:09:17

@@ -14,7 +14,7 @@ program main
         prim_school high_school recomm_prenatal_numvisits ///
         recomm_prenatal_1stvisit  no_prenatal_care first_pregnancy kids_before ///
         lowbirthweight apgar1_low apgar2_low preg_preterm 
-    save_data ../output/births_derived.dta, key(birth_id) replace
+    save_data ../output/vital_birth_records.dta, key(birth_id) replace
 end
 
 program append_years
