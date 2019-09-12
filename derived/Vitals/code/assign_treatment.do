@@ -2,10 +2,11 @@ clear all
 set more off
 adopath + ../../../library/stata/gslab_misc/ado
 
-program main
+program main 
     import_treatment_dates
     assign_treatment
-    save_data ../temp/ECH_panel.dta, key(anio numero pers) replace
+    
+    save_data ../temp/vital_birth_records.dta, key(birth_id) replace
 end
 
 program import_treatment_dates
@@ -26,7 +27,7 @@ program import_treatment_dates
 end
 
 program assign_treatment
-    use ../temp/clean_loc_2001_2015_with_vars.dta, clear
+    use ../../../base/Vitals/output/vital_birth_records.dta, clear
     merge m:1 dpto using ../temp/timeline_implementation.dta, ///
         keepusing(IS_impl_date)
     gen montevideo = (dpto == 1)        
@@ -61,7 +62,6 @@ program relative_time
     assert !mi(rel_t_`time') if !missing(IS_impl_date)
     tab rel_t_`time', m
 end
-
 
 * EXECUTE
 main

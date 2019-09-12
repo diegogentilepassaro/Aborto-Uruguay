@@ -1,3 +1,5 @@
+clear all
+set more off
 adopath + ../../../library/stata/gslab_misc/ado
 
 program main
@@ -105,15 +107,40 @@ program reshape_agg_and_save
     * Reshape, aggregate dy depto, and save table
     rename (depar gender_all) (dpto category)
     reshape long pop, i(dpto category age_min age_max) j(anio)
-    save_data "../output/population.dta", key(anio dpto category age_min age_max) replace
 
-    * Collapse to women of fertile age and save table
-    gen fertile_age = (category=="women" & age_min>=15 & age_max<45 & all_ages==0)
-    collapse (sum) pop if fertile_age==1, by(dpto anio age_min age_max)
-    drop if inrange(anio,1996,2000) | inrange(anio,2017,2020)
-
-    save_data "../output/population_fertile_age.dta", key(dpto anio age_min) replace
+    create_panel, by(anio) by_name(year)
+    create_panel, by(anio dpto) by_name(year_dpto)
 end
+
+program create_panel
+    syntax, by(str) by_name(str)
+
+    preserve 
+    collapse (sum) pop if (category=="all" & all_ages == 1), by(`by')
+    save "../temp/by_`by_name'_population.dta", replace
+    restore 
+
+    preserve 
+    collapse (sum) pop if (category=="women" & all_ages == 1), by(`by')
+    rename pop women_pop
+    save "../temp/by_`by_name'_women_population.dta", replace
+    restore
+
+    preserve 
+    collapse (sum) pop if (category=="women" & age_min>=15 & age_max<45 & all_ages==0), by(`by')
+    rename pop fertile_women_pop
+    save "../temp/by_`by_name'_fertile_women_population.dta", replace
+    restore
+
+    preserve
+    use "../temp/by_`by_name'_population.dta", clear
+    merge 1:1 `by' using "../temp/by_`by_name'_women_population.dta", nogen ///
+        keepusing(women_pop) assert(3)
+    merge 1:1 `by' using "../temp/by_`by_name'_fertile_women_population.dta", nogen ///
+        keepusing(fertile_women_pop) assert(3)
+    save_data ../output/by_`by_name'_population.dta, key(`by') replace    
+    restore     
+end 
 
 * EXECUTE
 main

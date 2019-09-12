@@ -32,7 +32,7 @@ delete_files('../output/*')
 
 start_make_logging()
 
-run_stata(program = 'ech_year_aggregates.do')
+run_stata(program = 'create_time_panels.do')
 
 end_make_logging()
 

@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-05 12:08:36 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Mortality_Uruguay\code 
+ make.py started: 2019-09-12 18:46:20 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Mortality_Uruguay\code 
 
 
 
@@ -44,36 +44,36 @@ Notes:
 . 
 . program main
   1.     import_and_process_uruguay_data
-  2.     save_data "../output/uruguay_mm_data.dta", key(geo_unit year) replace
+  2.     save_data "../output/uruguay_mm_data.dta", key(geo_unit anio) replace
   3. end
 
 . 
 . program import_and_process_uruguay_data
   1.     import excel using "../../../raw/Cuadro 7. Mortalidad Materna 1900-201
 > 5.xlsx", clear cellrange(a9:h125) firstrow
-  2.     rename Año year
-  3.     label var year "Year"
-  4.     keep if year>=1985
+  2.     rename Año anio
+  3.     label var anio "Anio"
+  4.     keep if anio>=1985
   5.     gen geo_unit = "Uruguay"
   6.     
 .     gen mm_ratio = Cifras/Muertesdemujeres
   7. 
-.     tsset year
+.     tsset anio
   8. 
-.     tssmooth ma ma_muertes = MuertesMaternas, window(2 1 2) //5-year average
-  9.     tssmooth ma ma_razon   = Raz, window(2 1 2) //5-year average
+.     tssmooth ma ma_muertes = MuertesMaternas, window(2 1 2) //5-anio average
+  9.     tssmooth ma ma_razon   = Raz, window(2 1 2) //5-anio average
  10.     tssmooth ma ma_mm_ratio  = mm_ratio, window(2 1 2)
  11.     label var   ma_mm_ratio "Maternal mortality over fertile women's morta
 > lity"
  12. 
-.     keep geo_unit year mm_ratio ma_mm_ratio
+.     keep geo_unit anio mm_ratio ma_mm_ratio
  13. end
 
 . 
 . *EXECUTE
 . main
 (85 observations deleted)
-        time variable:  year, 1985 to 2015
+        time variable:  anio, 1985 to 2015
                 delta:  1 unit
 The smoother applied was
      (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)=
@@ -82,20 +82,20 @@ The smoother applied was
      (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= Raz
 The smoother applied was
      (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= mm_ratio
-(data now sorted by geo_unit year)
+(data now sorted by geo_unit anio)
   (0 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/uruguay_mm_data.dta
-Key: geo_unit year
+Key: geo_unit anio
 ===============================================================================
 > ===================
-  31:4(53433):3225826947:531403887
+  31:4(55411):3225826947:531403887
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
     geo_unit |          0
-        year |         31        2000    9.092121       1985       2015
+        anio |         31        2000    9.092121       1985       2015
     mm_ratio |         31    .0140873    .0054469    .004896    .028083
  ma_mm_ratio |         31    .0139923    .0032246   .0085059   .0208528
 
@@ -108,4 +108,4 @@ file ../output/uruguay_mm_data.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-05 12:08:37
+ make.py ended: 2019-09-12 18:46:21

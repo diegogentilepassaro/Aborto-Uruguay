@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-05 12:10:01 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Mortality_Brazil\code 
+ make.py started: 2019-09-12 19:26:07 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Mortality_Brazil\code 
 
 
 
@@ -43,16 +43,12 @@ Notes:
 
 . 
 . program main
-  1.     import_brasil_data, file(mortality_w_fertile) geo_var(unidadedafederaç
-> ão)
-  2.     import_brasil_data, file(maternal_mortality) geo_var(unidadedafederaçã
-> o)
-  3.     import_brasil_data, file(tot_mortality_w_fertile) geo_var(região)
-  4.     import_brasil_data, file(tot_maternal_mortality) geo_var(região)    
-  5.     
+  1.     import_brasil_data, file(tot_mortality_w_fertile) geo_var(região)
+  2.     import_brasil_data, file(tot_maternal_mortality) geo_var(região)    
+  3.     
 .     process_brasil_data
-  6.     save_data ../output/brasil_mm_data.dta, key(geo_unit year) replace    
-  7. end
+  4.     save_data ../output/brasil_mm_data.dta, key(geo_unit anio) replace    
+  5. end
 
 . 
 . program import_brasil_data
@@ -66,12 +62,12 @@ Notes:
 .     rename `geo_var' geo_unit
   5.     
 .     forval i = 2/22 {
-  6.         local year = 1994 + `i'
-  7.         local name  "`file'`year'"
+  6.         local anio = 1994 + `i'
+  7.         local name  "`file'`anio'"
   8.         rename v`i' `name' 
   9.     }
  10.     
-.     reshape long `file', i(geo_unit) j(year)
+.     reshape long `file', i(geo_unit) j(anio)
  11.     
 .     drop total
  12.     
@@ -80,73 +76,29 @@ Notes:
 
 .  
 . program process_brasil_data
-  1.     use "../temp/mortality_w_fertile.dta", clear
-  2.     merge 1:1 year geo_unit using "../temp/maternal_mortality.dta", ///
->         assert(3) keep(3) nogen 
-  3.     replace geo_unit = "Rio Grande do Sul" if geo_unit == "43 Rio Grande d
-> o Sul"
-  4. 
-.     keep if geo_unit == "Rio Grande do Sul"
-  5.     gen mm_ratio = maternal_mortality / mortality_w_fertile
-  6.     save "../temp/rgds_mm_ratio.dta", replace
-  7.    
-.     use "../temp/tot_mortality_w_fertile.dta", clear
-  8.     merge 1:1 geo_unit year using "../temp/tot_maternal_mortality.dta", //
+  1.     use "../temp/tot_mortality_w_fertile.dta", clear
+  2.     merge 1:1 geo_unit anio using "../temp/tot_maternal_mortality.dta", //
 > /
 >         assert(3) keep(3) nogen 
-  9.     keep if geo_unit == "Total"
- 10.     replace geo_unit = "Brasil" if geo_unit == "Total"
- 11.     rename (tot_mortality_w_fertile tot_maternal_mortality) ///
+  3.     keep if geo_unit == "Total"
+  4.     replace geo_unit = "Brasil" if geo_unit == "Total"
+  5.     rename (tot_mortality_w_fertile tot_maternal_mortality) ///
 >         (mortality_w_fertile maternal_mortality)
- 12.     gen mm_ratio = maternal_mortality / mortality_w_fertile
- 13. 
-.     append using "../temp/rgds_mm_ratio.dta"
- 14.     
+  6.     gen mm_ratio = maternal_mortality / mortality_w_fertile
+  7.     
 .     encode geo_unit, gen(geo_unit_num)
- 15. 
-.     xtset geo_unit_num year
- 16. 
+  8. 
+.     xtset geo_unit_num anio
+  9. 
 .     tssmooth ma ma_mm_ratio  = mm_ratio, window(2 1 2)
- 17.     label var   ma_mm_ratio "Maternal mortality over fertile women's morta
+ 10.     label var   ma_mm_ratio "Maternal mortality over fertile women's morta
 > lity"
- 18.     keep geo_unit year mm_ratio ma_mm_ratio
- 19. end
+ 11.     keep geo_unit anio mm_ratio ma_mm_ratio
+ 12. end
 
 . 
 . *EXECUTE
 . main
-(23 vars, 3 obs)
-(1 observation deleted)
-(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
-> 9 2010 2011 2012 2013 2014 2015 2016)
-
-Data                               wide   ->   long
------------------------------------------------------------------------------
-Number of obs.                        2   ->      42
-Number of variables                  23   ->       4
-j variable (21 values)                    ->   year
-xij variables:
-mortality_w_fertile1996 mortality_w_fertile1997 ... mortality_w_fertile2016->mo
-> rtality_w_fertile
------------------------------------------------------------------------------
-(note: file ../temp/mortality_w_fertile.dta not found)
-file ../temp/mortality_w_fertile.dta saved
-(23 vars, 3 obs)
-(1 observation deleted)
-(note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
-> 9 2010 2011 2012 2013 2014 2015 2016)
-
-Data                               wide   ->   long
------------------------------------------------------------------------------
-Number of obs.                        2   ->      42
-Number of variables                  23   ->       4
-j variable (21 values)                    ->   year
-xij variables:
-maternal_mortality1996 maternal_mortality1997 ... maternal_mortality2016->mater
-> nal_mortality
------------------------------------------------------------------------------
-(note: file ../temp/maternal_mortality.dta not found)
-file ../temp/maternal_mortality.dta saved
 (23 vars, 7 obs)
 (1 observation deleted)
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
@@ -156,7 +108,7 @@ Data                               wide   ->   long
 -----------------------------------------------------------------------------
 Number of obs.                        6   ->     126
 Number of variables                  23   ->       4
-j variable (21 values)                    ->   year
+j variable (21 values)                    ->   anio
 xij variables:
 tot_mortality_w_fertile1996 tot_mortality_w_fertile1997 ... tot_mortality_w_fer
 > tile2016->tot_mortality_w_fertile
@@ -172,7 +124,7 @@ Data                               wide   ->   long
 -----------------------------------------------------------------------------
 Number of obs.                        6   ->     126
 Number of variables                  23   ->       4
-j variable (21 values)                    ->   year
+j variable (21 values)                    ->   anio
 xij variables:
 tot_maternal_mortality1996 tot_maternal_mortality1997 ... tot_maternal_mortalit
 > y2016->tot_maternal_mortality
@@ -183,43 +135,32 @@ file ../temp/tot_maternal_mortality.dta saved
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                                42  
-    -----------------------------------------
-(21 real changes made)
-(21 observations deleted)
-(note: file ../temp/rgds_mm_ratio.dta not found)
-file ../temp/rgds_mm_ratio.dta saved
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
     matched                               126  
     -----------------------------------------
 (105 observations deleted)
 (21 real changes made)
        panel variable:  geo_unit_num (strongly balanced)
-        time variable:  year, 1996 to 2016
+        time variable:  anio, 1996 to 2016
                 delta:  1 unit
 The smoother applied was
-     by geo_unit_num : (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)];
-     x(t)= mm_ratio
-(data now sorted by geo_unit year)
-  variable geo_unit was str22 now str17
-  (210 bytes saved)
+     (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= mm_ratio
+(data now sorted by geo_unit anio)
+  variable geo_unit was str22 now str6
+  (336 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/brasil_mm_data.dta
-Key: geo_unit year
+Key: geo_unit anio
 ===============================================================================
 > ===================
-  42:4(53433):1683464783:2019949469
+  21:4(55411):990228836:2695192342
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
     geo_unit |          0
-        year |         42        2006    6.128701       1996       2016
-    mm_ratio |         42    .0238446    .0046542   .0116556   .0357984
- ma_mm_ratio |         42    .0239529    .0037556   .0148656   .0305238
+        anio |         21        2006    6.204837       1996       2016
+    mm_ratio |         21    .0260007    .0019504   .0234586   .0314342
+ ma_mm_ratio |         21    .0260923    .0011031   .0250474   .0282617
 
 
 
@@ -230,4 +171,4 @@ file ../output/brasil_mm_data.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-05 12:10:03
+ make.py ended: 2019-09-12 19:26:08

@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-09 19:05:37 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
+ make.py started: 2019-09-12 18:10:34 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
 
 
 
@@ -967,7 +967,7 @@ Notes:
 . program main
   1.     import_treatment_dates
   2.     assign_treatment
-  3.     save_data ../output/main_ECH_panel.dta, key(anio numero pers) replace
+  3.     save_data ../temp/ECH_panel.dta, key(anio numero pers) replace
   4. end
 
 . 
@@ -994,19 +994,24 @@ Notes:
 . program assign_treatment
   1.     use ../temp/clean_loc_2001_2015_with_vars.dta, clear
   2.     merge m:1 dpto using ../temp/timeline_implementation.dta, ///
->         nogen keepusing(IS_impl_date)
-  3.     merge m:1 dpto using ../temp/timeline_control_implementation.dta, keep
-> using(impl_date)
-  4.     replace IS_impl_date = impl_date if _merge == 3
-  5.     drop impl_date _merge
-  6.     
+>         keepusing(IS_impl_date)
+  3.     gen montevideo = (dpto == 1)        
+  4.     gen treated = (_merge == 3 & dpto != 1)
+  5.     drop _merge
+  6.     merge m:1 dpto using ../temp/timeline_control_implementation.dta, ///
+>         keepusing(impl_date)
+  7.     replace IS_impl_date = impl_date if _merge == 3
+  8.     gen control = (_merge == 3)
+  9.     drop impl_date _merge
+ 10.     gen treated_or_control = (treated == 1 | control == 1)
+ 11.     
 .     relative_time, event_date(IS_impl_date) time(anio_qtr) time_fun(qofd) win
 > dow(12)
-  7.     relative_time, event_date(IS_impl_date) time(anio_sem) time_fun(hofd) 
+ 12.     relative_time, event_date(IS_impl_date) time(anio_sem) time_fun(hofd) 
 > window(6)
-  8.     relative_time, event_date(IS_impl_date) time(anio) time_fun(yofd) wind
+ 13.     relative_time, event_date(IS_impl_date) time(anio) time_fun(yofd) wind
 > ow(4)
-  9. 
+ 14. 
 .     /*gen VTP_impl_date = td(01jan2013)
 >     format %td VTP_impl_date*/
 . end
@@ -1017,19 +1022,21 @@ Notes:
   2.   
 .     gen rel_t_`time' = `time' - `time_fun'(`event_date') if !missing(IS_impl_
 > date)
-  3.     replace rel_t_`time' = -1000    if rel_t_`time' < -`window' & !missing
+  3.     bysort dpto: gen post_`time' = (`time' >= `time_fun'(`event_date'))   
+>  
+  4.     replace rel_t_`time' = -1000    if rel_t_`time' < -`window' & !missing
 > (IS_impl_date)
-  4.     replace rel_t_`time' = 1000 if rel_t_`time' >  `window' & !missing(IS_
+  5.     replace rel_t_`time' = 1000 if rel_t_`time' >  `window' & !missing(IS_
 > impl_date)
-  5.     replace rel_t_`time' = rel_t_`time' + `window' + 1 if ///
->             (rel_t_`time' != -1000 & rel_t_`time' != 1000 & !missing(IS_impl_
-> date)) ///
->             
-  6.     replace rel_t_`time' = 0 if rel_t_`time' == -1000 & !missing(IS_impl_d
+  6.     replace rel_t_`time' = rel_t_`time' + `window' + 1 if ///
+>         (rel_t_`time' != -1000 & rel_t_`time' != 1000 & !missing(IS_impl_date
+> )) ///
+>         
+  7.     replace rel_t_`time' = 0 if rel_t_`time' == -1000 & !missing(IS_impl_d
 > ate)
-  7.     assert !mi(rel_t_`time') if !missing(IS_impl_date)
-  8.     tab rel_t_`time', m
-  9. end
+  8.     assert !mi(rel_t_`time') if !missing(IS_impl_date)
+  9.     tab rel_t_`time', m
+ 10. end
 
 . 
 . 
@@ -1069,12 +1076,12 @@ File: ../temp/timeline_control_implementation.dta
 Key: dpto
 ===============================================================================
 > ===================
-  3:2(32042):413296471:4236999062
+  4:2(32042):140096628:1429260735
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-        dpto |          3    4.333333    2.516611          2          7
-   impl_date |          3       18191    386.2473      17745      18414
+        dpto |          4        4.75    2.217356          2          7
+   impl_date |          4     18079.5    386.2473      17745      18414
 
 
 
@@ -1085,121 +1092,128 @@ file ../temp/timeline_control_implementation.dta saved
     Result                           # of obs.
     -----------------------------------------
     not matched                       320,212
-        from master                   320,212  
-        from using                          0  
+        from master                   320,212  (_merge==1)
+        from using                          0  (_merge==2)
 
-    matched                           596,250  
+    matched                           596,250  (_merge==3)
     -----------------------------------------
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       864,089
-        from master                   864,089  (_merge==1)
+    not matched                       846,349
+        from master                   846,349  (_merge==1)
         from using                          0  (_merge==2)
 
-    matched                            52,373  (_merge==3)
+    matched                            70,113  (_merge==3)
     -----------------------------------------
-(52,373 real changes made)
-(267,839 missing values generated)
-(41,959 real changes made)
-(351,911 real changes made)
-(254,753 real changes made)
-(41,959 real changes made)
+(70,113 real changes made)
+(250,099 missing values generated)
+(43,613 real changes made)
+(356,930 real changes made)
+(265,820 real changes made)
+(43,613 real changes made)
 
 rel_t_anio_ |
         qtr |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     41,959        4.58        4.58
-          1 |      7,125        0.78        5.36
-          2 |      7,005        0.76        6.12
-          3 |      8,086        0.88        7.00
-          4 |      8,440        0.92        7.92
-          5 |      8,577        0.94        8.86
-          6 |      8,409        0.92        9.78
-          7 |      7,852        0.86       10.63
-          8 |      7,958        0.87       11.50
-          9 |      8,080        0.88       12.38
-         10 |      8,119        0.89       13.27
-         11 |      7,980        0.87       14.14
-         12 |      8,714        0.95       15.09
-         13 |      8,780        0.96       16.05
-         14 |      8,792        0.96       17.01
-         15 |      8,549        0.93       17.94
-         16 |      9,166        1.00       18.94
-         17 |      9,421        1.03       19.97
-         18 |      9,166        1.00       20.97
-         19 |      8,845        0.97       21.93
-         20 |     17,300        1.89       23.82
-         21 |     17,564        1.92       25.74
-         22 |     17,232        1.88       27.62
-         23 |     17,410        1.90       29.52
-         24 |     13,272        1.45       30.97
-         25 |     12,911        1.41       32.38
-       1000 |    351,911       38.40       70.77
-          . |    267,839       29.23      100.00
+          0 |     43,613        4.76        4.76
+          1 |      7,216        0.79        5.55
+          2 |      7,094        0.77        6.32
+          3 |      9,015        0.98        7.30
+          4 |      9,418        1.03        8.33
+          5 |      9,543        1.04        9.37
+          6 |      9,351        1.02       10.39
+          7 |      8,249        0.90       11.29
+          8 |      8,393        0.92       12.21
+          9 |      8,473        0.92       13.13
+         10 |      8,493        0.93       14.06
+         11 |      8,349        0.91       14.97
+         12 |      9,088        0.99       15.96
+         13 |      9,188        1.00       16.97
+         14 |      9,205        1.00       17.97
+         15 |      8,917        0.97       18.94
+         16 |      9,597        1.05       19.99
+         17 |      9,752        1.06       21.05
+         18 |      9,476        1.03       22.09
+         19 |      9,186        1.00       23.09
+         20 |     17,660        1.93       25.02
+         21 |     17,934        1.96       26.97
+         22 |     17,551        1.92       28.89
+         23 |     17,749        1.94       30.83
+         24 |     13,660        1.49       32.32
+         25 |     13,263        1.45       33.76
+       1000 |    356,930       38.95       72.71
+          . |    250,099       27.29      100.00
 ------------+-----------------------------------
       Total |    916,462      100.00
-(267,839 missing values generated)
-(35,150 real changes made)
-(351,418 real changes made)
-(262,055 real changes made)
-(35,150 real changes made)
+(250,099 missing values generated)
+(36,804 real changes made)
+(356,076 real changes made)
+(273,483 real changes made)
+(36,804 real changes made)
 
 rel_t_anio_ |
         sem |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     35,150        3.84        3.84
-          1 |     14,096        1.54        5.37
-          2 |     16,110        1.76        7.13
-          3 |     17,046        1.86        8.99
-          4 |     15,745        1.72       10.71
-          5 |     16,059        1.75       12.46
-          6 |     16,165        1.76       14.23
-          7 |     17,577        1.92       16.14
-          8 |     17,144        1.87       18.01
-          9 |     18,561        2.03       20.04
-         10 |     17,846        1.95       21.99
-         11 |     34,824        3.80       25.79
-         12 |     34,723        3.79       29.58
-         13 |     26,159        2.85       32.43
-       1000 |    351,418       38.35       70.77
-          . |    267,839       29.23      100.00
+          0 |     36,804        4.02        4.02
+          1 |     14,276        1.56        5.57
+          2 |     18,017        1.97        7.54
+          3 |     18,954        2.07        9.61
+          4 |     16,577        1.81       11.42
+          5 |     16,826        1.84       13.25
+          6 |     16,908        1.84       15.10
+          7 |     18,398        2.01       17.10
+          8 |     17,943        1.96       19.06
+          9 |     19,202        2.10       21.16
+         10 |     18,547        2.02       23.18
+         11 |     35,513        3.88       27.06
+         12 |     35,450        3.87       30.92
+         13 |     26,872        2.93       33.86
+       1000 |    356,076       38.85       72.71
+          . |    250,099       27.29      100.00
 ------------+-----------------------------------
       Total |    916,462      100.00
-(267,839 missing values generated)
-(19,368 real changes made)
-(273,834 real changes made)
-(355,421 real changes made)
-(19,368 real changes made)
+(250,099 missing values generated)
+(20,494 real changes made)
+(277,533 real changes made)
+(368,336 real changes made)
+(20,494 real changes made)
 
  rel_t_anio |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     19,368        2.11        2.11
-          1 |     15,487        1.69        3.80
-          2 |     28,161        3.07        6.88
-          3 |     33,695        3.68       10.55
-          4 |     32,083        3.50       14.05
-          5 |     35,051        3.82       17.88
-          6 |     36,725        4.01       21.89
-          7 |     69,523        7.59       29.47
-          8 |     51,796        5.65       35.12
-          9 |     52,900        5.77       40.90
-       1000 |    273,834       29.88       70.77
-          . |    267,839       29.23      100.00
+          0 |     20,494        2.24        2.24
+          1 |     15,832        1.73        3.96
+          2 |     28,524        3.11        7.08
+          3 |     37,510        4.09       11.17
+          4 |     33,682        3.68       14.84
+          5 |     36,615        4.00       18.84
+          6 |     38,165        4.16       23.00
+          7 |     70,913        7.74       30.74
+          8 |     53,236        5.81       36.55
+          9 |     53,859        5.88       42.43
+       1000 |    277,533       30.28       72.71
+          . |    250,099       27.29      100.00
 ------------+-----------------------------------
       Total |    916,462      100.00
 (data now sorted by anio numero pers)
+  variable montevideo was float now byte
+  variable treated was float now byte
+  variable control was float now byte
+  variable treated_or_control was float now byte
   variable rel_t_anio_qtr was float now int
+  variable post_anio_qtr was float now byte
   variable rel_t_anio_sem was float now int
+  variable post_anio_sem was float now byte
   variable rel_t_anio was float now int
-  (5,498,772 bytes saved)
+  variable post_anio was float now byte
+  (24,744,474 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/main_ECH_panel.dta
+File: ../temp/ECH_panel.dta
 Key: anio numero pers
 ===============================================================================
 > ===================
-  916462:45(76287):4200239707:2745294522
+  916462:52(103343):3871682839:656659453
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -1252,18 +1266,603 @@ work_part_~e |    648,383    .2529662    .4347121          0          1
      pesosem |    911,468    52.98671    26.11367          3       1345
 -------------+---------------------------------------------------------
      pesotri |    911,468    106.0525    50.70616          1       1527
-IS_impl_date |    648,623    16663.75    765.7674      16162      18414
-rel_t_anio~r |    648,623    548.3761    491.8763          0       1000
-rel_t_anio~m |    648,623    545.0026    494.7674          0       1000
-  rel_t_anio |    648,623    425.3749     491.178          0       1000
+IS_impl_date |    666,363    16692.53    775.2962      16162      18414
+  montevideo |    916,462    .4455384    .4970254          0          1
+     treated |    916,462    .2050614    .4037467          0          1
+     control |    916,462     .076504    .2658029          0          1
+-------------+---------------------------------------------------------
+treated_or~l |    916,462    .2815654    .4497628          0          1
+rel_t_anio~r |    666,363    541.5021    492.4656          0       1000
+post_anio_~r |    916,462    .5674736    .4954267          0          1
+rel_t_anio~m |    666,363    537.5915    495.3631          0       1000
+post_anio_~m |    916,462    .5761297    .4941705          0          1
+-------------+---------------------------------------------------------
+  rel_t_anio |    666,363    419.6995     490.269          0       1000
+   post_anio |    916,462    .5786612    .4937739          0          1
+
+
+
+
+(note: file ../temp/ECH_panel.dta not found)
+file ../temp/ECH_panel.dta saved
+
+. 
+end of do-file
+
+
+Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./create_panels.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+110-user Stata network perpetual license:
+       Serial number:  401406206058
+         Licensed to:  CIS Department
+                       Brown University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./create_panels.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
+  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
+. 
+. program main
+  1.     create_main_panels
+  2.     create_placebo_men_panels
+  3.     create_placebo_infertile_panels
+  4. end    
+
+. 
+. program create_main_panels
+  1.     use ../temp/ECH_panel.dta, clear
+  2.     keep if inrange(edad, 16, 45)
+  3.     keep if hombre == 0
+  4. 
+.     preserve
+  5.     keep if treated_or_control == 1
+  6.     drop treated_or_control control montevideo
+  7.     save_data ../output/main_ECH_panel.dta, key(anio pers numero) replace
+  8.     restore
+  9. 
+.     keep if montevideo == 1
+ 10.     drop treated_or_control treated control montevideo
+ 11.     save_data ../output/main_ECH_panel_mvd.dta, key(anio pers numero) repl
+> ace
+ 12. end
+
+. 
+. program create_placebo_men_panels
+  1.     use ../temp/ECH_panel.dta, clear
+  2.     keep if inrange(edad, 16, 45)
+  3.     keep if hombre == 1
+  4. 
+.     preserve
+  5.     keep if treated_or_control == 1
+  6.     drop treated_or_control control montevideo
+  7.     save_data ../output/placebo_men_ECH_panel.dta, key(anio pers numero) r
+> eplace
+  8.     restore
+  9. 
+.     keep if montevideo == 1
+ 10.     drop treated_or_control treated control montevideo
+ 11.     save_data ../output/placebo_men_ECH_panel_mvd.dta, key(anio pers numer
+> o) replace    
+ 12. end
+
+. 
+. program create_placebo_infertile_panels
+  1.     use ../temp/ECH_panel.dta, clear
+  2.     keep if inrange(edad, 45, 60)
+  3.     keep if hombre == 0
+  4. 
+.     preserve
+  5.     keep if treated_or_control == 1
+  6.     drop treated_or_control control montevideo
+  7.     save_data ../output/placebo_infertile_ECH_panel.dta, key(anio pers num
+> ero) replace
+  8.     restore 
+  9. 
+.     keep if montevideo == 1
+ 10.     drop treated_or_control treated control montevideo
+ 11.     save_data ../output/placebo_infertile_ECH_panel_mvd.dta, key(anio pers
+>  numero) replace    
+ 12. end
+
+. 
+. * EXECUTE
+. main
+(277,240 observations deleted)
+(306,071 observations deleted)
+(239,509 observations deleted)
+(data now sorted by anio pers numero)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/main_ECH_panel.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  93642:49(91942):2863706582:3943355775
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |     93,642    2009.198    3.818386       2001       2015
+        pers |     93,642    2.289186    1.027691          1         18
+      numero |     93,642    8.07e+08    9.87e+08         18   2.02e+09
+    anio_sem |     93,642    98.89279    7.653482         82        111
+    anio_qtr |     93,642    198.2875    15.31647        164        223
+-------------+---------------------------------------------------------
+    semestre |     93,642    1.496647    .4999914          1          2
+   trimestre |     93,642    2.495184    1.114681          1          4
+         mes |     93,642    6.479208    3.436611          1         12
+        dpto |     93,642    6.108637    4.651848          2         16
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |     93,642           0           0          0          0
+      hombre |     93,642           0           0          0          0
+        edad |     93,642    30.15839    8.915836         16         45
+      blanco |     79,743    .9524347     .212846          0          1
+        poor |     93,642    .4895346    .4998931          0          1
+-------------+---------------------------------------------------------
+public_hea~h |     93,642    .4578074    .4982193          0          1
+     married |     93,642    .5676299    .4954077          0          1
+     y_hogar |     93,642    21370.35     23753.5          0    1279333
+  nbr_people |     93,642    4.160911    1.719776          1         20
+ nbr_under14 |     93,642    1.183401    1.210831          0         12
+-------------+---------------------------------------------------------
+ piped_water |     93,642    .9563444    .2043288          0          1
+      toilet |     93,642    .9021379    .2971296          0          1
+      sewage |     93,642    .3686807    .4824497          0          1
+       stove |     93,642    .9298178    .2554552          0          1
+   hot_water |     93,642    .8543923    .3527144          0          1
+-------------+---------------------------------------------------------
+  refrigerat |     93,642    .8125734    .3902557          0          1
+          tv |     93,642    .9598257    .1963688          0          1
+         car |     93,642    .3486043     .476531          0          1
+    computer |     93,642    .5604323    .4963372          0          1
+    internet |     93,642    .3414814    .4742091          0          1
+-------------+---------------------------------------------------------
+     trabajo |     93,642    .5623652     .496098          0          1
+  estudiante |     93,642    .1175221    .3220431          0          1
+horas_trab~o |     93,630    20.49685    22.02471          0        100
+work_part_~e |     52,649    .3915934    .4881112          0          1
+       young |     93,642    .5067278    .4999574          0          1
+-------------+---------------------------------------------------------
+       adult |     93,642    .4932722    .4999574          0          1
+     fertile |     93,642           1           0          1          1
+   infertile |     93,642           0           0          0          0
+      pesoan |     93,642    26.93697    14.27611          1       1323
+     pesosem |     92,829     53.8383    27.54995          3       1345
+-------------+---------------------------------------------------------
+     pesotri |     92,829    107.4677    52.52966          1       1527
+IS_impl_date |     93,642    17534.59    635.4904      16892      18414
+     treated |     93,642     .727163    .4454201          0          1
+rel_t_anio~r |     93,642    404.4298    484.6233          0       1000
+post_anio_~r |     93,642    .6511394    .4766123          0          1
+-------------+---------------------------------------------------------
+rel_t_anio~m |     93,642    398.2564    486.0978          0       1000
+post_anio_~m |     93,642    .6650007    .4719927          0          1
+  rel_t_anio |     93,642     283.502    446.9336          0       1000
+   post_anio |     93,642    .6738109    .4688199          0          1
 
 
 
 
 (note: file ../output/main_ECH_panel.dta not found)
 file ../output/main_ECH_panel.dta saved
+(183,908 observations deleted)
+(data now sorted by anio pers numero)
+  variable pesoan was int now byte
+  (149,243 bytes saved)
+===============================================================================
+> ===================
+File: ../output/main_ECH_panel_mvd.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  149243:48(17967):1090560556:1524431914
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |    149,243    2008.513    3.973388       2001       2015
+        pers |    149,243    2.259315    1.073426          1         17
+      numero |    149,243    6.90e+08    9.55e+08          1   2.02e+09
+    anio_sem |    149,243     97.5233    7.961563         82        111
+    anio_qtr |    149,243    195.5463    15.92937        164        223
+-------------+---------------------------------------------------------
+    semestre |    149,243    1.497953    .4999975          1          2
+   trimestre |    149,243    2.495608    1.116413          1          4
+         mes |    149,243    6.484827    3.441504          1         12
+        dpto |    149,243           1           0          1          1
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |    149,243    8.987899    4.866956          1         18
+      hombre |    149,243           0           0          0          0
+        edad |    149,243    30.15481    8.616016         16         45
+      blanco |    117,167    .9468536    .2243262          0          1
+        poor |    149,243    .5159773    .4997463          0          1
+-------------+---------------------------------------------------------
+public_hea~h |    149,243    .2162312    .4116752          0          1
+     married |    149,243    .5060204    .4999654          0          1
+     y_hogar |    149,243    30636.55    35833.37          0    2077094
+  nbr_people |    149,243    3.843303    1.707908          1         25
+ nbr_under14 |    149,243    .9389988    1.140411          0         13
+-------------+---------------------------------------------------------
+ piped_water |    149,243    .9844013    .1239173          0          1
+      toilet |    149,243    .9477831    .2224648          0          1
+      sewage |    149,243    .7949519    .4037382          0          1
+       stove |    149,243    .9709735    .1678813          0          1
+   hot_water |    149,243    .9182541    .2739781          0          1
+-------------+---------------------------------------------------------
+  refrigerat |    149,243    .8284543    .3769864          0          1
+          tv |    149,243     .973446    .1607765          0          1
+         car |    149,243    .3559095    .4787896          0          1
+    computer |    149,243    .6280898    .4833162          0          1
+    internet |    149,243    .4734828     .499298          0          1
+-------------+---------------------------------------------------------
+     trabajo |    149,243    .6433267    .4790188          0          1
+  estudiante |    149,243    .1091173    .3117874          0          1
+horas_trab~o |    149,240      24.087    21.52525          0        100
+work_part_~e |     96,009     .332823    .4712262          0          1
+       young |    149,243    .5216258    .4995338          0          1
+-------------+---------------------------------------------------------
+       adult |    149,243    .4783742    .4995338          0          1
+     fertile |    149,243           1           0          1          1
+   infertile |    149,243           0           0          0          0
+      pesoan |    149,243    27.39601    10.43878          1        100
+     pesosem |    149,243    54.24884    19.74329          5        232
+-------------+---------------------------------------------------------
+     pesotri |    149,243    109.1504    38.76361          1        600
+IS_impl_date |    149,243       16162           0      16162      16162
+rel_t_anio~r |    149,243    622.0834    479.0066          0       1000
+post_anio_~r |    149,243    .8586868    .3483455          0          1
+rel_t_anio~m |    149,243    619.4912    482.2737          1       1000
+-------------+---------------------------------------------------------
+post_anio_~m |    149,243    .8690927    .3373001          0          1
+  rel_t_anio |    149,243    499.0718    496.8973          2       1000
+   post_anio |    149,243    .8690927    .3373001          0          1
+
+
+
+
+(note: file ../output/main_ECH_panel_mvd.dta not found)
+file ../output/main_ECH_panel_mvd.dta saved
+(277,240 observations deleted)
+(333,151 observations deleted)
+(219,657 observations deleted)
+(data now sorted by anio pers numero)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/placebo_men_ECH_panel.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  86414:49(91942):1031802577:2999548809
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |     86,414    2009.158    3.822053       2001       2015
+        pers |     86,414    2.138785    1.260437          1         17
+      numero |     86,414    8.00e+08    9.85e+08         28   2.02e+09
+    anio_sem |     86,414    98.81535    7.660984         82        111
+    anio_qtr |     86,414    198.1323    15.32892        164        223
+-------------+---------------------------------------------------------
+    semestre |     86,414    1.499942    .5000029          1          2
+   trimestre |     86,414    2.501481    1.112727          1          4
+         mes |     86,414    6.503379    3.430473          1         12
+        dpto |     86,414    6.115236    4.662282          2         16
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |     86,414           0           0          0          0
+      hombre |     86,414           1           0          1          1
+        edad |     86,414    29.62019    9.019342         16         45
+      blanco |     73,312    .9533364    .2109187          0          1
+        poor |     86,414    .4247344    .4943055          0          1
+-------------+---------------------------------------------------------
+public_hea~h |     86,414    .3561807    .4788723          0          1
+     married |     86,414     .511144    .4998787          0          1
+     y_hogar |     86,414    24285.84    25375.46          0   842012.7
+  nbr_people |     86,414     4.05108    1.765336          1         20
+ nbr_under14 |     86,414    .9917722    1.176108          0         11
+-------------+---------------------------------------------------------
+ piped_water |     86,414    .9508182    .2162488          0          1
+      toilet |     86,414    .8969033    .3040869          0          1
+      sewage |     86,414    .3603004    .4800903          0          1
+       stove |     86,414    .9240169    .2649725          0          1
+   hot_water |     86,414     .845731    .3612085          0          1
+-------------+---------------------------------------------------------
+  refrigerat |     86,414    .8093827    .3927902          0          1
+          tv |     86,414     .953445    .2106849          0          1
+         car |     86,414    .3586687    .4796125          0          1
+    computer |     86,414    .5227278    .4994861          0          1
+    internet |     86,414    .3293332    .4699738          0          1
+-------------+---------------------------------------------------------
+     trabajo |     86,414     .789224     .407862          0          1
+  estudiante |     86,414    .0883885    .2838607          0          1
+horas_trab~o |     86,392    36.09337    23.11866          0        100
+work_part_~e |     68,178    .1608877      .36743          0          1
+       young |     86,414    .5329576    .4989155          0          1
+-------------+---------------------------------------------------------
+       adult |     86,414    .4670424    .4989155          0          1
+     fertile |     86,414           1           0          1          1
+   infertile |     86,414           0           0          0          0
+      pesoan |     86,414    27.43099    14.40882          1       1323
+     pesosem |     85,622    54.94473    27.89326          3       1345
+-------------+---------------------------------------------------------
+     pesotri |     85,622    109.6627    53.45075          1       1527
+IS_impl_date |     86,414     17524.9    631.8934      16892      18414
+     treated |     86,414    .7308191    .4435367          0          1
+rel_t_anio~r |     86,414    403.2555    484.3844          0       1000
+post_anio_~r |     86,414    .6499178    .4769982          0          1
+-------------+---------------------------------------------------------
+rel_t_anio~m |     86,414    397.2274    485.8816          0       1000
+post_anio_~m |     86,414    .6635152    .4725097          0          1
+  rel_t_anio |     86,414    281.6075    446.0016          0       1000
+   post_anio |     86,414    .6727266    .4692207          0          1
+
+
+
+
+(note: file ../output/placebo_men_ECH_panel.dta not found)
+file ../output/placebo_men_ECH_panel.dta saved
+(169,905 observations deleted)
+(data now sorted by anio pers numero)
+  variable pesoan was int now byte
+  (136,166 bytes saved)
+===============================================================================
+> ===================
+File: ../output/placebo_men_ECH_panel_mvd.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  136166:48(17967):4089724891:2958719718
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |    136,166    2008.535    3.975187       2001       2015
+        pers |    136,166    2.154767    1.241814          1         15
+      numero |    136,166    6.97e+08    9.58e+08          1   2.02e+09
+    anio_sem |    136,166    97.56917    7.967571         82        111
+    anio_qtr |    136,166    195.6376     15.9409        164        223
+-------------+---------------------------------------------------------
+    semestre |    136,166    1.499053    .5000009          1          2
+   trimestre |    136,166    2.497341    1.117588          1          4
+         mes |    136,166     6.48869    3.445086          1         12
+        dpto |    136,166           1           0          1          1
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |    136,166    9.075026    4.860818          1         18
+      hombre |    136,166           1           0          1          1
+        edad |    136,166    29.61919    8.638715         16         45
+      blanco |    107,003    .9460576    .2259051          0          1
+        poor |    136,166    .4831456    .4997177          0          1
+-------------+---------------------------------------------------------
+public_hea~h |    136,166    .1774892    .3820836          0          1
+     married |    136,166    .4738701    .4993186          0          1
+     y_hogar |    136,166    32918.33    38513.11          0    1342471
+  nbr_people |    136,166    3.777118    1.717514          1         25
+ nbr_under14 |    136,166    .7828459    1.085931          0         13
+-------------+---------------------------------------------------------
+ piped_water |    136,166    .9833218     .128063          0          1
+      toilet |    136,166    .9471087    .2238173          0          1
+      sewage |    136,166    .7881189    .4086425          0          1
+       stove |    136,166    .9688322    .1737718          0          1
+   hot_water |    136,166    .9160216    .2773564          0          1
+-------------+---------------------------------------------------------
+  refrigerat |    136,166    .8305744    .3751287          0          1
+          tv |    136,166    .9698456    .1710126          0          1
+         car |    136,166    .3773923    .4847361          0          1
+    computer |    136,166    .6123922     .487206          0          1
+    internet |    136,166    .4727392    .4992581          0          1
+-------------+---------------------------------------------------------
+     trabajo |    136,166    .7758178    .4170442          0          1
+  estudiante |    136,166    .0967496    .2956175          0          1
+horas_trab~o |    136,155     34.4938    23.03105          0        100
+work_part_~e |    105,629    .1791269    .3834604          0          1
+       young |    136,166    .5465461    .4978306          0          1
+-------------+---------------------------------------------------------
+       adult |    136,166    .4534539    .4978306          0          1
+     fertile |    136,166           1           0          1          1
+   infertile |    136,166           0           0          0          0
+      pesoan |    136,166    28.04265    10.60099          1        100
+     pesosem |    136,166    55.74882    20.20414          5        192
+-------------+---------------------------------------------------------
+     pesotri |    136,166    112.1163     39.6896          1        600
+IS_impl_date |    136,166       16162           0      16162      16162
+rel_t_anio~r |    136,166    622.7931    478.8255          0       1000
+post_anio_~r |    136,166     .859238    .3477772          0          1
+rel_t_anio~m |    136,166    620.2004    482.0982          1       1000
+-------------+---------------------------------------------------------
+post_anio_~m |    136,166    .8701438    .3361464          0          1
+  rel_t_anio |    136,166    502.6122    496.9174          2       1000
+   post_anio |    136,166    .8701438    .3361464          0          1
+
+
+
+
+(note: file ../output/placebo_men_ECH_panel_mvd.dta not found)
+file ../output/placebo_men_ECH_panel_mvd.dta saved
+(619,189 observations deleted)
+(136,698 observations deleted)
+(116,274 observations deleted)
+(data now sorted by anio pers numero)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/placebo_infertile_ECH_panel.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  44301:49(91942):2926202327:1413323854
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |     44,301    2009.326    3.784572       2001       2015
+        pers |     44,301    1.701722    .5738185          1         10
+      numero |     44,301    8.38e+08    9.92e+08         11   2.02e+09
+    anio_sem |     44,301    99.15027    7.588206         82        111
+    anio_qtr |     44,301    198.8013    15.18558        164        223
+-------------+---------------------------------------------------------
+    semestre |     44,301    1.498228    .5000025          1          2
+   trimestre |     44,301    2.497257    1.115911          1          4
+         mes |     44,301    6.492878    3.439628          1         12
+        dpto |     44,301    6.122142    4.644126          2         16
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |     44,301           0           0          0          0
+      hombre |     44,301           0           0          0          0
+        edad |     44,301    52.21408    4.585303         45         60
+      blanco |     38,097    .9528047    .2120592          0          1
+        poor |     44,301    .3790659      .48516          0          1
+-------------+---------------------------------------------------------
+public_hea~h |     44,301    .3956344     .488992          0          1
+     married |     44,301    .7197354    .4491335          0          1
+     y_hogar |     44,301    23784.24    25565.91          0   646520.7
+  nbr_people |     44,301     3.28672    1.580682          1         20
+ nbr_under14 |     44,301    .4154985    .8126944          0         11
+-------------+---------------------------------------------------------
+ piped_water |     44,301    .9718742     .165334          0          1
+      toilet |     44,301    .9335455    .2490777          0          1
+      sewage |     44,301    .4049344    .4908849          0          1
+       stove |     44,301    .9498883     .218178          0          1
+   hot_water |     44,301    .8904991    .3122702          0          1
+-------------+---------------------------------------------------------
+  refrigerat |     44,301    .8332543    .3727529          0          1
+          tv |     44,301    .9637029    .1870306          0          1
+         car |     44,301    .3826324    .4860352          0          1
+    computer |     44,301    .4804632    .4996238          0          1
+    internet |     44,301    .3428139    .4746553          0          1
+-------------+---------------------------------------------------------
+     trabajo |     44,301    .6258324    .4839127          0          1
+  estudiante |     44,301    .0009706    .0311402          0          1
+horas_trab~o |     44,298    23.52054    23.03381          0        100
+work_part_~e |     27,722    .3764158     .484495          0          1
+       young |     44,301           0           0          0          0
+-------------+---------------------------------------------------------
+       adult |     44,301    .0680346    .2518081          0          1
+     fertile |     44,301    .0680346    .2518081          0          1
+   infertile |     44,301    .9319654    .2518081          0          1
+      pesoan |     44,301    25.79565    14.13279          1       1323
+     pesosem |     43,821    51.60257    26.70252          3       1323
+-------------+---------------------------------------------------------
+     pesotri |     43,821    103.0369    51.61761          2       1526
+IS_impl_date |     44,301    17537.75    634.8931      16892      18414
+     treated |     44,301     .726891    .4455614          0          1
+rel_t_anio~r |     44,301    417.4824    487.0421          0       1000
+post_anio_~r |     44,301    .6633936    .4725543          0          1
+-------------+---------------------------------------------------------
+rel_t_anio~m |     44,301    411.6901    488.7414          0       1000
+post_anio_~m |     44,301    .6777048    .4673606          0          1
+  rel_t_anio |     44,301    293.1352    451.4658          0       1000
+   post_anio |     44,301    .6868468    .4637813          0          1
+
+
+
+
+(note: file ../output/placebo_infertile_ECH_panel.dta not found)
+file ../output/placebo_infertile_ECH_panel.dta saved
+(87,858 observations deleted)
+(data now sorted by anio pers numero)
+  variable pesoan was int now byte
+  (72,717 bytes saved)
+===============================================================================
+> ===================
+File: ../output/placebo_infertile_ECH_panel_mvd.dta
+Key: anio pers numero
+===============================================================================
+> ===================
+  72717:48(17967):2547819743:2379488479
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |     72,717    2008.575    3.982925       2001       2015
+        pers |     72,717    1.659406    .6331195          1         11
+      numero |     72,717    7.06e+08    9.61e+08          1   2.02e+09
+    anio_sem |     72,717    97.64972    7.980447         82        111
+    anio_qtr |     72,717    195.7981    15.97022        164        223
+-------------+---------------------------------------------------------
+    semestre |     72,717    1.499319     .500003          1          2
+   trimestre |     72,717    2.497243    1.116099          1          4
+         mes |     72,717    6.494492     3.44333          1         12
+        dpto |     72,717           1           0          1          1
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |     72,717     8.85097    4.786908          1         18
+      hombre |     72,717           0           0          0          0
+        edad |     72,717    52.28655    4.570514         45         60
+      blanco |     57,083    .9531209    .2113817          0          1
+        poor |     72,717    .4158587    .4928728          0          1
+-------------+---------------------------------------------------------
+public_hea~h |     72,717    .1868751    .3898139          0          1
+     married |     72,717    .6636825    .4724522          0          1
+     y_hogar |     72,717    36171.73    42334.36          0    1342471
+  nbr_people |     72,717    3.237166    1.520818          1         25
+ nbr_under14 |     72,717    .3323294    .7273065          0         13
+-------------+---------------------------------------------------------
+ piped_water |     72,717    .9901124    .0989445          0          1
+      toilet |     72,717    .9673116    .1778209          0          1
+      sewage |     72,717    .8348392    .3713282          0          1
+       stove |     72,717    .9816687    .1341475          0          1
+   hot_water |     72,717    .9404816     .236594          0          1
+-------------+---------------------------------------------------------
+  refrigerat |     72,717    .8402987    .3663313          0          1
+          tv |     72,717    .9777494    .1474986          0          1
+         car |     72,717    .4025194    .4904088          0          1
+    computer |     72,717    .5914298    .4915729          0          1
+    internet |     72,717    .4854436    .4997915          0          1
+-------------+---------------------------------------------------------
+     trabajo |     72,717    .7001526    .4581941          0          1
+  estudiante |     72,717    .0011002    .0331506          0          1
+horas_trab~o |     72,713    26.48873      21.987          0        100
+work_part_~e |     50,909    .3355595    .4721903          0          1
+       young |     72,717           0           0          0          0
+-------------+---------------------------------------------------------
+       adult |     72,717    .0658581    .2480355          0          1
+     fertile |     72,717    .0658581    .2480355          0          1
+   infertile |     72,717    .9341419    .2480355          0          1
+      pesoan |     72,717    26.58972    10.15454          1        100
+     pesosem |     72,717    52.81652    19.14258          5        232
+-------------+---------------------------------------------------------
+     pesotri |     72,717    106.2441    37.47111          1        465
+IS_impl_date |     72,717       16162           0      16162      16162
+rel_t_anio~r |     72,717    628.8812    477.3575          0       1000
+post_anio_~r |     72,717    .8595789    .3474258          0          1
+rel_t_anio~m |     72,717    626.3497    480.5956          1       1000
+-------------+---------------------------------------------------------
+post_anio_~m |     72,717    .8700441    .3362572          0          1
+  rel_t_anio |     72,717    505.8326     496.906          2       1000
+   post_anio |     72,717    .8700441    .3362572          0          1
+
+
+
+
+(note: file ../output/placebo_infertile_ECH_panel_mvd.dta not found)
+file ../output/placebo_infertile_ECH_panel_mvd.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2019-09-09 19:08:50
+ make.py ended: 2019-09-12 18:13:21

@@ -9,10 +9,10 @@ program main
 
     gen birth_id = _n
     drop if missing(dpto)
-    keep birth_id anio anio_sem dpto dpto_residence ///
-        married not_married partner no_partner single ///
+    keep birth_id anio anio_sem anio_qtr dpto dpto_residence tipoestab ///
+        edadm young adult age_group married not_married partner no_partner single ///
         prim_school high_school recomm_prenatal_numvisits ///
-        recomm_prenatal_1stvisit  no_prenatal_care first_pregnancy kids_before ///
+        recomm_prenatal_1stvisit no_prenatal_care first_pregnancy kids_before ///
         lowbirthweight apgar1_low apgar2_low preg_preterm 
     save_data ../output/vital_birth_records.dta, key(birth_id) replace
 end
@@ -33,7 +33,6 @@ program append_years
     }
 
     keep if inrange(anio_parto,1999,2015) //note some births in 2015 are recorded in 2016
-    assert !mi(edadm)
     
     save "../temp/births_append.dta", replace
 end
@@ -91,6 +90,15 @@ program gen_vars
     gen apgar1_low                = (apgar1<7)  if !mi(apgar1) & inrange(apgar1,1,10)
     gen apgar2_low                = (apgar2<7)  if !mi(apgar2) & inrange(apgar2,1,10)
     gen preg_preterm              = (semgest<37) if !mi(semgest) & semgest!=99
+
+    * age vars
+    gen young         = inrange(edadm,16,30)
+    gen adult         = inrange(edadm,31,45)
+    egen age_group    = cut(edadm) , at(16(5)45)
+    replace age_group = age_group+2
+
+    lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
+    lab val young                 young    
 end
 
 program label_vars

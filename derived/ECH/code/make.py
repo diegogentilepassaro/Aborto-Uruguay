@@ -36,6 +36,7 @@ start_make_logging()
 run_stata(program = 'homogeneize_geo_vars.do')
 run_stata(program = 'gen_analysis_vars.do')
 run_stata(program = 'assign_treatment.do')
+run_stata(program = 'create_panels.do')
 
 end_make_logging()
 
