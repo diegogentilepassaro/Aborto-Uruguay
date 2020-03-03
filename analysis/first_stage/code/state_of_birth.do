@@ -1,28 +1,35 @@
 clear all
 set more off
-adopath + ../../../library/stata/gslab_misc/ado
+adopath + ..\..\..\library\stata\gslab_misc\ado
 
-	use "..\..\..\assign_treatment\output\births.dta", clear
-	drop if inlist(depar,20,99) // drop Extranjero, No indicado
+program main
+	use "..\..\..\derived\Vitals\output\births.dta", clear
 
-	collapse (count) births = edad, by(anio codep depar)
-	egen births_tot = total(births), by(anio depar)
+	gen_and_label
+	build_plots
+end
+
+program gen_and_label
+    collapse (count) births = edadm, by(anio dpto dpto_residence)
+	egen births_tot = total(births), by(anio dpto_residence)
 	gen births_sh = births/births_tot
 	
-	gen tag_same = depar==codep
-	gen tag_mvd  = codep==10
+	gen tag_same = dpto_residence==dpto
+	gen tag_mvd  = dpto==1
 	gen births_sh_same = births/births_tot if tag_same
 	gen births_sh_mvd  = births/births_tot if tag_mvd
 
-	collapse (max) births_sh_same births_sh_mvd, by(anio depar)
-	xtset depar anio
+	collapse (max) births_sh_same births_sh_mvd, by(anio dpto_residence)
+	xtset dpto_residence anio
 	label var anio "Birth year"
 	label var births_sh_same "Share of births in same state"
 	label var births_sh_mvd  "Share of births in Montevideo"
-	label var    depar "Mother's residential state"
+	label var dpto_residence "Mother's residential state"
+end 
 
+program build_plots
 	foreach x in same mvd {
-		egen min_sh_`x' = min(births_sh_`x'), by(depar)
+		egen min_sh_`x' = min(births_sh_`x'), by(dpto_residence)
 		qui sum min_sh_`x', det
 		gen tag_`x' = (min_sh_`x'> r(p50))
 	}
@@ -50,4 +57,7 @@ adopath + ../../../library/stata/gslab_misc/ado
 	graph export "..\output\births_sh_1group.pdf", replace
 
 	graph drop same_0 same_1 mvd_0 mvd_1 same mvd
+end
 
+* EXECUTE
+main

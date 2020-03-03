@@ -102,9 +102,9 @@ program plot_ratio,
     syntax, var_ratio(string) start_yr(int) end_yr(int) tline(string)
 
     twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & geo_unit == "Brasil", ///
-	    yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(red) lc(red) lp(dash)) ///
+	    yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(navy) lc(navy) lp(dash)) ///
         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & geo_unit == "Uruguay", ///
-		yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(blue) lc(blue) lp(solid)), ///
+		yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(maroon) lc(maroon) lp(solid)), ///
 		tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
         xline(`tline', lcolor(black) lpattern(dot)) ///
 		text(0.0325 2003.5 "IS start") ///

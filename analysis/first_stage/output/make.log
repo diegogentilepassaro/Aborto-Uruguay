@@ -1,5 +1,5 @@
 
- make.py started: 2019-08-27 18:12:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-03-03 10:21:16 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -146,12 +146,12 @@ Notes:
   2. 
 .     twoway (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') &
 >  geo_unit == "Brasil", ///
->             yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(red) lc(red) lp(das
-> h)) ///
+>             yaxis(1) ylabel(0.012(0.01)0.032, axis(1)) mc(navy) lc(navy) lp(d
+> ash)) ///
 >         (connected `var_ratio' year if inrange(year,`start_yr',`end_yr') & ge
 > o_unit == "Uruguay", ///
->                 yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(blue) lc(blue) 
-> lp(solid)), ///
+>                 yaxis(2) ylabel(0.002(0.01)0.022, axis(2)) mc(maroon) lc(maro
+> on) lp(solid)), ///
 >                 tlab(`start_yr'(4)`end_yr') xtitle("Year") ///
 >         xline(`tline', lcolor(black) lpattern(dot)) ///
 >                 text(0.0325 2003.5 "IS start") ///
@@ -383,253 +383,129 @@ Notes:
 
 . 
 . program main    
-  1.         *global y_date_rivera = 2010
-.         do ../../globals.do
-  2.         
-.         foreach var in not_married first_pregnancy age_young high_school reco
-> mm_prenatal_numvisits {
-  3.                 plot_births_case_studies, treatment(rivera) by_vars(`var')
->  time(anio_sem)
-  4.                 plot_births_case_studies, treatment(rivera) by_vars(`var')
->  time(anio)
-  5.         }
-  6. 
-.         foreach time in anio anio_sem {
-  7.                 grc1leg g_`time'_not_marri_0 g_`time'_not_marri_1 g_`time'
-> _first_pre_0 ///
->                                 g_`time'_first_pre_1 g_`time'_age_young_0 g_`
-> time'_age_young_1 ///
->                         , cols(2) legendfrom(g_`time'_not_marri_0) position(6
-> ) ///
->                           graphregion(color(white)) name(g_`time')
-  8.                 graph display g_`time', ysiz(18) xsiz(15)
-  9.                 graph export "..\output\births_rivera_`time'.pdf", replace
- 10.         }
- 11. end
+  1.     use "..\..\..\derived\Vitals\output\births_treated_control.dta", clear
+  2.     collapse (count) nbr_births = birth_id, by(rel_t_anio treated)
+  3.         drop if (rel_t_anio == 0 | rel_t_anio == 1000)
+  4.         save ../temp/average_births_rel.dta, replace
+  5.         plot_yearly_average, var(nbr_births) ytitle(Number of births)
+  6.         graph export ../output/births_rel.pdf, replace
+  7.         
+.     use "..\..\..\derived\Vitals\output\births_mvd.dta", clear
+  8.         keep if public_health == 1
+  9.     collapse (count) nbr_births = birth_id, by(rel_t_anio pereira)
+ 10.         drop if (rel_t_anio == 0 | rel_t_anio == 1000)
+ 11.         rename pereira treated
+ 12.         save ../temp/average_births_rel_mvd.dta, replace
+ 13.         plot_yearly_average, var(nbr_births) ytitle(Number of births)   
+ 14.         graph export ../output/births_rel_mvd.pdf, replace
+ 15.                 
+.     use ../temp/average_births_rel.dta, clear
+ 16.         append using ../temp/average_births_rel_mvd.dta
+ 17.         collapse (sum) nbr_births, by(rel_t_anio treated)
+ 18.         plot_yearly_average, var(nbr_births) ytitle(Number of births)
+ 19.         graph export ../output/births_rel_all.pdf, replace      
+ 20. end
 
 . 
-. capture program drop plot_births_case_studies
-
-. program plot_births_case_studies
-  1. syntax, by_vars(string) treatment(string) time(string) 
-  2.         
-.         use "..\..\..\assign_treatment\output\births.dta", clear
-  3. 
-.         if "`time'" == "anio_sem" {
-  4.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
-> e},th(${s_date_`treatment'}) + ${s_post}) "
-  5.         local xtitle "Year-half"
-  6.         local vertical = th(${s_date_`treatment'}) - 0.5   
-  7.         local vertical2= th(${s_date_`treatment'}) + 1.5 
-  8.         local y_label = "0(500)1000"
-  9.     }
- 10.     else {
- 11.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
-> ${y_date_`treatment'} + ${y_post}) "
- 12.         local xtitle "Year"
- 13.         local vertical = ${y_date_`treatment'} - 0.5  
- 14.         local vertical2= ${y_date_`treatment'} + 0.5
- 15.         local y_label = "0(600)1800"
- 16.     }
- 17.         
-.         collapse (count) births=edad , by(`time' treatment_`treatment' `by_va
-> rs')
- 18.         
-.         keep if !mi(treatment)
- 19.         gen Treatment = births if treatment_`treatment'==1
- 20.         gen Control   = births if treatment_`treatment'==0
- 21.         
-.         /*tw (scatter Treatment `time' `range', connect(l) mc(blue) lc(blue))
+. program plot_yearly_average
+  1.     syntax, var(str) ytitle(str)
+  2.     
+.         sum `var' if treated == 0 & rel_t_anio < 5
+  3.         local pre_mean_control = r(mean)
+  4.         gen pre_mean_control = `pre_mean_control'
+  5.         
+.         sum `var' if treated == 0 & rel_t_anio >= 5
+  6.         local post_mean_control = r(mean)
+  7.         gen post_mean_control = `post_mean_control'
+  8.         
+.         sum `var' if treated == 1 & rel_t_anio < 5
+  9.         local pre_mean_treated = r(mean)
+ 10.         gen pre_mean_treated = `pre_mean_treated'
+ 11.         
+.         sum `var' if treated == 1 & rel_t_anio >= 5
+ 12.         local post_mean_treated = r(mean)
+ 13.         gen post_mean_treated = `post_mean_treated'
+ 14.         
+.     twoway (scatter `var' rel_t_anio if treated == 0, lcol(navy)) ///
+>             (line pre_mean_control rel_t_anio if rel_t_anio <= 5, lcol(navy))
 >  ///
->            (scatter Control   `time' `range', connect(l) mc(red)  lc(red)) //
-> /
->            ,  by(`by_vars', title(${legend_`treatment'}))  ///
->            tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) ///
->            xtitle("`xtitle'") xsize(8) ///
->            scheme(s1color) 
-> 
->         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
-> lace*/
-. 
-.         local g_name = substr("`by_vars'",1,9)
- 22.         local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpatter
-> n(dot)) xsize(4) scheme(s1color) "'
- 23.         local opt2 = `"ylabel(`y_label', labs(small)) xlabel(, labs(small)
-> ) xtitle("`xtitle'", si(small)) legend(si(vsmall))"'
- 24.         forvalues v=0/1 {
- 25.                 tw (scatter Treatment `time' `range' & `by_vars'==`v', con
-> nect(l) mc(blue) lc(blue) ) ///
->                    (scatter Control   `time' `range' & `by_vars'==`v', connec
-> t(l) mc(red)  lc(red)) ///
->                         , `opt1' `opt2' title(`: label `by_vars' `v'', si(med
-> ium)) name(g_`time'_`g_name'_`v')
- 26.         }
- 27. end
-
-. 
-. capture program drop diff_in_diff
-
-. program diff_in_diff
-  1. syntax, by_vars(string) treatment(string) time(string)
-  2.         
-.         use "..\..\..\assign_treatment\output\births.dta", clear
-  3. 
-.         local treatment rivera
-  4.         local time anio
-  5.         local by_vars first_pregnancy
-  6. 
-.         if "`time'" == "anio_sem" {
-  7.         local range "if inrange(`time', th(${s_date_`treatment'}) - ${s_pr
-> e},th(${s_date_`treatment'}) + ${s_post}) "
-  8.         local event_date         ${s_date_`treatment'}  
-  9.         gen post = (`time' >= th(${s_date_`treatment'}))   
- 10.     }
- 11.     else {
- 12.         local range "if inrange(`time', ${y_date_`treatment'} - ${y_pre}, 
-> ${y_date_`treatment'} + ${y_post}) "
- 13.         local event_date ${y_date_`treatment'}  
- 14.         gen post = (`time' >=  ${y_date_`treatment'})  
- 15.     }
- 16.         
-.         keep if !mi(treatment_`treatment')
- 17.         
-.         reg edad post##treatment_`treatment'
- 18. 
-.         collapse (count) births=edad , by(anio treatment_`treatment' first_pr
-> egnancy not_married) //`by_vars')
- 19.                 
-.                 gen post = (anio>`event_date')
- 20.                 gen interaction = post * treatment_`treatment'
- 21.                 gen log_births = log(births)
- 22.                 
-.                 reg log_births post##treatment_`treatment'##first_pregnancy##
-> not_married
- 23. end
+>             (line post_mean_control rel_t_anio if rel_t_anio >= 5, lcol(navy)
+> ) ///
+>             (scatter `var' rel_t_anio if treated == 1, col(maroon)) ///
+>             (line pre_mean_treated rel_t_anio if rel_t_anio <= 5, lcol(maroon
+> )) ///
+>             (line post_mean_treated rel_t_anio if rel_t_anio >= 5, lcol(maroo
+> n)), ///
+>                 legend(order(2 "Control" 5 "Treated")) ///
+>                 graphregion(fcolor(white) lcolor(white)) ///
+>                 ytitle(`ytitle') ///
+>                 xtitle("Years relative to IS") ///
+>                 xlabel(1 "-4" 5 "0" 9 "4") xline(5, lcol(grey) lpat(dot))
+ 15. end 
 
 . 
 . main
+(4 observations deleted)
+(note: file ../temp/average_births_rel.dta not found)
+file ../temp/average_births_rel.dta saved
 
-.     * Dates of treatments
-.     global m_date_mvd     "2004m4"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4     3371.25    93.61045       3269       3496
 
-.     global m_date_florida "2008m8"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5        3336    90.44612       3223       3462
 
-.     global m_date_rivera  "2010m6"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4      6444.5    195.4985       6224       6652
 
-.     global m_date_salto   "2013m1"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5      5918.6    140.1385       5723       6119
+(note:  named style grey not found in class color, default attributes used)
+(file ../output/births_rel.pdf written in PDF format)
+(273,525 observations deleted)
+(4 observations deleted)
+(note: file ../temp/average_births_rel_mvd.dta not found)
+file ../temp/average_births_rel_mvd.dta saved
 
-.     
-.     global q_date_mvd     "2004q2"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4     1113.25    127.4529       1012       1285
 
-.     global q_date_florida "2008q3"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5       974.4    530.5924         50       1348
 
-.     global q_date_rivera  "2010q3"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4        8220    310.1548       7899       8567
 
-.     global q_date_salto   "2013q1"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5      7193.2    311.9458       6917       7691
+(note:  named style grey not found in class color, default attributes used)
+(file ../output/births_rel_mvd.pdf written in PDF format)
 
-.     
-.     global s_date_mvd     "2004h1"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4      4484.5    181.9936       4290       4648
 
-.     global s_date_florida "2008h2"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5      4310.4    502.2612       3423       4632
 
-.     global s_date_rivera  "2010h2"
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          4     14664.5     323.495      14371      15125
 
-.     global s_date_salto   "2013h1"
-
-.     
-.     global y_date_mvd     2004 
-
-.     global y_date_florida 2008
-
-.     global y_date_rivera  2010 
-
-.     global y_date_salto   2013 
-
-. 
-.     * Ranges
-.     global m_pre  48
-
-.     global m_post 24
-
-.     global q_pre  16
-
-.     global q_post 12
-
-.     global s_pre  8
-
-.     global s_post 4
-
-.     global y_pre  4
-
-.     global y_post 2
-
-. 
-.     * Ranges SCM (to build synth control)
-.     global q_scm_pre  30
-
-.     global q_scm_post 16
-
-.     global s_scm_pre  20
-
-.     global s_scm_post 8
-
-.     global y_scm_pre  10
-
-.     global y_scm_post 4
-
-. 
-.     *Lag list (related to Ranges SCM)
-.     global q_lag_list " 8 9 10 11 12 13 14 15 16" //`" 1 3 5 7 "'
-
-.     global s_lag_list " 8 9 10 11 12 13 14 15 16 17 18 19 20 " //`" 5 6 7 8 9
->  10 11 12 "'
-
-.     global y_lag_list " 2 3 4 5 6 7 " //`" 3 4 5 6 "'
-
-. 
-.     * Legends
-.     global legend_mvd    = "Montevideo"
-
-.     global legend_rivera = "Rivera"
-
-.     global legend_salto  = "Salto"
-
-.     global legend_florida  = "Florida"
-
-. 
-end of do-file
-(90 observations deleted)
-(90 missing values generated)
-(88 missing values generated)
-(45 observations deleted)
-(45 missing values generated)
-(45 missing values generated)
-(90 observations deleted)
-(80 missing values generated)
-(75 missing values generated)
-(45 observations deleted)
-(44 missing values generated)
-(40 missing values generated)
-(60 observations deleted)
-(60 missing values generated)
-(60 missing values generated)
-(30 observations deleted)
-(30 missing values generated)
-(30 missing values generated)
-(60 observations deleted)
-(60 missing values generated)
-(60 missing values generated)
-(30 observations deleted)
-(30 missing values generated)
-(30 missing values generated)
-(90 observations deleted)
-(86 missing values generated)
-(84 missing values generated)
-(45 observations deleted)
-(44 missing values generated)
-(44 missing values generated)
-(file ..\output\births_rivera_anio.pdf written in PDF format)
-(file ..\output\births_rivera_anio_sem.pdf written in PDF format)
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  nbr_births |          5     13111.8    287.7607      12887      13616
+(note:  named style grey not found in class color, default attributes used)
+(file ../output/births_rel_all.pdf written in PDF format)
 
 . 
 end of do-file
@@ -663,104 +539,91 @@ Notes:
 
 . set more off
 
-. adopath + ../../../library/stata/gslab_misc/ado
+. adopath + ..\..\..\library\stata\gslab_misc\ado
   [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
   [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
   [6]  (OLDPLACE)  "c:\ado/"
-  [7]              "../../../library/stata/gslab_misc/ado"
+  [7]              "..\..\..\library\stata\gslab_misc\ado"
 
 . 
-.         use "..\..\..\assign_treatment\output\births.dta", clear
-
-.         drop if inlist(depar,20,99) // drop Extranjero, No indicado
-(1,569 observations deleted)
-
-. 
-.         collapse (count) births = edad, by(anio codep depar)
-
-.         egen births_tot = total(births), by(anio depar)
-
-.         gen births_sh = births/births_tot
-
-.         
-.         gen tag_same = depar==codep
-
-.         gen tag_mvd  = codep==10
-
-.         gen births_sh_same = births/births_tot if tag_same
-(1,839 missing values generated)
-
-.         gen births_sh_mvd  = births/births_tot if tag_mvd
-(1,839 missing values generated)
+. program main
+  1.         use "..\..\..\derived\Vitals\output\births.dta", clear
+  2. 
+.         gen_and_label
+  3.         build_plots
+  4. end
 
 . 
-.         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
-
-.         xtset depar anio
-       panel variable:  depar (strongly balanced)
-        time variable:  anio, 2001 to 2015
-                delta:  1 unit
-
-.         label var anio "Birth year"
-
-.         label var births_sh_same "Share of births in same state"
-
-.         label var births_sh_mvd  "Share of births in Montevideo"
-
-.         label var    depar "Mother's residential state"
+. program gen_and_label
+  1.     collapse (count) births = edadm, by(anio dpto dpto_residence)
+  2.         egen births_tot = total(births), by(anio dpto_residence)
+  3.         gen births_sh = births/births_tot
+  4.         
+.         gen tag_same = dpto_residence==dpto
+  5.         gen tag_mvd  = dpto==1
+  6.         gen births_sh_same = births/births_tot if tag_same
+  7.         gen births_sh_mvd  = births/births_tot if tag_mvd
+  8. 
+.         collapse (max) births_sh_same births_sh_mvd, by(anio dpto_residence)
+  9.         xtset dpto_residence anio
+ 10.         label var anio "Birth year"
+ 11.         label var births_sh_same "Share of births in same state"
+ 12.         label var births_sh_mvd  "Share of births in Montevideo"
+ 13.         label var dpto_residence "Mother's residential state"
+ 14. end 
 
 . 
-.         foreach x in same mvd {
-  2.                 egen min_sh_`x' = min(births_sh_`x'), by(depar)
+. program build_plots
+  1.         foreach x in same mvd {
+  2.                 egen min_sh_`x' = min(births_sh_`x'), by(dpto_residence)
   3.                 qui sum min_sh_`x', det
   4.                 gen tag_`x' = (min_sh_`x'> r(p50))
   5.         }
-
-. 
+  6. 
 .         local plot_lines  = "plot1(lp(shortdash)) plot2(lp(shortdash)) plot3(
 > lp(shortdash)) plot4(lp(shortdash)) plot5(lp(shortdash))"
-
-.         local legend_all  = "legend(cols(7) symx(3) si(vsmall) bex)"
-
-.         local legend_mvd  = "legend(off)"
-
-.         local legend_same = "legend(rows(3) symx(5) si(small))"
-
-.         local legend_mvd  = "legend(off)"
-
-.         foreach x in same mvd {
-  2.                 xtline births_sh_`x', ov ylabel(0 (.2) 1 ) name(`x') ///
+  7.         local legend_all  = "legend(cols(7) symx(3) si(vsmall) bex)"
+  8.         local legend_mvd  = "legend(off)"
+  9.         local legend_same = "legend(rows(3) symx(5) si(small))"
+ 10.         local legend_mvd  = "legend(off)"
+ 11.         foreach x in same mvd {
+ 12.                 xtline births_sh_`x', ov ylabel(0 (.2) 1 ) name(`x') ///
 >                         graphregion(color(white)) `legend_all' `plot_lines'
-  3.                 qui sum births_sh_`x'
-  4.                 local min_`x' = floor(`r(min)'*5) / 5
-  5.                 forvalues tag = 0/1 {
-  6.                         xtline births_sh_`x' if tag_`x'==`tag', ov ylabel(
+ 13.                 qui sum births_sh_`x'
+ 14.                 local min_`x' = floor(`r(min)'*5) / 5
+ 15.                 forvalues tag = 0/1 {
+ 16.                         xtline births_sh_`x' if tag_`x'==`tag', ov ylabel(
 > `min_`x'' (.2) 1 ) name(`x'_`tag') ///
 >                                 graphregion(color(white)) `legend_`x''
-  7.                 }
-  8.         }
-
-.         
+ 17.                 }
+ 18.         }
+ 19.         
 .         graph combine mvd_0 mvd_1 same_0 same_1, ysiz(6) xsiz(10) graphregion
 > (color(white)) scale(0.8) 
-
-.         graph export "..\output\births_sh_2groups.pdf", replace
-(file ..\output\births_sh_2groups.pdf written in PDF format)
-
-. 
+ 20.         graph export "..\output\births_sh_2groups.pdf", replace
+ 21. 
 .         grc1leg same mvd, rows(1) legendfrom(same) position(6) cols(2) graphr
 > egion(color(white))
+ 22.         graph export "..\output\births_sh_1group.pdf", replace
+ 23. 
+.         graph drop same_0 same_1 mvd_0 mvd_1 same mvd
+ 24. end
 
-.         graph export "..\output\births_sh_1group.pdf", replace
+. 
+. * EXECUTE
+. main
+(2,277 missing values generated)
+(2,260 missing values generated)
+       panel variable:  dpto_residence (weakly balanced)
+        time variable:  anio, 1999 to 2015
+                delta:  1 unit
+(17 missing values generated)
+(file ..\output\births_sh_2groups.pdf written in PDF format)
 (file ..\output\births_sh_1group.pdf written in PDF format)
 
-. 
-.         graph drop same_0 same_1 mvd_0 mvd_1 same mvd
-
-. 
 . 
 end of do-file
 
@@ -1064,7 +927,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1076,7 +939,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1088,7 +951,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1141,75 +1004,42 @@ Notes:
 
 . 
 . program main
-  1.         import_and_process_data
-  2.         build_figure
+  1.     use ../../../base/Misoprostol/output/misoprostol.dta, clear
+  2.     build_figure
   3. end
-
-. 
-. program import_and_process_data
-  1.         import excel using "..\..\..\raw\fernandez_misoprostol.xlsx", ///
->             sheet("Sheet1") firstrow clear
-  2.                 
-.         gen norm_sales2002 = 100
-  3.         gen norm_sales2007 = norm_sales2002 + perc
-  4.         gen sales_miso_only2002 = (sales_miso_only2007 * norm_sales2002) /
->  norm_sales2007
-  5.         gen ug_per_pop2002 = sales_miso_only2002 / world_bank_pop2002
-  6.         gen ug_per_pop2007 = sales_miso_only2007 / world_bank_pop2007
-  7.         
-.         drop world_bank* sales_miso* perc
-  8.         
-.         reshape long norm_sales ug_per_pop, i(Region) j(year)
-  9.         
-.         label var ug_per_pop "Misoprostol (in µg × 10^6) / Population (in mil
-> lions)"
- 10.         label var year "Year"
- 11. end
 
 . 
 . program build_figure
   1. 
-.     generate order = 1 if Region =="Global"
-  2.     replace order = 2 if Region =="Latin America"
-  3.     replace order = 3 if Region =="Chile"
-  4.     replace order = 4 if Region =="Uruguay"
+.     generate order = 1 if region =="Global"
+  2.     replace order = 2 if region =="Latin America"
+  3.     replace order = 3 if region =="Chile"
+  4.     replace order = 4 if region =="Uruguay"
   5. 
 .     graph bar norm_sales, over(year) ///
->             over(Region, sort(order) descending) ///
->             asyvars graphregion(fcolor(white) lcolor(white)) ///
->                 ytitle("Misoprostol annual sales (base 2002)")
-  6.                 
-.         graph export ../output/misoprostol_sales_2002_2007.pdf, replace
-  7.         
-.     graph twoway connected ug_per_pop year if Region == "Global" || ///
->             connected ug_per_pop year if Region == "Latin America" || ///
->         connected ug_per_pop year if Region == "Uruguay" || ///
->                 connected ug_per_pop year if Region == "Chile", ///
->                 legend(label(1 "Global") label(2 "Latin America") label(3 "Ur
-> uguay") label(4 "Chile")) ///
->                 xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white)) 
-> ///
->                 xline(2003.5, lcolor(black) lpattern(dot)) text(8.3 2003.5 "I
-> S start") ///
->                 ytitle("Misoprostol (in µg × 10^6) / Population (in millions)
-> ", size(small))
+>         over(region, sort(order) descending) ///
+>         asyvars graphregion(fcolor(white) lcolor(white)) ///
+>         ytitle("Misoprostol annual sales (base 2002)")
+  6.         
+.     graph export ../output/misoprostol_sales_2002_2007.pdf, replace
+  7.     
+.     graph twoway connected ug_per_pop year if region == "Global" || ///
+>         connected ug_per_pop year if region == "Latin America" || ///
+>         connected ug_per_pop year if region == "Uruguay" || ///
+>         connected ug_per_pop year if region == "Chile", ///
+>         legend(label(1 "Global") label(2 "Latin America") label(3 "Uruguay") 
+> label(4 "Chile")) ///
+>         xlabel(2002(5)2007) graphregion(fcolor(white) lcolor(white)) ///
+>         xline(2003.5, lcolor(black) lpattern(dot)) text(8.3 2003.5 "IS start"
+> ) ///
+>         ytitle("Misoprostol (in µg × 10^6) / Population (in millions)", size(
+> small))
   8. 
-.         graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
+.     graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
   9. end
 
 . 
 . main
-(note: j = 2002 2007)
-
-Data                               wide   ->   long
------------------------------------------------------------------------------
-Number of obs.                        4   ->       8
-Number of variables                   5   ->       4
-j variable (2 values)                     ->   year
-xij variables:
-          norm_sales2002 norm_sales2007   ->   norm_sales
-          ug_per_pop2002 ug_per_pop2007   ->   ug_per_pop
------------------------------------------------------------------------------
 (6 missing values generated)
 (2 real changes made)
 (2 real changes made)
@@ -1297,16 +1127,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_04000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1331,4 +1161,4 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_04000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2019-08-27 18:13:57
+ make.py ended: 2020-03-03 10:21:48

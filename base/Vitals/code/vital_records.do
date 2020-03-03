@@ -9,8 +9,8 @@ program main
 
     gen birth_id = _n
     drop if missing(dpto)
-    keep birth_id anio anio_sem anio_qtr dpto dpto_residence tipoestab ///
-        edadm young adult age_group married not_married partner no_partner single ///
+    keep birth_id anio anio_sem anio_qtr dpto dpto_residence pereira public_health ///
+        edadm young adult age_group age_min age_max married not_married partner no_partner single ///
         prim_school high_school recomm_prenatal_numvisits ///
         recomm_prenatal_1stvisit no_prenatal_care first_pregnancy kids_before ///
         lowbirthweight apgar1_low apgar2_low preg_preterm 
@@ -95,10 +95,14 @@ program gen_vars
     gen young         = inrange(edadm,16,30)
     gen adult         = inrange(edadm,31,45)
     egen age_group    = cut(edadm) , at(16(5)45)
-    replace age_group = age_group+2
-
+    bys age_group: egen age_min = min(edadm)
+	bys age_group: egen age_max = max(edadm)
+	
     lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
-    lab val young                 young    
+    lab val young                 young
+    
+	gen public_health = (tipoestab == 1)
+	gen pereira = (estab2 == 77 & dpto == 1)
 end
 
 program label_vars
@@ -130,17 +134,18 @@ program label_vars
 end
 
 program label_geo
-    label var    dpto "Mother's residential state"
-    label define dpto  1 "ARTIGAS" ///
-                        2 "CANELONES" ///
-                        3 "CERRO LARGO" ///
-                        4 "COLONIA" ///
-                        5 "DURAZNO" ///
-                        6 "FLORES" ///
-                        7 "FLORIDA" ///
-                        8 "LAVALLEJA" ///
-                        9 "MALDONADO" ///
-                        10 "MONTEVIDEO" ///
+    label var    dpto_residence "Mother's residential state"
+    label var    dpto "Birth state"
+    label define dpto  1 "MONTEVIDEO" ///
+	                   2 "ARTIGAS" ///
+					   3 "CANELONES" ///
+                        4 "CERRO LARGO" ///
+                        5 "COLONIA" ///
+                        6 "DURAZNO" ///
+                        7 "FLORES" ///
+                        8 "FLORIDA" ///
+                        9 "LAVALLEJA" ///
+                        10 "MALDONADO" ///
                         11 "PAYSANDU" ///
                         12 "RÍO NEGRO" ///
                         13 "RIVERA" ///

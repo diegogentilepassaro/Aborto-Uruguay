@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-12 18:22:04 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Vitals\code 
+ make.py started: 2020-03-02 18:37:04 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Vitals\code 
 
 
 
@@ -49,9 +49,10 @@ Notes:
   4. 
 .     gen birth_id = _n
   5.     drop if missing(dpto)
-  6.     keep birth_id anio anio_sem anio_qtr dpto dpto_residence tipoestab ///
->         edadm young adult age_group married not_married partner no_partner si
-> ngle ///
+  6.     keep birth_id anio anio_sem anio_qtr dpto dpto_residence pereira publi
+> c_health ///
+>         edadm young adult age_group age_min age_max married not_married partn
+> er no_partner single ///
 >         prim_school high_school recomm_prenatal_numvisits ///
 >         recomm_prenatal_1stvisit no_prenatal_care first_pregnancy kids_before
 >  ///
@@ -161,11 +162,15 @@ Notes:
 .     gen young         = inrange(edadm,16,30)
  44.     gen adult         = inrange(edadm,31,45)
  45.     egen age_group    = cut(edadm) , at(16(5)45)
- 46.     replace age_group = age_group+2
- 47. 
+ 46.     bys age_group: egen age_min = min(edadm)
+ 47.         bys age_group: egen age_max = max(edadm)
+ 48.         
 .     lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
- 48.     lab val young                 young    
- 49. end
+ 49.     lab val young                 young
+ 50.     
+.         gen public_health = (tipoestab == 1)
+ 51.         gen pereira = (estab2 == 77 & dpto == 1)
+ 52. end
 
 . 
 . program label_vars
@@ -210,17 +215,18 @@ Notes:
 
 . 
 . program label_geo
-  1.     label var    dpto "Mother's residential state"
-  2.     label define dpto  1 "ARTIGAS" ///
->                         2 "CANELONES" ///
->                         3 "CERRO LARGO" ///
->                         4 "COLONIA" ///
->                         5 "DURAZNO" ///
->                         6 "FLORES" ///
->                         7 "FLORIDA" ///
->                         8 "LAVALLEJA" ///
->                         9 "MALDONADO" ///
->                         10 "MONTEVIDEO" ///
+  1.     label var    dpto_residence "Mother's residential state"
+  2.     label var    dpto "Birth state"
+  3.     label define dpto  1 "MONTEVIDEO" ///
+>                            2 "ARTIGAS" ///
+>                                            3 "CANELONES" ///
+>                         4 "CERRO LARGO" ///
+>                         5 "COLONIA" ///
+>                         6 "DURAZNO" ///
+>                         7 "FLORES" ///
+>                         8 "FLORIDA" ///
+>                         9 "LAVALLEJA" ///
+>                         10 "MALDONADO" ///
 >                         11 "PAYSANDU" ///
 >                         12 "RÍO NEGRO" ///
 >                         13 "RIVERA" ///
@@ -230,29 +236,29 @@ Notes:
 >                         17 "SORIANO" ///
 >                         18 "TACUAREMBÓ" ///
 >                         19 "TREINTA Y TRES"
-  3.     label values dpto dpto
-  4.     label values dpto_residence dpto
-  5. end
+  4.     label values dpto dpto
+  5.     label values dpto_residence dpto
+  6. end
 
 . 
 . main
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000005.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000008.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000b.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000c.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000e.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -289,7 +295,6 @@ file ../temp/births_append.dta saved
 (9,188 missing values generated)
 (13,795 missing values generated)
 (36750 missing values generated)
-(797,895 real changes made)
 (131 observations deleted)
 (data now sorted by birth_id)
   variable dpto was float now byte
@@ -315,49 +320,56 @@ file ../temp/births_append.dta saved
   variable young was float now byte
   variable adult was float now byte
   variable age_group was float now byte
-  (55,912,438 bytes saved)
+  variable age_min was float now byte
+  variable age_max was float now byte
+  variable public_health was float now byte
+  variable pereira was float now byte
+  (65,926,606 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/vital_birth_records.dta
 Key: birth_id
 ===============================================================================
 > ===================
-  834514:27(76260):1816921658:121326809
+  834514:30(101881):3246271696:4249981855
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-    birth_id |    834,514      417285      240940          1     834645
+    birth_id |    834,514      417322    240937.5          1     834645
         anio |    834,514    2006.836    4.961379       1999       2015
-   tipoestab |    834,514    1.799739    1.020027          1          9
        edadm |    834,514     27.4226    9.631511         10         99
         dpto |    834,514    5.506037     5.88674          1         19
--------------+---------------------------------------------------------
 dpto_resid~e |    832,780    5.966962    5.836088          1         19
+-------------+---------------------------------------------------------
      married |    782,635    .3598433    .4799546          0          1
  not_married |    782,635    .6401567    .4799546          0          1
      partner |    782,635     .759368    .4274675          0          1
   no_partner |    782,635     .240632    .4274675          0          1
--------------+---------------------------------------------------------
       single |    782,635    .3239134    .4679677          0          1
+-------------+---------------------------------------------------------
  prim_school |    834,514    .6215306    .4850058          0          1
  high_school |    834,514    .1595719    .3662088          0          1
     anio_qtr |    834,514    188.8337    19.87613        156        223
     anio_sem |    834,514    94.16913    9.935076         78        111
--------------+---------------------------------------------------------
 recomm_pre~s |    823,603    .8037525    .3971581          0          1
+-------------+---------------------------------------------------------
 recomm_pre~t |    781,877    .5469351    .4977925          0          1
 no_prenata~e |    823,603    .0390139    .1936283          0          1
 first_preg~y |    829,325    .3745793    .4840144          0          1
  kids_before |    829,325    .6254207    .4840144          0          1
--------------+---------------------------------------------------------
 lowbirthwe~t |    829,581    .0821342    .2745693          0          1
+-------------+---------------------------------------------------------
   apgar1_low |    825,436     .046029    .2095481          0          1
   apgar2_low |    825,418    .0100422    .0997063          0          1
 preg_preterm |    820,722    .0921883    .2892918          0          1
        young |    834,514    .6725304    .4692905          0          1
--------------+---------------------------------------------------------
        adult |    834,514     .302255    .4592354          0          1
-   age_group |    797,779    26.63889    6.314238         18         38
+-------------+---------------------------------------------------------
+   age_group |    797,779    24.63889    6.314238         16         36
+     age_min |    834,514    23.99449    6.865318         10         36
+     age_max |    834,514    31.73616     15.6987         20         99
+public_hea~h |    834,514    .4170991    .4930798          0          1
+     pereira |    834,514    .1555085    .3623889          0          1
 
 
 
@@ -368,4 +380,4 @@ file ../output/vital_birth_records.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-12 18:22:58
+ make.py ended: 2020-03-02 18:37:56
