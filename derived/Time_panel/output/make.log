@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-12 19:46:50 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\Time_panel\code 
+ make.py started: 2020-03-07 17:36:47 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\Time_panel\code 
 
 
 
@@ -115,12 +115,12 @@ File: ../output/year_panel.dta
 Key: anio
 ===============================================================================
 > ===================
-  36:12(94048):403980186:3939836957
+  36:12(94048):1245971717:1613908884
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
         anio |         36      2002.5    10.53565       1985       2020
-share_wome~h |         15     .468837    .0749644   .3548088    .566233
+share_wome~h |         15    .4727022    .0776633    .355994   .5738567
    nat_level |         20     50287.1    3504.758      46712      58718
     nat_rate |         20    14.95363    1.241755   13.68795   18.02159
   population |         20     3366300    53666.75    3258203    3467054
@@ -143,4 +143,4 @@ file ../output/year_panel.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-12 19:46:51
+ make.py ended: 2020-03-07 17:36:48

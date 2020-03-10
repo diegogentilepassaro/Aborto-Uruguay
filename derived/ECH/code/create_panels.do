@@ -10,7 +10,7 @@ end
 
 program create_main_panels
     use ../temp/ECH_panel.dta, clear
-    keep if inrange(edad, 16, 45)
+    keep if inrange(edad, 15, 44)
     keep if hombre == 0
 
     preserve
@@ -26,7 +26,7 @@ end
 
 program create_placebo_men_panels
     use ../temp/ECH_panel.dta, clear
-    keep if inrange(edad, 16, 45)
+    keep if inrange(edad, 15, 44)
     keep if hombre == 1
 
     preserve

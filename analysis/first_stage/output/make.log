@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-03 10:21:16 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-03-07 17:37:25 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -451,59 +451,59 @@ file ../temp/average_births_rel.dta saved
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4     3371.25    93.61045       3269       3496
+  nbr_births |          4     3420.25    87.30932       3327       3538
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5        3336    90.44612       3223       3462
+  nbr_births |          5      3393.4    94.75653       3282       3530
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4      6444.5    195.4985       6224       6652
+  nbr_births |          4     6503.25    200.1439       6275       6721
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5      5918.6    140.1385       5723       6119
+  nbr_births |          5      5978.2    146.2556       5773       6186
 (note:  named style grey not found in class color, default attributes used)
 (file ../output/births_rel.pdf written in PDF format)
-(273,525 observations deleted)
+(274,620 observations deleted)
 (4 observations deleted)
 (note: file ../temp/average_births_rel_mvd.dta not found)
 file ../temp/average_births_rel_mvd.dta saved
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4     1113.25    127.4529       1012       1285
+  nbr_births |          4        1130    129.9615       1031       1307
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5       974.4    530.5924         50       1348
+  nbr_births |          5         991    539.8041         51       1378
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4        8220    310.1548       7899       8567
+  nbr_births |          4     8365.25    296.9931       8058       8711
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5      7193.2    311.9458       6917       7691
+  nbr_births |          5      7325.8    329.6054       7032       7855
 (note:  named style grey not found in class color, default attributes used)
 (file ../output/births_rel_mvd.pdf written in PDF format)
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4      4484.5    181.9936       4290       4648
+  nbr_births |          4     4550.25    175.7524       4361       4713
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5      4310.4    502.2612       3423       4632
+  nbr_births |          5      4384.4    513.3496       3477       4710
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4     14664.5     323.495      14371      15125
+  nbr_births |          4     14868.5     313.889      14595      15321
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5     13111.8    287.7607      12887      13616
+  nbr_births |          5       13304    306.6553      13084      13845
 (note:  named style grey not found in class color, default attributes used)
 (file ../output/births_rel_all.pdf written in PDF format)
 
@@ -615,8 +615,8 @@ Notes:
 . 
 . * EXECUTE
 . main
-(2,277 missing values generated)
-(2,260 missing values generated)
+(2,285 missing values generated)
+(2,268 missing values generated)
        panel variable:  dpto_residence (weakly balanced)
         time variable:  anio, 1999 to 2015
                 delta:  1 unit
@@ -927,7 +927,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -939,7 +939,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -951,7 +951,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1127,16 +1127,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1161,4 +1161,4 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2020-03-03 10:21:48
+ make.py ended: 2020-03-07 17:38:01

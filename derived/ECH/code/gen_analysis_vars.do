@@ -16,16 +16,16 @@ program main
 
     keep numero pers anio anio_sem anio_qtr semestre trimestre mes ///
         dpto loc_code ccz hombre edad blanco poor public_health married ///
-        y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
+        single y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
         stove hot_water refrigerat tv car computer internet ///
         trabajo estudiante horas_trabajo work_part_time ///
-        young adult fertile infertile pesoan pesosem pesotri
+        young adult fertile infertile kids_before pesoan pesosem pesotri
     order numero pers anio anio_sem anio_qtr semestre trimestre mes ///
         dpto loc_code ccz hombre edad blanco poor public_health married ///
-        y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
+        single y_hogar nbr_people nbr_under14 piped_water toilet sewage ///
         stove hot_water refrigerat tv car computer internet ///
         trabajo estudiante horas_trabajo work_part_time ///
-        young adult fertile infertile pesoan pesosem pesotri
+        young adult fertile infertile kids_before pesoan pesosem pesotri
 
     save_data ../temp/clean_loc_2001_2015_with_vars.dta, key(numero pers anio) replace
 end
@@ -83,24 +83,27 @@ program impute_poverty_lines_pre06
 end
 
 program sample_restrictions
-    keep if inrange(edad, 16, 60)
+    keep if inrange(edad, 15, 60)
 end
 
 program gen_and_modify_vars
     replace horas_trabajo = . if horas_trabajo > 100
     replace nbr_people = . if (nbr_people < nbr_under14)
-    replace nbr_under14 = . if (nbr_people < nbr_under14) 
+    replace nbr_under14 = . if (nbr_people < nbr_under14)
+	gen kids_before = (nbr_under14 > 0) if !missing(nbr_under14)
 
+    gen single      = (married==0)            if !mi(married)
+	
     gen poor       = (y_hogar <= lp_06)
     gen ind_under14 = (nbr_under14>0)
     gen work_part_time = (horas_trabajo<32) if !mi(horas_trabajo) & trabajo==1
 
     assert !mi(edad)
     gen yob = anio - edad
-    gen young   = inrange(edad,16,30)
-    gen adult   = inrange(edad,31,45)
-    gen infertile = inrange(edad,46,60)
-    gen fertile = inrange(edad,16,45)
+    gen young   = inrange(edad,15,30)
+    gen adult   = inrange(edad,31,44)
+    gen infertile = inrange(edad,45,60)
+    gen fertile = inrange(edad,15,44)
     
     gen     semestre = 1 if inlist(trimestre, 1, 2)
     replace semestre = 2 if inlist(trimestre, 3, 4)
@@ -115,7 +118,7 @@ program label_vars
     label var horas_trabajo "Hours worked"
     label var work_part_time "Part-time work"
     
-    lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
+    lab def young                 0 "Age: 31-44"             1 "Age: 15-30"
     lab val young                 age_young    
 end
 

@@ -9,6 +9,7 @@ program main
 
     gen birth_id = _n
     drop if missing(dpto)
+	drop if edadm == 99
     keep birth_id anio anio_sem anio_qtr dpto dpto_residence pereira public_health ///
         edadm young adult age_group age_min age_max married not_married partner no_partner single ///
         prim_school high_school recomm_prenatal_numvisits ///
@@ -92,13 +93,13 @@ program gen_vars
     gen preg_preterm              = (semgest<37) if !mi(semgest) & semgest!=99
 
     * age vars
-    gen young         = inrange(edadm,16,30)
-    gen adult         = inrange(edadm,31,45)
-    egen age_group    = cut(edadm) , at(16(5)45)
-    bys age_group: egen age_min = min(edadm)
-	bys age_group: egen age_max = max(edadm)
+    gen young         = inrange(edadm,15,30)
+    gen adult         = inrange(edadm,31,44)
+    egen age_group    = cut(edadm) , at(10(5)60)
+    bys age_group: egen age_min = min(edadm) if !missing(age_group)
+	bys age_group: egen age_max = max(edadm) if !missing(age_group)
 	
-    lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
+    lab def young                 0 "Age: 31-44"             1 "Age: 15-30"
     lab val young                 young
     
 	gen public_health = (tipoestab == 1)

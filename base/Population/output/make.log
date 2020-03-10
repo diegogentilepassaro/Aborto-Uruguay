@@ -1,5 +1,5 @@
 
- make.py started: 2019-09-12 19:13:11 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Population\code 
+ make.py started: 2020-03-07 14:42:17 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Population\code 
 
 
 
@@ -156,7 +156,15 @@ Notes:
   3. 
 .     create_panel, by(anio) by_name(year)
   4.     create_panel, by(anio dpto) by_name(year_dpto)
-  5. end
+  5.         
+.     collapse (sum) pop if (category=="women" & age_min>=15 & age_max<45 & all
+> _ages==0), ///
+>             by(anio dpto age_min age_max)
+  6.     rename pop fertile_women_pop
+  7.     save_data "../output/by_anio_dpto_agebin_fertile_women_population.dta"
+> , ///
+>             key(anio dpto age_min) replace
+  8. end
 
 . 
 . program create_panel
@@ -176,7 +184,7 @@ Notes:
 .     preserve 
  12.     collapse (sum) pop if (category=="women" & age_min>=15 & age_max<45 & 
 > all_ages==0), by(`by')
- 13.     rename pop fertile_women_pop    
+ 13.     rename pop fertile_women_pop
  14.     save "../temp/by_`by_name'_fertile_women_population.dta", replace
  15.     restore
  16. 
@@ -220,459 +228,459 @@ Notes:
           Tacuarembó | A1:BD76
        Treinta y Tres | A1:BD76
                Hoja21 | 
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000001.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000003.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000005.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000007.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000008.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000009.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000000x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000010.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000011.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000012.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000013.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000014.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000015.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000016.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000017.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000018.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000019.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000001x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000020.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000021.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000022.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000023.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000024.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000025.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000026.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000027.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000028.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000029.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002d.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002e.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002f.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002g.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002h.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002i.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002j.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002k.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002l.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002m.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002n.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002o.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002p.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002q.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002r.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002s.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002t.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002u.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002v.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002w.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000002x.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000030.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000031.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000032.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000033.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000034.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000035.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000036.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000037.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000038.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000039.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_01000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000003a.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000003b.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0000003c.tmp saved
+file C:\Users\dgentil1\AppData\Local\Temp\ST_0100003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -771,8 +779,35 @@ fertile_wo~p |        475     38129.4    67011.37   5049.727   314105.6
 
 (note: file ../output/by_year_dpto_population.dta not found)
 file ../output/by_year_dpto_population.dta saved
+(data already sorted by anio dpto age_min)
+  variable dpto was float now byte
+  variable age_min was float now byte
+  variable age_max was float now byte
+  (25,650 bytes saved)
+===============================================================================
+> ===================
+File: ../output/by_anio_dpto_agebin_fertile_women_population.dta
+Key: anio dpto age_min
+===============================================================================
+> ===================
+  2850:5(19433):3173531516:3424861508
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        anio |      2,850        2008    7.212368       1996       2020
+        dpto |      2,850          10    5.478187          1         19
+     age_min |      2,850        27.5    8.540624         15         40
+     age_max |      2,850        31.5    8.540624         19         44
+fertile_wo~p |      2,850      6354.9    11207.49   715.6553   62659.04
+
+
+
+
+(note: file ../output/by_anio_dpto_agebin_fertile_women_population.dta not foun
+> d)
+file ../output/by_anio_dpto_agebin_fertile_women_population.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2019-09-12 19:13:18
+ make.py ended: 2020-03-07 14:42:25

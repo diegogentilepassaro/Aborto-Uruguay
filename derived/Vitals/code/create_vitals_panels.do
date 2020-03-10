@@ -20,7 +20,7 @@ program main
 end 
 
 program sample_restrictions
-    keep if inrange(edad, 16, 45)
+    keep if inrange(edad, 15, 44)
     drop if inlist(dpto,20,99)
 end
 

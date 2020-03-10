@@ -110,6 +110,12 @@ program reshape_agg_and_save
 
     create_panel, by(anio) by_name(year)
     create_panel, by(anio dpto) by_name(year_dpto)
+	
+    collapse (sum) pop if (category=="women" & age_min>=15 & age_max<45 & all_ages==0), ///
+	    by(anio dpto age_min age_max)
+    rename pop fertile_women_pop
+    save_data "../output/by_anio_dpto_agebin_fertile_women_population.dta", ///
+	    key(anio dpto age_min) replace
 end
 
 program create_panel
