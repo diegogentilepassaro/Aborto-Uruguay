@@ -1,30 +1,31 @@
 
- make.py started: 2020-03-07 16:48:15 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Vitals\code 
+ make.py started: 2020-03-20 16:28:58 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Vitals\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./vital_records.do"
+Execute:  StataMP-64 /e do "./vital_records.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./vital_records.do 
 
@@ -33,8 +34,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -243,23 +244,23 @@ Notes:
 
 . 
 . main
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000001.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000002.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000003.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000004.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000005.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000006.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000007.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000008.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_02000009.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000a.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000b.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000c.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000d.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000e.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000f.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000g.tmp saved
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0200000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -384,4 +385,4 @@ file ../output/vital_birth_records.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-07 16:49:16
+ make.py ended: 2020-03-20 16:29:55

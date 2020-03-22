@@ -1,30 +1,31 @@
 
- make.py started: 2019-09-12 19:46:34 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Aggregate_Births\code 
+ make.py started: 2020-03-20 16:13:41 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Aggregate_Births\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./agg_births.do"
+Execute:  StataMP-64 /e do "./agg_births.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./agg_births.do 
 
@@ -33,8 +34,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -299,7 +300,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5d0_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -311,7 +312,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5d0_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -323,7 +324,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_00000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5d0_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -414,4 +415,4 @@ file ../output/by_year_dpto_aggregate_births.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-12 19:46:36
+ make.py ended: 2020-03-20 16:13:43

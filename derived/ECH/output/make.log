@@ -1,30 +1,31 @@
 
- make.py started: 2020-03-07 17:47:53 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\derived\ECH\code 
+ make.py started: 2020-03-22 08:32:07 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\ECH\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./homogeneize_geo_vars.do"
+Execute:  StataMP-64 /e do "./homogeneize_geo_vars.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./homogeneize_geo_vars.do 
 
@@ -33,8 +34,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -458,27 +459,27 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,576,229
-        from master                 1,576,214  
+    not matched                     1,578,705
+        from master                 1,578,690  
         from using                         15  
 
-    matched                           144,576  
+    matched                           142,100  
     -----------------------------------------
-(144,591 real changes made)
+(142,115 real changes made)
 (note: file ../temp/2001_2011_loc_homo.dta not found)
 file ../temp/2001_2011_loc_homo.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       382,336
-        from master                   382,336  (_merge==1)
+    not matched                       384,812
+        from master                   384,812  (_merge==1)
         from using                          0  (_merge==2)
 
-    matched                         1,338,469  (_merge==3)
+    matched                         1,335,993  (_merge==3)
     -----------------------------------------
 (380,244 real changes made)
-(205 observations deleted)
-(1,340,356 real changes made)
+(2,681 observations deleted)
+(1,337,880 real changes made)
 (120,462 real changes made)
 dpto_string generated as str2
 (1,204,699 real changes made)
@@ -511,57 +512,57 @@ File: ../temp/clean_loc_2001_2015.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1598909:41(69643):1073242442:2246420586
+  1596433:41(69643):4249862054:3525302471
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,598,909    7.54e+08    9.74e+08          1   2.02e+09
-        pers |  1,598,909    2.387442    1.511543          1         25
-        anio |  1,598,909    2008.878    3.881211       2001       2015
-        dpto |  1,598,909    5.712067    5.816534          1         19
-        secc |  1,530,017    8.863976    16.39425          0         99
+      numero |  1,596,433    7.55e+08    9.75e+08          1   2.02e+09
+        pers |  1,596,433    2.387247    1.511477          1         25
+        anio |  1,596,433     2008.88    3.884065       2001       2015
+        dpto |  1,596,433    5.693009    5.800861          1         19
+        secc |  1,527,541    8.878344    16.40364          0         99
 -------------+---------------------------------------------------------
-        segm |  1,530,017     54.1696    87.34097          0        633
+        segm |  1,527,541     54.2574    87.38447          0        633
       nomloc |          0
-         ccz |  1,598,909    3.964833    5.522429          0         18
-         mes |  1,598,909    6.493027    3.443719          1         12
-     estrato |  1,598,909    5.529117    2.953739          1         12
+         ccz |  1,596,433    3.970982    5.524501          0         18
+         mes |  1,596,433    6.492623    3.443734          1         12
+     estrato |  1,596,433    5.526836     2.95546          1         12
 -------------+---------------------------------------------------------
-      pesoan |  1,598,909    26.41639     13.3075          1       1323
-     pesosem |  1,484,437    52.49311    27.27095          3       1345
-     pesotri |  1,484,437     104.999    52.88186          1       1527
-      hombre |  1,598,909    .4684807    .4990057          0          1
-        edad |  1,598,909    36.69525    23.47538          0         99
+      pesoan |  1,596,433    26.42472    13.31516          1       1323
+     pesosem |  1,481,961    52.51019    27.28908          3       1345
+     pesotri |  1,481,961    105.0327    52.91695          1       1527
+      hombre |  1,596,433    .4684694     .499005          0          1
+        edad |  1,596,433    36.69952    23.47618          0         99
 -------------+---------------------------------------------------------
-      ytotal |  1,598,909    8856.935    16709.96          0    7244333
- nbr_above14 |  1,598,909    2.502423    2.116018          0         98
-  nbr_people |  1,598,909    3.774765    1.881805          1         25
- nbr_under14 |  1,598,909    .9962481    1.285341          0         13
-     y_hogar |  1,598,909    26366.11     32621.1          0    7681180
+      ytotal |  1,596,433    8861.964    16718.14          0    7244333
+ nbr_above14 |  1,596,433     2.50189    2.117106          0         98
+  nbr_people |  1,596,433    3.774374    1.881843          1         25
+ nbr_under14 |  1,596,433    .9959622    1.285323          0         13
+     y_hogar |  1,596,433    26369.15    32636.53          0    7681180
 -------------+---------------------------------------------------------
- piped_water |  1,598,909    .9650299    .1837041          0          1
-      toilet |  1,598,909    .9214483    .2690379          0          1
-      sewage |  1,598,909    .6011318    .4896657          0          1
-       stove |  1,598,909    .9421155    .2335249          0          1
-   hot_water |  1,598,909    .8762031    .3293498          0          1
+ piped_water |  1,596,433    .9650953    .1835385          0          1
+      toilet |  1,596,433    .9216015    .2687978          0          1
+      sewage |  1,596,433    .6011752    .4896567          0          1
+       stove |  1,596,433    .9422719    .2332286          0          1
+   hot_water |  1,596,433    .8763713    .3291576          0          1
 -------------+---------------------------------------------------------
-  refrigerat |  1,598,909    .8210305    .3833269          0          1
-          tv |  1,598,909    .9584692    .1995145          0          1
-         car |  1,598,909    .3517724    .4775235          0          1
-    computer |  1,598,909    .5092848    .4999139          0          1
-    internet |  1,598,909    .3440071    .4750435          0          1
+  refrigerat |  1,596,433    .8222074    .3823382          0          1
+          tv |  1,596,433    .9584868    .1994739          0          1
+         car |  1,596,433    .3518933     .477561          0          1
+    computer |  1,596,433    .5094144    .4999115          0          1
+    internet |  1,596,433    .3443364    .4751515          0          1
 -------------+---------------------------------------------------------
-health_ins~e |  1,598,909    2.811117    1.513185          0          5
-public_hea~h |  1,598,909     .323131    .4676724          0          1
-      blanco |  1,319,886    .9579759    .2006442          0          1
-   trimestre |  1,598,909     2.49807    1.116784          1          4
-     married |  1,329,494     .529418     .499134          0          1
+health_ins~e |  1,596,433    2.811395    1.513308          0          5
+public_hea~h |  1,596,433    .3230821    .4676539          0          1
+      blanco |  1,317,410    .9579015     .200814          0          1
+   trimestre |  1,596,433    2.497935    1.116775          1          4
+     married |  1,327,608    .5293648    .4991371          0          1
 -------------+---------------------------------------------------------
-  estudiante |  1,598,909    .0697394    .2547074          0          1
-     trabajo |  1,598,909    .4458052    .4970544          0          1
-horas_trab~o |  1,598,909      18.345     23.2429          0        157
-     pesomen |  1,205,414    269.0785    109.4869          1       2451
-       lp_06 |  1,319,886    17772.87    9149.163       3274   103313.2
+  estudiante |  1,596,433    .0697198    .2546743          0          1
+     trabajo |  1,596,433    .4458333    .4970575          0          1
+horas_trab~o |  1,596,433    18.34563    23.24192          0        157
+     pesomen |  1,202,938     269.108    109.5839          1       2451
+       lp_06 |  1,317,410     17780.7    9152.768       3274   103313.2
 -------------+---------------------------------------------------------
     loc_code |          0
 
@@ -575,27 +576,28 @@ file ../temp/clean_loc_2001_2015.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./gen_analysis_vars.do"
+Execute:  StataMP-64 /e do "./gen_analysis_vars.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./gen_analysis_vars.do 
 
@@ -604,8 +606,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -746,15 +748,15 @@ Notes:
 . 
 . * EXECUTE
 . main
-(1,477,186 observations deleted)
+(1,474,710 observations deleted)
 (note: file ../temp/pesos_2012_imputed.dta not found)
 file ../temp/pesos_2012_imputed.dta saved
 (note: variable anio was int, now float to accommodate using data's values)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,494,852
-        from master                 1,494,852  (_merge==1)
+    not matched                     1,492,376
+        from master                 1,492,376  (_merge==1)
         from using                          0  (_merge==2)
 
     matched                           104,057  (_merge==3)
@@ -770,82 +772,82 @@ file ../temp/clean_loc_2001_2016_fixed_weights.dta saved
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,598,909  
+    matched                         1,596,433  
     -----------------------------------------
 (note: file ../temp/clean_loc_2001_2015_cpi.dta not found)
 file ../temp/clean_loc_2001_2015_cpi.dta saved
-(1,389,005 observations deleted)
+(1,386,529 observations deleted)
 (209,904 real changes made)
 (note: file ../temp/poverty_2001_imputed.dta not found)
 file ../temp/poverty_2001_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       709,407
-        from master                   709,407  
+    not matched                       707,586
+        from master                   707,586  
         from using                          0  
 
-    matched                           889,502  
+    matched                           888,847  
     -----------------------------------------
 (32,518 real changes made)
 (32,518 real changes made)
 (note: file ../temp/clean_loc_2001_2016_fixed.dta not found)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,542,582 real changes made)
+(1,540,106 real changes made)
 (note: file ../temp/poverty_2002_imputed.dta not found)
 file ../temp/poverty_2002_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,598,909  
+    matched                         1,596,433  
     -----------------------------------------
 (55,555 real changes made)
 (55,555 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,543,540 real changes made)
+(1,541,064 real changes made)
 (note: file ../temp/poverty_2003_imputed.dta not found)
 file ../temp/poverty_2003_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,598,909  
+    matched                         1,596,433  
     -----------------------------------------
-(54,565 real changes made)
-(54,565 real changes made)
+(54,556 real changes made)
+(54,556 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,543,322 real changes made)
+(1,540,846 real changes made)
 (note: file ../temp/poverty_2004_imputed.dta not found)
 file ../temp/poverty_2004_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,598,909  
+    matched                         1,596,433  
     -----------------------------------------
 (54,712 real changes made)
 (54,712 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(1,544,579 real changes made)
+(1,542,103 real changes made)
 (note: file ../temp/poverty_2005_imputed.dta not found)
 file ../temp/poverty_2005_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,598,909  
+    matched                         1,596,433  
     -----------------------------------------
-(53,528 real changes made)
-(53,528 real changes made)
+(53,519 real changes made)
+(53,519 real changes made)
 file ../temp/clean_loc_2001_2016_fixed.dta saved
-(655,832 observations deleted)
-(90 real changes made, 90 to missing)
+(681,375 observations deleted)
+(88 real changes made, 88 to missing)
 (0 real changes made)
 (0 real changes made)
-(292,821 missing values generated)
-(470,658 missing values generated)
-(470,658 real changes made)
+(267,629 missing values generated)
+(456,753 missing values generated)
+(456,753 real changes made)
 (data now sorted by numero pers anio)
   variable anio was float now int
   variable anio_sem was float now int
@@ -859,69 +861,66 @@ file ../temp/clean_loc_2001_2016_fixed.dta saved
   variable adult was float now byte
   variable fertile was float now byte
   variable infertile was float now byte
-  variable kids_before was float now byte
-  (32,064,618 bytes saved)
+  (25,621,624 bytes saved)
 ===============================================================================
 > ===================
 File: ../temp/clean_loc_2001_2015_with_vars.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  943077:43(92479):1787281063:700789034
+  915058:41(37257):287027348:2230765615
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |    943,077    7.65e+08    9.77e+08          1   2.02e+09
-        pers |    943,077    2.034209    1.109616          1         18
-        anio |    943,077    2008.923    3.883396       2001       2015
-    anio_sem |    943,077    98.34548    7.783448         82        111
-    anio_qtr |    943,077    197.1904    15.57472        164        223
+      numero |    915,058    7.67e+08    9.78e+08          1   2.02e+09
+        pers |    915,058    1.989836    1.076937          1         18
+        anio |    915,058    2008.927     3.88772       2001       2015
+    anio_sem |    915,058    98.35235    7.792123         82        111
+    anio_qtr |    915,058    197.2043    15.59203        164        223
 -------------+---------------------------------------------------------
-    semestre |    943,077    1.499066    .4999994          1          2
-   trimestre |    943,077    2.497602    1.116037          1          4
-         mes |    943,077     6.49197    3.440889          1         12
-        dpto |    943,077    5.613837    5.789571          1         19
+    semestre |    915,058    1.499152    .4999996          1          2
+   trimestre |    915,058    2.497919    1.116089          1          4
+         mes |    915,058    6.493061     3.44095          1         12
+        dpto |    915,058    5.577102    5.767955          1         19
     loc_code |          0
 -------------+---------------------------------------------------------
-         ccz |    943,077    4.008331     5.52414          0         18
-      hombre |    943,077    .4739104    .4993191          0          1
-        edad |    943,077    36.17187    13.36156         15         60
-      blanco |    780,217    .9537116    .2101091          0          1
-        poor |    943,077    .4397297    .4963545          0          1
+         ccz |    915,058    4.020105    5.523373          0         18
+      hombre |    915,058    .4729602    .4992686          0          1
+        edad |    915,058    36.78708     13.0508         16         60
+      blanco |    756,659    .9535749    .2104041          0          1
+        poor |    915,058    .4354128    .4958112          0          1
 -------------+---------------------------------------------------------
-public_hea~h |    943,077     .305905    .4607899          0          1
-     married |    943,077    .5697382     .495113          0          1
-      single |    943,077    .4302618     .495113          0          1
-     y_hogar |    943,077    28427.64    33469.78          0    2077094
-  nbr_people |    943,077    3.807389    1.740588          1         25
+public_hea~h |    915,058    .3023972    .4592966          0          1
+     married |    915,058    .5859978    .4925491          0          1
+     y_hogar |    915,058     28615.9    33576.33          0    2077094
+  nbr_people |    915,058    3.778865    1.729525          1         25
+ nbr_under14 |    915,058    .8172313    1.110787          0         13
 -------------+---------------------------------------------------------
- nbr_under14 |    943,077     .825273    1.117595          0         13
- piped_water |    943,077    .9692666    .1725947          0          1
-      toilet |    943,077    .9293027    .2563187          0          1
-      sewage |    943,077    .6078655    .4882267          0          1
-       stove |    943,077    .9479608    .2221063          0          1
+ piped_water |    915,058    .9697047    .1713989          0          1
+      toilet |    915,058    .9304394    .2544052          0          1
+      sewage |    915,058    .6098663    .4877803          0          1
+       stove |    915,058    .9487989    .2204079          0          1
+   hot_water |    915,058    .8910146    .3116211          0          1
 -------------+---------------------------------------------------------
-   hot_water |    943,077    .8893091    .3137491          0          1
-  refrigerat |    943,077     .825888    .3792059          0          1
-          tv |    943,077    .9634261    .1877133          0          1
-         car |    943,077    .3808692    .4856008          0          1
-    computer |    943,077    .5631364     .495998          0          1
+  refrigerat |    915,058    .8273552    .3779401          0          1
+          tv |    915,058    .9635772    .1873399          0          1
+         car |    915,058    .3826424    .4860324          0          1
+    computer |    915,058    .5614868    .4962052          0          1
+    internet |    915,058    .3983911    .4895671          0          1
 -------------+---------------------------------------------------------
-    internet |    943,077    .3971627    .4893105          0          1
-     trabajo |    943,077    .6896001    .4626576          0          1
-  estudiante |    943,077    .0937124    .2914283          0          1
-horas_trab~o |    942,987    28.73913    23.56605          0        100
-work_part_~e |    650,256    .2543245    .4354811          0          1
+     trabajo |    915,058     .707624    .4548544          0          1
+  estudiante |    915,058    .0735167    .2609828          0          1
+horas_trab~o |    914,970    29.51946    23.41484          0        100
+work_part_~e |    647,429    .2529976    .4347299          0          1
+       young |    915,058    .3680368    .4822717          0          1
 -------------+---------------------------------------------------------
-       young |    943,077    .3858688    .4868001          0          1
-       adult |    943,077    .2989151    .4577828          0          1
-     fertile |    943,077     .684784    .4646021          0          1
-   infertile |    943,077     .315216    .4646021          0          1
- kids_before |    943,077     .477891    .4995112          0          1
+       adult |    915,058    .3294228    .4700039          0          1
+     fertile |    915,058    .6974596    .4593582          0          1
+   infertile |    915,058    .3025404    .4593582          0          1
+      pesoan |    915,058    26.65265    13.14307          1       1323
+     pesosem |    910,064    53.00323    26.12901          3       1345
 -------------+---------------------------------------------------------
-      pesoan |    943,077    26.63461    13.13952          1       1323
-     pesosem |    937,969    52.97075    26.14974          3       1345
-     pesotri |    937,969    106.0083    50.78537          1       1527
+     pesotri |    910,064    106.0854    50.73565          1       1527
 
 
 
@@ -933,27 +932,28 @@ file ../temp/clean_loc_2001_2015_with_vars.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./assign_treatment.do"
+Execute:  StataMP-64 /e do "./assign_treatment.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./assign_treatment.do 
 
@@ -962,8 +962,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -1098,8 +1098,8 @@ file ../temp/timeline_control_implementation.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       330,971
-        from master                   330,971  (_merge==1)
+    not matched                       318,808
+        from master                   318,808  (_merge==1)
         from using                          0  (_merge==2)
 
     matched                           612,106  (_merge==3)
@@ -1107,101 +1107,101 @@ file ../temp/timeline_control_implementation.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       870,394
-        from master                   870,394  (_merge==1)
+    not matched                       844,945
+        from master                   844,945  (_merge==1)
         from using                          0  (_merge==2)
 
     matched                            72,683  (_merge==3)
     -----------------------------------------
-(72,683 real changes made)
-(258,288 missing values generated)
-(45,040 real changes made)
-(366,130 real changes made)
-(273,619 real changes made)
-(45,040 real changes made)
+(70,113 real changes made)
+(248,695 missing values generated)
+(43,613 real changes made)
+(356,930 real changes made)
+(265,820 real changes made)
+(43,613 real changes made)
 
 rel_t_anio_ |
         qtr |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     45,040        4.78        4.78
-          1 |      7,419        0.79        5.56
-          2 |      7,291        0.77        6.34
-          3 |      9,263        0.98        7.32
-          4 |      9,677        1.03        8.34
-          5 |      9,824        1.04        9.39
-          6 |      9,650        1.02       10.41
-          7 |      8,494        0.90       11.31
-          8 |      8,640        0.92       12.23
-          9 |      8,725        0.93       13.15
-         10 |      8,732        0.93       14.08
-         11 |      8,554        0.91       14.98
-         12 |      9,396        1.00       15.98
-         13 |      9,479        1.01       16.99
-         14 |      9,461        1.00       17.99
-         15 |      9,196        0.98       18.96
-         16 |      9,899        1.05       20.01
-         17 |     10,033        1.06       21.08
-         18 |      9,750        1.03       22.11
-         19 |      9,438        1.00       23.11
-         20 |     18,213        1.93       25.04
-         21 |     18,465        1.96       27.00
-         22 |     18,071        1.92       28.92
-         23 |     18,270        1.94       30.85
-         24 |     14,046        1.49       32.34
-         25 |     13,633        1.45       33.79
-       1000 |    366,130       38.82       72.61
-          . |    258,288       27.39      100.00
+          0 |     43,613        4.77        4.77
+          1 |      7,216        0.79        5.55
+          2 |      7,094        0.78        6.33
+          3 |      9,015        0.99        7.32
+          4 |      9,418        1.03        8.34
+          5 |      9,543        1.04        9.39
+          6 |      9,351        1.02       10.41
+          7 |      8,249        0.90       11.31
+          8 |      8,393        0.92       12.23
+          9 |      8,473        0.93       13.15
+         10 |      8,493        0.93       14.08
+         11 |      8,349        0.91       14.99
+         12 |      9,088        0.99       15.99
+         13 |      9,188        1.00       16.99
+         14 |      9,205        1.01       18.00
+         15 |      8,917        0.97       18.97
+         16 |      9,597        1.05       20.02
+         17 |      9,752        1.07       21.09
+         18 |      9,476        1.04       22.12
+         19 |      9,186        1.00       23.13
+         20 |     17,660        1.93       25.06
+         21 |     17,934        1.96       27.02
+         22 |     17,551        1.92       28.93
+         23 |     17,749        1.94       30.87
+         24 |     13,660        1.49       32.37
+         25 |     13,263        1.45       33.82
+       1000 |    356,930       39.01       72.82
+          . |    248,695       27.18      100.00
 ------------+-----------------------------------
-      Total |    943,077      100.00
-(258,288 missing values generated)
-(38,026 real changes made)
-(365,247 real changes made)
-(281,516 real changes made)
-(38,026 real changes made)
+      Total |    915,058      100.00
+(248,695 missing values generated)
+(36,804 real changes made)
+(356,076 real changes made)
+(273,483 real changes made)
+(36,804 real changes made)
 
 rel_t_anio_ |
         sem |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     38,026        4.03        4.03
-          1 |     14,693        1.56        5.59
-          2 |     18,523        1.96        7.55
-          3 |     19,497        2.07        9.62
-          4 |     17,081        1.81       11.43
-          5 |     17,328        1.84       13.27
-          6 |     17,361        1.84       15.11
-          7 |     18,995        2.01       17.13
-          8 |     18,472        1.96       19.08
-          9 |     19,775        2.10       21.18
-         10 |     19,082        2.02       23.20
-         11 |     36,599        3.88       27.08
-         12 |     36,492        3.87       30.95
-         13 |     27,618        2.93       33.88
-       1000 |    365,247       38.73       72.61
-          . |    258,288       27.39      100.00
+          0 |     36,804        4.02        4.02
+          1 |     14,276        1.56        5.58
+          2 |     18,017        1.97        7.55
+          3 |     18,954        2.07        9.62
+          4 |     16,577        1.81       11.43
+          5 |     16,826        1.84       13.27
+          6 |     16,908        1.85       15.12
+          7 |     18,398        2.01       17.13
+          8 |     17,943        1.96       19.09
+          9 |     19,202        2.10       21.19
+         10 |     18,547        2.03       23.22
+         11 |     35,513        3.88       27.10
+         12 |     35,450        3.87       30.97
+         13 |     26,872        2.94       33.91
+       1000 |    356,076       38.91       72.82
+          . |    248,695       27.18      100.00
 ------------+-----------------------------------
-      Total |    943,077      100.00
-(258,288 missing values generated)
-(21,187 real changes made)
-(284,536 real changes made)
-(379,066 real changes made)
-(21,187 real changes made)
+      Total |    915,058      100.00
+(248,695 missing values generated)
+(20,494 real changes made)
+(277,533 real changes made)
+(368,336 real changes made)
+(20,494 real changes made)
 
  rel_t_anio |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |     21,187        2.25        2.25
-          1 |     16,353        1.73        3.98
-          2 |     29,310        3.11        7.09
-          3 |     38,635        4.10       11.19
-          4 |     34,623        3.67       14.86
-          5 |     37,747        4.00       18.86
-          6 |     39,281        4.17       23.02
-          7 |     73,052        7.75       30.77
-          8 |     54,708        5.80       36.57
-          9 |     55,357        5.87       42.44
-       1000 |    284,536       30.17       72.61
-          . |    258,288       27.39      100.00
+          0 |     20,494        2.24        2.24
+          1 |     15,832        1.73        3.97
+          2 |     28,524        3.12        7.09
+          3 |     37,510        4.10       11.19
+          4 |     33,682        3.68       14.87
+          5 |     36,615        4.00       18.87
+          6 |     38,165        4.17       23.04
+          7 |     70,913        7.75       30.79
+          8 |     53,236        5.82       36.61
+          9 |     53,859        5.89       42.49
+       1000 |    277,533       30.33       72.82
+          . |    248,695       27.18      100.00
 ------------+-----------------------------------
-      Total |    943,077      100.00
+      Total |    915,058      100.00
 (data now sorted by anio numero pers)
   variable montevideo was float now byte
   variable treated was float now byte
@@ -1213,81 +1213,79 @@ rel_t_anio_ |
   variable post_anio_sem was float now byte
   variable rel_t_anio was float now int
   variable post_anio was float now byte
-  (25,463,079 bytes saved)
+  (24,706,566 bytes saved)
 ===============================================================================
 > ===================
 File: ../temp/ECH_panel.dta
 Key: anio numero pers
 ===============================================================================
 > ===================
-  943077:54(53519):149392608:315399041
+  915058:52(103343):1784134339:3203127821
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-        anio |    943,077    2008.923    3.883396       2001       2015
-      numero |    943,077    7.65e+08    9.77e+08          1   2.02e+09
-        pers |    943,077    2.034209    1.109616          1         18
-    anio_sem |    943,077    98.34548    7.783448         82        111
-    anio_qtr |    943,077    197.1904    15.57472        164        223
+        anio |    915,058    2008.927     3.88772       2001       2015
+      numero |    915,058    7.67e+08    9.78e+08          1   2.02e+09
+        pers |    915,058    1.989836    1.076937          1         18
+    anio_sem |    915,058    98.35235    7.792123         82        111
+    anio_qtr |    915,058    197.2043    15.59203        164        223
 -------------+---------------------------------------------------------
-    semestre |    943,077    1.499066    .4999994          1          2
-   trimestre |    943,077    2.497602    1.116037          1          4
-         mes |    943,077     6.49197    3.440889          1         12
-        dpto |    943,077    5.613837    5.789571          1         19
+    semestre |    915,058    1.499152    .4999996          1          2
+   trimestre |    915,058    2.497919    1.116089          1          4
+         mes |    915,058    6.493061     3.44095          1         12
+        dpto |    915,058    5.577102    5.767955          1         19
     loc_code |          0
 -------------+---------------------------------------------------------
-         ccz |    943,077    4.008331     5.52414          0         18
-      hombre |    943,077    .4739104    .4993191          0          1
-        edad |    943,077    36.17187    13.36156         15         60
-      blanco |    780,217    .9537116    .2101091          0          1
-        poor |    943,077    .4397297    .4963545          0          1
+         ccz |    915,058    4.020105    5.523373          0         18
+      hombre |    915,058    .4729602    .4992686          0          1
+        edad |    915,058    36.78708     13.0508         16         60
+      blanco |    756,659    .9535749    .2104041          0          1
+        poor |    915,058    .4354128    .4958112          0          1
 -------------+---------------------------------------------------------
-public_hea~h |    943,077     .305905    .4607899          0          1
-     married |    943,077    .5697382     .495113          0          1
-      single |    943,077    .4302618     .495113          0          1
-     y_hogar |    943,077    28427.64    33469.78          0    2077094
-  nbr_people |    943,077    3.807389    1.740588          1         25
+public_hea~h |    915,058    .3023972    .4592966          0          1
+     married |    915,058    .5859978    .4925491          0          1
+     y_hogar |    915,058     28615.9    33576.33          0    2077094
+  nbr_people |    915,058    3.778865    1.729525          1         25
+ nbr_under14 |    915,058    .8172313    1.110787          0         13
 -------------+---------------------------------------------------------
- nbr_under14 |    943,077     .825273    1.117595          0         13
- piped_water |    943,077    .9692666    .1725947          0          1
-      toilet |    943,077    .9293027    .2563187          0          1
-      sewage |    943,077    .6078655    .4882267          0          1
-       stove |    943,077    .9479608    .2221063          0          1
+ piped_water |    915,058    .9697047    .1713989          0          1
+      toilet |    915,058    .9304394    .2544052          0          1
+      sewage |    915,058    .6098663    .4877803          0          1
+       stove |    915,058    .9487989    .2204079          0          1
+   hot_water |    915,058    .8910146    .3116211          0          1
 -------------+---------------------------------------------------------
-   hot_water |    943,077    .8893091    .3137491          0          1
-  refrigerat |    943,077     .825888    .3792059          0          1
-          tv |    943,077    .9634261    .1877133          0          1
-         car |    943,077    .3808692    .4856008          0          1
-    computer |    943,077    .5631364     .495998          0          1
+  refrigerat |    915,058    .8273552    .3779401          0          1
+          tv |    915,058    .9635772    .1873399          0          1
+         car |    915,058    .3826424    .4860324          0          1
+    computer |    915,058    .5614868    .4962052          0          1
+    internet |    915,058    .3983911    .4895671          0          1
 -------------+---------------------------------------------------------
-    internet |    943,077    .3971627    .4893105          0          1
-     trabajo |    943,077    .6896001    .4626576          0          1
-  estudiante |    943,077    .0937124    .2914283          0          1
-horas_trab~o |    942,987    28.73913    23.56605          0        100
-work_part_~e |    650,256    .2543245    .4354811          0          1
+     trabajo |    915,058     .707624    .4548544          0          1
+  estudiante |    915,058    .0735167    .2609828          0          1
+horas_trab~o |    914,970    29.51946    23.41484          0        100
+work_part_~e |    647,429    .2529976    .4347299          0          1
+       young |    915,058    .3680368    .4822717          0          1
 -------------+---------------------------------------------------------
-       young |    943,077    .3858688    .4868001          0          1
-       adult |    943,077    .2989151    .4577828          0          1
-     fertile |    943,077     .684784    .4646021          0          1
-   infertile |    943,077     .315216    .4646021          0          1
- kids_before |    943,077     .477891    .4995112          0          1
+       adult |    915,058    .3294228    .4700039          0          1
+     fertile |    915,058    .6974596    .4593582          0          1
+   infertile |    915,058    .3025404    .4593582          0          1
+      pesoan |    915,058    26.65265    13.14307          1       1323
+     pesosem |    910,064    53.00323    26.12901          3       1345
 -------------+---------------------------------------------------------
-      pesoan |    943,077    26.63461    13.13952          1       1323
-     pesosem |    937,969    52.97075    26.14974          3       1345
-     pesotri |    937,969    106.0083    50.78537          1       1527
-IS_impl_date |    684,789    16695.54    777.0838      16162      18414
-  montevideo |    943,077    .4437591    .4968272          0          1
+     pesotri |    910,064    106.0854    50.73565          1       1527
+IS_impl_date |    666,363    16692.53    775.2962      16162      18414
+  montevideo |    915,058     .446222    .4970998          0          1
+     treated |    915,058    .2053761    .4039764          0          1
+     control |    915,058    .0766214    .2659899          0          1
 -------------+---------------------------------------------------------
-     treated |    943,077    .2052929    .4039157          0          1
-     control |    943,077    .0770701    .2667027          0          1
-treated_or~l |    943,077    .2823629    .4501492          0          1
-rel_t_anio~r |    684,789    540.5342    492.5362          0       1000
-post_anio_~r |    943,077    .5663207    .4955823          0          1
+treated_or~l |    915,058    .2819974    .4499723          0          1
+rel_t_anio~r |    666,363    541.5021    492.4656          0       1000
+post_anio_~r |    915,058    .5683443    .4953073          0          1
+rel_t_anio~m |    666,363    537.5915    495.3631          0       1000
+post_anio_~m |    915,058    .5770137    .4940336          0          1
 -------------+---------------------------------------------------------
-rel_t_anio~m |    684,789    536.6112     495.431          0       1000
-post_anio_~m |    943,077    .5750114    .4943415          0          1
-  rel_t_anio |    684,789    418.7232    490.1042          0       1000
-   post_anio |    943,077    .5775573    .4939485          0          1
+  rel_t_anio |    666,363    419.6995     490.269          0       1000
+   post_anio |    915,058    .5795491    .4936317          0          1
 
 
 
@@ -1299,27 +1297,28 @@ file ../temp/ECH_panel.dta saved
 end of do-file
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./create_panels.do"
+Execute:  StataMP-64 /e do "./create_panels.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./create_panels.do 
 
@@ -1328,8 +1327,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -1402,9 +1401,9 @@ Notes:
 . 
 . * EXECUTE
 . main
-(297,273 observations deleted)
-(310,236 observations deleted)
-(240,864 observations deleted)
+(276,842 observations deleted)
+(305,585 observations deleted)
+(238,989 observations deleted)
 (data now sorted by anio pers numero)
   (0 bytes saved)
 ===============================================================================
@@ -1484,7 +1483,7 @@ post_anio_~m |     94,704    .6643225    .4722292          0          1
 
 (note: file ../output/main_ECH_panel.dta not found)
 file ../output/main_ECH_panel.dta saved
-(186,092 observations deleted)
+(183,388 observations deleted)
 (data now sorted by anio pers numero)
   variable pesoan was int now byte
   (149,476 bytes saved)
@@ -1563,9 +1562,9 @@ post_anio_~m |    149,476    .8697383    .3365923          0          1
 
 (note: file ../output/main_ECH_panel_mvd.dta not found)
 file ../output/main_ECH_panel_mvd.dta saved
-(297,273 observations deleted)
-(335,568 observations deleted)
-(222,350 observations deleted)
+(276,842 observations deleted)
+(332,631 observations deleted)
+(219,171 observations deleted)
 (data now sorted by anio pers numero)
   (0 bytes saved)
 ===============================================================================
@@ -1645,7 +1644,7 @@ post_anio_~m |     87,886    .6635983    .4724808          0          1
 
 (note: file ../output/placebo_men_ECH_panel.dta not found)
 file ../output/placebo_men_ECH_panel.dta saved
-(172,888 observations deleted)
+(169,419 observations deleted)
 (data now sorted by anio pers numero)
   variable pesoan was int now byte
   (137,348 bytes saved)
@@ -1724,9 +1723,9 @@ post_anio_~m |    137,348    .8700163    .3362867          0          1
 
 (note: file ../output/placebo_men_ECH_panel_mvd.dta not found)
 file ../output/placebo_men_ECH_panel_mvd.dta saved
-(645,804 observations deleted)
-(136,698 observations deleted)
-(116,274 observations deleted)
+(618,216 observations deleted)
+(136,491 observations deleted)
+(116,050 observations deleted)
 (data now sorted by anio pers numero)
   (0 bytes saved)
 ===============================================================================
@@ -1806,7 +1805,7 @@ post_anio_~m |     44,301    .6777048    .4673606          0          1
 
 (note: file ../output/placebo_infertile_ECH_panel.dta not found)
 file ../output/placebo_infertile_ECH_panel.dta saved
-(87,858 observations deleted)
+(87,634 observations deleted)
 (data now sorted by anio pers numero)
   variable pesoan was int now byte
   (72,717 bytes saved)
@@ -1889,4 +1888,4 @@ file ../output/placebo_infertile_ECH_panel_mvd.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-07 17:52:24
+ make.py ended: 2020-03-22 08:33:43
