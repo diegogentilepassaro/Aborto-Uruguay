@@ -3,8 +3,6 @@
 # GET LIBRARY
 #****************************************************
 import subprocess, shutil, os
-# gslab_make_path = os.getenv('local_make_path')
-# gslab_fill_path = os.getenv('local_fill_path')
 from distutils.dir_util import copy_tree
 copy_tree("../../../library/python/gslab_make", "./gslab_make") # Copy from gslab tools stored locally
 from gslab_make.get_externals import *
@@ -14,13 +12,16 @@ from gslab_make.make_link_logs import *
 from gslab_make.run_program import *
 from gslab_make.dir_mod import *
 
-stata_exe = os.environ.get('STATAEXE')
-if stata_exe:
-    import copy
-    default_run_stata = copy.copy(run_stata)
-    def run_stata(**kwargs):
-        kwargs['executable'] = stata_exe
-        default_run_stata(**kwargs)
+envir_vars = os.getenv('PATH')
+if envir_vars is None:
+    envir_vars = os.getenv('Path')
+
+if "StataSE" in envir_vars:
+    stata = "stataSE"
+elif "StataMP-64" in envir_vars:
+    stata = "StataMP-64"
+elif "Stata15" in envir_vars:
+    stata = "StataMP-64"
 
 #****************************************************
 # MAKE.PY STARTS
@@ -32,7 +33,7 @@ delete_files('../output/*')
 
 start_make_logging()
 
-run_stata(program = 'agg_births.do')
+run_stata(program = 'agg_births.do', executable = stata)
 
 end_make_logging()
 

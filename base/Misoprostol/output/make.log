@@ -1,30 +1,31 @@
 
- make.py started: 2019-09-05 11:30:04 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\base\Misoprostol\code 
+ make.py started: 2020-03-20 16:22:50 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Misoprostol\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./misoprostol.do"
+Execute:  StataMP-64 /e do "./misoprostol.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do ./misoprostol.do 
 
@@ -33,8 +34,8 @@ Notes:
 . set more off
 
 . adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
   [3]              "."
   [4]  (PERSONAL)  "c:\ado\personal/"
   [5]  (PLUS)      "c:\ado\plus/"
@@ -76,7 +77,7 @@ Notes:
 
 Data                               wide   ->   long
 -----------------------------------------------------------------------------
-Number of obs.                        4   ->       8
+Number of obs.                        5   ->      10
 Number of variables                   5   ->       4
 j variable (2 values)                     ->   year
 xij variables:
@@ -85,21 +86,21 @@ xij variables:
 -----------------------------------------------------------------------------
 (data already sorted by region year)
   variable norm_sales was float now int
-  (16 bytes saved)
+  (20 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/misoprostol.dta
 Key: region year
 ===============================================================================
 > ===================
-  8:4(38330):2118303780:1268294633
+  10:4(38330):2936246876:586375046
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
       region |          0
-        year |          8      2004.5    2.672612       2002       2007
-  norm_sales |          8     128.375    94.26246         83        361
-  ug_per_pop |          8    3.830279     2.44502   .9323031   7.315043
+        year |         10      2004.5    2.635231       2002       2007
+  norm_sales |         10       124.3    83.65943         83        361
+  ug_per_pop |         10    3.064524    2.693657   .0014356   7.315043
 
 
 
@@ -110,4 +111,4 @@ file ../output/misoprostol.dta saved
 . 
 end of do-file
 
- make.py ended: 2019-09-05 11:30:05
+ make.py ended: 2020-03-20 16:22:51
