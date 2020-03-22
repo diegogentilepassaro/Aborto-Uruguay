@@ -1,67 +1,71 @@
 
- make.py started: 2020-03-07 17:59:15 C:\Users\dgentil1\Desktop\aborto_uru_repo\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-03-22 15:25:43 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./pooled_plots.do"
+Execute:  StataMP-64 /e do "./preclean.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
-. do ./pooled_plots.do 
+. do ./preclean.do 
 
 . clear all
 
 . set more off
 
+. adopath + ../../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../../library/stata/gslab_misc/ado"
+
 . 
 . program main
   1.         qui do ../../globals.do
-  2.         global controls = "nbr_people ind_under14 edad single poor blanco 
-> public_health"
-  3.         
+  2.         
 .         create_births_data,     time(anio_sem) num_periods(6) by_vars(single 
 > kids_before)
-  4.         local outcomes = "GFR GFR_single0    GFR_single1    GFR_kids_befor
-> e0    GFR_kids_before1 " + ///
->                                   " births births_single0 births_single1 birt
-> hs_kids_before0 births_kids_before1 "
-  5.         pooled_coefplot,   time(anio_sem) num_periods(6) data(births_wide)
->  ///
->             outcomes(`outcomes')
-  6.         pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcome
-> s')
-  7.         pooled_coefplot,   time(anio_sem) num_periods(6) data(births_ind) 
-> ///
->             outcomes(lowbirthweight apgar1_low recomm_prenatal_numvisits preg
-> _preterm)
-  8.         
-.         local labor_vars   = "trabajo horas_trabajo work_part_time"
-  9.         pooled_coefplot, data(ech_labor) time(anio_sem) num_periods(6) out
-> comes(`labor_vars')
- 10.         /*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_
-> college educ_anios_terc"
->         pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcome
-> s(`educ_vars')*/
-. end
+  3.         
+.         use ../temp/plots_sample_births_wide.dta, clear
+  4.         relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_da
+> te)
+  5.         save_data ../temp/plots_sample_births_wide.dta, key(dpto anio_sem)
+>  replace
+  6.         
+.         use ../temp/plots_sample_births_ind.dta, clear
+  7.         relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_da
+> te)
+  8.     save_data ../temp/plots_sample_births_ind.dta, key(birth_id) replace
+  9. 
+.         use ..\..\..\derived\ECH\output\main_ECH_panel.dta, clear
+ 10.         relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_da
+> te)
+ 11.     save_data ../temp/main_ECH_panel.dta, key(pers numero anio_sem) replac
+> e     
+ 12. end
 
 . 
 . program create_births_data
@@ -76,7 +80,7 @@ Notes:
   7.                         preserve
   8.                                 keep if !mi(`by_var') & `by_var'==`i'
   9.                                 collapse (count) births_`by_var'`i'_l=edad
-> , by(`time' dpto treated)
+> , by(`time' dpto treated IS_impl_date)
  10.                                 gen births_`by_var'`i' = log(births_`by_va
 > r'`i'_l)
  11.                                 lab var births_`by_var'`i'_l "Number of bi
@@ -89,15 +93,15 @@ Notes:
  16.                 }
  17.                 preserve
  18.                         keep if !mi(`by_var')
- 19.                         collapse (count) births_l=edad (min) IS_impl_date,
->  by(`time' dpto treated `by_var')
+ 19.                         collapse (count) births_l=edad, by(`time' dpto tre
+> ated IS_impl_date `by_var')
  20.                         gen births = log(births_l)
  21.                         tempfile births_`by_var'
  22.                         save `births_`by_var''
  23.                 restore
  24.         }
  25. 
-.         collapse (count) births_l=edad, by(`time' dpto treated)
+.         collapse (count) births_l=edad, by(`time' dpto treated IS_impl_date)
  26.         gen births = log(births_l)
  27.         merge 1:1 `time' dpto using ..\temp\TFR_`time'.dta, assert(3) noge
 > n
@@ -120,8 +124,8 @@ Notes:
  39.         gen GFR = births_l/fertile_women_pop*1000
  40.         lab var GFR "General Fertility Rate"
  41.         foreach by_var in `by_vars' {
- 42.                 merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert
-> (2 3) keep(3) nogen
+ 42.                 merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, keep(3
+> ) nogen
  43.                 gen GFR_`by_var'1 = births_`by_var'1_l/(fertile_women_pop*
 > (  pop_sh_`by_var'))*1000
  44.                 gen GFR_`by_var'0 = births_`by_var'0_l/(fertile_women_pop*
@@ -130,7 +134,8 @@ Notes:
  46.                 lab var GFR_`by_var'0 "General fertility rate"
  47.                 drop pop_sh_`by_var'
  48.         }
- 49.         save ../temp/plots_sample_births_wide.dta, replace
+ 49.         
+.         save ../temp/plots_sample_births_wide.dta, replace
  50.         
 .         use `births_agg', clear 
  51.         gen all_sample = 1
@@ -145,20 +150,27 @@ Notes:
  60.         }
  61.         gen anio = year(dofh(anio_sem))
  62.         merge m:1 dpto anio using ..\..\..\derived\Time_state_panel\output
-> \year_dpto_panel.dta, assert(2 3) keep(3) nogen
+> \year_dpto_panel.dta, keep(3) nogen
  63.         gen GFR = births_l/fertile_women_pop*1000 if all_sample==1
  64.         lab var GFR "General Fertility Rate"
  65.         foreach by_var in `by_vars' {
- 66.                 merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert
-> (2 3) keep(3) nogen
+ 66.                 merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, keep(3
+> ) nogen
  67.                 replace GFR = births_l/(fertile_women_pop*(  pop_sh_`by_va
 > r'))*1000 if `by_var'==1 & mi(GFR)
  68.                 replace GFR = births_l/(fertile_women_pop*(1-pop_sh_`by_va
 > r'))*1000 if `by_var'==0 & mi(GFR)
  69.                 drop pop_sh_`by_var'
  70.         }
- 71.         save ../temp/plots_sample_births_long.dta, replace
- 72. end
+ 71.         
+.         gen sample = 1 if all_sample == 1
+ 72.         replace sample = 2 if single == 1
+ 73.         replace sample = 3 if single == 0
+ 74.         replace sample = 4 if kids_before == 1
+ 75.         replace sample = 5 if kids_before == 0
+ 76.         save_data ../temp/plots_sample_births_long.dta, key(dpto `time' sa
+> mple) replace
+ 77. end
 
 . 
 . program compute_TFR
@@ -207,169 +219,6 @@ Notes:
  33. end
 
 . 
-. capture program drop pooled_coefplot
-
-. program              pooled_coefplot
-  1. syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(st
-> r) restr(str)]
-  2. 
-.         if substr("`data'",1,3) == "ech" {
-  3.                 use  ..\..\..\derived\ECH\output\main_ECH_panel.dta, clear
-  4.                 local all_controls = "c98_* c01_* ${controls}"
-  5.                 if "`data'" == "ech_labor" {
-  6.                         keep if hombre == 0 & inrange(horas_trabajo,0,100)
->  // & inrange(edad, 16, 45)
-  7.                 }
-  8.                 else {
-  9.                         keep if hombre == 0 
- 10.                 } 
- 11.         }
- 12.         else if "`data'" == "births_ind" {
- 13.                 use ../temp/plots_sample_births_ind.dta, clear
- 14.                 local all_controls = "c.edad i.tipoestab i.married i.high_
-> school"
- 15.         }
- 16.         else  {
- 17.                 use  ..\temp\plots_sample_births_wide.dta, clear
- 18.                 local all_controls = ""
- 19.                 tab dpto
- 20.         }
- 21.         relative_time, num_periods(`num_periods') time(`time') event_date(
-> IS_impl_date)
- 22.         local omitted = `num_periods' //tr_t = treatment*t
- 23.         di "Omitted period: -1 (prior to implementation) or t=`omitted'."
- 24. 
-.         if "`time'" == "anio_sem" {
- 25.                 local weight pesosem
- 26.                 gen post = (`time' >= hofd(IS_impl_date))
- 27.                 local time_label "Semesters relative to IS implementation"
- 28.         }
- 29.         else {
- 30.                 local weight pesoan
- 31.                 gen post = (`time' >= yofd(IS_impl_date))
- 32.                 local time_label "Years relative to IS implementation"
- 33.         }
- 34.         if substr("`data'",1,3) == "ech" {
- 35.                 local pweight = "[pw = `weight']"
- 36.         }
- 37.         else {
- 38.                 local pweight = ""
- 39.         }
- 40.         
-.         save ../temp/plots_sample_`data'.dta, replace
- 41. 
-.         local n_outcomes: word count `outcomes'
- 42.     forval i = 1/`n_outcomes' {
- 43.         local outcome: word `i' of `outcomes'
- 44. 
-.         use ../temp/plots_sample_`data'.dta, clear
- 45.                 
-.                 if substr("`outcome'",1,7) == "births_" {
- 46.                         local ylabel = "ylabel(-1 (0.5) 0.5)"
- 47.                 }
- 48.                 else if substr("`outcome'",1,4) == "GFR_" {
- 49.                         local ylabel = "ylabel(-20 (10) 20)"
- 50.                 }
- 51.                 else {
- 52.                         local ylabel = ""
- 53.                 }
- 54. 
-.                 if inlist("`outcome'","horas_trabajo","work_part_time") {
- 55.             keep if trabajo==1
- 56.         }
- 57. 
-.                 //local ES_subsample  = " if (treatment==1 | dpto==1)"
-.                 //local ES_subsample_nomvd  = " if (treatment==1)"
-.                 local DiD_subsample = " if !mi(treated)"
- 58.                 local coefplot_opts = " vertical baselevels graphregion(co
-> lor(white)) bgcolor(white) " + ///
->                                                           " xline(6.5 7.5, lc
-> olor(black) lpattern(dot)) `ylabel' " + ///
->                                                           " ytitle(`: var lab
->  `outcome'') "
- 59.                 
-.                 * ES: run main regression and plot coefficients
-.                 /*reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
->                         `ES_subsample_nomvd' `pweight', vce(cluster dpto)
->                         * Coef plot
->                     coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                                 drop(_cons 1.t 1000.t *.`time' *.dpto  `all_c
-> ontrols') ///
->                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
-> " 13 "6") 
->                         graph export ../output/pooled_es_`outcome'_`time'_nom
-> vd.pdf, replace
-> 
->                 reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
->                         `ES_subsample' `pweight', vce(cluster dpto)
->                         * Coef plot
-> 
->                     coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                                 drop(_cons 1.t 1000.t *.`time' *.dpto  `all_c
-> ontrols') ///
->                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
-> " 13 "6") 
->                         graph export ../output/pooled_es_`outcome'_`time'.pdf
-> , replace
->                         * Coef plot with shift
->                         qui sum `outcome' if inrange(t, 1, `num_periods')
->                         local target_mean = r(mean)
->                         preserve
->                             coefplot, omitted vertical baselevels gen ///
->                                         drop(_cons 1.t 1000.t *.`time' *.dpto
->  `all_controls')
->                             qui sum __b
->                             local coef_mean = r(mean)
->                         restore 
->                         local yshift = `target_mean' - `coef_mean'
->                         coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                                 drop(_cons 1.t 1000.t *.`time' *.dpto `all_co
-> ntrols') ///
->                             transform(*= "@ + `yshift'") yline(`target_mean',
->  lpattern(dashed)) ///
->                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
-> " 13 "6")                                  
->                         graph export ../output/pooled_es_shift_`outcome'_`tim
-> e'.pdf, replace*/
-.                         
-.                 * DiD: run main regression and plot coefficientss
-.                 reghdfe `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto 
-> `all_controls' ///
->                         `DiD_subsample' `pweight', noabsorb base cluster(dpto
-> )
- 60.                         
-.                 * Coef plot
-.                 coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                         drop(_cons *.t 0.t#1.treatment 1000.t#1.treatment 1.t
-> reatment 0.treatment *.`time' *.dpto `all_controls') ///
->             xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
- 61.                 graph export ../output/pooled_did_`outcome'_`time'.pdf, re
-> place
- 62.                 
-.                 * Coef plot with shift
-.                 qui sum `outcome' if inrange(t, 1, `num_periods')
- 63.                 local target_mean = r(mean)
- 64.                 preserve
- 65.                         coefplot, omitted vertical baselevels gen ///
->                                 drop(_cons *.t 0.t#1.treatment 1000.t#1.treat
-> ment 1.treatment 0.treatment *.`time' *.dpto `all_controls')
- 66.                         qui sum __b
- 67.                         local coef_mean = r(mean)
- 68.                 restore 
- 69.                 local yshift = `target_mean' - `coef_mean'
- 70.                 coefplot, `coefplot_opts' xtitle("`time_label'") ///
->                         drop(_cons *.t 0.t#1.treatment 1000.t#1.treatment 1.t
-> reatment 0.treatment *.`time' *.dpto `all_controls') ///
->                         transform(*= "@ + `yshift'") yline(`target_mean', lpa
-> ttern(dashed)) ///
->                         xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6"
-> )          
- 71.                 graph export ../output/pooled_did_shift_`outcome'_`time'.p
-> df, replace
- 72.         }
- 73. end
-
-. 
 . capture program drop relative_time
 
 . program              relative_time
@@ -387,69 +236,6 @@ Notes:
  12.         assert !mi(t)
  13.         tab t, m
  14. end
-
-. 
-. program pooled_mean_plots
-  1. syntax, outcomes(str) time(str) num_periods(int)
-  2.         use ../temp/plots_sample_births_wide.dta, clear
-  3.         if "`time'" == "anio_sem" {
-  4.                 local time_label "Semesters relative to IS implementation"
-  5.         }
-  6.         else {
-  7.                 local time_label "Years relative to IS implementation"
-  8.         }
-  9.         
-.         foreach outcome in `outcomes' {
- 10.                 local opts "graphregion(color(white)) bgcolor(white) xline
-> (7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
- 11.                 
-.                 * Mean DiD
-.                 egen T_`outcome' = mean(`outcome') if treatment==1, by(t)
- 12.                 egen C_`outcome' = mean(`outcome') if treatment==0, by(t)
- 13.                 sort t dpto treatment `by_var'
- 14.                 gen     D_`outcome'   = T_`outcome' - C_`outcome'[_n-2] if
->  treatment==1
- 15.                 lab var T_`outcome' "`: var lab `outcome''"
- 16.                 lab var C_`outcome' "`: var lab `outcome''"
- 17.                 lab var D_`outcome' "`: var lab `outcome''"
- 18.                 tw (connected T_`outcome' t if inrange(t,2,14), sort mc(bl
-> ue) lc(blue)) ///
->                    (connected C_`outcome' t if inrange(t,2,14), sort mc(red) 
->  lc(red)), ///
->                         legend(label(1 "Treatment") label( 2 "Control")) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 19.                 graph export ../output/pooled_did2_avg_`outcome'_`time'.pd
-> f, replace
- 20.                 tw connected D_`outcome' t if inrange(t,2,14), sort mc(blu
-> e) lc(blue) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 21.                 graph export ../output/pooled_did_avg_`outcome'_`time'.pdf
-> , replace
- 22.                 
-.                 * Mean ES
-.                 egen         avg_`outcome' = mean(`outcome') if (treatment==1
-> |dpto==1), by(t)
- 23.                 lab var      avg_`outcome' "`: var lab `outcome''"
- 24.                 tw connected avg_`outcome' t if inrange(t,2,14), sort mc(b
-> lue) lc(blue) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 25.                 graph export ../output/pooled_es_avg_`outcome'_`time'.pdf,
->  replace
- 26.                 
-.                 egen         avg_`outcome'_2 = mean(`outcome') if (treatment=
-> =1), by(t)
- 27.                 lab var      avg_`outcome'_2 "`: var lab `outcome''"
- 28.                 tw connected avg_`outcome'_2 t if inrange(t,2,14), sort mc
-> (blue) lc(blue) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 29.                 graph export ../output/pooled_es_avg_`outcome'_`time'_nomv
-> d.pdf, replace
- 30.         }
- 31. end
 
 . 
 . main
@@ -473,17 +259,17 @@ file ../temp/sh_kids_before.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (64,166 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000002.tmp saved
 (110,077 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000004.tmp saved
 (6,273 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000006.tmp saved
 (110,021 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_01000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000008.tmp saved
 (58,645 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000a.tmp saved
 (696 observations deleted)
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000c.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -491,21 +277,7 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000c.tmp saved
     not matched                             0
     matched                               272  
     -----------------------------------------
-file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
-(label dpto already defined)
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                               272  
-    -----------------------------------------
-(label dpto already defined)
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                             0
-    matched                               272  
-    -----------------------------------------
+file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000d.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -520,400 +292,2401 @@ file C:\Users\dgentil1\AppData\Local\Temp\ST_0100000d.tmp saved
     not matched                             0
     matched                               272  
     -----------------------------------------
+(label dpto already defined)
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
     matched                               272  
     -----------------------------------------
-merge:  after merge, not all observations from using or matched
-        (merged result left in memory)
-r(9);
+(label dpto already defined)
 
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               272  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               272  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               240  
+    -----------------------------------------
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                               240  
+    -----------------------------------------
+(note: file ../temp/plots_sample_births_wide.dta not found)
+file ../temp/plots_sample_births_wide.dta saved
+(label dpto already defined)
+(label dpto already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                             1,360  
+    -----------------------------------------
+(1,088 missing values generated)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                             1,200  
+    -----------------------------------------
+(240 real changes made)
+(240 real changes made)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                             1,200  
+    -----------------------------------------
+(240 real changes made)
+(240 real changes made)
+(960 missing values generated)
+(240 real changes made)
+(240 real changes made)
+(240 real changes made)
+(240 real changes made)
+(data now sorted by dpto anio_sem sample)
+  variable sample was float now byte
+  variable births_l was long now int
+  variable all_sample was float now byte
+  variable post was float now byte
+  variable anio was float now int
+  (15,600 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/plots_sample_births_long.dta
+Key: dpto anio_sem sample
+===============================================================================
+> ===================
+  1200:21(62711):2012151236:4294498084
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |      1,200       7.375     4.58278          2         16
+    anio_sem |      1,200        96.5     8.65905         82        111
+      sample |      1,200           3    1.414803          1          5
+IS_impl_date |      1,200    17877.75    492.3657      16892      18414
+     treated |      1,200          .5    .5002085          0          1
+-------------+---------------------------------------------------------
+    births_l |      1,200    357.6675    273.3503         14       1727
+      births |      1,200    5.612709    .7661015   2.639057   7.454141
+         TFR |        240    .8739445    .2612291     .27779   1.291875
+  all_sample |        240           1           0          1          1
+      single |        480          .5    .5005216          0          1
+-------------+---------------------------------------------------------
+ kids_before |        480          .5    .5005216          0          1
+        post |      1,200       .4875    .5000521          0          1
+        anio |      1,200        2008    4.322295       2001       2015
+share_wome~h |      1,200    .5254278    .0978664    .261195   .7342288
+   nat_level |      1,200    1882.983    2044.598        307       8044
+-------------+---------------------------------------------------------
+    nat_rate |      1,200    14.43924    1.606116   11.57931   18.04013
+  population |      1,200    132749.4    150303.4   25812.14   566625.6
+         pop |      1,200    132749.4    150303.4   25812.14   566625.6
+   women_pop |      1,200    67296.52    76687.92   12997.37     289043
+fertile_wo~p |      1,200    27788.95    32387.05   5056.629   122038.7
+-------------+---------------------------------------------------------
+         GFR |      1,200    29.35422    12.01256    5.68447   68.17075
+
+
+
+
+(note: file ../temp/plots_sample_births_long.dta not found)
+file ../temp/plots_sample_births_long.dta saved
+(75 real changes made)
+(61 real changes made)
+(104 real changes made)
+(75 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |         75       31.25       31.25
+          1 |          8        3.33       34.58
+          2 |          8        3.33       37.92
+          3 |          8        3.33       41.25
+          4 |          8        3.33       44.58
+          5 |          8        3.33       47.92
+          6 |          8        3.33       51.25
+          7 |          8        3.33       54.58
+          8 |          8        3.33       57.92
+          9 |          8        3.33       61.25
+         10 |          8        3.33       64.58
+         11 |          8        3.33       67.92
+         12 |          8        3.33       71.25
+         13 |          8        3.33       74.58
+       1000 |         61       25.42      100.00
+------------+-----------------------------------
+      Total |        240      100.00
+(data now sorted by dpto anio_sem)
+  variable births_l was long now int
+  variable births_single0_l was long now int
+  variable births_single1_l was long now int
+  variable births_kids_before0_l was long now int
+  variable births_kids_before1_l was long now int
+  variable anio was float now int
+  variable t was float now int
+  (3,360 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/plots_sample_births_wide.dta
+Key: dpto anio_sem
+===============================================================================
+> ===================
+  240:29(72750):1077345122:2543010735
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |        240       7.375    4.590444          2         16
+    anio_sem |        240        96.5     8.67353         82        111
+IS_impl_date |        240    17877.75     493.189      16892      18414
+     treated |        240          .5    .5010449          0          1
+    births_l |        240    605.4792     356.267        121       1727
+-------------+---------------------------------------------------------
+      births |        240    6.239973    .5934534   4.795791   7.454141
+         TFR |        240    .8739445    .2612291     .27779   1.291875
+births_s~0_l |        240     365.125    214.5243         68       1166
+births_sin~0 |        240    5.745572    .5630906   4.219508   7.061334
+births_s~1_l |        240    214.5125    151.6932         14        778
+-------------+---------------------------------------------------------
+births_sin~1 |        240    5.084052    .8274989   2.639057   6.656726
+births_k~0_l |        240    209.4083     111.569         45        527
+births_kid~0 |        240    5.200762    .5566116   3.806663     6.2672
+births_k~1_l |        240    393.8125    246.4954         76       1198
+births_kid~1 |        240    5.793188    .6196389   4.330733   7.088409
+-------------+---------------------------------------------------------
+        anio |        240        2008    4.329523       2001       2015
+share_wome~h |        240    .5254278      .09803    .261195   .7342288
+   nat_level |        240    1882.983    2048.017        307       8044
+    nat_rate |        240    14.43924    1.608802   11.57931   18.04013
+  population |        240    132749.4    150554.7   25812.14   566625.6
+-------------+---------------------------------------------------------
+         pop |        240    132749.4    150554.7   25812.14   566625.6
+   women_pop |        240    67296.52    76816.16   12997.37     289043
+fertile_wo~p |        240    27788.95    32441.21   5056.629   122038.7
+         GFR |        240    29.35207    8.749291    9.22643   43.71267
+ GFR_single1 |        240    21.16847    10.03828    5.68447   53.30338
+-------------+---------------------------------------------------------
+ GFR_single0 |        240    35.25496    14.77675   8.578964   68.17075
+GFR_kids_b~1 |        240    27.56579    8.074792   9.282021   43.02962
+GFR_kids_b~0 |        240     33.4298    11.87046   8.399333   60.58228
+           t |        240       257.2    434.5445          0       1000
+
+
+
+
+file ../temp/plots_sample_births_wide.dta saved
+(68,328 real changes made)
+(37,359 real changes made)
+(62,283 real changes made)
+(68,328 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     68,328       40.68       40.68
+          1 |      4,940        2.94       43.62
+          2 |      4,783        2.85       46.47
+          3 |      5,071        3.02       49.49
+          4 |      5,034        3.00       52.48
+          5 |      4,820        2.87       55.35
+          6 |      4,724        2.81       58.17
+          7 |      4,706        2.80       60.97
+          8 |      4,796        2.86       63.82
+          9 |      4,883        2.91       66.73
+         10 |      4,601        2.74       69.47
+         11 |      4,777        2.84       72.31
+         12 |      4,624        2.75       75.07
+         13 |      4,524        2.69       77.76
+       1000 |     37,359       22.24      100.00
+------------+-----------------------------------
+      Total |    167,970      100.00
+(data already sorted by birth_id)
+  variable t was float now int
+  (335,940 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/plots_sample_births_ind.dta
+Key: birth_id
+===============================================================================
+> ===================
+  167970:38(37611):3313638460:2028115843
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    birth_id |    167,970    393866.7    236583.5       3267     825433
+        anio |    167,970     2006.61    4.940843       1999       2015
+       edadm |    167,970    26.18944     6.60024         15         44
+        dpto |    167,970    6.693951    4.737811          2         16
+dpto_resid~e |    167,329    6.763442    4.826411          1         19
+-------------+---------------------------------------------------------
+     married |    161,697    .3516392    .4774835          0          1
+ not_married |    161,697    .6483608    .4774835          0          1
+     partner |    161,697    .7204896    .4487601          0          1
+  no_partner |    161,697    .2795104    .4487601          0          1
+      single |    161,697    .3580339    .4794236          0          1
+-------------+---------------------------------------------------------
+ prim_school |    167,970    .6896172    .4626517          0          1
+ high_school |    167,970    .1199559     .324911          0          1
+    anio_qtr |    167,970    187.9241    19.79189        156        223
+    anio_sem |    167,970      93.715    9.893331         78        111
+recomm_pre~s |    166,419    .7994279    .4004296          0          1
+-------------+---------------------------------------------------------
+recomm_pre~t |    158,899     .475925    .4994216          0          1
+no_prenata~e |    166,419    .0325864    .1775521          0          1
+first_preg~y |    167,274    .3464316    .4758341          0          1
+ kids_before |    167,274    .6535684    .4758341          0          1
+lowbirthwe~t |    167,032     .062036    .2412217          0          1
+-------------+---------------------------------------------------------
+  apgar1_low |    165,805    .0354211    .1848423          0          1
+  apgar2_low |    165,815    .0087507    .0931354          0          1
+preg_preterm |    165,694    .0735875    .2610991          0          1
+       young |    167,970    .7289218    .4445177          0          1
+       adult |    167,970    .2710782    .4445177          0          1
+-------------+---------------------------------------------------------
+   age_group |    167,970    24.19852     6.72543         15         40
+     age_min |    167,970    24.19852     6.72543         15         40
+     age_max |    167,970    28.19852     6.72543         19         44
+public_hea~h |    167,970    .5057213    .4999688          0          1
+IS_impl_date |    167,970    17779.98    630.8205      16892      18414
+-------------+---------------------------------------------------------
+     treated |    167,970    .6267845    .4836601          0          1
+rel_t_anio~r |    167,970     229.508    415.1423          0       1000
+post_anio_~r |    167,970    .4063047    .4911442          0          1
+rel_t_anio~m |    167,970    224.9772    414.5165          0       1000
+post_anio_~m |    167,970    .4183485    .4932895          0          1
+-------------+---------------------------------------------------------
+  rel_t_anio |    167,970    147.2097     350.743          0       1000
+   post_anio |    167,970    .4236411    .4941364          0          1
+           t |    167,970    224.9772    414.5165          0       1000
+
+
+
+
+file ../temp/plots_sample_births_ind.dta saved
+(13,768 real changes made)
+(37,301 real changes made)
+(43,635 real changes made)
+(13,768 real changes made)
+
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     13,768       14.54       14.54
+          1 |      2,017        2.13       16.67
+          2 |      3,414        3.60       20.27
+          3 |      3,609        3.81       24.08
+          4 |      2,919        3.08       27.17
+          5 |      3,051        3.22       30.39
+          6 |      3,012        3.18       33.57
+          7 |      3,523        3.72       37.29
+          8 |      3,386        3.58       40.86
+          9 |      3,996        4.22       45.08
+         10 |      3,736        3.94       49.03
+         11 |      3,697        3.90       52.93
+         12 |      3,593        3.79       56.73
+         13 |      3,682        3.89       60.61
+       1000 |     37,301       39.39      100.00
+------------+-----------------------------------
+      Total |     94,704      100.00
+(data now sorted by pers numero anio_sem)
+  variable t was float now int
+  (189,408 bytes saved)
+===============================================================================
+> ===================
+File: ../temp/main_ECH_panel.dta
+Key: pers numero anio_sem
+===============================================================================
+> ===================
+  94704:52(110461):1580967572:2378511098
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        pers |     94,704    2.360819    1.068736          1         18
+      numero |     94,704    8.06e+08    9.86e+08         18   2.02e+09
+    anio_sem |     94,704    98.88696    7.648955         82        111
+        anio |     94,704    2009.195    3.816078       2001       2015
+    anio_qtr |     94,704     198.275    15.30773        164        223
+-------------+---------------------------------------------------------
+    semestre |     94,704    1.496484    .4999903          1          2
+   trimestre |     94,704    2.494034    1.114543          1          4
+         mes |     94,704    6.475122    3.434981          1         12
+        dpto |     94,704    6.110629    4.650822          2         16
+    loc_code |          0
+-------------+---------------------------------------------------------
+         ccz |     94,704           0           0          0          0
+      hombre |     94,704           0           0          0          0
+        edad |     94,704    29.03364    8.956272         15         44
+      blanco |     80,693    .9529079    .2118371          0          1
+        poor |     94,704    .4961248    .4999876          0          1
+-------------+---------------------------------------------------------
+public_hea~h |     94,704    .4615011    .4985183          0          1
+     married |     94,704     .538161    .4985442          0          1
+      single |     94,704     .461839    .4985442          0          1
+     y_hogar |     94,704    21125.01    23592.67          0    1279333
+  nbr_people |     94,704    4.200044    1.732179          1         20
+-------------+---------------------------------------------------------
+ nbr_under14 |     94,704    1.195609    1.218828          0         12
+ piped_water |     94,704     .955514    .2061733          0          1
+      toilet |     94,704    .9003104    .2995872          0          1
+      sewage |     94,704    .3678936    .4822348          0          1
+       stove |     94,704    .9282924    .2580046          0          1
+-------------+---------------------------------------------------------
+   hot_water |     94,704    .8517169    .3553822          0          1
+  refrigerat |     94,704    .8117925    .3908798          0          1
+          tv |     94,704    .9593998    .1973632          0          1
+         car |     94,704    .3456137    .4755705          0          1
+    computer |     94,704    .5615602    .4961985          0          1
+-------------+---------------------------------------------------------
+    internet |     94,704    .3391831    .4734346          0          1
+     trabajo |     94,704    .5351622    .4987647          0          1
+  estudiante |     94,704    .1516303    .3586641          0          1
+horas_trab~o |     94,692    19.46464    21.87143          0        100
+work_part_~e |     50,670    .3934083    .4885109          0          1
+-------------+---------------------------------------------------------
+       young |     94,704    .5440847    .4980554          0          1
+       adult |     94,704    .4559153    .4980554          0          1
+     fertile |     94,704           1           0          1          1
+   infertile |     94,704           0           0          0          0
+ kids_before |     94,704    .6620417    .4730167          0          1
+-------------+---------------------------------------------------------
+      pesoan |     94,704    26.91435    14.25137          1       1323
+     pesosem |     93,901    53.80161    27.50897          3       1345
+     pesotri |     93,901    107.3786    52.52821          1       1527
+IS_impl_date |     94,704     17537.4    635.7534      16892      18414
+     treated |     94,704     .725302    .4463643          0          1
+-------------+---------------------------------------------------------
+rel_t_anio~r |     94,704    403.5145    484.4383          0       1000
+post_anio_~r |     94,704    .6503104    .4768744          0          1
+rel_t_anio~m |     94,704     397.263    485.8859          0       1000
+post_anio_~m |     94,704    .6643225    .4722292          0          1
+  rel_t_anio |     94,704    282.7584    446.5721          0       1000
+-------------+---------------------------------------------------------
+   post_anio |     94,704    .6731183    .4690761          0          1
+           t |     94,704     397.263    485.8859          0       1000
+
+
+
+
+(note: file ../temp/main_ECH_panel.dta not found)
+file ../temp/main_ECH_panel.dta saved
+
+. 
 end of do-file
-r(9);
 
 
-Execute:  "C:\Program Files (x86)\Stata14\StataSE-64.exe" /e do "./pooled_reg.do"
+Execute:  StataMP-64 /e do "./pooled_plots.do"
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   14.2   Copyright 1985-2015 StataCorp LLC
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-     Special Edition                  College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-110-user Stata network perpetual license:
-       Serial number:  401406206058
-         Licensed to:  CIS Department
-                       Brown University
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
-      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
-. do ./pooled_reg.do 
+. do ./pooled_plots.do 
 
 . clear all
 
 . set more off
 
-. adopath + ../../../library/stata/gslab_misc/ado
-  [1]  (BASE)      "C:\Program Files (x86)\Stata14\ado\base/"
-  [2]  (SITE)      "C:\Program Files (x86)\Stata14\ado\site/"
-  [3]              "."
-  [4]  (PERSONAL)  "c:\ado\personal/"
-  [5]  (PLUS)      "c:\ado\plus/"
-  [6]  (OLDPLACE)  "c:\ado/"
-  [7]              "../../../library/stata/gslab_misc/ado"
-
 . 
 . program main
-  1.         qui do ..\..\globals.do
-  2.         global controls = "nbr_people ind_under14 edad married poor blanco
->  public_health"
-  3.         /*
->         local outcomes     = "trabajo horas_trabajo"
->         local data        = "ech"
->         local time        = "anio_sem"
->         local num_periods = "6"
->         */
-.         local labor_vars   = "trabajo horas_trabajo work_part_time"
-  4.         pooled_reg, outcomes(`labor_vars') data(ech_labor) time(anio_sem) 
-> num_periods(6)
-  5.         /*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_
+  1.         qui do ../../globals.do
+  2.                 
+.         use ../temp/plots_sample_births_wide.dta, clear
+  3.         local outcomes = "GFR GFR_single0 GFR_single1 GFR_kids_before0 GFR
+> _kids_before1 " + ///
+>                                   " births births_single0 births_single1 birt
+> hs_kids_before0 births_kids_before1 "
+  4.         local n_outcomes: word count `outcomes'
+  5.     forval i = 1/`n_outcomes' {
+  6.         local outcome: word `i' of `outcomes'
+  7.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
+>                 outcome(`outcome') controls(" ")
+  8.                 }
+  9. 
+.         use ../temp/plots_sample_births_ind.dta, clear
+ 10.     local outcomes = "lowbirthweight apgar1_low recomm_prenatal_numvisits 
+> preg_preterm"
+ 11.         local n_outcomes: word count `outcomes'
+ 12.     forval i = 1/`n_outcomes' {
+ 13.         local outcome: word `i' of `outcomes'
+ 14.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
+>                 outcome(`outcome') ///
+>                         controls("c.edadm c.edadm#c.edadm i.first_pregnancy i
+> .married i.high_school i.public_health")
+ 15.                 }       
+ 16.         
+.         *pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes'
+> )
+.         
+.         use ../temp/main_ECH_panel.dta, clear
+ 17.         local outcomes   = "trabajo horas_trabajo work_part_time"
+ 18.         local n_outcomes: word count `outcomes'
+ 19.     forval i = 1/`n_outcomes' {
+ 20.         local outcome: word `i' of `outcomes'
+ 21.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
+>                 outcome(`outcome') ///
+>                         controls("i.blanco i.poor i.public_health c.nbr_under
+> 14 i.car")
+ 22.                 }
+ 23.         /*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_
 > college educ_anios_terc"
->         pooled_reg, outcomes(`educ_vars') data(ech_educ) time(anio_sem) num_p
-> eriods(6)*/
-.         pooled_reg, outcomes(births GFR) data(births_long) time(anio_sem) num
-> _periods(6)
-  6.         pooled_reg, outcomes(lowbirthweight apgar1_low recomm_prenatal_num
-> visits preg_preterm) data(births_ind) time(anio_sem) num_periods(6)
-  7. end
+>         pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcome
+> s(`educ_vars')*/
+. end
 
 . 
-. program pooled_reg
-  1.     syntax, outcomes(str) data(str) time(str) num_periods(int)
-  2.  
-.         * Set locals
+. capture program drop pooled_coefplot
+
+. program              pooled_coefplot
+  1. syntax, time(str) num_periods(int) outcome(str) controls(str) ///
+>     [pweight(str)]
+  2.         
 .         if "`time'" == "anio_sem" {
-  3.                 local weight pesosem
+  3.                 local time_label "Semesters relative to IS implementation"
+  4.         }
+  5.         else {
+  6.                 local time_label "Years relative to IS implementation"
+  7.         }
+  8.         
+.         local omitted = `num_periods' 
+  9.         di "Omitted period: -1 (prior to implementation) or t=`omitted'."
+ 10. 
+.         reghdfe `outcome' ib`omitted'.t##i.treated i.dpto `controls' ///
+>             `pweight', absorb(`time') base cluster(dpto)
+ 11.                         
+. 
+.         local coefplot_opts = " vertical baselevels graphregion(color(white))
+>  bgcolor(white) " + ///
+>                                                   " xline(6.5 7.5, lcolor(bla
+> ck) lpattern(dot)) `ylabel' " + ///
+>                                                   " ytitle(`: var lab `outcom
+> e'') "
+ 12. 
+.     local window_span = 2*`num_periods' + 1
+ 13.         forval i = 1(1)`window_span' {
+ 14.             local keep_coeffs = "`keep_coeffs'" + " `i'.t#1.treated"
+ 15.         }                                         
+ 16.         coefplot, `coefplot_opts' xtitle("`time_label'") ///
+>                 keep(`keep_coeffs') ///
+>                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
+ 17.         graph export ../output/pooled_did_`outcome'_`time'.pdf, replace
+ 18.                 
+.         * Coef plot with shift
+.         qui sum `outcome' if inrange(t, 1, `num_periods')
+ 19.         local target_mean = r(mean)
+ 20.         preserve
+ 21.                 coefplot, omitted vertical baselevels gen ///
+>                 keep(`keep_coeffs')
+ 22.                 qui sum __b
+ 23.                 local coef_mean = r(mean)
+ 24.         restore 
+ 25.         local yshift = `target_mean' - `coef_mean'
+ 26.         coefplot, `coefplot_opts' xtitle("`time_label'") ///
+>                 keep(`keep_coeffs') ///
+>                 transform(*= "@ + `yshift'") yline(`target_mean', lpattern(da
+> shed)) ///
+>                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6")       
+>    
+ 27.         graph export ../output/pooled_did_shift_`outcome'_`time'.pdf, repl
+> ace
+ 28. end
+
+. 
+. program pooled_mean_plots
+  1. syntax, outcomes(str) time(str) num_periods(int)
+  2.         use ../temp/plots_sample_births_wide.dta, clear
+  3.         if "`time'" == "anio_sem" {
   4.                 local time_label "Semesters relative to IS implementation"
   5.         }
   6.         else {
-  7.                 local weight pesoan
-  8.                 local time_label "Years relative to IS implementation"
-  9.         }
- 10.         if substr("`data'",1,3) == "ech" {
- 11.                 local all_controls = "c98_* ${controls}" //note: using all
->  data, can't use c_0*
- 12.                 local aweight = "[aw = `weight']"
- 13.                 local cond_list "&!mi(dpto) &kids_before==1 &kids_before==
-> 0 &single==0 &single==1"  /*"& young == 0" "& young == 1"*/
- 14.                 if "`data'" == "ech_labor" {
- 15.                         local age_group_list "_fertile _placebo"
- 16.                 }
- 17.                 else {
- 18.                         local age_group_list "_fertile"
- 19.                 }
- 20.         }
- 21.         else if "`data'" == "births_ind" {
- 22.                 local all_controls = ""
- 23.                 local aweight = ""
- 24.                 local age_group_list "_fertile"
- 25.                 local cond_list "&!mi(dpto) &kids_before==1 &kids_before==
-> 0 &single==0 &single==1"
- 26.         }
- 27.         else {
- 28.                 local all_controls = ""
- 29.                 local aweight = ""
- 30.                 local age_group_list "_fertile"
- 31.                 local cond_list "&all_sample==1 &kids_before==1 &kids_befo
-> re==0 &single==0 &single==1"
- 32.         }
- 33.         *local omitted = `num_periods'+1 //tr_t = treatment*t
-.         
-.         * Run regressions       
-.         local n_outcomes: word count `outcomes'
- 34.         clear matrix
- 35.     forval i = 1/`n_outcomes' {
- 36.         local outcome: word `i' of `outcomes'
- 37. 
-.         use ../temp/plots_sample_`data'.dta, clear
- 38.         rename treatment treatment_fertile
- 39.         local lab_v`i' : variable label `outcome'
- 40.         local lab1_v`i': label (`outcome') 1
- 41.                 
-.         if inlist("`outcome'","horas_trabajo","work_part_time")  {
- 42.             keep if trabajo==1
- 43.         }
- 44.         
-.                 * Run main regression that plots coefficients
-.                 /*reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  /
-> //
->                                 `all_controls' if !mi(treatment) & inrange(ed
-> ad, 16, 45) ///
->                                 `aweight', vce(cluster `time')*/
-. 
-.                 * Run regressions by subsamples
-.                 foreach cond in `cond_list' {
- 45.             
-.             foreach age_group in `age_group_list' {
- 46.                                 //local ES_subsample  = " if (treatment`ag
-> e_group'==1 | (dpto==1 & age`age_group'==1)) "
-.                                 local DiD_subsample = " if !mi(treatment`age_
-> group') "
- 47. 
-.                                 di "*** REG: `outcome' , `cond' , `age_group'
->  ***"
- 48. 
-.                                 if inlist("`cond'","&!mi(dpto)","&all_sample=
-> =1") {
- 49.                                         //sum `outcome' `ES_subsample' `co
-> nd', meanonly
-.                                         //local avg_v`i'_ES`age_group' = r(me
-> an)
-.                                         sum `outcome' `DiD_subsample' `cond',
->  meanonly
- 50.                                         local avg_v`i'_DiD`age_group' = r(
-> mean)
- 51.                                 }
- 52. 
-.                 /*reg `outcome' post i.dpto  ///
->                                         `ES_subsample' `cond' `aweight', vce(
-> cluster dpto)
->                                 matrix COL_ES`age_group' = ((_b[post] \ _se[p
-> ost]) \ e(N))*/
-. 
-.                 gen interaction = treatment`age_group' * post
- 53. 
-.                 reghdfe `outcome' i.treatment`age_group' i.post interaction /
-> //
->                     i.`time' i.dpto  `all_controls' ///
->                     `DiD_subsample' `cond' `aweight', noabsorb cluster(`time'
->  dpto)
- 54.                 
-.                 matrix COL_DiD`age_group' = ((_b[interaction] \ _se[interacti
-> on]) \ e(N))
- 55.         
-.                 drop interaction
- 56.             }
- 57.                         if "`data'" == "ech_labor" {
- 58.                                 //matrix COL_ES  = (COL_ES_fertile,  COL_E
-> S_placebo)
-.                                 matrix COL_DiD = (COL_DiD_fertile, COL_DiD_pl
-> acebo)
- 59.                         }
- 60.                         else {
- 61.                                 //matrix COL_ES  = (COL_ES_fertile)
-.                                 matrix COL_DiD = (COL_DiD_fertile)
- 62.                         }
- 63.             //matrix ROW_ES  = (nullmat(ROW_ES)  \ COL_ES)
-.             matrix ROW_DiD = (nullmat(ROW_DiD) \ COL_DiD)
- 64.                 }
- 65.                 *local stub = substr("`outcome'",1,10)
-.         //matrix TAB_ES  = (nullmat(TAB_ES) , ROW_ES)
-.         matrix TAB_DiD = (nullmat(TAB_DiD), ROW_DiD)
- 66.                 matrix drop ROW_DiD //ROW_ES
- 67.     }
- 68. 
-.         local cond1            = "Baseline"
- 69.         local cond4            = "Not single"
- 70.         local cond5            = "Single"
- 71.     if "`data'" == "ech_labor" {
- 72.                 local cond2        = "Kids under 14"
- 73.                 local cond3        = "No kids under 14"
- 74.                 foreach rd in DiD { //ES
- 75.                         file open myfile using "../output/tab_`rd'_`data'.
-> txt", write replace
- 76.                         file write myfile "\begin{threeparttable}" ///
->                                                         _n "\begin{tabular}{l
-> |cc|cc|cc} \hline\hline"  ///
->                                                         _n " & \multicolumn{2
-> }{c|}{`lab_v1'} & \multicolumn{2}{c}{`lab_v2'} & \multicolumn{2}{c}{`lab_v3'}
->  \\ \hline" ///
->                                                         _n " & (1)        & (
-> 2)        & (3)        & (4)        & (5)        & (6)  \\ "  ///
->                                                         _n " & Age: 16-45 & A
-> ge: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline" ///
->                                                         _n "Mean (baseline) &
->  " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v1_`rd'_placebo') " & " //
-> /
->                                                                              
->    %9.3f (`avg_v2_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_placebo') " & " //
-> /
->                                                                              
->    %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v3_`rd'_placebo') " \\ \hl
-> ine "
- 77.                         local r = rowsof(TAB_`rd') / 3
- 78.                         forvalues i = 1/`r' {
- 79.                                 local j1 = 3 * `i' - 2
- 80.                                 local j2 = 3 * `i' - 1
- 81.                                 local j3 = 3 * `i' 
- 82.                                 file write myfile ///
->                                         _n "`cond`i'' &  " ///
->                                                       %9.3f  (TAB_`rd'[`j1',1
-> ]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
->                               %9.3f  (TAB_`rd'[`j1',3]) "  &  " %9.3f (TAB_`r
-> d'[`j1',4]) " & " ///
->                               %9.3f  (TAB_`rd'[`j1',5]) "  &  " %9.3f (TAB_`r
-> d'[`j1',6]) " \\ " ///
->                         _n " & (" %9.3f  (TAB_`rd'[`j2',1]) ") & (" %9.3f (TA
-> B_`rd'[`j2',2]) ") & (" ///
->                                   %9.3f  (TAB_`rd'[`j2',3]) ") & (" %9.3f (TA
-> B_`rd'[`j2',4]) ") & (" ///
->                                   %9.3f  (TAB_`rd'[`j2',5]) ") & (" %9.3f (TA
-> B_`rd'[`j2',6]) ") \\ " ///
->                         _n " &  " %9.0fc (TAB_`rd'[`j3',1]) "  &  " %9.0fc (T
-> AB_`rd'[`j3',2]) " & " ///
->                                       %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0f
-> c (TAB_`rd'[`j3',4]) " & " ///
->                                       %9.0fc (TAB_`rd'[`j3',5]) "  &  " %9.0f
-> c (TAB_`rd'[`j3',6]) " \\ "
- 83.                         }
- 84.                         file write myfile _n "\hline\hline" _n "\end{tabul
-> ar}" 
- 85.                         file close myfile
- 86.                 }       
- 87.         }
- 88.     else if "`data'" == "ech_educ" {
- 89.                 local cond2        = "Kids under 14"
- 90.                 local cond3        = "No kids under 14"
- 91.                 foreach rd in DiD { //ES
- 92.                         file open myfile using "../output/tab_`rd'_`data'.
-> txt", write replace
- 93.                         file write myfile "\begin{threeparttable}" ///
->                                                         _n "\begin{tabular}{l
-> |cccc} \hline\hline"  ///
->                                                         _n " & `lab_v1' & `la
-> b_v2' & `lab_v3' & `lab_v4' \\ \hline" ///
->                                                         _n " & (1)      & (2)
->       & (3)      & (4)      \\ "  ///
->                                                         _n " & Age: 18-22 & A
-> ge: 16-22 & Age: 18-30 & Age: 18-30 \\ \hline" ///
->                                                         _n "Mean (baseline) &
->  " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') ///
->                                                                           " &
->  " %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_fertile') " \\ \hl
-> ine "
- 94.                         local r = rowsof(TAB_`rd') / 3
- 95.                         forvalues i = 1/`r' {
- 96.                                 local j1 = 3 * `i' - 2
- 97.                                 local j2 = 3 * `i' - 1
- 98.                                 local j3 = 3 * `i' 
- 99.                                 file write myfile ///
->                                         _n "`cond`i'' &  " ///
->                                                       %9.3f  (TAB_`rd'[`j1',1
-> ]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
->                               %9.3f  (TAB_`rd'[`j1',3]) "  &  " %9.3f (TAB_`r
-> d'[`j1',4]) " \\ " ///
->                         _n " & (" %9.3f  (TAB_`rd'[`j2',1]) ") & (" %9.3f (TA
-> B_`rd'[`j2',2]) ") & (" ///
->                                   %9.3f  (TAB_`rd'[`j2',3]) ") & (" %9.3f (TA
-> B_`rd'[`j2',4]) ") \\ " ///
->                         _n " &  " %9.0fc (TAB_`rd'[`j3',1]) "  &  " %9.0fc (T
-> AB_`rd'[`j3',2]) " & " ///
->                                       %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0f
-> c (TAB_`rd'[`j3',4]) " \\ "
-100.                         }
-101.                         file write myfile _n "\hline\hline" _n "\end{tabul
-> ar}" 
-102.                         file close myfile
-103.                 }       
-104.         }
-105.     else if "`data'" == "births_ind" {
-106.                 local cond2 = "Had previous pregnancy"
-107.                 local cond3 = "First pregnancy"
-108.                 foreach rd in DiD { //ES
-109.                         file open myfile using "../output/tab_`rd'_`data'.
-> txt", write replace
-110.                         file write myfile "\begin{threeparttable}" ///
->                                                         _n "\begin{tabular}{l
-> |cccc} \hline\hline"  ///
->                                                         _n " & `lab1_v1' & `l
-> ab1_v2' & `lab1_v3' & `lab1_v4' \\ \hline" ///
->                                                         _n " & (1)       & (2
-> )       & (3)       & (4)       \\ \hline" ///
->                                                         _n "Mean (baseline) &
->  " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') ///
->                                                                           " &
->  " %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v4_`rd'_fertile') " \\ \hl
-> ine "
-111.                         local r = rowsof(TAB_`rd') / 3
-112.                         forvalues i = 1/`r' {
-113.                                 local j1 = 3 * `i' - 2
-114.                                 local j2 = 3 * `i' - 1
-115.                                 local j3 = 3 * `i' 
-116.                                 file write myfile ///
->                                         _n "`cond`i'' &  " ///
->                                                       %9.3f  (TAB_`rd'[`j1',1
-> ]) "  &  " %9.3f (TAB_`rd'[`j1',2]) " & " ///
->                               %9.3f  (TAB_`rd'[`j1',3]) "  &  " %9.3f (TAB_`r
-> d'[`j1',4]) " \\ " /// 
->                         _n " & (" %9.3f  (TAB_`rd'[`j2',1]) ") & (" %9.3f (TA
-> B_`rd'[`j2',2]) ") & (" ///
->                                   %9.3f  (TAB_`rd'[`j2',3]) ") & (" %9.3f (TA
-> B_`rd'[`j2',4]) ") \\ " ///
->                         _n " &  " %9.0fc (TAB_`rd'[`j3',1]) "  &  " %9.0fc (T
-> AB_`rd'[`j3',2]) " & " ///
->                                       %9.0fc (TAB_`rd'[`j3',3]) "  &  " %9.0f
-> c (TAB_`rd'[`j3',4])  " \\ " 
-117.                         }
-118.                         file write myfile _n "\hline\hline" _n "\end{tabul
-> ar}" 
-119.                         file close myfile
-120.                 }               
-121.         }
-122.         else {
-123.                 local cond2 = "Had previous pregnancy"
-124.                 local cond3 = "First pregnancy"
-125.                 foreach rd in DiD { //ES
-126.                         file open myfile using "../output/tab_`rd'_`data'.
-> txt", write replace
-127.                         file write myfile "\begin{threeparttable}" ///
->                                                         _n "\begin{tabular}{l
-> |cc} \hline\hline"  ///
->                                                         _n " & `lab_v1' & Fer
-> tility rate \\ \hline"  ///
->                                                         _n "Mean & " %9.3f (`
-> avg_v1_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_fertile') " \\ \hline "
-128.                         local r = rowsof(TAB_`rd') / 3
-129.                                 forvalues i = 1/`r' {
-130.                                         local j1 = 3 * `i' - 2
-131.                                         local j2 = 3 * `i' - 1
-132.                                         local j3 = 3 * `i' 
-133.                                         file write myfile ///
->                                                 _n "`cond`i'' &  " %9.3f  (TA
-> B_`rd'[`j1',1]) "  &  " %9.3f  (TAB_`rd'[`j1',2]) " \\ " ///
->                                 _n "          & (" %9.3f  (TAB_`rd'[`j2',1]) 
-> ") & (" %9.3f  (TAB_`rd'[`j2',2]) ") \\ " ///
->                                 _n "          &  " %9.0fc (TAB_`rd'[`j3',1]) 
-> "  &  " %9.0fc (TAB_`rd'[`j3',2]) " \\ "
-134.                         }
-135.                         file write myfile _n "\hline\hline" _n "\end{tabul
-> ar}" 
-136.                         file close myfile
-137.                 }
-138.         }
-139.                 
-.         /*matrix_to_txt, matrix(TAB_ES) saving("../output/tables.txt") append
->  ///
->                  title(<tab:es_pooled_`data'>)*/
-.         matrix_to_txt, matrix(TAB_DiD) saving("../output/tables.txt") append 
-> ///
->                  title(<tab:did_pooled_`data'>)
-140. end
+  7.                 local time_label "Years relative to IS implementation"
+  8.         }
+  9.         
+.         foreach outcome in `outcomes' {
+ 10.                 local opts "graphregion(color(white)) bgcolor(white) xline
+> (7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
+ 11.                 
+.                 * Mean DiD
+.                 egen T_`outcome' = mean(`outcome') if treated==1, by(t)
+ 12.                 egen C_`outcome' = mean(`outcome') if treated==0, by(t)
+ 13.                 sort t dpto treated `by_var'
+ 14.                 gen     D_`outcome'   = T_`outcome' - C_`outcome'[_n-2] if
+>  treated==1
+ 15.                 lab var T_`outcome' "`: var lab `outcome''"
+ 16.                 lab var C_`outcome' "`: var lab `outcome''"
+ 17.                 lab var D_`outcome' "`: var lab `outcome''"
+ 18.                 tw (connected T_`outcome' t if inrange(t,2,14), sort mc(na
+> vy) lc(navy)) ///
+>                    (connected C_`outcome' t if inrange(t,2,14), sort mc(maroo
+> n)  lc(maroon)), ///
+>                         legend(label(1 "Treatment") label( 2 "Control")) ///
+>                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
+> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 19.                 graph export ../output/pooled_did2_avg_`outcome'_`time'.pd
+> f, replace
+ 20.                 tw connected D_`outcome' t if inrange(t,2,14), sort mc(nav
+> y) lc(navy) ///
+>                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
+> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 21.                 graph export ../output/pooled_did_avg_`outcome'_`time'.pdf
+> , replace
+ 22.                 
+.                 * Mean ES
+.                 egen         avg_`outcome' = mean(`outcome') if (treated==1|d
+> pto==1), by(t)
+ 23.                 lab var      avg_`outcome' "`: var lab `outcome''"
+ 24.                 tw connected avg_`outcome' t if inrange(t,2,14), sort mc(n
+> avy) lc(navy) ///
+>                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
+> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 25.                 graph export ../output/pooled_es_avg_`outcome'_`time'.pdf,
+>  replace
+ 26.                 
+.                 egen         avg_`outcome'_2 = mean(`outcome') if (treated==1
+> ), by(t)
+ 27.                 lab var      avg_`outcome'_2 "`: var lab `outcome''"
+ 28.                 tw connected avg_`outcome'_2 t if inrange(t,2,14), sort mc
+> (navy) lc(navy) ///
+>                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
+> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
+ 29.                 graph export ../output/pooled_es_avg_`outcome'_`time'_nomv
+> d.pdf, replace
+ 30.         }
+ 31. end
 
 . 
 . main
-file ../temp/plots_sample_ech_labor.dta not found
-r(601);
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
 
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9517
+                                                  Adj R-squared   =     0.9341
+                                                  Within R-sq.    =     0.9488
+Number of clusters (dpto)    =          8         Root MSE        =     2.2463
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+         GFR |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   1.741907   2.700086     0.65   0.539    -4.642783    8.126597
+          1  |   1.120235   2.145623     0.52   0.618    -3.953358    6.193828
+          2  |   2.478843   2.289744     1.08   0.315    -2.935541    7.893228
+          3  |   2.100976   1.439027     1.46   0.188    -1.301781    5.503733
+          4  |   2.329306   2.417786     0.96   0.367    -3.387849    8.046461
+          5  |   2.236866   1.292448     1.73   0.127    -.8192894    5.293021
+          6  |          0  (base)
+          7  |   2.721198   1.175328     2.32   0.054    -.0580114    5.500408
+          8  |   1.942888   1.314071     1.48   0.183    -1.164396    5.050171
+          9  |   3.442999   1.355879     2.54   0.039     .2368546    6.649143
+         10  |   2.976152   .9682793     3.07   0.018     .6865357    5.265769
+         11  |   2.929233   1.955116     1.50   0.178    -1.693882    7.552349
+         12  |   2.826075   1.908545     1.48   0.182    -1.686918    7.339068
+         13  |   2.193957   1.636772     1.34   0.222    -1.676393    6.064307
+       1000  |   4.633081   2.120361     2.19   0.065    -.3807776    9.646939
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -10.51229   2.666466    -3.94   0.006    -16.81748   -4.207103
+             |
+   t#treated |
+        0 1  |  -7.309684   2.985235    -2.45   0.044    -14.36864    -.250725
+        1 1  |  -5.423562   2.545558    -2.13   0.071    -11.44285    .5957252
+        2 1  |  -6.088269   2.539185    -2.40   0.048    -12.09249   -.0840512
+        3 1  |  -4.338651   1.816949    -2.39   0.048    -8.635054   -.0422486
+        4 1  |  -4.635096   2.347444    -1.97   0.089    -10.18592    .9157271
+        5 1  |  -5.687947   2.323626    -2.45   0.044    -11.18245   -.1934442
+        7 1  |  -4.762373   2.095145    -2.27   0.057    -9.716604     .191859
+        8 1  |  -3.653714   2.465975    -1.48   0.182    -9.484818    2.177389
+        9 1  |  -6.433124   1.994042    -3.23   0.015    -11.14828   -1.717963
+       10 1  |   -5.70519   2.611882    -2.18   0.065    -11.88131    .4709308
+       11 1  |  -3.949364   2.437472    -1.62   0.149    -9.713068    1.814341
+       12 1  |  -4.816197    3.51788    -1.37   0.213    -13.13466    3.502267
+       13 1  |  -4.938088   2.881819    -1.71   0.130    -11.75251    1.876331
+     1000 1  |   -6.83832   2.745588    -2.49   0.042    -13.33061   -.3460354
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |  -8.176709   .3615716   -22.61   0.000     -9.03169   -7.321728
+CERRO LARGO  |  -.4218885   1.47e-14 -2.9e+13   0.000    -.4218885   -.4218885
+    DURAZNO  |  -3.539742   .2892481   -12.24   0.000    -4.223705   -2.855779
+     FLORES  |  -4.204889   .2892481   -14.54   0.000    -4.888852   -3.520926
+    FLORIDA  |   8.171515   .0903929    90.40   0.000      7.95777     8.38526
+     RIVERA  |   16.96091   .3615716    46.91   0.000     16.10593    17.81589
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   33.82055   1.654821    20.44   0.000     29.90752    37.73358
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_GFR_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_GFR_anio_sem.pdf written in PDF format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.8623
+                                                  Adj R-squared   =     0.8119
+                                                  Within R-sq.    =     0.8178
+Number of clusters (dpto)    =          8         Root MSE        =     6.4083
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+ GFR_single0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   1.067133   9.943006     0.11   0.918    -22.44434    24.57861
+          1  |  -4.530726    7.73628    -0.59   0.576    -22.82412    13.76267
+          2  |   -4.26286   6.756292    -0.63   0.548    -20.23895    11.71323
+          3  |  -3.161351    3.89268    -0.81   0.443    -12.36608    6.043375
+          4  |  -3.216988   3.485486    -0.92   0.387    -11.45885    5.024877
+          5  |  -3.448214   3.799847    -0.91   0.394    -12.43343    5.536997
+          6  |          0  (base)
+          7  |   4.379661   1.504383     2.91   0.023     .8223604    7.936961
+          8  |   2.266586   3.064933     0.74   0.484    -4.980828    9.514001
+          9  |   2.948705   4.538696     0.65   0.537    -7.783606    13.68102
+         10  |    1.15645   4.347708     0.27   0.798    -9.124245    11.43715
+         11  |   1.246008   2.193118     0.57   0.588    -3.939893    6.431909
+         12  |   -2.12374    4.73301    -0.45   0.667    -13.31553    9.068049
+         13  |  -2.379064   3.686719    -0.65   0.539    -11.09677    6.338641
+       1000  |  -.2562542   4.000935    -0.06   0.951    -9.716961    9.204453
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -25.60247   3.871622    -6.61   0.000     -34.7574   -16.44754
+             |
+   t#treated |
+        0 1  |    1.86404   4.469459     0.42   0.689    -8.704552    12.43263
+        1 1  |   7.505593     5.4168     1.39   0.208    -5.303105    20.31429
+        2 1  |   8.270959   4.045152     2.04   0.080    -1.294306    17.83622
+        3 1  |   9.253899   3.285647     2.82   0.026     1.484577    17.02322
+        4 1  |    7.43528   4.082421     1.82   0.111    -2.218112    17.08867
+        5 1  |   5.044712   5.034656     1.00   0.350    -6.860357    16.94978
+        7 1  |  -5.235154   2.687542    -1.95   0.092    -11.59018    1.119874
+        8 1  |  -4.931895   4.588343    -1.07   0.318     -15.7816    5.917813
+        9 1  |  -8.531474   4.511174    -1.89   0.100    -19.19871    2.135758
+       10 1  |  -4.222696   5.613481    -0.75   0.476    -17.49647    9.051078
+       11 1  |   .5971472   4.863103     0.12   0.906    -10.90226    12.09656
+       12 1  |   4.503558   7.207357     0.62   0.552    -12.53913    21.54625
+       13 1  |   1.059045   5.190242     0.20   0.844    -11.21393    13.33202
+     1000 1  |   4.987973   5.453597     0.91   0.391    -7.907736    17.88368
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |  -7.763688   1.710356    -4.54   0.003    -11.80804   -3.719338
+CERRO LARGO  |  -7.388164   9.37e-14 -7.9e+13   0.000    -7.388164   -7.388164
+    DURAZNO  |   .7216645   1.077864     0.67   0.525     -1.82708    3.270409
+     FLORES  |   .8842502   1.077864     0.82   0.439    -1.664494    3.432994
+    FLORIDA  |   18.48238   .4275891    43.22   0.000     17.47129    19.49347
+     RIVERA  |   23.95708   1.710356    14.01   0.000     19.91273    28.00143
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   43.21747   4.367227     9.90   0.000     32.89062    53.54432
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_GFR_single0_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_GFR_single0_anio_sem.pdf written in PDF format
+> )
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.6844
+                                                  Adj R-squared   =     0.5689
+                                                  Within R-sq.    =     0.6641
+Number of clusters (dpto)    =          8         Root MSE        =     6.5908
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+ GFR_single1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   4.234019   10.58834     0.40   0.701    -20.80342    29.27145
+          1  |   8.562624   7.449141     1.15   0.288    -9.051795    26.17704
+          2  |   9.703525   5.847314     1.66   0.141    -4.123175    23.53022
+          3  |   7.860621   5.215873     1.51   0.176    -4.472959     20.1942
+          4  |   7.808472   4.378891     1.78   0.118    -2.545958     18.1629
+          5  |   7.859075   3.313891     2.37   0.049     .0229691    15.69518
+          6  |          0  (base)
+          7  |   .5284657   2.331464     0.23   0.827    -4.984572    6.041503
+          8  |   .7477847   2.458436     0.30   0.770    -5.065492    6.561061
+          9  |   3.687256   3.531848     1.04   0.331    -4.664238    12.03875
+         10  |   4.758419   7.026627     0.68   0.520    -11.85691    21.37375
+         11  |   4.038368    5.10243     0.79   0.455    -8.026962     16.1037
+         12  |     7.0906   8.196881     0.87   0.416    -12.29194    26.47314
+         13  |    6.13565   5.746228     1.07   0.321    -7.452021    19.72332
+       1000  |   9.456586   7.786942     1.21   0.264    -8.956606    27.86978
+             |
+     treated |
+          0  |          0  (base)
+          1  |   4.943648   4.275876     1.16   0.286    -5.167192    15.05449
+             |
+   t#treated |
+        0 1  |  -15.01829   4.786389    -3.14   0.016     -26.3363   -3.700273
+        1 1  |  -17.78179    7.25962    -2.45   0.044    -34.94806   -.6155129
+        2 1  |  -18.84469   4.825475    -3.91   0.006    -30.25512   -7.434253
+        3 1  |   -15.6801   5.631093    -2.78   0.027    -28.99552   -2.364685
+        4 1  |  -14.48086   5.934304    -2.44   0.045    -28.51326    -.448455
+        5 1  |  -14.33665   5.859851    -2.45   0.044    -28.19299   -.4803041
+        7 1  |  -1.515253   2.606897    -0.58   0.579    -7.679584    4.649078
+        8 1  |   .6590804   2.994531     0.22   0.832    -6.421861    7.740022
+        9 1  |  -1.044131   4.395252    -0.24   0.819    -11.43725    9.348988
+       10 1  |  -4.096145   8.105067    -0.51   0.629    -23.26158    15.06929
+       11 1  |  -4.013602   5.908719    -0.68   0.519     -17.9855    9.958298
+       12 1  |  -10.70474    8.45303    -1.27   0.246    -30.69298    9.283502
+       13 1  |  -7.613607   7.176862    -1.06   0.324    -24.58419    9.356976
+     1000 1  |  -15.63338   7.587646    -2.06   0.078    -33.57531    2.308556
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   -9.51571   1.693035    -5.62   0.001     -13.5191   -5.512317
+CERRO LARGO  |    9.19636   9.19e-14  1.0e+14   0.000      9.19636     9.19636
+    DURAZNO  |  -7.098128   1.088324    -6.52   0.000    -9.671606    -4.52465
+     FLORES  |  -8.451654   1.088324    -7.77   0.000    -11.02513   -5.878176
+    FLORIDA  |  -4.747046   .4232588   -11.22   0.000    -5.747894   -3.746198
+     RIVERA  |   8.408985   1.693035     4.97   0.002     4.405593    12.41238
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   20.37226   5.630913     3.62   0.009     7.057271    33.68726
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_GFR_single1_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_GFR_single1_anio_sem.pdf written in PDF format
+> )
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.8661
+                                                  Adj R-squared   =     0.8171
+                                                  Within R-sq.    =     0.8618
+Number of clusters (dpto)    =          8         Root MSE        =     5.0762
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+GFR_kids_b~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .2550585   3.643752     0.07   0.946    -8.361046    8.871163
+          1  |   6.501521   5.924139     1.10   0.309    -7.506841    20.50988
+          2  |   5.904226   3.821969     1.54   0.166    -3.133295    14.94175
+          3  |   5.914302   2.441986     2.42   0.046     .1399223    11.68868
+          4  |   5.698183   2.425021     2.35   0.051    -.0360793    11.43245
+          5  |   2.003279   2.972316     0.67   0.522    -5.025133     9.03169
+          6  |          0  (base)
+          7  |   4.729042   1.930115     2.45   0.044     .1650455    9.293038
+          8  |   2.995111   2.260077     1.33   0.227    -2.349121    8.339343
+          9  |   4.957949   2.143531     2.31   0.054    -.1106964    10.02659
+         10  |   3.908111   1.954434     2.00   0.086    -.7133923    8.529614
+         11  |    .871362    5.37041     0.16   0.876    -11.82764    13.57036
+         12  |    4.78761   5.244196     0.91   0.392    -7.612943    17.18816
+         13  |   4.525303   4.788659     0.95   0.376    -6.798076    15.84868
+       1000  |   5.799838   4.723764     1.23   0.259    -5.370088    16.96976
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -11.95329   2.421867    -4.94   0.002    -17.68009   -6.226479
+             |
+   t#treated |
+        0 1  |  -9.224234   2.777993    -3.32   0.013    -15.79314   -2.655324
+        1 1  |   -13.4492   5.531918    -2.43   0.045     -26.5301   -.3682885
+        2 1  |  -11.90538   3.142733    -3.79   0.007    -19.33676      -4.474
+        3 1  |   -12.2645    3.26554    -3.76   0.007    -19.98628   -4.542729
+        4 1  |   -13.9111   3.405463    -4.08   0.005    -21.96374   -5.858461
+        5 1  |  -8.710647   4.270237    -2.04   0.081    -18.80815    1.386859
+        7 1  |  -11.31156   2.530397    -4.47   0.003      -17.295    -5.32812
+        8 1  |  -10.44123    2.67895    -3.90   0.006    -16.77594   -4.106521
+        9 1  |  -12.40625   3.450454    -3.60   0.009    -20.56527    -4.24722
+       10 1  |   -9.99458   2.400616    -4.16   0.004    -15.67114   -4.318025
+       11 1  |  -8.321563   4.539628    -1.83   0.109    -19.05608    2.412952
+       12 1  |  -14.40592   4.342641    -3.32   0.013    -24.67464   -4.137209
+       13 1  |  -14.68361   3.185946    -4.61   0.002    -22.21718   -7.150043
+     1000 1  |  -14.14712    2.86647    -4.94   0.002    -20.92524    -7.36899
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |  -10.92558   1.031219   -10.59   0.000    -13.36402   -8.487131
+CERRO LARGO  |   -4.39494   4.01e-14 -1.1e+14   0.000     -4.39494    -4.39494
+    DURAZNO  |   -7.09191   .6824279   -10.39   0.000    -8.705595   -5.478224
+     FLORES  |  -10.34198   .6824279   -15.15   0.000    -11.95567   -8.728294
+    FLORIDA  |   8.288613   .2578047    32.15   0.000     7.679002    8.898224
+     RIVERA  |   20.52955   1.031219    19.91   0.000      18.0911    22.96799
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   42.27966   1.941926    21.77   0.000     37.68773    46.87158
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_GFR_kids_before0_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_GFR_kids_before0_anio_sem.pdf written in PDF f
+> ormat)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9245
+                                                  Adj R-squared   =     0.8969
+                                                  Within R-sq.    =     0.9159
+Number of clusters (dpto)    =          8         Root MSE        =     2.5929
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+GFR_kids_b~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   2.081762   3.669541     0.57   0.588    -6.595324    10.75885
+          1  |  -.6605238   2.262396    -0.29   0.779    -6.010241    4.689194
+          2  |   1.289942   2.715621     0.48   0.649    -5.131482    7.711365
+          3  |   .7728788   2.150192     0.36   0.730    -4.311519    5.857276
+          4  |   1.235995   3.141181     0.39   0.706    -6.191718    8.663707
+          5  |   2.456311   1.122695     2.19   0.065    -.1984407    5.111062
+          6  |          0  (base)
+          7  |   1.909962   1.451173     1.32   0.230    -1.521518    5.341441
+          8  |   2.097536   1.874045     1.12   0.300    -2.333877    6.528949
+          9  |   3.179836   1.332937     2.39   0.048      .027941    6.331732
+         10  |   2.340408   .8612377     2.72   0.030     .3039042    4.376911
+         11  |   4.351353   2.677659     1.63   0.148    -1.980305    10.68301
+         12  |   2.688422   1.301935     2.06   0.078    -.3901651    5.767008
+         13  |   2.190122   1.327136     1.65   0.143     -.948056      5.3283
+       1000  |   4.933097   1.892361     2.61   0.035     .4583739     9.40782
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -10.31443   2.906111    -3.55   0.009    -17.18629   -3.442569
+             |
+   t#treated |
+        0 1  |  -6.110054   3.107457    -1.97   0.090    -13.45802    1.237915
+        1 1  |   -2.69498   2.529546    -1.07   0.322    -8.676406    3.286447
+        2 1  |  -4.110852   2.810309    -1.46   0.187    -10.75618    2.534473
+        3 1  |  -1.451993   1.878627    -0.77   0.465    -5.894239    2.990254
+        4 1  |  -1.100005   2.403439    -0.46   0.661    -6.783236    4.583225
+        5 1  |  -4.729922   1.975873    -2.39   0.048    -9.402118    -.057726
+        7 1  |  -2.045106   2.356385    -0.87   0.414    -7.617071    3.526858
+        8 1  |  -1.646601   2.817686    -0.58   0.577    -8.309371    5.016169
+        9 1  |  -4.028556   2.280382    -1.77   0.121    -9.420802    1.363689
+       10 1  |  -3.652136    2.72843    -1.34   0.223    -10.10385    2.799575
+       11 1  |  -2.476129    2.82964    -0.88   0.411    -9.167163    4.214905
+       12 1  |  -1.055146   3.227165    -0.33   0.753     -8.68618    6.575887
+       13 1  |  -.9726023   3.584229    -0.27   0.794    -9.447958    7.502753
+     1000 1  |  -3.581413   2.972012    -1.21   0.267     -10.6091    3.446279
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |  -6.958315    .471469   -14.76   0.000    -8.073162   -5.843468
+CERRO LARGO  |   1.040938   1.26e-14  8.3e+13   0.000     1.040938    1.040938
+    DURAZNO  |  -2.524464   .4258243    -5.93   0.001    -3.531379    -1.51755
+     FLORES  |   -1.93187   .4258243    -4.54   0.003    -2.938784   -.9249555
+    FLORIDA  |   8.374141   .1178673    71.05   0.000      8.09543    8.652853
+     RIVERA  |   15.75502    .471469    33.42   0.000     14.64018    16.86987
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   30.16594   1.854692    16.26   0.000     25.78029    34.55159
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_GFR_kids_before1_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_GFR_kids_before1_anio_sem.pdf written in PDF f
+> ormat)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9882
+                                                  Adj R-squared   =     0.9839
+                                                  Within R-sq.    =     0.9880
+Number of clusters (dpto)    =          8         Root MSE        =     0.0753
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+      births |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .0008838   .1031094     0.01   0.993    -.2429312    .2446988
+          1  |   .0144579   .0707067     0.20   0.844     -.152737    .1816527
+          2  |   .0611743   .0767837     0.80   0.452    -.1203902    .2427389
+          3  |   .0348513    .051424     0.68   0.520    -.0867471    .1564497
+          4  |   .0730666   .0720152     1.01   0.344    -.0972223    .2433554
+          5  |   .0725253   .0446682     1.62   0.148    -.0330981    .1781488
+          6  |          0  (base)
+          7  |   .0919833   .0497811     1.85   0.107    -.0257302    .2096967
+          8  |   .0738688   .0553458     1.33   0.224    -.0570032    .2047408
+          9  |   .1182929   .0441272     2.68   0.032     .0139486    .2226371
+         10  |   .1007294   .0357593     2.82   0.026     .0161722    .1852867
+         11  |   .1014972   .0713024     1.42   0.198    -.0671062    .2701005
+         12  |   .1057739   .0648283     1.63   0.147    -.0475206    .2590683
+         13  |   .0904256   .0637012     1.42   0.199    -.0602037     .241055
+       1000  |   .1635175   .0805113     2.03   0.082    -.0268614    .3538964
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -.1164164   .0873496    -1.33   0.224    -.3229655    .0901327
+             |
+   t#treated |
+        0 1  |  -.1885805   .0986751    -1.91   0.098    -.4219101    .0447491
+        1 1  |  -.1511865   .0778944    -1.94   0.093    -.3353776    .0330045
+        2 1  |  -.1732633   .0780106    -2.22   0.062     -.357729    .0112024
+        3 1  |   -.099159   .0559289    -1.77   0.120    -.2314099    .0330918
+        4 1  |   -.120993   .0699571    -1.73   0.127    -.2864152    .0444292
+        5 1  |  -.1670478   .0890685    -1.88   0.103    -.3776614    .0435658
+        7 1  |  -.1513847   .0783107    -1.93   0.094    -.3365601    .0337906
+        8 1  |  -.0886731   .0871328    -1.02   0.343    -.2947094    .1173632
+        9 1  |  -.1704611   .0703958    -2.42   0.046    -.3369207   -.0040015
+       10 1  |  -.1701759   .0833439    -2.04   0.080    -.3672529    .0269011
+       11 1  |  -.0951827   .0806189    -1.18   0.276    -.2858162    .0954508
+       12 1  |  -.1265714   .1083554    -1.17   0.281    -.3827913    .1296484
+       13 1  |  -.1382209   .0828263    -1.67   0.139    -.3340741    .0576322
+     1000 1  |  -.2059599   .0812792    -2.53   0.039    -.3981546   -.0137652
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   1.094855   .0146789    74.59   0.000     1.060145    1.129565
+CERRO LARGO  |   .1063141   8.82e-15  1.2e+13   0.000     .1063141    .1063141
+    DURAZNO  |  -.4089255   .0144838   -28.23   0.000    -.4431742   -.3746767
+     FLORES  |  -1.283734   .0144838   -88.63   0.000    -1.317982   -1.249485
+    FLORIDA  |  -.1418224   .0036697   -38.65   0.000       -.1505   -.1331449
+     RIVERA  |    .626343   .0146789    42.67   0.000     .5916328    .6610531
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   6.309431   .0532329   118.52   0.000     6.183556    6.435307
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_births_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_births_anio_sem.pdf written in PDF format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9467
+                                                  Adj R-squared   =     0.9272
+                                                  Within R-sq.    =     0.9414
+Number of clusters (dpto)    =          8         Root MSE        =     0.1520
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+births_sin~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |  -.1387393   .2325203    -0.60   0.570    -.6885624    .4110838
+          1  |  -.1482036   .1847663    -0.80   0.449    -.5851064    .2886991
+          2  |  -.1307662    .169583    -0.77   0.466    -.5317663    .2702338
+          3  |  -.1244599    .099373    -1.25   0.251    -.3594398      .11052
+          4  |  -.0657114   .0914895    -0.72   0.496    -.2820497     .150627
+          5  |  -.0669506   .1180401    -0.57   0.588     -.346071    .2121698
+          6  |          0  (base)
+          7  |   .1327635   .0417667     3.18   0.016     .0340009     .231526
+          8  |      .0746   .1162582     0.64   0.542    -.2003069    .3495069
+          9  |   .0662294   .1480029     0.45   0.668    -.2837419    .4162006
+         10  |  -.0761889   .1427561    -0.53   0.610    -.4137535    .2613757
+         11  |  -.0370405   .0962272    -0.38   0.712    -.2645816    .1905006
+         12  |  -.1009826   .1611457    -0.63   0.551    -.4820317    .2800665
+         13  |  -.1561993   .1239706    -1.26   0.248    -.4493432    .1369446
+       1000  |  -.1136547   .1003131    -1.13   0.295    -.3508575    .1235481
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -.4436058   .1461879    -3.03   0.019    -.7892852   -.0979265
+             |
+   t#treated |
+        0 1  |   .1161335   .1263441     0.92   0.389    -.1826228    .4148899
+        1 1  |   .2332164   .1421916     1.64   0.145    -.1030134    .5694462
+        2 1  |   .2150589   .1148737     1.87   0.103    -.0565742    .4866919
+        3 1  |   .2435394   .0948801     2.57   0.037     .0191835    .4678953
+        4 1  |     .20416    .109811     1.86   0.105    -.0555017    .4638217
+        5 1  |   .1272141   .1632464     0.78   0.461    -.2588022    .5132304
+        7 1  |  -.1735878   .0544444    -3.19   0.015    -.3023283   -.0448473
+        8 1  |  -.1832352   .1445697    -1.27   0.246    -.5250881    .1586178
+        9 1  |  -.2811287   .1507591    -1.86   0.104    -.6376172    .0753599
+       10 1  |  -.1413137     .17236    -0.82   0.439    -.5488804    .2662529
+       11 1  |   .0223023   .1850871     0.12   0.907    -.4153592    .4599637
+       12 1  |   .0895364   .2374427     0.38   0.717    -.4719264    .6509992
+       13 1  |  -.0100026   .1818533    -0.06   0.958    -.4400173     .420012
+     1000 1  |   .0314342   .2057805     0.15   0.883    -.4551594    .5180279
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   1.155558   .0382764    30.19   0.000     1.065048    1.246067
+CERRO LARGO  |   .0078202   8.00e-15  9.8e+11   0.000     .0078202    .0078202
+    DURAZNO  |  -.2615609   .0296249    -8.83   0.000    -.3316127   -.1915092
+     FLORES  |  -1.090423   .0296249   -36.81   0.000    -1.160475   -1.020371
+    FLORIDA  |    .080067   .0095691     8.37   0.000     .0574396    .1026943
+     RIVERA  |    .769015   .0382764    20.09   0.000     .6785056    .8595243
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   5.951841    .088163    67.51   0.000     5.743368    6.160313
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_births_single0_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_births_single0_anio_sem.pdf written in PDF for
+> mat)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9004
+                                                  Adj R-squared   =     0.8640
+                                                  Within R-sq.    =     0.8981
+Number of clusters (dpto)    =          8         Root MSE        =     0.3052
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+births_sin~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .2338171   .5016912     0.47   0.655     -.952494    1.420128
+          1  |   .3013825   .3060487     0.98   0.358    -.4223077    1.025073
+          2  |   .4803863    .254139     1.89   0.101     -.120557     1.08133
+          3  |   .3103624   .2150638     1.44   0.192    -.1981827    .8189075
+          4  |   .3123512   .1510783     2.07   0.078    -.0448922    .6695945
+          5  |   .3703411   .1219031     3.04   0.019      .082086    .6585961
+          6  |          0  (base)
+          7  |   .1657104    .190275     0.87   0.413    -.2842185    .6156393
+          8  |    .099509   .2040911     0.49   0.641    -.3830897    .5821077
+          9  |    .362187   .3014336     1.20   0.269    -.3505903    1.074964
+         10  |   .4483696   .4823223     0.93   0.384    -.6921415    1.588881
+         11  |   .4397615   .4052135     1.09   0.314    -.5184161    1.397939
+         12  |   .5393244   .5005157     1.08   0.317    -.6442071    1.722856
+         13  |   .5619959   .4108549     1.37   0.214    -.4095216    1.533513
+       1000  |   .6935527   .4453697     1.56   0.163    -.3595794    1.746685
+             |
+     treated |
+          0  |          0  (base)
+          1  |   .5149513   .2891304     1.78   0.118    -.1687334    1.198636
+             |
+   t#treated |
+        0 1  |  -.7372283   .2329042    -3.17   0.016    -1.287959   -.1864975
+        1 1  |  -.7546653   .3287942    -2.30   0.055     -1.53214    .0228094
+        2 1  |  -.9406586   .1285611    -7.32   0.000    -1.244657     -.63666
+        3 1  |  -.6804851    .163859    -4.15   0.004     -1.06795   -.2930201
+        4 1  |  -.6341319   .1773277    -3.58   0.009    -1.053445   -.2148186
+        5 1  |  -.7274887   .2194065    -3.32   0.013    -1.246303   -.2086748
+        7 1  |  -.2187096   .2235583    -0.98   0.361    -.7473411    .3099218
+        8 1  |   .0665323   .2435079     0.27   0.793    -.5092723    .6423369
+        9 1  |  -.1473139   .3260083    -0.45   0.665     -.918201    .6235733
+       10 1  |  -.2786237   .5442364    -0.51   0.624    -1.565538    1.008291
+       11 1  |  -.2890868   .4169618    -0.69   0.510    -1.275045    .6968711
+       12 1  |  -.5129524     .52029    -0.99   0.357    -1.743243     .717338
+       13 1  |  -.4397951   .4605196    -0.95   0.371    -1.528751    .6491607
+     1000 1  |  -.7495393   .4807251    -1.56   0.163    -1.886273    .3871949
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   .9005048   .0885471    10.17   0.000     .6911242    1.109885
+CERRO LARGO  |    .338656   9.94e-15  3.4e+13   0.000      .338656     .338656
+    DURAZNO  |  -.6735348   .0616456   -10.93   0.000    -.8193036    -.527766
+     FLORES  |  -1.746715   .0616456   -28.33   0.000    -1.892483   -1.600946
+    FLORIDA  |  -.7357756   .0221368   -33.24   0.000    -.7881207   -.6834304
+     RIVERA  |   .3553002   .0885471     4.01   0.005     .1459196    .5646808
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   4.929337    .280163    17.59   0.000     4.266856    5.591817
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_births_single1_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_births_single1_anio_sem.pdf written in PDF for
+> mat)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9748
+                                                  Adj R-squared   =     0.9655
+                                                  Within R-sq.    =     0.9746
+Number of clusters (dpto)    =          8         Root MSE        =     0.1034
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+births_kid~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .0841408   .0927402     0.91   0.394     -.135155    .3034366
+          1  |   .0912208   .0806411     1.13   0.295    -.0994651    .2819066
+          2  |   .1098822     .10063     1.09   0.311    -.1280699    .3478342
+          3  |   .1286077   .0365019     3.52   0.010     .0422943    .2149211
+          4  |   .1261191   .0673414     1.87   0.103     -.033118    .2853561
+          5  |   .0535455   .0892166     0.60   0.567    -.1574182    .2645092
+          6  |          0  (base)
+          7  |   .1046777   .0764056     1.37   0.213    -.0759929    .2853483
+          8  |   .0278878   .0635573     0.44   0.674    -.1224014    .1781769
+          9  |   .0373426   .0427822     0.87   0.412    -.0638213    .1385066
+         10  |    .066788   .0765156     0.87   0.412    -.1141427    .2477186
+         11  |  -.0510866    .073571    -0.69   0.510    -.2250542    .1228811
+         12  |   .0401395   .0886652     0.45   0.664    -.1695203    .2497994
+         13  |    .056784   .1038621     0.55   0.602     -.188811    .3023789
+       1000  |   .1100369    .105679     1.04   0.332    -.1398542    .3599279
+             |
+     treated |
+          0  |          0  (base)
+          1  |   .0356898    .094681     0.38   0.717    -.1881952    .2595747
+             |
+   t#treated |
+        0 1  |  -.2259107   .1180521    -1.91   0.097    -.5050596    .0532382
+        1 1  |  -.2011919   .1297069    -1.55   0.165       -.5079    .1055162
+        2 1  |  -.1889622   .0975223    -1.94   0.094    -.4195659    .0416415
+        3 1  |  -.1689231    .049095    -3.44   0.011    -.2850143   -.0528318
+        4 1  |  -.2062324   .0815582    -2.53   0.039    -.3990868   -.0133779
+        5 1  |  -.1336783   .1019095    -1.31   0.231    -.3746559    .1072993
+        7 1  |  -.2365725   .1015079    -2.33   0.053    -.4766004    .0034555
+        8 1  |  -.1011368   .0948388    -1.07   0.322     -.325395    .1231214
+        9 1  |   -.171127   .0967568    -1.77   0.120    -.3999205    .0576664
+       10 1  |  -.1958292   .1180014    -1.66   0.141    -.4748582    .0831998
+       11 1  |  -.0550383   .0959192    -0.57   0.584    -.2818512    .1717747
+       12 1  |  -.1866906   .1067289    -1.75   0.124    -.4390643     .065683
+       13 1  |  -.2628097   .0793312    -3.31   0.013    -.4503982   -.0752213
+     1000 1  |  -.3385465    .079845    -4.24   0.004    -.5273499    -.149743
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   .9812274   .0174583    56.20   0.000      .939945     1.02251
+CERRO LARGO  |   .0754339   7.84e-15  9.6e+12   0.000     .0754339    .0754339
+    DURAZNO  |  -.3822167   .0143573   -26.62   0.000    -.4161662   -.3482671
+     FLORES  |   -1.20761   .0143573   -84.11   0.000    -1.241559    -1.17366
+    FLORIDA  |  -.1916712   .0043646   -43.92   0.000    -.2019918   -.1813506
+     RIVERA  |    .511227   .0174583    29.28   0.000     .4699446    .5525095
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |    5.24453    .060163    87.17   0.000     5.102268    5.386793
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_births_kids_before0_anio_sem.pdf written in PDF form
+> at)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_births_kids_before0_anio_sem.pdf written in PD
+> F format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =        240
+Absorbing 1 HDFE group                            F(  35,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.9862
+                                                  Adj R-squared   =     0.9812
+                                                  Within R-sq.    =     0.9858
+Number of clusters (dpto)    =          8         Root MSE        =     0.0849
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+births_kid~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |  -.0490009   .1338795    -0.37   0.725    -.3655757    .2675738
+          1  |  -.0316893   .0824066    -0.38   0.712    -.2265499    .1631714
+          2  |   .0318984   .0923104     0.35   0.740     -.186381    .2501778
+          3  |  -.0195749   .0690694    -0.28   0.785    -.1828981    .1437483
+          4  |   .0406427   .0906128     0.45   0.667    -.1736226    .2549081
+          5  |   .0881299   .0445091     1.98   0.088    -.0171174    .1933772
+          6  |          0  (base)
+          7  |   .0787989   .0506339     1.56   0.164    -.0409312    .1985291
+          8  |   .0995889     .06811     1.46   0.187    -.0614655    .2606434
+          9  |   .1581038   .0632474     2.50   0.041     .0085475    .3076602
+         10  |    .098138   .0496564     1.98   0.089    -.0192808    .2155568
+         11  |   .1724755   .0868163     1.99   0.087    -.0328123    .3777633
+         12  |   .1478305   .0629241     2.35   0.051    -.0009613    .2966223
+         13  |   .1246197   .0440577     2.83   0.025     .0204397    .2287997
+       1000  |   .1966266   .0720044     2.73   0.029     .0263633    .3668899
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -.2036865   .0898464    -2.27   0.058    -.4161394    .0087665
+             |
+   t#treated |
+        0 1  |  -.1564991   .0951802    -1.64   0.144    -.3815646    .0685664
+        1 1  |  -.1178525   .0632346    -1.86   0.105    -.2673787    .0316736
+        2 1  |  -.1629994   .0786566    -2.07   0.077    -.3489926    .0229939
+        3 1  |  -.0560767   .0629045    -0.89   0.402    -.2048222    .0926688
+        4 1  |  -.0697897   .0782756    -0.89   0.402     -.254882    .1153027
+        5 1  |  -.1857133   .1055264    -1.76   0.122    -.4352436     .063817
+        7 1  |  -.0992414   .0861461    -1.15   0.287    -.3029446    .1044617
+        8 1  |  -.0850612   .0892912    -0.95   0.373    -.2962015     .126079
+        9 1  |   -.161891   .0636073    -2.55   0.038    -.3122985   -.0114836
+       10 1  |  -.1327137   .0794751    -1.67   0.139    -.3206425    .0552151
+       11 1  |  -.0996364   .0923986    -1.08   0.317    -.3181244    .1188516
+       12 1  |  -.0876729   .1088207    -0.81   0.447    -.3449931    .1696472
+       13 1  |   -.071138   .1006668    -0.71   0.503    -.3091771    .1669011
+     1000 1  |  -.1254997   .0982183    -1.28   0.242    -.3577492    .1067497
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |    1.15424   .0177151    65.16   0.000     1.112351     1.19613
+CERRO LARGO  |   .1276035   9.24e-15  1.4e+13   0.000     .1276035    .1276035
+    DURAZNO  |  -.4247841   .0167844   -25.31   0.000     -.464473   -.3850952
+     FLORES  |  -1.320564   .0167844   -78.68   0.000    -1.360253   -1.280876
+    FLORIDA  |  -.1143757   .0044288   -25.83   0.000    -.1248481   -.1039033
+     RIVERA  |   .6905006   .0177151    38.98   0.000      .648611    .7323901
+   SAN JOSÉ  |          0  (omitted)
+             |
+       _cons |   5.875309   .0644923    91.10   0.000     5.722809    6.027809
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        30           0          30     |
+-----------------------------------------------------+
+(file ../output/pooled_did_births_kids_before1_anio_sem.pdf written in PDF form
+> at)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_births_kids_before1_anio_sem.pdf written in PD
+> F format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =    160,142
+Absorbing 1 HDFE group                            F(  41,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.0038
+                                                  Adj R-squared   =     0.0034
+                                                  Within R-sq.    =     0.0035
+Number of clusters (dpto)    =          8         Root MSE        =     0.2407
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+lowbirthwe~t |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .0166204   .0136025     1.22   0.261    -.0155444    .0487852
+          1  |     -.0041   .0171816    -0.24   0.818    -.0447279     .036528
+          2  |   .0133623   .0055846     2.39   0.048     .0001567    .0265679
+          3  |   .0133019   .0103465     1.29   0.239    -.0111638    .0377676
+          4  |   .0066002   .0096559     0.68   0.516    -.0162324    .0294328
+          5  |  -.0070862   .0108301    -0.65   0.534    -.0326953     .018523
+          6  |          0  (base)
+          7  |   .0057958   .0094915     0.61   0.561    -.0166479    .0282396
+          8  |   .0055233   .0052117     1.06   0.324    -.0068005    .0178471
+          9  |   .0070869    .009158     0.77   0.464    -.0145683    .0287421
+         10  |   .0062133   .0096198     0.65   0.539    -.0165338    .0289605
+         11  |   .0046555   .0067594     0.69   0.513    -.0113279    .0206389
+         12  |   .0124335   .0119173     1.04   0.331    -.0157466    .0406135
+         13  |  -.0071263   .0102165    -0.70   0.508    -.0312845    .0170318
+       1000  |   .0025085   .0089078     0.28   0.786    -.0185551    .0235721
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -.0018347   .0135492    -0.14   0.896    -.0338734     .030204
+             |
+   t#treated |
+        0 1  |  -.0156618   .0130364    -1.20   0.269    -.0464881    .0151644
+        1 1  |  -.0000495    .020088    -0.00   0.998    -.0475501    .0474511
+        2 1  |  -.0025806   .0059614    -0.43   0.678    -.0166771    .0115159
+        3 1  |  -.0166427   .0159555    -1.04   0.332    -.0543715    .0210861
+        4 1  |  -.0060078   .0121061    -0.50   0.635    -.0346342    .0226186
+        5 1  |   .0076072   .0122888     0.62   0.555    -.0214512    .0366656
+        7 1  |   .0047887   .0119576     0.40   0.701    -.0234866    .0330639
+        8 1  |  -.0022058    .010085    -0.22   0.833     -.026053    .0216414
+        9 1  |   -.009052   .0091921    -0.98   0.358    -.0307879     .012684
+       10 1  |  -.0094786   .0094751    -1.00   0.350    -.0318837    .0129266
+       11 1  |  -.0042643   .0102337    -0.42   0.689    -.0284631    .0199345
+       12 1  |  -.0179346   .0128894    -1.39   0.207    -.0484132     .012544
+       13 1  |  -.0036686   .0137065    -0.27   0.797    -.0360792    .0287421
+     1000 1  |   .0004415   .0142531     0.03   0.976    -.0332618    .0341449
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |   .0082789    .000773    10.71   0.000     .0064511    .0101067
+CERRO LARGO  |  -.0005408    .000218    -2.48   0.042    -.0010563   -.0000253
+    DURAZNO  |  -.0155874   .0008745   -17.82   0.000    -.0176554   -.0135195
+     FLORES  |  -.0169924   .0009364   -18.15   0.000    -.0192066   -.0147782
+    FLORIDA  |   -.007391   .0007582    -9.75   0.000    -.0091838   -.0055981
+     RIVERA  |   .0110621   .0015969     6.93   0.000     .0072859    .0148383
+   SAN JOSÉ  |          0  (omitted)
+             |
+       edadm |   -.007742   .0008622    -8.98   0.000    -.0097809   -.0057031
+             |
+     c.edadm#|
+     c.edadm |   .0001472   .0000147    10.02   0.000     .0001124    .0001819
+             |
+first_preg~y |
+Not first..  |          0  (base)
+First pre..  |   .0138822   .0024689     5.62   0.001     .0080442    .0197202
+             |
+     married |
+          0  |          0  (base)
+          1  |  -.0095646   .0012849    -7.44   0.000    -.0126029   -.0065263
+             |
+ high_school |
+Less than..  |          0  (base)
+ HS or more  |  -.0055574   .0020124    -2.76   0.028     -.010316   -.0007987
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |   .0026787   .0035996     0.74   0.481     -.005833    .0111904
+             |
+       _cons |   .1502948   .0152239     9.87   0.000     .1142959    .1862937
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        34           0          34     |
+-----------------------------------------------------+
+(file ../output/pooled_did_lowbirthweight_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_lowbirthweight_anio_sem.pdf written in PDF for
+> mat)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =    159,022
+Absorbing 1 HDFE group                            F(  41,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.0035
+                                                  Adj R-squared   =     0.0031
+                                                  Within R-sq.    =     0.0031
+Number of clusters (dpto)    =          8         Root MSE        =     0.1839
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+  apgar1_low |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .0034798   .0082536     0.42   0.686    -.0160369    .0229965
+          1  |    .015471    .006784     2.28   0.057    -.0005705    .0315125
+          2  |    .000293   .0099215     0.03   0.977    -.0231675    .0237536
+          3  |   .0055587   .0059303     0.94   0.380    -.0084642    .0195817
+          4  |   .0144078   .0082668     1.74   0.125    -.0051401    .0339556
+          5  |   .0034284    .005988     0.57   0.585     -.010731    .0175878
+          6  |          0  (base)
+          7  |  -.0014579   .0083599    -0.17   0.866    -.0212259      .01831
+          8  |   .0018302   .0101761     0.18   0.862    -.0222323    .0258928
+          9  |    .015858   .0029951     5.29   0.001     .0087757    .0229404
+         10  |   .0098423   .0125352     0.79   0.458    -.0197987    .0394833
+         11  |   .0018516   .0054771     0.34   0.745    -.0110996    .0148028
+         12  |   .0004699   .0088002     0.05   0.959    -.0203392     .021279
+         13  |   .0003279   .0064995     0.05   0.961    -.0150409    .0156967
+       1000  |   .0047252   .0034534     1.37   0.214    -.0034408    .0128913
+             |
+     treated |
+          0  |          0  (base)
+          1  |   .0002817   .0057925     0.05   0.963    -.0134153    .0139787
+             |
+   t#treated |
+        0 1  |  -.0009441   .0079501    -0.12   0.909    -.0197432     .017855
+        1 1  |  -.0088924   .0071592    -1.24   0.254    -.0258212    .0080365
+        2 1  |   .0045243   .0092195     0.49   0.639    -.0172763    .0263249
+        3 1  |  -.0031271   .0068309    -0.46   0.661    -.0192796    .0130254
+        4 1  |  -.0193108   .0061938    -3.12   0.017    -.0339567   -.0046649
+        5 1  |  -.0026325   .0060875    -0.43   0.678    -.0170272    .0117621
+        7 1  |   .0020558   .0092202     0.22   0.830    -.0197465    .0238582
+        8 1  |  -.0032446   .0094488    -0.34   0.741    -.0255874    .0190981
+        9 1  |   -.010681   .0036161    -2.95   0.021    -.0192318   -.0021301
+       10 1  |  -.0081583   .0123559    -0.66   0.530    -.0373753    .0210587
+       11 1  |   .0006839   .0070928     0.10   0.926    -.0160878    .0174556
+       12 1  |  -.0078258   .0079923    -0.98   0.360    -.0267247    .0110731
+       13 1  |  -.0011976   .0056475    -0.21   0.838    -.0145517    .0121566
+     1000 1  |  -.0032784   .0046094    -0.71   0.500    -.0141778     .007621
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |    .005572   .0005477    10.17   0.000     .0042768    .0068671
+CERRO LARGO  |    .006605   .0002011    32.84   0.000     .0061294    .0070806
+    DURAZNO  |  -.0069834   .0005256   -13.29   0.000    -.0082262   -.0057406
+     FLORES  |  -.0000458   .0005197    -0.09   0.932    -.0012747    .0011831
+    FLORIDA  |   .0121243    .000721    16.81   0.000     .0104193    .0138293
+     RIVERA  |   .0064929   .0009473     6.85   0.000     .0042529    .0087329
+   SAN JOSÉ  |          0  (omitted)
+             |
+       edadm |  -.0028815    .000504    -5.72   0.001    -.0040731   -.0016898
+             |
+     c.edadm#|
+     c.edadm |    .000058   9.65e-06     6.01   0.001     .0000352    .0000808
+             |
+first_preg~y |
+Not first..  |          0  (base)
+First pre..  |   .0181829   .0011058    16.44   0.000     .0155681    .0207978
+             |
+     married |
+          0  |          0  (base)
+          1  |  -.0020292   .0013764    -1.47   0.184    -.0052838    .0012254
+             |
+ high_school |
+Less than..  |          0  (base)
+ HS or more  |  -.0019171    .000815    -2.35   0.051    -.0038441      .00001
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |   .0019601   .0037087     0.53   0.613    -.0068096    .0107299
+             |
+       _cons |   .0552274   .0102319     5.40   0.001     .0310328    .0794221
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        34           0          34     |
+-----------------------------------------------------+
+(file ../output/pooled_did_apgar1_low_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_apgar1_low_anio_sem.pdf written in PDF format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =    159,713
+Absorbing 1 HDFE group                            F(  41,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.1159
+                                                  Adj R-squared   =     0.1155
+                                                  Within R-sq.    =     0.0886
+Number of clusters (dpto)    =          8         Root MSE        =     0.3768
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+recomm_pre~s |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |   .0003038   .0113844     0.03   0.979    -.0266161    .0272237
+          1  |   .0130344   .0165201     0.79   0.456    -.0260294    .0520982
+          2  |   .0108153   .0160639     0.67   0.522    -.0271698    .0488003
+          3  |   .0403249   .0143795     2.80   0.026     .0063227     .074327
+          4  |   .0091542   .0123514     0.74   0.483    -.0200522    .0383606
+          5  |   .0071345   .0142131     0.50   0.631     -.026474    .0407431
+          6  |          0  (base)
+          7  |   .0113902   .0124817     0.91   0.392    -.0181242    .0409047
+          8  |  -.0007431   .0159372    -0.05   0.964    -.0384285    .0369424
+          9  |  -.0080258   .0091872    -0.87   0.411    -.0297501    .0136984
+         10  |   -.002093   .0177022    -0.12   0.909    -.0439521     .039766
+         11  |   .0573584   .0214777     2.67   0.032     .0065717     .108145
+         12  |   .0587245    .020752     2.83   0.025     .0096539    .1077952
+         13  |   .0681014   .0167727     4.06   0.005     .0284403    .1077625
+       1000  |   .0510297   .0223029     2.29   0.056    -.0017083    .1037677
+             |
+     treated |
+          0  |          0  (base)
+          1  |   .0889293   .0159255     5.58   0.001     .0512714    .1265871
+             |
+   t#treated |
+        0 1  |    .034549   .0173274     1.99   0.086    -.0064238    .0755218
+        1 1  |   .0257496   .0147413     1.75   0.124     -.009108    .0606072
+        2 1  |   .0181627   .0141727     1.28   0.241    -.0153505     .051676
+        3 1  |  -.0037911   .0154309    -0.25   0.813    -.0402794    .0326972
+        4 1  |   .0108173   .0230228     0.47   0.653    -.0436229    .0652575
+        5 1  |   .0164318   .0124623     1.32   0.229    -.0130368    .0459005
+        7 1  |     .00828   .0130894     0.63   0.547    -.0226715    .0392315
+        8 1  |    .020548   .0172912     1.19   0.273    -.0203392    .0614352
+        9 1  |   .0216348    .012397     1.75   0.124    -.0076795     .050949
+       10 1  |   .0103444   .0156195     0.66   0.529    -.0265898    .0472786
+       11 1  |  -.0269228   .0211589    -1.27   0.244    -.0769557    .0231102
+       12 1  |  -.0525479   .0247795    -2.12   0.072     -.111142    .0060463
+       13 1  |  -.0470186   .0153857    -3.06   0.018    -.0834001   -.0106372
+     1000 1  |  -.0284313   .0235104    -1.21   0.266    -.0840246     .027162
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |  -.0643109   .0024302   -26.46   0.000    -.0700575   -.0585644
+CERRO LARGO  |   .0761407   .0014321    53.17   0.000     .0727542    .0795272
+    DURAZNO  |   .0000715   .0037797     0.02   0.985     -.008866    .0090091
+     FLORES  |   .1501022   .0042494    35.32   0.000      .140054    .1601504
+    FLORIDA  |   -.004052   .0051152    -0.79   0.454    -.0161474    .0080435
+     RIVERA  |  -.0473512    .007848    -6.03   0.001    -.0659086   -.0287937
+   SAN JOSÉ  |          0  (omitted)
+             |
+       edadm |   .0237818   .0027186     8.75   0.000     .0173534    .0302102
+             |
+     c.edadm#|
+     c.edadm |  -.0003735   .0000451    -8.28   0.000    -.0004802   -.0002668
+             |
+first_preg~y |
+Not first..  |          0  (base)
+First pre..  |   .1133627   .0085944    13.19   0.000       .09304    .1336853
+             |
+     married |
+          0  |          0  (base)
+          1  |   .0914929   .0056447    16.21   0.000     .0781452    .1048405
+             |
+ high_school |
+Less than..  |          0  (base)
+ HS or more  |   .0127069   .0087489     1.45   0.190     -.007981    .0333947
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |  -.1367998   .0277472    -4.93   0.002    -.2024115    -.071188
+             |
+       _cons |   .3764567   .0554587     6.79   0.000     .2453178    .5075957
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        34           0          34     |
+-----------------------------------------------------+
+(file ../output/pooled_did_recomm_prenatal_numvisits_anio_sem.pdf written in PD
+> F format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_recomm_prenatal_numvisits_anio_sem.pdf written
+>  in PDF format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =    158,820
+Absorbing 1 HDFE group                            F(  41,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.0034
+                                                  Adj R-squared   =     0.0029
+                                                  Within R-sq.    =     0.0030
+Number of clusters (dpto)    =          8         Root MSE        =     0.2607
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+preg_preterm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |    .011692     .01025     1.14   0.292    -.0125455    .0359294
+          1  |  -.0029571   .0157483    -0.19   0.856    -.0401959    .0342818
+          2  |  -.0087153   .0067819    -1.29   0.240     -.024752    .0073214
+          3  |   .0065013   .0076044     0.85   0.421    -.0114802    .0244829
+          4  |   .0090558   .0128948     0.70   0.505    -.0214356    .0395471
+          5  |   -.017742   .0106388    -1.67   0.139    -.0428987    .0074147
+          6  |          0  (base)
+          7  |  -.0041346   .0115355    -0.36   0.731    -.0314117    .0231424
+          8  |  -.0105439    .012676    -0.83   0.433    -.0405179    .0194302
+          9  |  -.0037976   .0109832    -0.35   0.740    -.0297688    .0221735
+         10  |  -.0026733   .0095442    -0.28   0.787    -.0252416    .0198951
+         11  |  -.0015276   .0134697    -0.11   0.913    -.0333784    .0303231
+         12  |   .0046696   .0130277     0.36   0.731    -.0261361    .0354754
+         13  |  -.0035328   .0191534    -0.18   0.859    -.0488234    .0417578
+       1000  |  -.0053056   .0099745    -0.53   0.611    -.0288915    .0182803
+             |
+     treated |
+          0  |          0  (base)
+          1  |   -.026863   .0098033    -2.74   0.029    -.0500442   -.0036818
+             |
+   t#treated |
+        0 1  |  -.0081847   .0084947    -0.96   0.367    -.0282715    .0119022
+        1 1  |   .0107166   .0195711     0.55   0.601    -.0355617     .056995
+        2 1  |   .0157213   .0039536     3.98   0.005     .0063726    .0250701
+        3 1  |  -.0002656   .0104103    -0.03   0.980    -.0248821    .0243508
+        4 1  |  -.0145075   .0120443    -1.20   0.268    -.0429878    .0139729
+        5 1  |   .0152987    .012826     1.19   0.272    -.0150299    .0456272
+        7 1  |   .0215456   .0152542     1.41   0.201    -.0145249    .0576161
+        8 1  |   .0186751   .0100112     1.87   0.104    -.0049977    .0423479
+        9 1  |  -.0016121   .0135688    -0.12   0.909    -.0336973    .0304731
+       10 1  |  -.0068036   .0160803    -0.42   0.685    -.0448275    .0312203
+       11 1  |  -.0011936    .014693    -0.08   0.938     -.035937    .0335498
+       12 1  |  -.0090687   .0123467    -0.73   0.487    -.0382639    .0201265
+       13 1  |  -.0077257   .0201811    -0.38   0.713    -.0554465    .0399951
+     1000 1  |    .006309   .0109643     0.58   0.583    -.0196174    .0322355
+             |
+        dpto |
+    ARTIGAS  |          0  (base)
+  CANELONES  |    .016969   .0007012    24.20   0.000     .0153109    .0186271
+CERRO LARGO  |  -.0021183   .0003086    -6.86   0.000     -.002848   -.0013886
+    DURAZNO  |  -.0234938   .0006883   -34.13   0.000    -.0251214   -.0218661
+     FLORES  |  -.0263956   .0008779   -30.07   0.000    -.0284716   -.0243197
+    FLORIDA  |   .0189782   .0008352    22.72   0.000     .0170032    .0209532
+     RIVERA  |   .0173743   .0010523    16.51   0.000     .0148861    .0198625
+   SAN JOSÉ  |          0  (omitted)
+             |
+       edadm |  -.0102763   .0012278    -8.37   0.000    -.0131795   -.0073731
+             |
+     c.edadm#|
+     c.edadm |   .0001862    .000021     8.89   0.000     .0001367    .0002358
+             |
+first_preg~y |
+Not first..  |          0  (base)
+First pre..  |   .0026772   .0023452     1.14   0.291    -.0028684    .0082228
+             |
+     married |
+          0  |          0  (base)
+          1  |  -.0060091   .0020301    -2.96   0.021    -.0108096   -.0012086
+             |
+ high_school |
+Less than..  |          0  (base)
+ HS or more  |  -.0057848   .0006777    -8.54   0.000    -.0073873   -.0041822
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |  -.0033993   .0048317    -0.70   0.504    -.0148244    .0080258
+             |
+       _cons |    .218521   .0157428    13.88   0.000     .1812952    .2557467
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        34           0          34     |
+-----------------------------------------------------+
+(file ../output/pooled_did_preg_preterm_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_preg_preterm_anio_sem.pdf written in PDF forma
+> t)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =     80,693
+Absorbing 1 HDFE group                            F(  40,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.0861
+                                                  Adj R-squared   =     0.0855
+                                                  Within R-sq.    =     0.0819
+Number of clusters (dpto)    =          8         Root MSE        =     0.4761
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+     trabajo |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |  -.0086467   .0245091    -0.35   0.735    -.0666014    .0493081
+          1  |  -.0198204   .0442211    -0.45   0.668    -.1243867     .084746
+          2  |  -.0424935   .0215243    -1.97   0.089    -.0933904    .0084034
+          3  |  -.0164406   .0221738    -0.74   0.483    -.0688733    .0359921
+          4  |  -.0311812   .0260865    -1.20   0.271     -.092866    .0305036
+          5  |   .0053852   .0058464     0.92   0.388    -.0084394    .0192098
+          6  |          0  (base)
+          7  |  -.0093077   .0099948    -0.93   0.383    -.0329416    .0143261
+          8  |   -.020298   .0313712    -0.65   0.538    -.0944792    .0538831
+          9  |  -.0340356    .033639    -1.01   0.345    -.1135792    .0455079
+         10  |  -.0667461   .0291948    -2.29   0.056    -.1357808    .0022886
+         11  |  -.0560768   .0351519    -1.60   0.155     -.139198    .0270443
+         12  |  -.0270964   .0202908    -1.34   0.224    -.0750765    .0208836
+         13  |  -.0354597   .0290905    -1.22   0.262    -.1042479    .0333285
+       1000  |  -.0223891   .0218545    -1.02   0.340    -.0740668    .0292886
+             |
+     treated |
+          0  |          0  (base)
+          1  |   .0527551   .0171039     3.08   0.018     .0123109    .0931993
+             |
+   t#treated |
+        0 1  |  -.0327559   .0220446    -1.49   0.181    -.0848831    .0193714
+        1 1  |   .0773994    .037818     2.05   0.080     -.012026    .1668247
+        2 1  |   .0116502   .0292386     0.40   0.702    -.0574881    .0807885
+        3 1  |  -.0408183   .0228809    -1.78   0.118    -.0949231    .0132866
+        4 1  |     .00099   .0233171     0.04   0.967    -.0541463    .0561263
+        5 1  |  -.0193854   .0204401    -0.95   0.375    -.0677187    .0289479
+        7 1  |  -.0348642   .0140474    -2.48   0.042     -.068081   -.0016475
+        8 1  |  -.0173122   .0310649    -0.56   0.595     -.090769    .0561445
+        9 1  |   .0015484    .033263     0.05   0.964    -.0771062    .0802029
+       10 1  |   .0323429   .0303848     1.06   0.322    -.0395058    .1041917
+       11 1  |   .0198545   .0354377     0.56   0.593    -.0639424    .1036514
+       12 1  |  -.0341514    .020077    -1.70   0.133    -.0816259    .0133232
+       13 1  |   .0022877   .0237162     0.10   0.926    -.0537922    .0583676
+     1000 1  |   .0012295   .0158455     0.08   0.940    -.0362392    .0386982
+             |
+        dpto |
+          2  |          0  (base)
+          3  |  -.0211778   .0047894    -4.42   0.003     -.032503   -.0098526
+          4  |  -.0176135   .0014698   -11.98   0.000    -.0210891   -.0141378
+          6  |  -.0002861   .0055875    -0.05   0.961    -.0134983    .0129262
+          7  |   .0462017   .0066422     6.96   0.000     .0304953    .0619081
+          8  |  -.0198262   .0031216    -6.35   0.000    -.0272076   -.0124448
+         13  |  -.0473299   .0058633    -8.07   0.000    -.0611943   -.0334654
+         16  |          0  (omitted)
+             |
+      blanco |
+          0  |          0  (base)
+          1  |  -.0336981      .0039    -8.64   0.000    -.0429201    -.024476
+             |
+        poor |
+          0  |          0  (base)
+          1  |  -.1802053    .006726   -26.79   0.000    -.1961098   -.1643007
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |  -.1974847   .0146896   -13.44   0.000      -.23222   -.1627494
+             |
+ nbr_under14 |   .0035137   .0013741     2.56   0.038     .0002644    .0067629
+             |
+         car |
+          0  |          0  (base)
+          1  |  -.0140389   .0060273    -2.33   0.053    -.0282912    .0002133
+             |
+       _cons |   .7469168   .0203572    36.69   0.000     .6987796    .7950539
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        20           0          20     |
+-----------------------------------------------------+
+(file ../output/pooled_did_trabajo_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_trabajo_anio_sem.pdf written in PDF format)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =     80,681
+Absorbing 1 HDFE group                            F(  40,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.1043
+                                                  Adj R-squared   =     0.1036
+                                                  Within R-sq.    =     0.1022
+Number of clusters (dpto)    =          8         Root MSE        =    20.6744
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+horas_trab~o |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |  -.9660515   .5292031    -1.83   0.111    -2.217418    .2853151
+          1  |  -1.108755   1.128528    -0.98   0.359      -3.7773    1.559789
+          2  |  -2.404627   .3643145    -6.60   0.000    -3.266094    -1.54316
+          3  |  -1.757959   .2328105    -7.55   0.000    -2.308469    -1.20745
+          4  |  -2.271609   .7045136    -3.22   0.015    -3.937519   -.6056994
+          5  |  -.9017609   .5134956    -1.76   0.122    -2.115985    .3124634
+          6  |          0  (base)
+          7  |  -.9352921   .4413205    -2.12   0.072    -1.978849    .1082651
+          8  |  -.9557279   1.123909    -0.85   0.423     -3.61335    1.701894
+          9  |  -1.621113   .7640973    -2.12   0.072    -3.427916    .1856902
+         10  |  -2.843362    .973993    -2.92   0.022     -5.14649   -.5402348
+         11  |  -3.391831   1.011565    -3.35   0.012    -5.783803   -.9998598
+         12  |   -1.88885   .6321807    -2.99   0.020     -3.38372   -.3939806
+         13  |  -2.578834   .9252263    -2.79   0.027    -4.766646   -.3910213
+       1000  |  -1.105269   .5921637    -1.87   0.104    -2.505514     .294976
+             |
+     treated |
+          0  |          0  (base)
+          1  |   2.552148   .3119317     8.18   0.000     1.814546    3.289749
+             |
+   t#treated |
+        0 1  |   -1.03089   .5002664    -2.06   0.078    -2.213832    .1520521
+        1 1  |   3.946101    .832703     4.74   0.002     1.977072    5.915131
+        2 1  |   1.483705   .4566773     3.25   0.014     .4038351    2.563575
+        3 1  |  -.7943981   .2447105    -3.25   0.014    -1.373047   -.2157496
+        4 1  |   .7548834    .781989     0.97   0.367    -1.094227    2.603994
+        5 1  |   .6358051   .7497502     0.85   0.424    -1.137072    2.408683
+        7 1  |   -.406734   .5507022    -0.74   0.484    -1.708938    .8954698
+        8 1  |  -.1476832   .9792172    -0.15   0.884    -2.463164    2.167797
+        9 1  |   .8548724   .9187974     0.93   0.383    -1.317738    3.027483
+       10 1  |   2.210421   1.220152     1.81   0.113    -.6747808    5.095623
+       11 1  |   2.128974    .856528     2.49   0.042     .1036074    4.154341
+       12 1  |   .4704187   .3645542     1.29   0.238    -.3916151    1.332453
+       13 1  |   2.134829   .5991465     3.56   0.009     .7180727    3.551586
+     1000 1  |   .5772434   .2602511     2.22   0.062    -.0381527    1.192639
+             |
+        dpto |
+          2  |          0  (base)
+          3  |  -1.994387   .2056323    -9.70   0.000     -2.48063   -1.508144
+          4  |  -.9787325   .0815998   -11.99   0.000    -1.171685   -.7857797
+          6  |   .5336211   .2320414     2.30   0.055    -.0150696    1.082312
+          7  |   1.542483   .2455225     6.28   0.000     .9619148    2.123052
+          8  |  -1.601353   .1075208   -14.89   0.000    -1.855599   -1.347106
+         13  |   -2.37942   .2241629   -10.61   0.000    -2.909481   -1.849359
+         16  |          0  (omitted)
+             |
+      blanco |
+          0  |          0  (base)
+          1  |  -.6980781   .3084586    -2.26   0.058    -1.427467    .0313106
+             |
+        poor |
+          0  |          0  (base)
+          1  |  -8.379824    .250804   -33.41   0.000    -8.972881   -7.786767
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |  -10.00295   .8701169   -11.50   0.000    -12.06045   -7.945448
+             |
+ nbr_under14 |   .0218879   .0556455     0.39   0.706    -.1096927    .1534685
+             |
+         car |
+          0  |          0  (base)
+          1  |  -.9867441   .2888589    -3.42   0.011    -1.669787   -.3037012
+             |
+       _cons |    29.1283    .691729    42.11   0.000     27.49262    30.76398
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        20           0          20     |
+-----------------------------------------------------+
+(file ../output/pooled_did_horas_trabajo_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_horas_trabajo_anio_sem.pdf written in PDF form
+> at)
+Omitted period: -1 (prior to implementation) or t=6.
+(MWFE estimator converged in 1 iterations)
+warning: missing F statistic; dropped variables due to collinearity or too few 
+> clusters
+note: 16.dpto omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =     44,090
+Absorbing 1 HDFE group                            F(  40,      7) =          .
+Statistics robust to heteroskedasticity           Prob > F        =          .
+                                                  R-squared       =     0.0646
+                                                  Adj R-squared   =     0.0634
+                                                  Within R-sq.    =     0.0615
+Number of clusters (dpto)    =          8         Root MSE        =     0.4734
+
+                                   (Std. Err. adjusted for 8 clusters in dpto)
+------------------------------------------------------------------------------
+             |               Robust
+work_part_~e |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           t |
+          0  |    .023093   .0235101     0.98   0.359    -.0324997    .0786856
+          1  |  -.0038367   .0202065    -0.19   0.855    -.0516175    .0439441
+          2  |   .0381561   .0311094     1.23   0.260    -.0354059    .1117181
+          3  |   .0633265   .0354164     1.79   0.117    -.0204199    .1470729
+          4  |   .0490249   .0181072     2.71   0.030     .0062081    .0918418
+          5  |   .0508663   .0280583     1.81   0.113    -.0154809    .1172136
+          6  |          0  (base)
+          7  |   .0363745   .0181763     2.00   0.085    -.0066056    .0793546
+          8  |   .0267216   .0214202     1.25   0.252    -.0239292    .0773724
+          9  |    .010138   .0250574     0.40   0.698    -.0491134    .0693894
+         10  |   .0534222   .0246256     2.17   0.067     -.004808    .1116524
+         11  |   .0786196   .0319153     2.46   0.043     .0031519    .1540874
+         12  |   .0521426   .0320092     1.63   0.147     -.023547    .1278323
+         13  |   .0954807    .032383     2.95   0.021     .0189072    .1720543
+       1000  |   .0346687   .0264421     1.31   0.231    -.0278568    .0971943
+             |
+     treated |
+          0  |          0  (base)
+          1  |  -.0409824   .0225771    -1.82   0.112    -.0943688    .0124041
+             |
+   t#treated |
+        0 1  |  -.0425392   .0220842    -1.93   0.095      -.09476    .0096816
+        1 1  |  -.0363002   .0211964    -1.71   0.131    -.0864217    .0138212
+        2 1  |  -.0766118   .0409082    -1.87   0.103    -.1733443    .0201207
+        3 1  |  -.0604779   .0413261    -1.46   0.187    -.1581987    .0372428
+        4 1  |  -.0380069   .0307539    -1.24   0.256    -.1107283    .0347146
+        5 1  |  -.0588947   .0365648    -1.61   0.151    -.1453568    .0275673
+        7 1  |     -.0665   .0176216    -3.77   0.007    -.1081684   -.0248316
+        8 1  |  -.0218156   .0260989    -0.84   0.431    -.0835297    .0398986
+        9 1  |   -.012516   .0279568    -0.45   0.668    -.0786235    .0535914
+       10 1  |  -.0670844   .0277305    -2.42   0.046    -.1326566   -.0015122
+       11 1  |   -.074064   .0352581    -2.10   0.074    -.1574362    .0093082
+       12 1  |  -.0756249   .0311656    -2.43   0.046    -.1493198   -.0019299
+       13 1  |  -.1067095   .0308026    -3.46   0.010    -.1795461   -.0338729
+     1000 1  |  -.0353218   .0265387    -1.33   0.225    -.0980757    .0274321
+             |
+        dpto |
+          2  |          0  (base)
+          3  |   .0295549   .0029305    10.09   0.000     .0226254    .0364845
+          4  |   .0056383   .0016757     3.36   0.012     .0016759    .0096008
+          6  |  -.0557329   .0032488   -17.15   0.000    -.0634152   -.0480506
+          7  |  -.0608366   .0020315   -29.95   0.000    -.0656402    -.056033
+          8  |   .0518866    .002859    18.15   0.000     .0451262     .058647
+         13  |   .0486967   .0030609    15.91   0.000     .0414589    .0559345
+         16  |          0  (omitted)
+             |
+      blanco |
+          0  |          0  (base)
+          1  |    -.01537   .0115178    -1.33   0.224    -.0426051    .0118652
+             |
+        poor |
+          0  |          0  (base)
+          1  |   .0959158   .0099723     9.62   0.000      .072335    .1194967
+             |
+public_hea~h |
+          0  |          0  (base)
+          1  |   .2078268   .0187725    11.07   0.000      .163437    .2522166
+             |
+ nbr_under14 |   .0136708   .0037182     3.68   0.008     .0048786     .022463
+             |
+         car |
+          0  |          0  (base)
+          1  |    .033085   .0128891     2.57   0.037      .002607     .063563
+             |
+       _cons |   .2893569   .0337703     8.57   0.000     .2095028    .3692111
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+    anio_sem |        20           0          20     |
+-----------------------------------------------------+
+(file ../output/pooled_did_work_part_time_anio_sem.pdf written in PDF format)
+
+Generated variables:
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+__by            byte    %9.0g      __by       subgraph ID
+__plot          byte    %9.0g      __plot     plot ID
+__at            byte    %9.0g                 plot position (category axis)
+__mlbl          str1    %9s                   marker label
+__mlpos         byte    %9.0g                 marker label position
+__b             float   %9.0g                 coefficient
+__V             float   %9.0g                 variance
+__se            float   %9.0g                 standard error
+__t             float   %9.0g                 t or z statistic
+__df            byte    %9.0g                 degrees of freedom
+__pval          float   %9.0g                 p-value
+__ll1           float   %9.0g                 CI1: lower limit
+__ul1           float   %9.0g                 CI1: upper limit
+(note:  named style dashed not found in class linepattern, default attributes
+    used)
+(file ../output/pooled_did_shift_work_part_time_anio_sem.pdf written in PDF for
+> mat)
+
+. 
+. 
 end of do-file
-r(601);
 
- make.py ended: 2020-03-07 17:59:19
+ make.py ended: 2020-03-22 15:26:29

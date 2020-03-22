@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:30:50 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\ECH\code 
+ make.py started: 2020-03-22 14:28:22 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\ECH\code 
 
 
 
@@ -42,7 +42,7 @@ Type 'q()' to quit R.
 > quit()
 > proc.time()
    user  system elapsed 
- 406.06   20.42  426.61 
+ 484.81   26.29  514.00 
 
 
 Execute:  StataMP-64 /e do "./clean_raw.do"
@@ -2330,4 +2330,4 @@ file ..\output\clean_2001_2015.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:40:31
+ make.py ended: 2020-03-22 14:40:19

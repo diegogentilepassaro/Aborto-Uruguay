@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:21:48 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Inflation\code 
+ make.py started: 2020-03-22 14:29:49 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Inflation\code 
 
 
 
@@ -77,4 +77,4 @@ file ../output/inflation_by_year.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:21:48
+ make.py ended: 2020-03-22 14:29:49

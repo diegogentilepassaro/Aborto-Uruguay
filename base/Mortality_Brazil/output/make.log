@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:23:34 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Mortality_Brazil\code 
+ make.py started: 2020-03-22 14:30:25 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Mortality_Brazil\code 
 
 
 
@@ -172,4 +172,4 @@ file ../output/brasil_mm_data.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:23:35
+ make.py ended: 2020-03-22 14:30:26

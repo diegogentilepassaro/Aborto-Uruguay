@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:19:16 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Geo_Xwalk\code 
+ make.py started: 2020-03-22 14:29:07 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Geo_Xwalk\code 
 
 
 
@@ -83,4 +83,4 @@ file ../output/loc_xwalk.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:19:16
+ make.py ended: 2020-03-22 14:29:08

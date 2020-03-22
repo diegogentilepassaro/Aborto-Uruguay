@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:20:02 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Google\code 
+ make.py started: 2020-03-22 14:29:33 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Google\code 
 
 
 
@@ -76,16 +76,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_24b8_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_56c_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_24b8_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_56c_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_24b8_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_56c_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_24b8_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_56c_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -132,4 +132,4 @@ file ../output/google_trends.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:20:03
+ make.py ended: 2020-03-22 14:29:34

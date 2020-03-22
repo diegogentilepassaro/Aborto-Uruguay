@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:22:50 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Misoprostol\code 
+ make.py started: 2020-03-22 14:30:12 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Misoprostol\code 
 
 
 
@@ -77,7 +77,7 @@ Notes:
 
 Data                               wide   ->   long
 -----------------------------------------------------------------------------
-Number of obs.                        5   ->      10
+Number of obs.                        4   ->       8
 Number of variables                   5   ->       4
 j variable (2 values)                     ->   year
 xij variables:
@@ -86,21 +86,21 @@ xij variables:
 -----------------------------------------------------------------------------
 (data already sorted by region year)
   variable norm_sales was float now int
-  (20 bytes saved)
+  (16 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/misoprostol.dta
 Key: region year
 ===============================================================================
 > ===================
-  10:4(38330):2936246876:586375046
+  8:4(38330):2118303780:1268294633
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
       region |          0
-        year |         10      2004.5    2.635231       2002       2007
-  norm_sales |         10       124.3    83.65943         83        361
-  ug_per_pop |         10    3.064524    2.693657   .0014356   7.315043
+        year |          8      2004.5    2.672612       2002       2007
+  norm_sales |          8     128.375    94.26246         83        361
+  ug_per_pop |          8    3.830279     2.44502   .9323031   7.315043
 
 
 
@@ -111,4 +111,4 @@ file ../output/misoprostol.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:22:51
+ make.py ended: 2020-03-22 14:30:12

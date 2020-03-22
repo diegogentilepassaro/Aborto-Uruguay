@@ -24,11 +24,17 @@ program main
 			controls("c.edadm c.edadm#c.edadm i.first_pregnancy i.married i.high_school i.public_health")
 		}	
 	
-	/*pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
+	*pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes')
 	
-	local labor_vars   = "trabajo horas_trabajo work_part_time"
-	pooled_coefplot, data(ech_labor) time(anio_sem) num_periods(6) outcomes(`labor_vars')*/
-	
+	use ../temp/main_ECH_panel.dta, clear
+	local outcomes   = "trabajo horas_trabajo work_part_time"
+	local n_outcomes: word count `outcomes'
+    forval i = 1/`n_outcomes' {
+        local outcome: word `i' of `outcomes'
+		pooled_coefplot, time(anio_sem) num_periods(6) ///
+	        outcome(`outcome') ///
+			controls("i.blanco i.poor i.public_health c.nbr_under14 i.car")
+		}
 	/*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_college educ_anios_terc"
 	pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcomes(`educ_vars')*/
 end

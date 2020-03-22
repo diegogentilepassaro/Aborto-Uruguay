@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-20 16:28:58 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Vitals\code 
+ make.py started: 2020-03-22 14:31:25 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\Vitals\code 
 
 
 
@@ -167,7 +167,7 @@ Notes:
  46.     bys age_group: egen age_min = min(edadm) if !missing(age_group)
  47.         bys age_group: egen age_max = max(edadm) if !missing(age_group)
  48.         
-.     lab def young                 0 "Age: 31-45"             1 "Age: 16-30"
+.     lab def young                 0 "Age: 31-44"             1 "Age: 15-30"
  49.     lab val young                 young
  50.     
 .         gen public_health = (tipoestab == 1)
@@ -244,23 +244,23 @@ Notes:
 
 . 
 . main
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000001.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000002.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000003.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000004.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000005.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000006.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000007.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000008.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_000009.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000a.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000b.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000c.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000d.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000e.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000f.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000g.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_157c_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_38f0_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -385,4 +385,4 @@ file ../output/vital_birth_records.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-20 16:29:55
+ make.py ended: 2020-03-22 14:32:51

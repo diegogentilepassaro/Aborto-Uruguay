@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-22 08:32:53 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Vitals\code 
+ make.py started: 2020-03-22 14:52:57 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Vitals\code 
 
 
 
@@ -620,4 +620,4 @@ file ../output/births_mvd.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-22 08:33:05
+ make.py ended: 2020-03-22 14:53:11
