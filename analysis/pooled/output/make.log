@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-22 15:25:43 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-03-23 07:39:48 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -259,17 +259,17 @@ file ../temp/sh_kids_before.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (64,166 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_000002.tmp saved
 (110,077 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_000004.tmp saved
 (6,273 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_000006.tmp saved
 (110,021 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_000008.tmp saved
 (58,645 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_00000a.tmp saved
 (696 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_00000c.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -277,7 +277,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000c.tmp saved
     not matched                             0
     matched                               272  
     -----------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_37a0_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2fd4_00000d.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -726,34 +726,37 @@ Notes:
   6.         local outcome: word `i' of `outcomes'
   7.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
 >                 outcome(`outcome') controls(" ")
-  8.                 }
-  9. 
+  8.                 pooled_mean_plots, time(anio_sem) num_periods(6) ///
+>                     outcome(`outcome')
+  9.                 }
+ 10. 
 .         use ../temp/plots_sample_births_ind.dta, clear
- 10.     local outcomes = "lowbirthweight apgar1_low recomm_prenatal_numvisits 
+ 11.     local outcomes = "lowbirthweight apgar1_low recomm_prenatal_numvisits 
 > preg_preterm"
- 11.         local n_outcomes: word count `outcomes'
- 12.     forval i = 1/`n_outcomes' {
- 13.         local outcome: word `i' of `outcomes'
- 14.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
+ 12.         local n_outcomes: word count `outcomes'
+ 13.     forval i = 1/`n_outcomes' {
+ 14.         local outcome: word `i' of `outcomes'
+ 15.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
 >                 outcome(`outcome') ///
 >                         controls("c.edadm c.edadm#c.edadm i.first_pregnancy i
 > .married i.high_school i.public_health")
- 15.                 }       
- 16.         
-.         *pooled_mean_plots, time(anio_sem) num_periods(6) outcomes(`outcomes'
-> )
-.         
+ 16.                 pooled_mean_plots, time(anio_sem) num_periods(6) ///
+>                     outcome(`outcome')
+ 17.                 }
+ 18.         
 .         use ../temp/main_ECH_panel.dta, clear
- 17.         local outcomes   = "trabajo horas_trabajo work_part_time"
- 18.         local n_outcomes: word count `outcomes'
- 19.     forval i = 1/`n_outcomes' {
- 20.         local outcome: word `i' of `outcomes'
- 21.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
+ 19.         local outcomes   = "trabajo horas_trabajo work_part_time"
+ 20.         local n_outcomes: word count `outcomes'
+ 21.     forval i = 1/`n_outcomes' {
+ 22.         local outcome: word `i' of `outcomes'
+ 23.                 pooled_coefplot, time(anio_sem) num_periods(6) ///
 >                 outcome(`outcome') ///
 >                         controls("i.blanco i.poor i.public_health c.nbr_under
 > 14 i.car")
- 22.                 }
- 23.         /*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_
+ 24.                 pooled_mean_plots, time(anio_sem) num_periods(6) ///
+>                     outcome(`outcome')
+ 25.                 }
+ 26.         /*local educ_vars   = "educ_HS_diploma educ_anios_secun educ_some_
 > college educ_anios_terc"
 >         pooled_coefplot, data(ech_educ) time(anio_sem) num_periods(6) outcome
 > s(`educ_vars')*/
@@ -818,66 +821,51 @@ Notes:
 
 . 
 . program pooled_mean_plots
-  1. syntax, outcomes(str) time(str) num_periods(int)
-  2.         use ../temp/plots_sample_births_wide.dta, clear
-  3.         if "`time'" == "anio_sem" {
-  4.                 local time_label "Semesters relative to IS implementation"
-  5.         }
-  6.         else {
-  7.                 local time_label "Years relative to IS implementation"
-  8.         }
+  1. syntax, time(str) num_periods(int) outcome(str)
+  2.         if "`time'" == "anio_sem" {
+  3.                 local time_label "Semesters relative to IS implementation"
+  4.         }
+  5.         else {
+  6.                 local time_label "Years relative to IS implementation"
+  7.         }
+  8.         
+.         local opts = "graphregion(color(white)) bgcolor(white) " + ///
+>                    "xline(7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
   9.         
-.         foreach outcome in `outcomes' {
- 10.                 local opts "graphregion(color(white)) bgcolor(white) xline
-> (7.5 8.5, lcolor(black) lpattern(dot)) ysize(3)"
- 11.                 
-.                 * Mean DiD
-.                 egen T_`outcome' = mean(`outcome') if treated==1, by(t)
- 12.                 egen C_`outcome' = mean(`outcome') if treated==0, by(t)
- 13.                 sort t dpto treated `by_var'
- 14.                 gen     D_`outcome'   = T_`outcome' - C_`outcome'[_n-2] if
->  treated==1
- 15.                 lab var T_`outcome' "`: var lab `outcome''"
- 16.                 lab var C_`outcome' "`: var lab `outcome''"
- 17.                 lab var D_`outcome' "`: var lab `outcome''"
- 18.                 tw (connected T_`outcome' t if inrange(t,2,14), sort mc(na
-> vy) lc(navy)) ///
->                    (connected C_`outcome' t if inrange(t,2,14), sort mc(maroo
-> n)  lc(maroon)), ///
->                         legend(label(1 "Treatment") label( 2 "Control")) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 19.                 graph export ../output/pooled_did2_avg_`outcome'_`time'.pd
-> f, replace
- 20.                 tw connected D_`outcome' t if inrange(t,2,14), sort mc(nav
-> y) lc(navy) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 21.                 graph export ../output/pooled_did_avg_`outcome'_`time'.pdf
-> , replace
- 22.                 
-.                 * Mean ES
-.                 egen         avg_`outcome' = mean(`outcome') if (treated==1|d
-> pto==1), by(t)
- 23.                 lab var      avg_`outcome' "`: var lab `outcome''"
- 24.                 tw connected avg_`outcome' t if inrange(t,2,14), sort mc(n
-> avy) lc(navy) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 25.                 graph export ../output/pooled_es_avg_`outcome'_`time'.pdf,
->  replace
- 26.                 
-.                 egen         avg_`outcome'_2 = mean(`outcome') if (treated==1
-> ), by(t)
- 27.                 lab var      avg_`outcome'_2 "`: var lab `outcome''"
- 28.                 tw connected avg_`outcome'_2 t if inrange(t,2,14), sort mc
-> (navy) lc(navy) ///
->                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
-> "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 29.                 graph export ../output/pooled_es_avg_`outcome'_`time'_nomv
-> d.pdf, replace
- 30.         }
- 31. end
+.         * Mean DiD
+.         egen T_`outcome' = mean(`outcome') if treated==1, by(t)
+ 10.         egen C_`outcome' = mean(`outcome') if treated==0, by(t)
+ 11.         sort t dpto treated `by_var'
+ 12.         gen     D_`outcome'   = T_`outcome' - C_`outcome'[_n-2] if treated
+> ==1
+ 13.         lab var T_`outcome' "`: var lab `outcome''"
+ 14.         lab var C_`outcome' "`: var lab `outcome''"
+ 15.         lab var D_`outcome' "`: var lab `outcome''"
+ 16.         tw (connected T_`outcome' t if inrange(t,2,14), sort mc(navy) lc(n
+> avy)) ///
+>            (connected C_`outcome' t if inrange(t,2,14), sort mc(maroon)  lc(m
+> aroon)), ///
+>                 legend(label(1 "Treatment") label( 2 "Control")) ///
+>                 `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "
+> 0" 10 "2" 12 "4" 14 "6")
+ 17.         graph export ../output/pooled_did2_avg_`outcome'_`time'.pdf, repla
+> ce
+ 18.         tw connected D_`outcome' t if inrange(t,2,14), sort mc(navy) lc(na
+> vy) ///
+>                 `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "
+> 0" 10 "2" 12 "4" 14 "6")
+ 19.         graph export ../output/pooled_did_avg_`outcome'_`time'.pdf, replac
+> e
+ 20.         
+.         * Mean ES
+.         egen         avg_`outcome' = mean(`outcome') if (treated==1), by(t)
+ 21.         lab var      avg_`outcome' "`: var lab `outcome''"
+ 22.         tw connected avg_`outcome' t if inrange(t,2,14), sort mc(navy) lc(
+> navy) ///
+>                 `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "
+> 0" 10 "2" 12 "4" 14 "6")
+ 23.         graph export ../output/pooled_es_avg_`outcome'_`time'.pdf, replace
+ 24. end
 
 . 
 . main
@@ -978,6 +966,13 @@ __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
 (file ../output/pooled_did_shift_GFR_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_GFR_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_GFR_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_GFR_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1037,7 +1032,7 @@ Number of clusters (dpto)    =          8         Root MSE        =     6.4083
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |  -7.763688   1.710356    -4.54   0.003    -11.80804   -3.719338
-CERRO LARGO  |  -7.388164   9.37e-14 -7.9e+13   0.000    -7.388164   -7.388164
+CERRO LARGO  |  -7.388164   1.85e-14 -4.0e+14   0.000    -7.388164   -7.388164
     DURAZNO  |   .7216645   1.077864     0.67   0.525     -1.82708    3.270409
      FLORES  |   .8842502   1.077864     0.82   0.439    -1.664494    3.432994
     FLORIDA  |   18.48238   .4275891    43.22   0.000     17.47129    19.49347
@@ -1076,6 +1071,13 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_GFR_single0_anio_sem.pdf written in PDF format
 > )
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_GFR_single0_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_GFR_single0_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_GFR_single0_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1135,7 +1137,7 @@ Number of clusters (dpto)    =          8         Root MSE        =     6.5908
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |   -9.51571   1.693035    -5.62   0.001     -13.5191   -5.512317
-CERRO LARGO  |    9.19636   9.19e-14  1.0e+14   0.000      9.19636     9.19636
+CERRO LARGO  |    9.19636   2.13e-14  4.3e+14   0.000      9.19636     9.19636
     DURAZNO  |  -7.098128   1.088324    -6.52   0.000    -9.671606    -4.52465
      FLORES  |  -8.451654   1.088324    -7.77   0.000    -11.02513   -5.878176
     FLORIDA  |  -4.747046   .4232588   -11.22   0.000    -5.747894   -3.746198
@@ -1174,6 +1176,13 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_GFR_single1_anio_sem.pdf written in PDF format
 > )
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_GFR_single1_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_GFR_single1_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_GFR_single1_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1233,7 +1242,7 @@ GFR_kids_b~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |  -10.92558   1.031219   -10.59   0.000    -13.36402   -8.487131
-CERRO LARGO  |   -4.39494   4.01e-14 -1.1e+14   0.000     -4.39494    -4.39494
+CERRO LARGO  |   -4.39494   6.29e-15 -7.0e+14   0.000     -4.39494    -4.39494
     DURAZNO  |   -7.09191   .6824279   -10.39   0.000    -8.705595   -5.478224
      FLORES  |  -10.34198   .6824279   -15.15   0.000    -11.95567   -8.728294
     FLORIDA  |   8.288613   .2578047    32.15   0.000     7.679002    8.898224
@@ -1272,6 +1281,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_GFR_kids_before0_anio_sem.pdf written in PDF f
 > ormat)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_GFR_kids_before0_anio_sem.pdf written in PDF fo
+> rmat)
+(file ../output/pooled_did_avg_GFR_kids_before0_anio_sem.pdf written in PDF for
+> mat)
+(120 missing values generated)
+(file ../output/pooled_es_avg_GFR_kids_before0_anio_sem.pdf written in PDF form
+> at)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1331,7 +1350,7 @@ GFR_kids_b~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |  -6.958315    .471469   -14.76   0.000    -8.073162   -5.843468
-CERRO LARGO  |   1.040938   1.26e-14  8.3e+13   0.000     1.040938    1.040938
+CERRO LARGO  |   1.040938   8.73e-15  1.2e+14   0.000     1.040938    1.040938
     DURAZNO  |  -2.524464   .4258243    -5.93   0.001    -3.531379    -1.51755
      FLORES  |   -1.93187   .4258243    -4.54   0.003    -2.938784   -.9249555
     FLORIDA  |   8.374141   .1178673    71.05   0.000      8.09543    8.652853
@@ -1370,6 +1389,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_GFR_kids_before1_anio_sem.pdf written in PDF f
 > ormat)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_GFR_kids_before1_anio_sem.pdf written in PDF fo
+> rmat)
+(file ../output/pooled_did_avg_GFR_kids_before1_anio_sem.pdf written in PDF for
+> mat)
+(120 missing values generated)
+(file ../output/pooled_es_avg_GFR_kids_before1_anio_sem.pdf written in PDF form
+> at)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1429,7 +1458,7 @@ Number of clusters (dpto)    =          8         Root MSE        =     0.0753
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |   1.094855   .0146789    74.59   0.000     1.060145    1.129565
-CERRO LARGO  |   .1063141   8.82e-15  1.2e+13   0.000     .1063141    .1063141
+CERRO LARGO  |   .1063141   1.22e-15  8.7e+13   0.000     .1063141    .1063141
     DURAZNO  |  -.4089255   .0144838   -28.23   0.000    -.4431742   -.3746767
      FLORES  |  -1.283734   .0144838   -88.63   0.000    -1.317982   -1.249485
     FLORIDA  |  -.1418224   .0036697   -38.65   0.000       -.1505   -.1331449
@@ -1467,6 +1496,13 @@ __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
 (file ../output/pooled_did_shift_births_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_births_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_births_anio_sem.pdf written in PDF format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_births_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1526,7 +1562,7 @@ births_sin~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |   1.155558   .0382764    30.19   0.000     1.065048    1.246067
-CERRO LARGO  |   .0078202   8.00e-15  9.8e+11   0.000     .0078202    .0078202
+CERRO LARGO  |   .0078202   1.61e-15  4.9e+12   0.000     .0078202    .0078202
     DURAZNO  |  -.2615609   .0296249    -8.83   0.000    -.3316127   -.1915092
      FLORES  |  -1.090423   .0296249   -36.81   0.000    -1.160475   -1.020371
     FLORIDA  |    .080067   .0095691     8.37   0.000     .0574396    .1026943
@@ -1565,6 +1601,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_births_single0_anio_sem.pdf written in PDF for
 > mat)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_births_single0_anio_sem.pdf written in PDF form
+> at)
+(file ../output/pooled_did_avg_births_single0_anio_sem.pdf written in PDF forma
+> t)
+(120 missing values generated)
+(file ../output/pooled_es_avg_births_single0_anio_sem.pdf written in PDF format
+> )
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1624,7 +1670,7 @@ births_sin~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |   .9005048   .0885471    10.17   0.000     .6911242    1.109885
-CERRO LARGO  |    .338656   9.94e-15  3.4e+13   0.000      .338656     .338656
+CERRO LARGO  |    .338656   8.45e-16  4.0e+14   0.000      .338656     .338656
     DURAZNO  |  -.6735348   .0616456   -10.93   0.000    -.8193036    -.527766
      FLORES  |  -1.746715   .0616456   -28.33   0.000    -1.892483   -1.600946
     FLORIDA  |  -.7357756   .0221368   -33.24   0.000    -.7881207   -.6834304
@@ -1663,6 +1709,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_births_single1_anio_sem.pdf written in PDF for
 > mat)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_births_single1_anio_sem.pdf written in PDF form
+> at)
+(file ../output/pooled_did_avg_births_single1_anio_sem.pdf written in PDF forma
+> t)
+(120 missing values generated)
+(file ../output/pooled_es_avg_births_single1_anio_sem.pdf written in PDF format
+> )
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1722,7 +1778,7 @@ births_kid~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |   .9812274   .0174583    56.20   0.000      .939945     1.02251
-CERRO LARGO  |   .0754339   7.84e-15  9.6e+12   0.000     .0754339    .0754339
+CERRO LARGO  |   .0754339   1.06e-15  7.1e+13   0.000     .0754339    .0754339
     DURAZNO  |  -.3822167   .0143573   -26.62   0.000    -.4161662   -.3482671
      FLORES  |   -1.20761   .0143573   -84.11   0.000    -1.241559    -1.17366
     FLORIDA  |  -.1916712   .0043646   -43.92   0.000    -.2019918   -.1813506
@@ -1762,6 +1818,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_births_kids_before0_anio_sem.pdf written in PD
 > F format)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_births_kids_before0_anio_sem.pdf written in PDF
+>  format)
+(file ../output/pooled_did_avg_births_kids_before0_anio_sem.pdf written in PDF 
+> format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_births_kids_before0_anio_sem.pdf written in PDF f
+> ormat)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1821,7 +1887,7 @@ births_kid~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
         dpto |
     ARTIGAS  |          0  (base)
   CANELONES  |    1.15424   .0177151    65.16   0.000     1.112351     1.19613
-CERRO LARGO  |   .1276035   9.24e-15  1.4e+13   0.000     .1276035    .1276035
+CERRO LARGO  |   .1276035   2.06e-15  6.2e+13   0.000     .1276035    .1276035
     DURAZNO  |  -.4247841   .0167844   -25.31   0.000     -.464473   -.3850952
      FLORES  |  -1.320564   .0167844   -78.68   0.000    -1.360253   -1.280876
     FLORIDA  |  -.1143757   .0044288   -25.83   0.000    -.1248481   -.1039033
@@ -1861,6 +1927,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_births_kids_before1_anio_sem.pdf written in PD
 > F format)
+(120 missing values generated)
+(120 missing values generated)
+(206 missing values generated)
+(file ../output/pooled_did2_avg_births_kids_before1_anio_sem.pdf written in PDF
+>  format)
+(file ../output/pooled_did_avg_births_kids_before1_anio_sem.pdf written in PDF 
+> format)
+(120 missing values generated)
+(file ../output/pooled_es_avg_births_kids_before1_anio_sem.pdf written in PDF f
+> ormat)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -1980,6 +2056,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_lowbirthweight_anio_sem.pdf written in PDF for
 > mat)
+(62689 missing values generated)
+(105281 missing values generated)
+(167,910 missing values generated)
+(file ../output/pooled_did2_avg_lowbirthweight_anio_sem.pdf written in PDF form
+> at)
+(file ../output/pooled_did_avg_lowbirthweight_anio_sem.pdf written in PDF forma
+> t)
+(62689 missing values generated)
+(file ../output/pooled_es_avg_lowbirthweight_anio_sem.pdf written in PDF format
+> )
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2098,6 +2184,13 @@ __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
 (file ../output/pooled_did_shift_apgar1_low_anio_sem.pdf written in PDF format)
+(62689 missing values generated)
+(105281 missing values generated)
+(167,910 missing values generated)
+(file ../output/pooled_did2_avg_apgar1_low_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_apgar1_low_anio_sem.pdf written in PDF format)
+(62689 missing values generated)
+(file ../output/pooled_es_avg_apgar1_low_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2218,6 +2311,16 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_recomm_prenatal_numvisits_anio_sem.pdf written
 >  in PDF format)
+(62689 missing values generated)
+(105281 missing values generated)
+(167,910 missing values generated)
+(file ../output/pooled_did2_avg_recomm_prenatal_numvisits_anio_sem.pdf written 
+> in PDF format)
+(file ../output/pooled_did_avg_recomm_prenatal_numvisits_anio_sem.pdf written i
+> n PDF format)
+(62689 missing values generated)
+(file ../output/pooled_es_avg_recomm_prenatal_numvisits_anio_sem.pdf written in
+>  PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2337,6 +2440,14 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_preg_preterm_anio_sem.pdf written in PDF forma
 > t)
+(62689 missing values generated)
+(105281 missing values generated)
+(167,910 missing values generated)
+(file ../output/pooled_did2_avg_preg_preterm_anio_sem.pdf written in PDF format
+> )
+(file ../output/pooled_did_avg_preg_preterm_anio_sem.pdf written in PDF format)
+(62689 missing values generated)
+(file ../output/pooled_es_avg_preg_preterm_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2452,6 +2563,13 @@ __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
 (file ../output/pooled_did_shift_trabajo_anio_sem.pdf written in PDF format)
+(26015 missing values generated)
+(68689 missing values generated)
+(94,644 missing values generated)
+(file ../output/pooled_did2_avg_trabajo_anio_sem.pdf written in PDF format)
+(file ../output/pooled_did_avg_trabajo_anio_sem.pdf written in PDF format)
+(26015 missing values generated)
+(file ../output/pooled_es_avg_trabajo_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2568,6 +2686,15 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_horas_trabajo_anio_sem.pdf written in PDF form
 > at)
+(26015 missing values generated)
+(68689 missing values generated)
+(94,644 missing values generated)
+(file ../output/pooled_did2_avg_horas_trabajo_anio_sem.pdf written in PDF forma
+> t)
+(file ../output/pooled_did_avg_horas_trabajo_anio_sem.pdf written in PDF format
+> )
+(26015 missing values generated)
+(file ../output/pooled_es_avg_horas_trabajo_anio_sem.pdf written in PDF format)
 Omitted period: -1 (prior to implementation) or t=6.
 (MWFE estimator converged in 1 iterations)
 warning: missing F statistic; dropped variables due to collinearity or too few 
@@ -2684,9 +2811,19 @@ __ul1           float   %9.0g                 CI1: upper limit
     used)
 (file ../output/pooled_did_shift_work_part_time_anio_sem.pdf written in PDF for
 > mat)
+(26015 missing values generated)
+(68689 missing values generated)
+(94,644 missing values generated)
+(file ../output/pooled_did2_avg_work_part_time_anio_sem.pdf written in PDF form
+> at)
+(file ../output/pooled_did_avg_work_part_time_anio_sem.pdf written in PDF forma
+> t)
+(26015 missing values generated)
+(file ../output/pooled_es_avg_work_part_time_anio_sem.pdf written in PDF format
+> )
 
 . 
 . 
 end of do-file
 
- make.py ended: 2020-03-22 15:26:29
+ make.py ended: 2020-03-23 07:41:25
