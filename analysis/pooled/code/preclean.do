@@ -5,19 +5,33 @@ adopath + ../../../library/stata/gslab_misc/ado
 program main
 	qui do ../../globals.do
 	
-	create_births_data,     time(anio_sem) num_periods(6) by_vars(single kids_before)
+	create_births_data, time(anio_sem) num_periods(6) by_vars(single kids_before)
 	
 	use ../temp/plots_sample_births_wide.dta, clear
 	relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_date)
 	save_data ../temp/plots_sample_births_wide.dta, key(dpto anio_sem) replace
+
+    use ../temp/plots_sample_births_long.dta, clear
+	rename post post_anio_sem
+	rename treated treatment_fertile 
+	save_data ../temp/plots_sample_births_long.dta, key(dpto anio_sem sample) replace
 	
 	use ../temp/plots_sample_births_ind.dta, clear
 	relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_date)
+	gen treatment_fertile = treated
     save_data ../temp/plots_sample_births_ind.dta, key(birth_id) replace
 
 	use ..\..\..\derived\ECH\output\main_ECH_panel.dta, clear
 	relative_time, num_periods(6) time(anio_sem) event_date(IS_impl_date)
     save_data ../temp/main_ECH_panel.dta, key(pers numero anio_sem) replace	
+	
+	use ..\..\..\derived\ECH\output\main_ECH_panel.dta, clear
+	append using ..\..\..\derived\ECH\output\placebo_infertile_ECH_panel.dta
+	gen treatment_fertile = 1 if (fertile == 1 & treated == 1)
+	replace treatment_fertile = 0 if (fertile == 1 & treated == 0)
+	gen treatment_placebo = 1 if (fertile == 0 & treated == 1)
+	replace treatment_placebo = 0 if (fertile == 0 & treated == 0)
+    save_data ../temp/fertile_infertile_ECH_panel.dta, key(pers numero anio_sem) replace
 end
 
 program create_births_data

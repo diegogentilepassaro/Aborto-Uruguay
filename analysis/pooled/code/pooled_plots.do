@@ -35,7 +35,7 @@ program main
         local outcome: word `i' of `outcomes'
 		pooled_coefplot, time(anio_sem) num_periods(6) ///
 	        outcome(`outcome') ///
-			controls("i.blanco i.poor i.public_health c.nbr_under14 i.car")
+			controls("i.blanco i.poor i.car i.married i.public_health c.edad c.nbr_people c.nbr_under14")
 		pooled_mean_plots, time(anio_sem) num_periods(6) ///
 		    outcome(`outcome')
 		}
@@ -73,7 +73,7 @@ syntax, time(str) num_periods(int) outcome(str) controls(str) ///
 	coefplot, `coefplot_opts' xtitle("`time_label'") ///
 		keep(`keep_coeffs') ///
 		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
-	graph export ../output/pooled_did_`outcome'_`time'.pdf, replace
+	graph export ../output/pooled_did_`outcome'_`time'.png, replace
 		
 	* Coef plot with shift
 	qui sum `outcome' if inrange(t, 1, `num_periods')
@@ -89,7 +89,7 @@ syntax, time(str) num_periods(int) outcome(str) controls(str) ///
 		keep(`keep_coeffs') ///
 		transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 		
-	graph export ../output/pooled_did_shift_`outcome'_`time'.pdf, replace
+	graph export ../output/pooled_did_shift_`outcome'_`time'.png, replace
 end
 
 program pooled_mean_plots
@@ -116,17 +116,17 @@ syntax, time(str) num_periods(int) outcome(str)
 	   (connected C_`outcome' t if inrange(t,2,14), sort mc(maroon)  lc(maroon)), ///
 		legend(label(1 "Treatment") label( 2 "Control")) ///
 		`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-	graph export ../output/pooled_did2_avg_`outcome'_`time'.pdf, replace
+	graph export ../output/pooled_did2_avg_`outcome'_`time'.png, replace
 	tw connected D_`outcome' t if inrange(t,2,14), sort mc(navy) lc(navy) ///
 		`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-	graph export ../output/pooled_did_avg_`outcome'_`time'.pdf, replace
+	graph export ../output/pooled_did_avg_`outcome'_`time'.png, replace
 	
 	* Mean ES
 	egen         avg_`outcome' = mean(`outcome') if (treated==1), by(t)
 	lab var      avg_`outcome' "`: var lab `outcome''"
 	tw connected avg_`outcome' t if inrange(t,2,14), sort mc(navy) lc(navy) ///
 		`opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 "-2" 8 "0" 10 "2" 12 "4" 14 "6")
-	graph export ../output/pooled_es_avg_`outcome'_`time'.pdf, replace
+	graph export ../output/pooled_es_avg_`outcome'_`time'.png, replace
 end
 
 main
