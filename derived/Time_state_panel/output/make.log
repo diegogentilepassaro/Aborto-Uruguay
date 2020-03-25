@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-22 14:54:19 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Time_state_panel\code 
+ make.py started: 2020-03-25 12:26:10 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Time_state_panel\code 
 
 
 
@@ -68,11 +68,11 @@ Notes:
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                           260
+    not matched                           230
         from master                         0  
-        from using                        260  
+        from using                        230  
 
-    matched                               120  
+    matched                               150  
     -----------------------------------------
 
     Result                           # of obs.
@@ -91,13 +91,13 @@ File: ../output/year_dpto_panel.dta
 Key: anio dpto
 ===============================================================================
 > ===================
-  475:9(60039):83153610:3160934193
+  475:9(60039):1881242014:2192834395
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
         anio |        475        2008    7.218705       1996       2020
         dpto |        475          10       5.483          1         19
-share_wome~h |        120    .5254278    .0982358    .261195   .7342288
+share_wome~h |        150    .4944334    .1245054   .1241261   .7342288
    nat_level |        380    2641.832     4259.19        307      23287
     nat_rate |        380    15.45286    2.337763   11.09572   23.26173
 -------------+---------------------------------------------------------
@@ -115,4 +115,4 @@ file ../output/year_dpto_panel.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-22 14:54:20
+ make.py ended: 2020-03-25 12:26:11

@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-25 09:07:09 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-03-25 12:38:26 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -455,11 +455,11 @@ file ../temp/average_births_rel.dta saved
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4     3420.25    87.30932       3327       3538
+  nbr_births |          4     7126.75    125.9163       6967       7275
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5      3393.4    94.75653       3282       3530
+  nbr_births |          5      7058.2    106.2624       6879       7164
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -497,11 +497,11 @@ file ../temp/average_births_rel_mvd.dta saved
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          4     4550.25    175.7524       4361       4713
+  nbr_births |          4     8256.75    212.0257       8001       8439
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-  nbr_births |          5      4384.4    513.3496       3477       4710
+  nbr_births |          5      8049.2    524.8587       7132       8467
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -774,10 +774,10 @@ Notes:
 >                 subtitle("Salto")
  13.                 
 .         graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) ///
->         graphregion(fcolor(white)) ///
->         graph export ../output/natality_`rescale'.png, replace
- 14.         graph drop _all
- 15. end
+>             graphregion(fcolor(white))
+ 14.         graph export ../output/natality_`rescale'.png, replace
+ 15.         graph drop _all
+ 16. end
 
 . 
 . main
@@ -938,7 +938,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_29f0_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3570_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -950,7 +950,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_29f0_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3570_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -962,7 +962,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_29f0_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3570_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -979,11 +979,11 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_29f0_000006.tmp saved
         time variable:  year, 1996 to 2015
                 delta:  1 unit
 (418 real changes made)
-replace is not a memory graph
-r(198);
+(note: file ../output/natality_1000.png not found)
+(file ../output/natality_1000.png written in PNG format)
 
+. 
 end of do-file
-r(198);
 
 
 Execute:  StataMP-64 /e do "./misoprostol.do"
@@ -1143,16 +1143,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_17d0_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3b90_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_17d0_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3b90_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_17d0_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3b90_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_17d0_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3b90_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1179,4 +1179,4 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_17d0_000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2020-03-25 09:07:45
+ make.py ended: 2020-03-25 12:39:04

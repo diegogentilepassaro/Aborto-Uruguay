@@ -89,7 +89,7 @@ syntax, rescale(int)
 		subtitle("Salto")
 		
 	graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) ///
-	graphregion(fcolor(white)) ///
+	    graphregion(fcolor(white))
 	graph export ../output/natality_`rescale'.png, replace
 	graph drop _all
 end

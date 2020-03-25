@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-22 14:55:47 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Time_state_age_panel\code 
+ make.py started: 2020-03-25 12:25:58 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\Time_state_age_panel\code 
 
 
 
@@ -85,4 +85,4 @@ file ../output/year_dpto_age_panel.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-22 14:55:47
+ make.py ended: 2020-03-25 12:25:59

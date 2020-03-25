@@ -71,7 +71,7 @@ syntax, time(str) num_periods(int) outcome(str) controls(str) ///
 	    local keep_coeffs = "`keep_coeffs'" + " `i'.t#1.treated"
 	}					  
 	coefplot, `coefplot_opts' xtitle("`time_label'") ///
-		keep(`keep_coeffs') ///
+		keep(`keep_coeffs') omit ///
 		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 
 	graph export ../output/pooled_did_`outcome'_`time'.png, replace
 		
@@ -79,14 +79,14 @@ syntax, time(str) num_periods(int) outcome(str) controls(str) ///
 	qui sum `outcome' if inrange(t, 1, `num_periods')
 	local target_mean = r(mean)
 	preserve
-		coefplot, omitted vertical baselevels gen ///
+		coefplot, omit vertical baselevels gen ///
 		keep(`keep_coeffs')
 		qui sum __b
 		local coef_mean = r(mean)
 	restore 
 	local yshift = `target_mean' - `coef_mean'
 	coefplot, `coefplot_opts' xtitle("`time_label'") ///
-		keep(`keep_coeffs') ///
+		keep(`keep_coeffs') omit ///
 		transform(*= "@ + `yshift'") yline(`target_mean', lpattern(dashed)) ///
 		xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4" 13 "6") 		
 	graph export ../output/pooled_did_shift_`outcome'_`time'.png, replace

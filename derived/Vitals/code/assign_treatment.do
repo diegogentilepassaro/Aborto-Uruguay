@@ -23,6 +23,7 @@ program import_treatment_dates
 
     import excel ../../../raw/control_impl_dates.xlsx, clear firstrow
     keep dpto impl_date
+	keep if !missing(dpto)
     save_data ../temp/timeline_control_implementation.dta, key(dpto) replace
 end
 
