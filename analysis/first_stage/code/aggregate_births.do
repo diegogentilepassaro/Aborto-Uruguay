@@ -88,8 +88,9 @@ syntax, rescale(int)
 		, `opts' `opt2' tline(2012, lcolor(black) lpattern(dot)) name(sal, replace) ///
 		subtitle("Salto")
 		
-	graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) graphregion(fcolor(white))
-	graph export ../output/natality_`rescale'.pdf, replace
+	graph combine mvd can san flo riv sal, cols(3) ysize(7) xsize(10) ///
+	graphregion(fcolor(white)) ///
+	graph export ../output/natality_`rescale'.png, replace
 	graph drop _all
 end
 

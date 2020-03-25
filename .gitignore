@@ -1,7 +1,6 @@
 raw/
 *.gph
 *.dta
-*.png
 *.Rhistory
 tables/
 figures/

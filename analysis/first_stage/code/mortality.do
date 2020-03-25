@@ -114,7 +114,7 @@ program plot_ratio,
 		l1title("Maternal mortality over fertile women's deaths, Brazil", size(medsmall)) ///
         r1title("Maternal mortality over fertile women's deaths, Uruguay", size(medsmall)) ///
 		ytitle("", axis(1)) ytitle("", axis(2))
-    graph export ../output/mortality_`var_ratio'.pdf, replace
+    graph export ../output/mortality_`var_ratio'.png, replace
 end
 
 program did_reg

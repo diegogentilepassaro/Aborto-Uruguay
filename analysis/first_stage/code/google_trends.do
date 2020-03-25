@@ -27,12 +27,12 @@ program main
 	tw line abortionuruguay abortionbrazil date if date<ym(2013,12), `opts' ///
 		tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m04 "(c)" 2007m10 "(d)" 2008m04 "(e)" ///
 		2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0.9) labgap(*.3)) 
-	graph export ../output/google_trends_abortion.pdf, replace
+	graph export ../output/google_trends_abortion.png, replace
 	
 	tw line misoprostoluruguay misoprostolbrazil date if date<ym(2013,12), `opts' ///
 		tmlab(2004m04 "(a)" 2005m04 "(b)" 2006m04 "(c)" 2007m10 "(d)" 2008m04 "(e)" ///
 		2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0.9) labgap(*.3))
-	graph export ../output/google_trends_misoprostol.pdf, replace
+	graph export ../output/google_trends_misoprostol.png, replace
 end
 
 main

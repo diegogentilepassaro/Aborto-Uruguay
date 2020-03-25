@@ -51,10 +51,10 @@ program build_plots
 	}
 	
 	graph combine mvd_0 mvd_1 same_0 same_1, ysiz(6) xsiz(10) graphregion(color(white)) scale(0.8) 
-	graph export "..\output\births_sh_2groups.pdf", replace
+	graph export "..\output\births_sh_2groups.png", replace
 
 	grc1leg same mvd, rows(1) legendfrom(same) position(6) cols(2) graphregion(color(white))
-	graph export "..\output\births_sh_1group.pdf", replace
+	graph export "..\output\births_sh_1group.png", replace
 
 	graph drop same_0 same_1 mvd_0 mvd_1 same mvd
 end

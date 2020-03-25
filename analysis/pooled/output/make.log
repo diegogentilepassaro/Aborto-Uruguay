@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-23 13:24:29 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-03-25 09:08:13 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -276,17 +276,17 @@ file ../temp/sh_kids_before.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (64,166 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_000002.tmp saved
 (110,077 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_000004.tmp saved
 (6,273 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_000006.tmp saved
 (110,021 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_000008.tmp saved
 (58,645 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_00000a.tmp saved
 (696 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_00000c.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -294,7 +294,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_00000c.tmp saved
     not matched                             0
     matched                               272  
     -----------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3fe8_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c38_00000d.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -7518,4 +7518,4 @@ CERRO LARGO  |  -.0102111   .0034088    -3.00   0.020    -.0182716   -.0021505
 . 
 end of do-file
 
- make.py ended: 2020-03-23 13:27:00
+ make.py ended: 2020-03-25 09:12:13

@@ -8,7 +8,7 @@ program main
 	drop if (rel_t_anio == 0 | rel_t_anio == 1000)
 	save ../temp/average_births_rel.dta, replace
 	plot_yearly_average, var(nbr_births) ytitle(Number of births)
-	graph export ../output/births_rel.pdf, replace
+	graph export ../output/births_rel.png, replace
 	
     use "..\..\..\derived\Vitals\output\births_mvd.dta", clear
 	keep if public_health == 1
@@ -17,13 +17,13 @@ program main
 	rename pereira treated
 	save ../temp/average_births_rel_mvd.dta, replace
 	plot_yearly_average, var(nbr_births) ytitle(Number of births)	
-	graph export ../output/births_rel_mvd.pdf, replace
+	graph export ../output/births_rel_mvd.png, replace
 		
     use ../temp/average_births_rel.dta, clear
 	append using ../temp/average_births_rel_mvd.dta
 	collapse (sum) nbr_births, by(rel_t_anio treated)
 	plot_yearly_average, var(nbr_births) ytitle(Number of births)
-	graph export ../output/births_rel_all.pdf, replace	
+	graph export ../output/births_rel_all.png, replace	
 end
 
 program plot_yearly_average
