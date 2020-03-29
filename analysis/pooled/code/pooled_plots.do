@@ -67,7 +67,7 @@ syntax, time(str) by_vars(str)
 	save ../temp/TFR_`time'.dta, replace
 
 	foreach outcome in `by_vars' {
-		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+		use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
 		keep if hombre==0 & age_fertile==1
 		collapse (count) pop_`outcome'=pers [pw=pesoan], by(anio dpto `outcome')
 		sort anio dpto `outcome'
@@ -130,11 +130,11 @@ syntax, time(str) by_vars(str) num_periods(str)
 	gen age_fertile = 1
 	assert births_l >= births_single0_l + births_single1_l
 	gen anio = year(dofh(anio_sem))
-	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, keep(3) nogen
 	gen GFR = births_l/pop*1000
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
-		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
+		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, keep(3) nogen
 		gen GFR_`by_var'1 = births_`by_var'1_l/(pop*(  pop_sh_`by_var'))*1000
 		gen GFR_`by_var'0 = births_`by_var'0_l/(pop*(1-pop_sh_`by_var'))*1000 
 		lab var GFR_`by_var'1 "General fertility rate"
@@ -157,11 +157,11 @@ syntax, time(str) by_vars(str) num_periods(str)
 		gen post = (`time' >= yofd(impl_date_dpto))
 	}
 	gen anio = year(dofh(anio_sem))
-	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, keep(3) nogen
 	gen GFR = births_l/pop*1000 if all_sample==1
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
-		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, assert(2 3) keep(3) nogen
+		merge m:1 dpto  anio using ../temp/sh_`by_var'.dta, keep(3) nogen
 		replace GFR = births_l/(pop*(  pop_sh_`by_var'))*1000 if `by_var'==1 & mi(GFR)
 		replace GFR = births_l/(pop*(1-pop_sh_`by_var'))*1000 if `by_var'==0 & mi(GFR)
 		drop pop_sh_`by_var'
@@ -174,7 +174,7 @@ program              pooled_coefplot
 syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) restr(str)]
 
 	if substr("`data'",1,3) == "ech" {
-		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
+		use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
 		local all_controls = "c98_* ${controls}"
 		if "`data'" == "ech_labor" {
 			keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)

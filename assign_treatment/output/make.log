@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 10:13:29 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2020-03-29 15:07:46 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -52,32 +52,31 @@ Notes:
 
 . 
 . program clean_impl_date
-  1.         import excel ..\..\raw\timeline_implementation.xlsx, clear firstro
-> w cellrange(D1:E14)
-  2.         keep if !mi(impl_date)
-  3.         bys dpto: egen impl_date_dpto = min(impl_date)
-  4.         format %td impl_date_dpto
-  5.         keep *dpto
-  6.         duplicates drop
-  7.         save_data ..\temp\timeline_implementation.dta, key(dpto) replace
+  1.     import excel ..\..\raw\timeline_implementation.xlsx, clear firstrow ce
+> llrange(D1:E14)
+  2.     keep if !mi(impl_date)
+  3.     bys dpto: egen impl_date_dpto = min(impl_date)
+  4.     format %td impl_date_dpto
+  5.     keep *dpto
+  6.     duplicates drop
+  7.     save_data ..\temp\timeline_implementation.dta, key(dpto) replace
   8. end
 
 . 
 . program new_age_vars
   1. syntax, age_var(string)
-  2.         assert !mi(`age_var')
-  3.         gen yob = anio - `age_var'
-  4.         gen age_young   = inrange(`age_var',16,30)
-  5.         gen age_adult   = inrange(`age_var',31,45)
-  6.         gen age_placebo = inrange(`age_var',46,60)
-  7.         gen age_fertile = inrange(`age_var',16,45) if inrange(`age_var',16
-> ,60)
-  8.         egen    age_group = cut(`age_var') , at(16(5)50)
-  9.         replace age_group = age_group+2
+  2.     assert !mi(`age_var')
+  3.     gen yob = anio - `age_var'
+  4.     gen age_young   = inrange(`age_var',16,30)
+  5.     gen age_adult   = inrange(`age_var',31,45)
+  6.     gen age_placebo = inrange(`age_var',46,60)
+  7.     gen age_fertile = inrange(`age_var',16,45) if inrange(`age_var',16,60)
+  8.     egen    age_group = cut(`age_var') , at(16(5)50)
+  9.     replace age_group = age_group+2
  10. 
-.         lab def age_young                 0 "Age: 31-45"             1 "Age: 
-> 16-30"
- 11.         lab val age_young                 age_young
+.     lab def age_young                 0 "Age: 31-45"             1 "Age: 16-3
+> 0"
+ 11.     lab val age_young                 age_young
  12. end
 
 . 
@@ -85,118 +84,117 @@ Notes:
 
 . program              assign_impl_date_mvd
   1. syntax, dpto_list(str)
-  2.         qui sum impl_date_dpto if dpto==1
-  3.         replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
-  4.         qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
-  5.         assert `r(sd)'==0
+  2.     qui sum impl_date_dpto if dpto==1
+  3.     replace impl_date_dpto = `r(mean)' if inlist(dpto`dpto_list')
+  4.     qui sum impl_date_dpto             if inlist(dpto,1`dpto_list')
+  5.     assert `r(sd)'==0
   6. end
 
 . 
 . program create_treat_vars
   1. syntax, [restr(str)]
-  2.         * TC groups
-.         local subs         " & age_fertile == 1 `restr' "
-  3.         local subs_young   " & age_young   == 1 `restr' "
-  4.         local subs_adult   " & age_adult   == 1 `restr' " 
-  5.         local subs_placebo " & age_placebo == 1 `restr' "
-  6.         
-.         foreach age_group in "" "_young" "_adult" "_placebo" {
-  7.                 gen treatment_rivera`age_group'  = (dpto == 13) if inlist(
-> dpto,13,4,2)   `subs`age_group''
-  8.                 gen treatment_salto`age_group'   = (dpto == 15) if inlist(
-> dpto,15,11,12) `subs`age_group''
-  9.                 gen treatment_florida`age_group' = (dpto == 8)  if inlist(
-> dpto,8,5,7)    `subs`age_group''
- 10.                 
-.                 lab define treatment_rivera`age_group' 0 "Control`age_group'"
->  1 "Rivera`age_group'" 
- 11.                 lab define treatment_salto`age_group'  0 "Control`age_grou
-> p'" 1 "Salto`age_group'" 
+  2.     * TC groups
+.     local subs         " & age_fertile == 1 `restr' "
+  3.     local subs_young   " & age_young   == 1 `restr' "
+  4.     local subs_adult   " & age_adult   == 1 `restr' " 
+  5.     local subs_placebo " & age_placebo == 1 `restr' "
+  6.     
+.     foreach age_group in "" "_young" "_adult" "_placebo" {
+  7.         gen treatment_rivera`age_group'  = (dpto == 13) if inlist(dpto,13,
+> 4,2)   `subs`age_group''
+  8.         gen treatment_salto`age_group'   = (dpto == 15) if inlist(dpto,15,
+> 11,12) `subs`age_group''
+  9.         gen treatment_florida`age_group' = (dpto == 8)  if inlist(dpto,8,5
+> ,7)    `subs`age_group''
+ 10.         
+.         lab define treatment_rivera`age_group' 0 "Control`age_group'" 1 "Rive
+> ra`age_group'" 
+ 11.         lab define treatment_salto`age_group'  0 "Control`age_group'" 1 "S
+> alto`age_group'" 
  12. 
-.                 gen     treatment`age_group' = 1 if inlist(dpto,13, 8,  3,16)
->  `subs`age_group''
- 13.                 replace treatment`age_group' = 0 if inlist(dpto,2,4,5,7,9,
-> 10) `subs`age_group''
- 14.         }
- 15.         * Assign impl_date (to controls and Mvd)
-.         qui sum impl_date_dpto             if dpto == 13 
- 16.         replace impl_date_dpto = `r(mean)' if inlist(dpto,4,2)
- 17.         qui sum impl_date_dpto             if dpto == 8
- 18.         replace impl_date_dpto = `r(mean)' if inlist(dpto,5,7)
- 19.         assign_impl_date_mvd, dpto_list(,3,16,9,10)
+.         gen     treatment`age_group' = 1 if inlist(dpto,13, 8,  3,16) `subs`a
+> ge_group''
+ 13.         replace treatment`age_group' = 0 if inlist(dpto,2,4,5,7,9,10) `sub
+> s`age_group''
+ 14.     }
+ 15.     * Assign impl_date (to controls and Mvd)
+.     qui sum impl_date_dpto             if dpto == 13 
+ 16.     replace impl_date_dpto = `r(mean)' if inlist(dpto,4,2)
+ 17.     qui sum impl_date_dpto             if dpto == 8
+ 18.     replace impl_date_dpto = `r(mean)' if inlist(dpto,5,7)
+ 19.     assign_impl_date_mvd, dpto_list(,3,16,9,10)
  20. end
 
 . 
 . program assign_treatment_births
   1. syntax, num_periods(int)
-  2.         use ..\..\derived\output\births_derived.dta, clear
-  3.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
->  3) nogen
-  4.         drop if mi(fecparto)
-  5.         drop if inlist(depar,20,99)
-  6.         rename edadm edad
-  7.         new_age_vars, age_var(edad)
-  8.         gen hombre = 0
-  9.         create_treat_vars, restr(" & hombre==0 ")
- 10.         *rename yob yobm
+  2.     use ..\..\derived\output\births_derived.dta, clear
+  3.     merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) 
+> nogen
+  4.     drop if mi(fecparto)
+  5.     drop if inlist(depar,20,99)
+  6.     rename edadm edad
+  7.     new_age_vars, age_var(edad)
+  8.     gen hombre = 0
+  9.     create_treat_vars, restr(" & hombre==0 ")
+ 10.     *rename yob yobm
 . 
-.         preserve
- 11.                 replace edad = .  if edad == 99
- 12.                 replace edad = 15 if inrange(edad,0,14)
- 13.                 replace edad = 49 if inrange(edad,50,98)
- 14.                 keep if inrange(edad,15,49) 
- 15.                 egen age_group15 = cut(edad) ,at(15(5)50)
- 16.                 bys age_group15: egen age_min = min(edad)
- 17.                 bys age_group15: egen age_max = max(edad)
- 18.                 save "..\output\births15.dta", replace
- 19.         restore
+.     preserve
+ 11.         replace edad = .  if edad == 99
+ 12.         replace edad = 15 if inrange(edad,0,14)
+ 13.         replace edad = 49 if inrange(edad,50,98)
+ 14.         keep if inrange(edad,15,49) 
+ 15.         egen age_group15 = cut(edad) ,at(15(5)50)
+ 16.         bys age_group15: egen age_min = min(edad)
+ 17.         bys age_group15: egen age_max = max(edad)
+ 18.         save "..\output\births15.dta", replace
+ 19.     restore
  20. 
-.         keep if inrange(edad,16,45)
- 21.         save "..\output\births.dta", replace
+.     keep if inrange(edad,16,45)
+ 21.     save "..\output\births.dta", replace
  22. end
 
 . 
 . program assign_treatment_ech
   1. syntax, num_periods(int)
-  2.     use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
-  3.         merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1
->  3) nogen
-  4.         new_age_vars, age_var(edad)
-  5.         create_treat_vars, restr(" & hombre==0 ")
-  6.         
-.         * Placebo (men) for case studies and SCM
-.         gen placebo_rivera  = (dpto == 13) if inlist(dpto,13,4,2)   & hombre=
-> =1
-  7.         gen placebo_salto   = (dpto == 15) if inlist(dpto,15,11,12) & homb
-> re==1
-  8.         gen placebo_florida = (dpto == 8)  if inlist(dpto,8,5,7)    & homb
-> re==1 
-  9.         
-.         * Kids before implementation (state-dependent)
-.         foreach s in rivera salto florida {
- 10.                 gen age_`s'     = ${y_date_`s'} - yob
- 11.                 gen under14_`s' = (inrange(age_`s',0,14))
- 12.                 bys anio numero : egen nbr_under14_`s' = total(under14_`s'
+  2.     use ..\..\derived\output\clean_loc_2001_2016.dta, clear 
+  3.     merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) 
+> nogen
+  4.     new_age_vars, age_var(edad)
+  5.     create_treat_vars, restr(" & hombre==0 ")
+  6.     
+.     * Placebo (men) for case studies and SCM
+.     gen placebo_rivera  = (dpto == 13) if inlist(dpto,13,4,2)   & hombre==1
+  7.     gen placebo_salto   = (dpto == 15) if inlist(dpto,15,11,12) & hombre==
+> 1
+  8.     gen placebo_florida = (dpto == 8)  if inlist(dpto,8,5,7)    & hombre==
+> 1    
+  9.     
+.     * Kids before implementation (state-dependent)
+.     foreach s in rivera salto florida {
+ 10.         gen age_`s'     = ${y_date_`s'} - yob
+ 11.         gen under14_`s' = (inrange(age_`s',0,14))
+ 12.         bys anio numero : egen nbr_under14_`s' = total(under14_`s')
+ 13.         gen kids_`s'    = (nbr_under14_`s' > 0)
+ 14.     }
+ 15.     gen     kids_before = kids_rivera  if !mi(treatment_rivera)  | !mi(tre
+> atment_rivera_placebo)
+ 16.     replace kids_before = kids_florida if !mi(treatment_florida) | !mi(tre
+> atment_florida_placebo)
+ 17.     gen     age_mvd     = ${y_date_mvd} - yob
+ 18.     gen     under14_mvd = (inrange(age_mvd,0,14))
+ 19.     bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
+ 20.     replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,1,3,16,9,10
 > )
- 13.                 gen kids_`s'    = (nbr_under14_`s' > 0)
- 14.         }
- 15.         gen     kids_before = kids_rivera  if !mi(treatment_rivera)  | !mi
-> (treatment_rivera_placebo)
- 16.         replace kids_before = kids_florida if !mi(treatment_florida) | !mi
-> (treatment_florida_placebo)
- 17.         gen     age_mvd     = ${y_date_mvd} - yob
- 18.         gen     under14_mvd = (inrange(age_mvd,0,14))
- 19.         bys     anio numero : egen nbr_under14_mvd = total(under14_mvd)
- 20.         replace kids_before = (nbr_under14_mvd > 0) if inlist(dpto,1,3,16,
-> 9,10)
  21. 
-.         * Variables for the Mvd triple diff
-.         gen female      = (hombre==0)             if !mi(hombre)
- 22.         gen single      = (married==0)            if !mi(married)
- 23.         gen lowed       = (educ_level==1)         if !mi(educ_level)
- 24.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
- 25.         
-.     save_data ..\output\ech_final_98_2016.dta, key(numero pers anio) replace 
+.     * Variables for the Mvd triple diff
+.     gen female      = (hombre==0)             if !mi(hombre)
+ 22.     gen single      = (married==0)            if !mi(married)
+ 23.     gen lowed       = (educ_level==1)         if !mi(educ_level)
+ 24.     gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
+ 25.     
+.     save_data ../output/ech_final_2001_2016.dta, key(numero pers anio) replac
+> e 
  26. end
 
 . 
@@ -366,47 +364,47 @@ file ..\output\births.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       581,765
-        from master                   581,765  
+    not matched                       614,482
+        from master                   614,482  
         from using                          0  
 
-    matched                         1,177,344  
+    matched                         1,096,004  
     -----------------------------------------
-(746,950 missing values generated)
-(1051009 missing values generated)
-(708,100 real changes made)
-(1,732,505 missing values generated)
-(1,731,367 missing values generated)
-(1,739,749 missing values generated)
-(1,686,049 missing values generated)
-(53,561 real changes made)
-(1,745,407 missing values generated)
-(1,744,281 missing values generated)
-(1,749,320 missing values generated)
-(1,722,159 missing values generated)
-(27,006 real changes made)
-(1,746,207 missing values generated)
-(1,746,195 missing values generated)
-(1,749,538 missing values generated)
-(1,722,999 missing values generated)
-(26,555 real changes made)
-(1,747,426 missing values generated)
-(1,746,775 missing values generated)
-(1,749,874 missing values generated)
-(1,727,561 missing values generated)
-(24,060 real changes made)
-(78,898 real changes made)
-(71,400 real changes made)
-(383,005 real changes made)
-(1,697,946 missing values generated)
-(1,693,741 missing values generated)
-(1,712,408 missing values generated)
-(1,720,822 missing values generated)
-(28,595 real changes made)
-(1,211,861 real changes made)
-(262,113 missing values generated)
-(34,649 missing values generated)
-(1,051,009 missing values generated)
+(729,411 missing values generated)
+(1026816 missing values generated)
+(683,670 real changes made)
+(1,683,172 missing values generated)
+(1,681,833 missing values generated)
+(1,689,474 missing values generated)
+(1,636,729 missing values generated)
+(54,649 real changes made)
+(1,696,387 missing values generated)
+(1,695,242 missing values generated)
+(1,699,911 missing values generated)
+(1,673,294 missing values generated)
+(27,491 real changes made)
+(1,697,271 missing values generated)
+(1,697,077 missing values generated)
+(1,700,049 missing values generated)
+(1,673,921 missing values generated)
+(27,158 real changes made)
+(1,698,389 missing values generated)
+(1,697,854 missing values generated)
+(1,700,391 missing values generated)
+(1,677,844 missing values generated)
+(24,733 real changes made)
+(82,411 real changes made)
+(72,644 real changes made)
+(383,523 real changes made)
+(1,647,261 missing values generated)
+(1,642,137 missing values generated)
+(1,659,139 missing values generated)
+(1,671,075 missing values generated)
+(31,107 real changes made)
+(1,123,833 real changes made)
+(289,942 missing values generated)
+(16,505 missing values generated)
+(1,026,816 missing values generated)
 (data now sorted by numero pers anio)
   variable yob was float now int
   variable age_young was float now byte
@@ -453,322 +451,317 @@ file ..\output\births.dta saved
   variable single was float now byte
   variable lowed was float now byte
   variable young was float now byte
-  (228,684,170 bytes saved)
+  (222,363,180 bytes saved)
 ===============================================================================
 > ===================
-File: ..\output\ech_final_98_2016.dta
+File: ../output/ech_final_2001_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1759109:132(71828):4233645262:544866236
+  1710486:131(93461):2199240096:1089948627
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,759,109    7.54e+08    9.74e+08          1   2.02e+09
-        pers |  1,759,109    2.393469    1.517999          1         27
-        anio |  1,759,109    2008.293    5.024005       1998       2016
-   inflation |  1,759,109    8.087328    3.618307       3.59      25.94
-    cpi_2006 |  1,759,109    126.8955    48.03314   48.00595   217.6432
+      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
+        pers |  1,710,486    2.376794    1.503466          1         25
+        anio |  1,710,486    2009.343    4.144144       2001       2016
+   inflation |  1,710,486    8.273495    3.563895       3.59      25.94
+    cpi_2006 |  1,710,486    135.5327    42.76078   54.72384   217.6432
 -------------+---------------------------------------------------------
-      semana |    171,877    24.40203    13.83498          1         48
-        dpto |  1,759,109    5.324262    5.684808          1         19
-        secc |  1,616,508    10.20737    16.91198          0         99
-        segm |  1,616,508    65.64103    93.68596          0        845
-     estrato |  1,759,109    5.293571     2.91119          1         12
+      semana |          0
+        dpto |  1,710,486    5.712008    5.809447          1         19
+        secc |  1,641,594    9.084292    16.31907          0         99
+        segm |  1,641,594    58.71646    91.12505          0        845
+     estrato |  1,710,486     5.56798    2.970241          1         12
 -------------+---------------------------------------------------------
-      hombre |  1,759,109     .466954    .4989069          0          1
-        edad |  1,759,109    36.72029    23.44052          0         99
-    pobpcoac |  1,759,109    3.830927    3.218979          1         99
-horas_trab~p |  1,759,109     17.3715    22.29389          0         99
-horas_trab~s |  1,759,109    .9028628    4.851377          0         98
+      hombre |  1,710,486    .4681652    .4989857          0          1
+        edad |  1,710,486    36.79662    23.48919          0         99
+    pobpcoac |  1,710,486    3.823276    3.206703          1         11
+horas_trab~p |  1,710,486    17.39364    22.23241          0         99
+horas_trab~s |  1,710,486    .8916115    4.810304          0         98
 -------------+---------------------------------------------------------
-horas_trab~o |  1,758,882    18.36416    23.38552          0         99
-busca_trab~o |  1,759,109    .0726709    .2595956          0          1
-meses_trab~o |  1,480,086    1.040192     4.05217          0         80
-anios_trab~o |  1,480,086    3.611756    7.816181          0         98
-      ytotal |  1,759,109    9136.568    17498.91          0    7244333
+horas_trab~o |  1,710,225    18.27123    23.28222          0         99
+busca_trab~o |  1,710,486    .0759141    .2648607          0          1
+meses_trab~o |  1,431,463    .3423372    1.422152          0         80
+anios_trab~o |  1,431,463    3.980527    8.167336          0         98
+      ytotal |  1,710,486     9452.72    17720.94          0    7244333
 -------------+---------------------------------------------------------
-     pesotri |  1,758,514    113.8277    51.55826          1        635
-     pesosem |  1,655,497    56.69414    26.52581          5        318
-      pesoan |  1,759,109    28.65458    13.12689          1        159
-         ccz |  1,675,778    4.484672    5.656404          0         18
-         loc |          0
--------------+---------------------------------------------------------
+     pesotri |  1,709,184    105.9654    50.02961          1       1527
+     pesosem |  1,597,607    52.57471     26.4189          3       1345
+      pesoan |  1,710,486    26.61043      12.967          1       1323
+         ccz |  1,710,486    3.942653    5.511817          0         18
       nomloc |          0
-  nbr_people |  1,759,109    3.786697    1.891253          1         27
- nbr_above14 |  1,759,109     2.79666    1.266172          1         16
- nbr_under14 |  1,759,109    .9898903     1.28242          0         14
-     y_hogar |  1,759,109    28487.45    36065.88          0    7681180
 -------------+---------------------------------------------------------
-c98_resid_~e |  1,759,109    .9950901    .0698983          0          1
-c98_resid_~d |  1,759,109    .6438868    .4788494          0          1
-c98_nbr_ro~s |  1,759,109    3.573306    1.317593          0         80
-c98_nbr_be~s |  1,759,109    2.191951    .8383508          0         40
-c98_b_pipe~r |  1,759,109    .9671845    .1781534          0          1
+  nbr_people |  1,710,486    3.753415    1.872965          1         25
+ nbr_above14 |  1,710,486    2.767848    1.249137          1         16
+ nbr_under14 |  1,710,486    .9853755    1.274995          0         13
+     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
+c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
 -------------+---------------------------------------------------------
-c98_hhld_t~t |  1,759,109    .9253167    .2628797          0          1
-c98_b_sewage |  1,759,109    .6264308    .4837514          0          1
-c98_hhld_s~e |  1,759,109    .9527232    .2122303          0          1
-c98_hhld_h~r |  1,759,109    .8811847    .3235711          0          1
-c98_hhld_r~t |  1,759,109    .8461016    .3608514          0          1
+c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
+c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
+c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
+c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
+c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
 -------------+---------------------------------------------------------
- c98_hhld_tv |  1,759,109    .9652972     .183026          0          1
-c98_hhld_vcr |  1,759,109    .4939853     .499964          0          1
-c98_hhld_w~c |  1,759,109    .7164297    .4507308          0          1
-c98_hhld_d~r |  1,759,109     .045029    .2073679          0          1
-c98_hhld_m~e |  1,759,109    .4894421    .4998887          0          1
+c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
+c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
+c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
+c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
+ c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
 -------------+---------------------------------------------------------
-c98_hhld_car |  1,759,109    .3567158      .47903          0          1
-   trimestre |  1,759,109    2.497536    1.117467          1          4
-     married |  1,496,996    .5152191    .4997685          0          1
-       etnia |  1,308,209    2.310405    .9646923          0          4
-  estudiante |  1,759,109    .0633935    .2436694          0          1
+c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
+c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
+c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
+c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
+c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
 -------------+---------------------------------------------------------
-     trabajo |  1,759,109    .4466744    .4971484          0          1
- y_hogar_alt |  1,759,109    28630.53    33402.05          0    7289481
-  anios_prim |  1,724,460    5.027964    1.908787          0          6
- anios_secun |  1,724,460    2.179113    2.437162          0          6
-  anios_terc |  1,740,957    .5045369    1.477558          0         40
+   trimestre |  1,710,486    2.498075    1.117025          1          4
+     married |  1,420,544    .5307995    .4990507          0          1
+       etnia |  1,431,463    2.291132    .9704668          0          4
+  estudiante |  1,710,486    .0699111    .2549972          0          1
+     trabajo |  1,710,486     .446925    .4971752          0          1
 -------------+---------------------------------------------------------
-  anios_tecn |  1,724,460     .263751    .7992882          0          8
-  educ_level |  1,724,460    1.924235     1.02136          1          4
-         mes |  1,587,232    6.492924    3.446314          1         12
-   trabajo_1 |  1,587,232    .4217613    .4938409          0          1
-c01_hhld_c~r |  1,587,232    .5325894     .498937          0          1
+ y_hogar_alt |  1,710,486    29503.43    33568.92          0    7289481
+  anios_prim |  1,693,981    4.977679    1.958824          0          6
+ anios_secun |  1,693,981    2.140683     2.42439          0          6
+  anios_terc |  1,710,478    .4854754    1.454612          0         40
+  anios_tecn |  1,693,981    .2578884     .783182          0          8
 -------------+---------------------------------------------------------
-c01_hhld_i~t |  1,587,232    .3749754    .4841167          0          1
-c01_hhld_p~e |  1,587,232    .7338524    .4419425          0          1
-c01_hhld_c~v |  1,587,232    .5672334    .4954592          0          1
-    region_3 |  1,308,209    1.563886    .5254396          1          3
-    region_4 |  1,308,209    1.564025    .5259491          1          4
+  educ_level |  1,693,981    1.906642    1.015593          1          4
+         mes |  1,710,486    6.493169    3.444754          1         12
+   trabajo_1 |  1,710,486    .4191785    .4934248          0          1
+c01_hhld_c~r |  1,710,486    .5257202    .4993382          0          1
+c01_hhld_i~t |  1,710,486    .3633944    .4809772          0          1
 -------------+---------------------------------------------------------
-     pesomen |  1,201,681    279.6954    101.5616          1       1384
- live_births |    421,145    1.045286    .6910379          0          2
-live_birth~r |    421,145    1.394439    1.906014          0         65
-       li_06 |  1,750,880    1620.149    584.9775   363.3281       3021
-       lp_06 |  1,750,880    17111.84    9447.677   1585.694   132026.8
+c01_hhld_p~e |  1,710,486    .7215955    .4482137          0          1
+c01_hhld_c~v |  1,710,486    .5669289    .4955004          0          1
+    region_3 |  1,431,463    1.682926     .638033          1          3
+    region_4 |  1,431,463    1.683443    .6395034          1          4
+     pesomen |  1,316,991    276.1408    110.0983          1       2451
 -------------+---------------------------------------------------------
-c06_mat_wa~s |  1,308,209    .9747227    .1569662          0          1
-c06_mat_roof |  1,308,209    .6013045      .48963          0          1
-c06_mat_fl~r |  1,308,209    .8012741    .3990414          0          1
-c06_b_electr |  1,308,209    .9971006    .0537678          0          1
-    loc_code |  1,759,109    542400.7    574611.9     101010    1919020
+ live_births |    475,328    1.039613    .6913098          0          2
+live_birth~r |    475,328    1.412622    1.940563          0         65
+       li_06 |  1,706,934    1719.511    529.8654   548.3328       3021
+       lp_06 |  1,706,934    17940.45     9376.98   2596.651   132026.8
+c06_mat_wa~s |  1,431,463    .9736368    .1602131          0          1
 -------------+---------------------------------------------------------
-        poor |  1,759,109    .3697667    .4827416          0          1
-   indigente |  1,759,109    .0130191    .1133561          0          1
- ind_under14 |  1,759,109    .5127584    .4998373          0          1
-work_part_~e |    785,749    .2660239    .4418772          0          1
-    semestre |  1,759,109    1.499238    .4999996          1          2
+c06_mat_roof |  1,431,463    .5677583    .4953877          0          1
+c06_mat_fl~r |  1,431,463    .7912199    .4064371          0          1
+c06_b_electr |  1,431,463    .9961228     .062146          0          1
+    loc_code |          0
+        poor |  1,710,486    .3767339    .4845674          0          1
 -------------+---------------------------------------------------------
-    anio_sem |  1,759,109    97.08514     10.0608         76        113
-    anio_qtr |  1,759,109    194.6693    20.12793        152        227
-educ_anios~n |    159,368    2.678536    1.996945          0          6
-educ_anios~c |    108,876    1.940327    1.832347          0         40
-educ_HS_di~a |    101,762    .1147187    .3186837          0          1
+   indigente |  1,710,486    .0114137    .1062236          0          1
+ ind_under14 |  1,710,486    .5124608    .4998449          0          1
+work_part_~e |    764,459     .269295    .4435938          0          1
+    semestre |  1,710,486    1.499258    .4999996          1          2
+    anio_sem |  1,710,486    99.18467    8.303561         82        113
 -------------+---------------------------------------------------------
-educ_some_~e |    108,727    .7304074    .4437502          0          1
-impl_date_~o |  1,439,825    16472.65    728.3045      16162      18414
-         yob |  1,759,109    1971.573     23.8421       1900       2016
-   age_young |  1,759,109    .2128725    .4093384          0          1
-   age_adult |  1,759,109    .1896608    .3920327          0          1
+    anio_qtr |  1,710,486    198.8689    16.61422        164        227
+educ_anios~n |    153,759    2.691199     1.98535          0          6
+educ_anios~c |    103,983    1.924555    1.822042          0         40
+educ_HS_di~a |     97,146    .1144463    .3183542          0          1
+educ_some_~e |    103,834    .7332473    .4422642          0          1
 -------------+---------------------------------------------------------
- age_placebo |  1,759,109    .1728483    .3781162          0          1
- age_fertile |  1,012,159    .6995936    .4584349          0          1
-   age_group |    708,100    29.88178    8.668931         18         43
-treatment~ra |     26,604    .3909938    .4879822          0          1
-treatment~to |     27,742    .4073967    .4913587          0          1
+impl_date_~o |  1,365,352    16507.31    757.9063      16162      18414
+         yob |  1,710,486    1972.546     23.7563       1902       2016
+   age_young |  1,710,486    .2105951    .4077314          0          1
+   age_adult |  1,710,486    .1890983    .3915868          0          1
+ age_placebo |  1,710,486    .1738716    .3789992          0          1
 -------------+---------------------------------------------------------
-treatment~da |     19,360    .2850207    .4514359          0          1
-   treatment |    126,621    .5769975    .4940378          0          1
-tre~ra_young |     13,702    .3868048    .4870361          0          1
-trea~o_young |     14,828    .4150256    .4927431          0          1
-tre~da_young |      9,789    .2952293    .4561691          0          1
+ age_fertile |    981,075     .696858    .4596163          0          1
+   age_group |    683,670    29.89752     8.68172         18         43
+treatment~ra |     27,314    .3840887     .486388          0          1
+treatment~to |     28,653    .4055422    .4910052          0          1
+treatment~da |     21,012      .33162    .4708065          0          1
 -------------+---------------------------------------------------------
-trea~t_young |     63,956    .5777409    .4939232          0          1
-tre~ra_adult |     12,902    .3954426    .4889645          0          1
-trea~o_adult |     12,914    .3986371    .4896367          0          1
-tre~da_adult |      9,571    .2745795    .4463254          0          1
-trea~t_adult |     62,665    .5762387    .4941574          0          1
+   treatment |    128,406    .5744046    .4944349          0          1
+tre~ra_young |     14,099    .3814455    .4857588          0          1
+trea~o_young |     15,244    .4159013    .4928928          0          1
+tre~da_young |     10,575    .3391017    .4734268          0          1
+trea~t_young |     64,683    .5749888    .4943485          0          1
 -------------+---------------------------------------------------------
-t~ra_placebo |     11,683    .3825216    .4860237          0          1
-tr~o_placebo |     12,334    .4046538    .4908448          0          1
-t~da_placebo |      9,235    .2747158    .4463951          0          1
-tr~t_placebo |     55,608    .5673284    .4954506          0          1
-placebo_ri~a |     61,163    .3877508    .4872412          0          1
+tre~ra_adult |     13,215    .3869088    .4870609          0          1
+trea~o_adult |     13,409    .3937654    .4886021          0          1
+tre~da_adult |     10,437    .3240395    .4680373          0          1
+trea~t_adult |     63,723    .5738117    .4945257          0          1
+t~ra_placebo |     12,097    .3789369    .4851424          0          1
 -------------+---------------------------------------------------------
-placebo_sa~o |     65,368    .3995686    .4898134          0          1
-placebo_fl~a |     46,701    .2757543    .4468983          0          1
-  age_rivera |  1,759,109    38.42734     23.8421         -6        110
-under14_ri~a |  1,759,109    .1744878    .3795285          0          1
-nbr_under~ra |  1,759,109    .8386365    1.172369          0         13
+tr~o_placebo |     12,632    .4054782    .4910038          0          1
+t~da_placebo |     10,095    .3233284      .46777          0          1
+tr~t_placebo |     57,375    .5689237     .495231          0          1
+placebo_ri~a |     63,225    .3799921    .4853883          0          1
+placebo_sa~o |     68,349    .3967724    .4892316          0          1
 -------------+---------------------------------------------------------
- kids_rivera |  1,759,109    .4603586    .4984262          0          1
-   age_salto |  1,759,109    41.42734     23.8421         -3        113
-under14_sa~o |  1,759,109    .1374815    .3443551          0          1
-nbr_under1~o |  1,759,109    .6559173    1.032707          0         11
-  kids_salto |  1,759,109    .3846766    .4865189          0          1
+placebo_fl~a |     51,347    .3280425     .469505          0          1
+  age_rivera |  1,710,486    37.45391     23.7563         -6        108
+under14_ri~a |  1,710,486    .1898718    .3921997          0          1
+nbr_under~ra |  1,710,486    .9119987    1.213656          0         13
+ kids_rivera |  1,710,486    .4901876    .4999039          0          1
 -------------+---------------------------------------------------------
- age_florida |  1,759,109    36.42734     23.8421         -8        108
-under14_fl~a |  1,759,109    .1951295    .3963005          0          1
-nbr_under~da |  1,759,109    .9386741    1.243762          0         14
-kids_florida |  1,759,109    .4967225    .4999894          0          1
- kids_before |  1,278,743    .5206926    .4995718          0          1
+   age_salto |  1,710,486    40.45391     23.7563         -3        111
+under14_sa~o |  1,710,486    .1528425    .3598357          0          1
+nbr_under1~o |  1,710,486    .7302176    1.071518          0         11
+  kids_salto |  1,710,486    .4239093    .4941764          0          1
+ age_florida |  1,710,486    35.45391     23.7563         -8        106
 -------------+---------------------------------------------------------
-     age_mvd |  1,759,109    32.42734     23.8421        -12        104
- under14_mvd |  1,759,109    .2204281    .4145354          0          1
-nbr_under1~d |  1,759,109    1.047484    1.294706          0         15
-      female |  1,759,109     .533046    .4989069          0          1
-      single |  1,496,996    .4847809    .4997685          0          1
+under14_fl~a |  1,710,486    .2096843    .4070834          0          1
+nbr_under~da |  1,710,486    1.006707    1.282767          0         14
+kids_florida |  1,710,486     .521757    .4995266          0          1
+ kids_before |  1,194,351    .5340532    .4988392          0          1
+     age_mvd |  1,710,486    31.45391     23.7563        -12        102
 -------------+---------------------------------------------------------
-       lowed |  1,724,460    .4222603    .4939197          0          1
-       young |    708,100    .5288321    .4991684          0          1
+ under14_mvd |  1,710,486    .2305584    .4211904          0          1
+nbr_under1~d |  1,710,486     1.09005    1.317281          0         15
+      female |  1,710,486    .5318348    .4989857          0          1
+      single |  1,420,544    .4692005    .4990507          0          1
+       lowed |  1,693,981    .4313496    .4952648          0          1
+-------------+---------------------------------------------------------
+       young |    683,670    .5268916    .4992767          0          1
 
 
 
 
-(note: file ..\output\ech_final_98_2016.dta not found)
-file ..\output\ech_final_98_2016.dta saved
+(note: file ../output/ech_final_2001_2016.dta not found)
+file ../output/ech_final_2001_2016.dta saved
 
 . 
 . /*
->         * Diff in Diff Montevideo
->         gen treatment_mvd_female  = (dpto == 1 & female == 1)
->         gen treatment_mvd_poor    = (dpto == 1 & female == 1 & poor == 1)
->         gen treatment_mvd_fertile = (dpto == 1 & female == 1 & fertile_age ==
->  1)
->         gen treatment_mvd_kids    = (dpto == 1 & female == 1 & ind_under14 ==
->  1)        
->         gen treatment_mvd_lowed   = (dpto == 1 & female == 1 & lowed == 1)
->         gen treatment_mvd_single  = (dpto == 1 & female == 1 & single == 1)
->         gen treatment_mvd_student = (dpto == 1 & female == 1 & estudiante == 
-> 1)
+>     * Diff in Diff Montevideo
+>     gen treatment_mvd_female  = (dpto == 1 & female == 1)
+>     gen treatment_mvd_poor    = (dpto == 1 & female == 1 & poor == 1)
+>     gen treatment_mvd_fertile = (dpto == 1 & female == 1 & fertile_age == 1)
+>     gen treatment_mvd_kids    = (dpto == 1 & female == 1 & ind_under14 == 1) 
+>    
+>     gen treatment_mvd_lowed   = (dpto == 1 & female == 1 & lowed == 1)
+>     gen treatment_mvd_single  = (dpto == 1 & female == 1 & single == 1)
+>     gen treatment_mvd_student = (dpto == 1 & female == 1 & estudiante == 1)
 > 
->         gen control_mvd_female    = (dpto == 1 & female == 0)
->         gen control_mvd_poor      = (dpto == 1 & female == 1 & poor == 0)
->         gen control_mvd_fertile   = (dpto == 1 & female == 1 & fertile_age ==
->  0)
->         gen control_mvd_kids      = (dpto == 1 & female == 1 & ind_under14 ==
->  0)                
->         gen control_mvd_lowed     = (dpto == 1 & female == 1 & lowed == 0)
+>     gen control_mvd_female    = (dpto == 1 & female == 0)
+>     gen control_mvd_poor      = (dpto == 1 & female == 1 & poor == 0)
+>     gen control_mvd_fertile   = (dpto == 1 & female == 1 & fertile_age == 0)
+>     gen control_mvd_kids      = (dpto == 1 & female == 1 & ind_under14 == 0) 
+>        
+>     gen control_mvd_lowed     = (dpto == 1 & female == 1 & lowed == 0)
 >     gen control_mvd_single    = (dpto == 1 & female == 1 & single == 0)
->         gen control_mvd_student   = (dpto == 1 & female == 1 & estudiante == 
+>     gen control_mvd_student   = (dpto == 1 & female == 1 & estudiante == 0)
+>     
+>     * Triple Diff
+>     
+>     /** Design 2: income_fertility (only women)
+>     gen mvd_poor_fertile       = (loc_code == 101010 & poor == 1 & fertile_ag
+> e == 1 & hombre == 0)
+>     gen mvd_poor_infertile     = (loc_code == 101010 & poor == 1 & fertile_ag
+> e == 0 & hombre == 0)
+>     gen mvd_non_poor_fertile   = (loc_code == 101010 & poor == 0 & fertile_ag
+> e == 1 & hombre == 0)
+>     gen mvd_non_poor_infertile = (loc_code == 101010 & poor == 0 & fertile_ag
+> e == 0 & hombre == 0)
+>       
+>     * Design 3: gender_fertility
+>     gen mvd_female_fertile    = (loc_code == 101010 & hombre == 0 & fertile_a
+> ge == 1)
+>     gen mvd_female_infertile  = (loc_code == 101010 & hombre == 0 & fertile_a
+> ge == 0)
+>     gen mvd_male_fertile      = (loc_code == 101010 & hombre == 1 & fertile_a
+> ge == 1)
+>     gen mvd_male_infertile    = (loc_code == 101010 & hombre == 1 & fertile_a
+> ge == 0)     
+>     */    
+>     
+>     /* Design: female_poor
+>     gen mvd_female_poor       = (loc_code == 101010 & female == 1 & poor == 1
+> )
+>     gen mvd_female_rich       = (loc_code == 101010 & female == 1 & poor == 0
+> )
+>     gen mvd_male_poor         = (loc_code == 101010 & female == 0 & poor == 1
+> )
+>     gen mvd_male_rich         = (loc_code == 101010 & female == 0 & poor == 0
+> )*/
+>     
+>     * Design: female_single
+>     gen mvd_female_single     = (loc_code == 101010 & female == 1 & single ==
+>  1)
+>     gen mvd_female_married    = (loc_code == 101010 & female == 1 & single ==
+>  0)
+>     gen mvd_male_single       = (loc_code == 101010 & female == 0 & single ==
+>  1)
+>     gen mvd_male_married      = (loc_code == 101010 & female == 0 & single ==
+>  0)
+>     
+>     /* Design: female_lowed
+>     gen mvd_female_lowed      = (loc_code == 101010 & female == 1 & lowed == 
+> 1)
+>     gen mvd_female_highed     = (loc_code == 101010 & female == 1 & lowed == 
 > 0)
->         
->         * Triple Diff
->         
->         /** Design 2: income_fertility (only women)
->         gen mvd_poor_fertile       = (loc_code == 101010 & poor == 1 & fertil
-> e_age == 1 & hombre == 0)
->         gen mvd_poor_infertile     = (loc_code == 101010 & poor == 1 & fertil
-> e_age == 0 & hombre == 0)
->         gen mvd_non_poor_fertile   = (loc_code == 101010 & poor == 0 & fertil
-> e_age == 1 & hombre == 0)
->         gen mvd_non_poor_infertile = (loc_code == 101010 & poor == 0 & fertil
-> e_age == 0 & hombre == 0)
->         
->         * Design 3: gender_fertility
->         gen mvd_female_fertile    = (loc_code == 101010 & hombre == 0 & ferti
-> le_age == 1)
->         gen mvd_female_infertile  = (loc_code == 101010 & hombre == 0 & ferti
-> le_age == 0)
->         gen mvd_male_fertile      = (loc_code == 101010 & hombre == 1 & ferti
-> le_age == 1)
->         gen mvd_male_infertile    = (loc_code == 101010 & hombre == 1 & ferti
-> le_age == 0)     
->     */  
->         
->         /* Design: female_poor
->         gen mvd_female_poor       = (loc_code == 101010 & female == 1 & poor 
-> == 1)
->         gen mvd_female_rich       = (loc_code == 101010 & female == 1 & poor 
-> == 0)
->         gen mvd_male_poor         = (loc_code == 101010 & female == 0 & poor 
-> == 1)
->         gen mvd_male_rich         = (loc_code == 101010 & female == 0 & poor 
-> == 0)*/
->         
->         * Design: female_single
->         gen mvd_female_single     = (loc_code == 101010 & female == 1 & singl
-> e == 1)
->         gen mvd_female_married    = (loc_code == 101010 & female == 1 & singl
-> e == 0)
->         gen mvd_male_single       = (loc_code == 101010 & female == 0 & singl
-> e == 1)
->         gen mvd_male_married      = (loc_code == 101010 & female == 0 & singl
-> e == 0)
->         
->         /* Design: female_lowed
->         gen mvd_female_lowed      = (loc_code == 101010 & female == 1 & lowed
->  == 1)
->         gen mvd_female_highed     = (loc_code == 101010 & female == 1 & lowed
->  == 0)
->         gen mvd_male_lowed        = (loc_code == 101010 & female == 0 & lowed
->  == 1)
->         gen mvd_male_highed       = (loc_code == 101010 & female == 0 & lowed
->  == 0)
+>     gen mvd_male_lowed        = (loc_code == 101010 & female == 0 & lowed == 
+> 1)
+>     gen mvd_male_highed       = (loc_code == 101010 & female == 0 & lowed == 
+> 0)
 > 
->         * Design: poor_single (women)
->         gen mvd_poor_single       = (loc_code == 101010 & female == 1 & poor 
-> == 1 & single == 1)
->         gen mvd_poor_married      = (loc_code == 101010 & female == 1 & poor 
-> == 1 & single == 0)
->         gen mvd_rich_single       = (loc_code == 101010 & female == 1 & poor 
-> == 0 & single == 1)
->         gen mvd_rich_married      = (loc_code == 101010 & female == 1 & poor 
-> == 0 & single == 0)
->         
->         * Design: poor_lowed (women)
->         gen mvd_poor_lowed       = (loc_code == 101010 & female == 1 & poor =
-> = 1 & lowed == 1)
->         gen mvd_poor_highed      = (loc_code == 101010 & female == 1 & poor =
-> = 1 & lowed == 0)
->         gen mvd_rich_lowed       = (loc_code == 101010 & female == 1 & poor =
-> = 0 & lowed == 1)
->         gen mvd_rich_highed      = (loc_code == 101010 & female == 1 & poor =
-> = 0 & lowed == 0)
+>     * Design: poor_single (women)
+>     gen mvd_poor_single       = (loc_code == 101010 & female == 1 & poor == 1
+>  & single == 1)
+>     gen mvd_poor_married      = (loc_code == 101010 & female == 1 & poor == 1
+>  & single == 0)
+>     gen mvd_rich_single       = (loc_code == 101010 & female == 1 & poor == 0
+>  & single == 1)
+>     gen mvd_rich_married      = (loc_code == 101010 & female == 1 & poor == 0
+>  & single == 0)
+>     
+>     * Design: poor_lowed (women)
+>     gen mvd_poor_lowed       = (loc_code == 101010 & female == 1 & poor == 1 
+> & lowed == 1)
+>     gen mvd_poor_highed      = (loc_code == 101010 & female == 1 & poor == 1 
+> & lowed == 0)
+>     gen mvd_rich_lowed       = (loc_code == 101010 & female == 1 & poor == 0 
+> & lowed == 1)
+>     gen mvd_rich_highed      = (loc_code == 101010 & female == 1 & poor == 0 
+> & lowed == 0)
 > 
->         * Design: lowed_single (women)
->         gen mvd_lowed_single      = (loc_code == 101010 & female == 1 & lowed
->  == 1 & single == 1)
->         gen mvd_lowed_married     = (loc_code == 101010 & female == 1 & lowed
->  == 1 & single == 0)
->         gen mvd_highed_single     = (loc_code == 101010 & female == 1 & lowed
->  == 0 & single == 1)
->         gen mvd_highed_married    = (loc_code == 101010 & female == 1 & lowed
->  == 0 & single == 0)*/
+>     * Design: lowed_single (women)
+>     gen mvd_lowed_single      = (loc_code == 101010 & female == 1 & lowed == 
+> 1 & single == 1)
+>     gen mvd_lowed_married     = (loc_code == 101010 & female == 1 & lowed == 
+> 1 & single == 0)
+>     gen mvd_highed_single     = (loc_code == 101010 & female == 1 & lowed == 
+> 0 & single == 1)
+>     gen mvd_highed_married    = (loc_code == 101010 & female == 1 & lowed == 
+> 0 & single == 0)*/
 > 
->         * Design: young_kids (women)
->         gen mvd_young_kids      = (loc_code == 101010 & female == 1 & young =
-> = 1 & ind_under14 == 1)
->         gen mvd_young_nokids    = (loc_code == 101010 & female == 1 & young =
-> = 1 & ind_under14 == 0)
->         gen mvd_old_kids        = (loc_code == 101010 & female == 0 & young =
-> = 0 & ind_under14 == 1)
->         gen mvd_old_nokids      = (loc_code == 101010 & female == 0 & young =
-> = 0 & ind_under14 == 0)    
+>     * Design: young_kids (women)
+>     gen mvd_young_kids      = (loc_code == 101010 & female == 1 & young == 1 
+> & ind_under14 == 1)
+>     gen mvd_young_nokids    = (loc_code == 101010 & female == 1 & young == 1 
+> & ind_under14 == 0)
+>     gen mvd_old_kids        = (loc_code == 101010 & female == 0 & young == 0 
+> & ind_under14 == 1)
+>     gen mvd_old_nokids      = (loc_code == 101010 & female == 0 & young == 0 
+> & ind_under14 == 0)    
 > 
->         * Design: young_poor (women)
->         gen mvd_young_poor      = (loc_code == 101010 & female == 1 & young =
-> = 1 & ind_under14 == 1)
->         gen mvd_young_nopoor    = (loc_code == 101010 & female == 1 & young =
-> = 1 & ind_under14 == 0)
->         gen mvd_old_poor        = (loc_code == 101010 & female == 0 & young =
-> = 0 & ind_under14 == 1)
->         gen mvd_old_nopoor      = (loc_code == 101010 & female == 0 & young =
-> = 0 & ind_under14 == 0)    
+>     * Design: young_poor (women)
+>     gen mvd_young_poor      = (loc_code == 101010 & female == 1 & young == 1 
+> & ind_under14 == 1)
+>     gen mvd_young_nopoor    = (loc_code == 101010 & female == 1 & young == 1 
+> & ind_under14 == 0)
+>     gen mvd_old_poor        = (loc_code == 101010 & female == 0 & young == 0 
+> & ind_under14 == 1)
+>     gen mvd_old_nopoor      = (loc_code == 101010 & female == 0 & young == 0 
+> & ind_under14 == 0)    
 > 
->         * Design: poor_kids (women)
->         gen mvd_poor_kids       = (loc_code == 101010 & female == 1 & poor ==
->  1 & ind_under14 == 1)
->         gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor ==
->  1 & ind_under14 == 0)
->         gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor ==
->  0 & ind_under14 == 1)
->         gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor ==
->  0 & ind_under14 == 0)
+>     * Design: poor_kids (women)
+>     gen mvd_poor_kids       = (loc_code == 101010 & female == 1 & poor == 1 &
+>  ind_under14 == 1)
+>     gen mvd_poor_nokids     = (loc_code == 101010 & female == 1 & poor == 1 &
+>  ind_under14 == 0)
+>     gen mvd_nonpoor_kids    = (loc_code == 101010 & female == 0 & poor == 0 &
+>  ind_under14 == 1)
+>     gen mvd_nonpoor_nokids  = (loc_code == 101010 & female == 0 & poor == 0 &
+>  ind_under14 == 0)
 > 
 > 
 
 end of do-file
 
- make.py ended: 2020-03-29 10:14:16
+ make.py ended: 2020-03-29 15:09:35

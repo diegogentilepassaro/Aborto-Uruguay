@@ -35,6 +35,7 @@ delete_files('../output/*')
 start_make_logging()
 
 run_rbatch(program = 'spss_to_dta.R')
+run_stata(program = 'create_loc_Xwalk.do', executable = stata)
 run_stata(program = 'clean_raw.do', executable = stata)
 run_stata(program = 'append_years.do', executable = stata)
 
