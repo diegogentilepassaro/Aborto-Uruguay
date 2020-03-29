@@ -14,13 +14,16 @@ from gslab_make.make_link_logs import *
 from gslab_make.run_program import *
 from gslab_make.dir_mod import *
 
-stata_exe = os.environ.get('STATAEXE')
-if stata_exe:
-    import copy
-    default_run_stata = copy.copy(run_stata)
-    def run_stata(**kwargs):
-        kwargs['executable'] = stata_exe
-        default_run_stata(**kwargs)
+envir_vars = os.getenv('PATH')
+if envir_vars is None:
+    envir_vars = os.getenv('Path')
+
+if "StataSE" in envir_vars:
+    stata = "stataSE"
+elif "StataMP-64" in envir_vars:
+    stata = "StataMP-64"
+elif "Stata15" in envir_vars:
+    stata = "StataMP-64"
 
 #****************************************************
 # MAKE.PY STARTS
@@ -33,10 +36,10 @@ delete_files('../output/*')
 
 start_make_logging()
 
-run_stata(program = 'homogeneize_geo_vars.do')
-run_stata(program = 'prepare_for_analysis.do')
-run_stata(program = 'population.do')
-run_stata(program = 'vital_records.do')
+run_stata(program = 'homogeneize_geo_vars.do', executable = stata)
+run_stata(program = 'prepare_for_analysis.do', executable = stata)
+run_stata(program = 'population.do', executable = stata)
+run_stata(program = 'vital_records.do', executable = stata)
 
 end_make_logging()
 
