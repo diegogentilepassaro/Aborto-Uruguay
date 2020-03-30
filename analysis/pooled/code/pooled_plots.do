@@ -41,8 +41,8 @@ end
 
 program compute_TFR
 syntax, time(str) by_vars(str)
-    use ..\..\..\assign_treatment\output\births15.dta, clear
-    drop if inrange(edad,45,49)
+    use ..\..\..\assign_treatment\output\births.dta, clear
+    keep if inrange(edad,15,44)
 
     if "`time'" == "anio_sem" {
         local time_label "Semesters"
