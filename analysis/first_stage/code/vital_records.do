@@ -17,7 +17,7 @@ program main
 			, cols(2) legendfrom(g_`time'_not_marri_0) position(6) ///
 			  graphregion(color(white)) name(g_`time')
 		graph display g_`time', ysiz(18) xsiz(15)
-		graph export "..\output\births_rivera_`time'.pdf", replace
+		graph export "..\output\births_rivera_`time'.png", replace
 	}
 end
 

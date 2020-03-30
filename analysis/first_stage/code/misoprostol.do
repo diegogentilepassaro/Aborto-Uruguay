@@ -36,7 +36,7 @@ program build_figure
 	    asyvars graphregion(fcolor(white) lcolor(white)) ///
 		ytitle("Misoprostol annual sales (base 2002)")
 		
-	graph export ../output/misoprostol_sales_2002_2007.pdf, replace
+	graph export ../output/misoprostol_sales_2002_2007.png, replace
 	
     graph twoway connected ug_per_pop year if Region == "Global" || ///
 	    connected ug_per_pop year if Region == "Latin America" || ///
@@ -47,7 +47,7 @@ program build_figure
 		xline(2003.5, lcolor(black) lpattern(dot)) text(8.3 2003.5 "IS start") ///
 		ytitle("Misoprostol (in µg × 10^6) / Population (in millions)", size(small))
 
-	graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
+	graph export ../output/misoprostol_per_capita_2002_2007.png, replace
 end
 
 main

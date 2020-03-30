@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-30 09:12:11 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2020-03-30 10:36:14 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -132,27 +132,26 @@ Notes:
   3.     merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) 
 > nogen
   4.     drop if mi(fecparto)
-  5.     drop if inlist(depar,20,99)
-  6.     rename edadm edad
-  7.     new_age_vars, age_var(edad)
-  8.     gen hombre = 0
-  9.     create_treat_vars, restr(" & hombre==0 ")
- 10.     *rename yob yobm
+  5.     rename edadm edad
+  6.     new_age_vars, age_var(edad)
+  7.     gen hombre = 0
+  8.     create_treat_vars, restr(" & hombre==0 ")
+  9.     *rename yob yobm
 . 
 .     preserve
- 11.         replace edad = .  if edad == 99
- 12.         replace edad = 15 if inrange(edad,0,14)
- 13.         replace edad = 49 if inrange(edad,50,98)
- 14.         keep if inrange(edad,15,49) 
- 15.         egen age_group15 = cut(edad) ,at(15(5)50)
- 16.         bys age_group15: egen age_min = min(edad)
- 17.         bys age_group15: egen age_max = max(edad)
- 18.         save "..\output\births15.dta", replace
- 19.     restore
- 20. 
+ 10.         replace edad = .  if edad == 99
+ 11.         replace edad = 15 if inrange(edad,0,14)
+ 12.         replace edad = 49 if inrange(edad,50,98)
+ 13.         keep if inrange(edad,15,49) 
+ 14.         egen age_group15 = cut(edad) ,at(15(5)50)
+ 15.         bys age_group15: egen age_min = min(edad)
+ 16.         bys age_group15: egen age_max = max(edad)
+ 17.         save "..\output\births15.dta", replace
+ 18.     restore
+ 19. 
 .     keep if inrange(edad,16,45)
- 21.     save "..\output\births.dta", replace
- 22. end
+ 20.     save "..\output\births.dta", replace
+ 21. end
 
 . 
 . program assign_treatment_ech
@@ -318,14 +317,13 @@ file ..\temp\timeline_implementation.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       314,749
-        from master                   314,749  
+    not matched                       313,000
+        from master                   313,000  
         from using                          0  
 
     matched                           519,896  
     -----------------------------------------
 (0 observations deleted)
-(1,749 observations deleted)
 (20,287 missing values generated)
 (20939 missing values generated)
 (811,957 real changes made)
@@ -764,4 +762,4 @@ file ../output/ech_final_2001_2016.dta saved
 
 end of do-file
 
- make.py ended: 2020-03-30 09:13:49
+ make.py ended: 2020-03-30 10:37:33
