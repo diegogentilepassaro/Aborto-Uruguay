@@ -68,7 +68,7 @@ program build_synth_control
 	syntax [if], outcomes(string) controls(string) city(string) geo_var(string) ///
 	    time(str) sample_restr(str) [special_legend(string)]
 
-    use "..\..\..\assign_treatment\output\ech_final_98_2016.dta", clear
+    use "..\..\..\assign_treatment\output\ech_final_2001_2016.dta", clear
 	if "`geo_var'" == "loc_code" {
         drop treatment_*_s placebo_*_s
     } 
