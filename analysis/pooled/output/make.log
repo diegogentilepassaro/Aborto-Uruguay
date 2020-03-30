@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 15:42:55 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-03-30 08:41:39 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -516,24 +516,24 @@ file ../temp/pop_fertile_age_agg.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (232,095 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_000002.tmp saved
 (453,598 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_000004.tmp saved
 (45,584 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_000006.tmp saved
 (403,185 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_000008.tmp saved
 (241,186 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_00000a.tmp saved
 (4,262 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_00000c.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
     matched                               374  
     -----------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5bcc_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3d54_00000d.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -10454,4 +10454,4 @@ preg_preterm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 . 
 end of do-file
 
- make.py ended: 2020-03-29 15:54:34
+ make.py ended: 2020-03-30 08:51:42
