@@ -41,7 +41,7 @@ forvalues ws = `ws_1'/`ws_N' {
             import excel "..\..\raw\Departamentos_poblacion_por_sexo_y_edad_1996-2025.xls" ///
              , clear sheet("`ws_`ws'_name'") cellrange(`cr`cr'_`gender'')
             
-            gen dpto = `ws_`ws'_dpto'
+            gen depar = `ws_`ws'_dpto'
             gen gender_all = "`gender'"
             
             if "`cr'" == "1" {
@@ -85,7 +85,7 @@ forvalues ws = `ws_1'/`ws_N' {
 }
 
 * Check and rename year variables
-isid dpto gender_all age_min age_max
+isid depar gender_all age_min age_max
 drop A
 local year = 1996
 foreach k in `c(ALPHA)' {
@@ -99,7 +99,11 @@ foreach k in `c(ALPHA)' {
 }
 
 * Reshape, aggregate dy depto, and save table
-reshape long pop, i(dpto gender_all age_min age_max) j(anio)
+reshape long pop, i(depar gender_all age_min age_max) j(anio)
+gen     dpto = depar   if inrange(depar,11,19)
+replace dpto = 1       if depar==10
+replace dpto = depar+1 if inrange(depar,1,9)
+drop depar
 save "..\output\population.dta", replace
 
 * Collapse to women of fertile age and save table

@@ -9,7 +9,7 @@ adopath + ../../../library/stata/gslab_misc/ado
 	gen births_sh = births/births_tot
 	
 	gen tag_same = dpto==dpto_birth
-	gen tag_mvd  = dpto_birth==10
+	gen tag_mvd  = dpto_birth==1
 	gen births_sh_same = births/births_tot if tag_same
 	gen births_sh_mvd  = births/births_tot if tag_mvd
 

@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-30 10:32:11 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\code 
+ make.py started: 2020-03-30 13:56:19 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\code 
 
 
 
@@ -1126,7 +1126,7 @@ Notes:
 > d_1996-2025.xls" ///
 >              , clear sheet("`ws_`ws'_name'") cellrange(`cr`cr'_`gender'')
   5.             
-.             gen dpto = `ws_`ws'_dpto'
+.             gen depar = `ws_`ws'_dpto'
   6.             gen gender_all = "`gender'"
   7.             
 .             if "`cr'" == "1" {
@@ -1153,459 +1153,459 @@ Notes:
  26.         }
  27.     }
  28. }
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00000x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000010.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000011.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000012.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000013.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000014.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000015.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000016.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000017.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000018.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000019.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00001x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000020.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000021.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000022.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000023.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000024.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000025.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000026.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000027.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000028.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000029.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00002x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000030.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000031.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000032.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000033.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000034.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000035.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000036.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000037.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000038.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_000039.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00003a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00003b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_49ac_00003c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -1631,7 +1631,7 @@ pop_21_women_2
 
 . 
 . * Check and rename year variables
-. isid dpto gender_all age_min age_max
+. isid depar gender_all age_min age_max
 
 . drop A
 
@@ -1649,7 +1649,7 @@ pop_21_women_2
 
 . 
 . * Reshape, aggregate dy depto, and save table
-. reshape long pop, i(dpto gender_all age_min age_max) j(anio)
+. reshape long pop, i(depar gender_all age_min age_max) j(anio)
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020)
 
@@ -1661,6 +1661,17 @@ j variable (25 values)                    ->   anio
 xij variables:
             pop1996 pop1997 ... pop2020   ->   pop
 -----------------------------------------------------------------------------
+
+. gen     dpto = depar   if inrange(depar,11,19)
+(15,000 missing values generated)
+
+. replace dpto = 1       if depar==10
+(1,500 real changes made)
+
+. replace dpto = depar+1 if inrange(depar,1,9)
+(13,500 real changes made)
+
+. drop depar
 
 . save "..\output\population.dta", replace
 (note: file ..\output\population.dta not found)
@@ -1893,23 +1904,23 @@ Notes:
 
 . 
 . main
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000001.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000002.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000003.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000004.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000005.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000006.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000007.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000008.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_000009.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000a.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000b.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000c.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000d.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000e.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000f.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000g.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_1ec8_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -1952,4 +1963,4 @@ file ..\output\births_derived.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-30 10:35:26
+ make.py ended: 2020-03-30 13:59:25

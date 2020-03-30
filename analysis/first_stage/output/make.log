@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-30 10:55:36 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-03-30 14:14:36 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -692,13 +692,13 @@ Notes:
 .         
 .         gen tag_same = dpto==dpto_birth
 
-.         gen tag_mvd  = dpto_birth==10
+.         gen tag_mvd  = dpto_birth==1
 
 .         gen births_sh_same = births/births_tot if tag_same
 (2,122 missing values generated)
 
 .         gen births_sh_mvd  = births/births_tot if tag_mvd
-(2,314 missing values generated)
+(2,122 missing values generated)
 
 . 
 .         collapse (max) births_sh_same births_sh_mvd, by(anio dpto)
@@ -720,7 +720,6 @@ Notes:
   3.                 qui sum min_sh_`x', det
   4.                 gen tag_`x' = (min_sh_`x'> r(p50))
   5.         }
-(17 missing values generated)
 
 . 
 .         local plot_lines  = "plot1(lp(shortdash)) plot2(lp(shortdash)) plot3(
@@ -1057,7 +1056,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a18_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5744_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1069,7 +1068,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a18_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5744_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1081,7 +1080,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a18_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5744_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1294,16 +1293,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_59d4_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c08_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_59d4_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c08_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_59d4_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c08_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_59d4_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_1c08_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1330,4 +1329,4 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_59d4_000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2020-03-30 10:57:06
+ make.py ended: 2020-03-30 14:15:54
