@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-30 14:45:09 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-03-30 16:49:31 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -492,17 +492,17 @@ file ../temp/pop_fertile_age_agg.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (235,707 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_000002.tmp saved
 (456,705 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_000004.tmp saved
 (46,255 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_000006.tmp saved
 (403,122 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_000008.tmp saved
 (247,331 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_00000a.tmp saved
 (4,296 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_00000c.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -510,7 +510,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_00000c.tmp saved
     not matched                             0
     matched                               374  
     -----------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_572c_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_cc8_00000d.tmp saved
 (label dpto already defined)
 
     Result                           # of obs.
@@ -10503,4 +10503,4 @@ CERRO LARGO  |  -.0155508   .0033097    -4.70   0.001    -.0230378   -.0080638
 . 
 end of do-file
 
- make.py ended: 2020-03-30 15:02:19
+ make.py ended: 2020-03-30 16:55:16

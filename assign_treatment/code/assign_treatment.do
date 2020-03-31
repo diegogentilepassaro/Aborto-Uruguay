@@ -23,8 +23,8 @@ program new_age_vars
 syntax, age_var(string)
     assert !mi(`age_var')
     gen yob = anio - `age_var'
-    gen age_young   = inrange(`age_var',15,30)
-    gen age_adult   = inrange(`age_var',31,44)
+    gen age_young   = inrange(`age_var',15,29)
+    gen age_adult   = inrange(`age_var',30,44)
     gen age_placebo = inrange(`age_var',45,59)
     gen age_fertile = inrange(`age_var',15,44) if inrange(`age_var',15,59)
     egen    age_group = cut(`age_var') , at(15(5)59)
@@ -32,7 +32,7 @@ syntax, age_var(string)
     bys age_group: egen age_max = max(`age_var')
     replace age_group = age_group+2
 
-    lab def age_young                 0 "Age: 31-44"             1 "Age: 15-30"
+    lab def age_young                 0 "Age: 30-44"             1 "Age: 15-29"
     lab val age_young                 age_young
 end
 
@@ -116,7 +116,7 @@ syntax, num_periods(int)
     gen female      = (hombre==0)             if !mi(hombre)
     gen single      = (married==0)            if !mi(married)
     gen lowed       = (educ_level==1)         if !mi(educ_level)
-    gen young       = (inrange(edad, 15, 30)) if inrange(edad,15,44)
+    gen young       = (inrange(edad, 15, 29)) if inrange(edad,15,44)
     
     save_data ../output/ech_final_2001_2016.dta, key(numero pers anio) replace 
 end
