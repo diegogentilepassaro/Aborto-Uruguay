@@ -88,7 +88,7 @@ end
 
 program assign_treatment_ech
 syntax, num_periods(int)
-    use ..\..\derived\output\clean_loc_2001_2016.dta, clear 
+    use ..\..\derived\output\clean_loc_1998_2016.dta, clear 
     merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
     new_age_vars, age_var(edad)
     create_treat_vars, restr(" & hombre==0 ")
@@ -118,7 +118,7 @@ syntax, num_periods(int)
     gen lowed       = (educ_level==1)         if !mi(educ_level)
     gen young       = (inrange(edad, 15, 29)) if inrange(edad,15,44)
     
-    save_data ../output/ech_final_2001_2016.dta, key(numero pers anio) replace 
+    save_data ../output/ech_final_1998_2016.dta, key(numero pers anio) replace 
 end
 
 main

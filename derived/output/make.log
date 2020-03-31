@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-30 13:56:19 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\code 
+ make.py started: 2020-03-31 14:52:42 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\derived\code 
 
 
 
@@ -45,118 +45,116 @@ Notes:
 . 
 . program main 
   1.     use ../../base\output\clean_1998_2016, clear
-  2. 
-.     keep if anio >= 2001
-  3.     
-.     convert_01_05_to_06_11_cod
-  4.     convert_07_to_06_11_cod
-  5.     fill_missing_loc_var, year(2007) loc_var(nomloc) merge_var(loc)
-  6.     fill_missing_loc_var, year(2008) loc_var(loc) merge_var(nomloc)
-  7.     save ../temp/2001_2011_loc_homo.dta, replace
-  8.     
+  2.     
+.     convert_1998_05_to_06_11_cod
+  3.     convert_07_to_06_11_cod
+  4.     fill_missing_loc_var, year(2007) loc_var(nomloc) merge_var(loc)
+  5.     fill_missing_loc_var, year(2008) loc_var(loc) merge_var(nomloc)
+  6.     save ../temp/2001_2011_loc_homo.dta, replace
+  7.     
 .     homogeneize_loc_to_2012_2014    
-  9.     replace ccz = ccz04 if anio == 2012
- 10.     drop ccz04 ccz10
- 11.     
+  8.     replace ccz = ccz04 if anio == 2012
+  9.     drop ccz04 ccz10
+ 10.     
 .     tostring dpto, gen(dpto_string)
- 12.     replace dpto_string = "0" + dpto_string if  dpto < 10
- 13.     gen loc_code = dpto_string + loc
- 14.     drop dpto_string
- 15.     
+ 11.     replace dpto_string = "0" + dpto_string if  dpto < 10
+ 12.     gen loc_code = dpto_string + loc
+ 13.     drop dpto_string
+ 14.     
 .     destring loc_code, gen(loc_code_destring)
- 16.     drop_rural_areas
- 17.     drop loc_code_destring loc
- 18.     
+ 15.     drop_rural_areas
+ 16.     drop loc_code_destring loc
+ 17.     
 .     drop if missing(loc_code)
- 19.     drop if (missing(anio) | missing(numero) | missing(pers))
- 20. 
-.     save_data ../temp/clean_loc_2001_2016.dta, key(numero pers anio) replace
- 21. end
+ 18.     drop if (missing(anio) | missing(numero) | missing(pers))
+ 19. 
+.     save_data ../temp/clean_loc_1998_2016.dta, key(numero pers anio) replace
+ 20. end
 
 . 
-. program convert_01_05_to_06_11_cod
+. program convert_1998_05_to_06_11_cod
   1.     * Montevideo
-.     replace loc = "010" if inrange(anio, 2001, 2005) & loc == "0101"
+.     replace loc = "010" if inrange(anio, 1998, 2005) & loc == "0101"
   2. 
 .     * Artigas
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0201"
-  3.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0202"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0201"
+  3.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0202"
   4.     
 .     * Canelones
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0302"
-  5.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0301"
-  6.     replace loc = "023" if inrange(anio, 2001, 2005) & loc == "0303"    
-  7.     replace loc = "024" if inrange(anio, 2001, 2005) & loc == "0304"
-  8.     replace loc = "422" if inrange(anio, 2001, 2005) & loc == "0305"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0302"
+  5.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0301"
+  6.     replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0303"    
+  7.     replace loc = "024" if inrange(anio, 1998, 2005) & loc == "0304"
+  8.     replace loc = "422" if inrange(anio, 1998, 2005) & loc == "0305"
   9.     
 .     * Cerro Largo
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0401"
- 10.     replace loc = "522" if inrange(anio, 2001, 2005) & loc == "0402"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0401"
+ 10.     replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0402"
  11. 
 .     * Colonia
-.     replace loc = "320" if inrange(anio, 2001, 2005) & loc == "0501"
- 12.     replace loc = "321" if inrange(anio, 2001, 2005) & loc == "0502"
- 13.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0503"    
- 14.     replace loc = "022" if inrange(anio, 2001, 2005) & loc == "0504"
- 15.     replace loc = "023" if inrange(anio, 2001, 2005) & loc == "0505"
+.     replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0501"
+ 12.     replace loc = "321" if inrange(anio, 1998, 2005) & loc == "0502"
+ 13.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0503"    
+ 14.     replace loc = "022" if inrange(anio, 1998, 2005) & loc == "0504"
+ 15.     replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0505"
  16. 
 .     * Durazno
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0601"
- 17.     replace loc = "421" if inrange(anio, 2001, 2005) & loc == "0602"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0601"
+ 17.     replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0602"
  18. 
 .     * Flores
-.     replace loc = "320" if inrange(anio, 2001, 2005) & loc == "0701"
+.     replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0701"
  19. 
 .     * Florida
-.     replace loc = "220" if inrange(anio, 2001, 2005) & loc == "0801"
- 20.     replace loc = "421" if inrange(anio, 2001, 2005) & loc == "0802"
+.     replace loc = "220" if inrange(anio, 1998, 2005) & loc == "0801"
+ 20.     replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0802"
  21. 
 .     * Lavalleja
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0901"
- 22.     replace loc = "522" if inrange(anio, 2001, 2005) & loc == "0902"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0901"
+ 22.     replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0902"
  23. 
 .     * Maldonado
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1001"
- 24.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1002"
- 25.     replace loc = "022" if inrange(anio, 2001, 2005) & loc == "1003"    
- 26.     replace loc = "023" if inrange(anio, 2001, 2005) & loc == "1004"
- 27.     replace loc = "024" if inrange(anio, 2001, 2005) & loc == "1005"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1001"
+ 24.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1002"
+ 25.     replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1003"    
+ 26.     replace loc = "023" if inrange(anio, 1998, 2005) & loc == "1004"
+ 27.     replace loc = "024" if inrange(anio, 1998, 2005) & loc == "1005"
  28. 
 .     * Paysandu
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1101"
- 29.     replace loc = "521" if inrange(anio, 2001, 2005) & loc == "1102"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1101"
+ 29.     replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1102"
  30. 
 .     * Rio Negro
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1201"
- 31.     replace loc = "421" if inrange(anio, 2001, 2005) & loc == "1202"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1201"
+ 31.     replace loc = "421" if inrange(anio, 1998, 2005) & loc == "1202"
  32.     
 .     *Rivera
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1301"
- 33.     replace loc = "522" if inrange(anio, 2001, 2005) & loc == "1302"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1301"
+ 33.     replace loc = "522" if inrange(anio, 1998, 2005) & loc == "1302"
  34.     
 .     *Rocha
-.     replace loc = "320" if inrange(anio, 2001, 2005) & loc == "1401"
- 35.     replace loc = "422" if inrange(anio, 2001, 2005) & loc == "1403"
- 36.     replace loc = "521" if inrange(anio, 2001, 2005) & loc == "1404"
+.     replace loc = "320" if inrange(anio, 1998, 2005) & loc == "1401"
+ 35.     replace loc = "422" if inrange(anio, 1998, 2005) & loc == "1403"
+ 36.     replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1404"
  37.     
 .     * Salto
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1501"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1501"
  38. 
 .     *San Jose
-.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1601"
- 39.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1602"
- 40.     replace loc = "022" if inrange(anio, 2001, 2005) & loc == "1603"
+.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1601"
+ 39.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1602"
+ 40.     replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1603"
  41. 
 .     *Soriano
-.     replace loc = "220" if inrange(anio, 2001, 2005) & loc == "1701"
- 42.     replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1702"
+.     replace loc = "220" if inrange(anio, 1998, 2005) & loc == "1701"
+ 42.     replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1702"
  43. 
 .     *Tacuarembo
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1801"
- 44.     replace loc = "321" if inrange(anio, 2001, 2005) & loc == "1802"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1801"
+ 44.     replace loc = "321" if inrange(anio, 1998, 2005) & loc == "1802"
  45. 
 .     *Treinta y Tres
-.     replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1901"
+.     replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1901"
  46. end
 
 . 
@@ -340,52 +338,51 @@ Notes:
 . 
 . * EXECUTE
 . main
-(172,515 observations deleted)
-(150,049 real changes made)
-(4,669 real changes made)
-(2,565 real changes made)
-(7,111 real changes made)
-(17,824 real changes made)
-(4,087 real changes made)
-(2,064 real changes made)
-(926 real changes made)
-(3,999 real changes made)
-(1,705 real changes made)
-(3,444 real changes made)
-(1,571 real changes made)
-(0 real changes made)
-(0 real changes made)
+(238,595 real changes made)
+(7,863 real changes made)
+(3,840 real changes made)
+(12,718 real changes made)
+(30,695 real changes made)
+(6,467 real changes made)
+(3,652 real changes made)
+(1,126 real changes made)
+(6,487 real changes made)
+(2,709 real changes made)
+(5,940 real changes made)
+(2,568 real changes made)
+(680 real changes made)
+(431 real changes made)
 (2,116 real changes made)
-(2,743 real changes made)
-(749 real changes made)
-(2,558 real changes made)
-(2,311 real changes made)
-(975 real changes made)
-(3,882 real changes made)
-(0 real changes made)
-(6,520 real changes made)
-(2,712 real changes made)
-(1,093 real changes made)
-(0 real changes made)
-(0 real changes made)
-(7,415 real changes made)
-(0 real changes made)
-(2,141 real changes made)
-(1,788 real changes made)
-(7,064 real changes made)
-(562 real changes made)
-(4,454 real changes made)
-(928 real changes made)
-(0 real changes made)
-(7,936 real changes made)
-(3,295 real changes made)
-(2,168 real changes made)
-(1,102 real changes made)
-(3,941 real changes made)
-(1,691 real changes made)
-(4,455 real changes made)
-(1,150 real changes made)
-(3,260 real changes made)
+(4,603 real changes made)
+(1,235 real changes made)
+(4,025 real changes made)
+(3,824 real changes made)
+(1,478 real changes made)
+(6,127 real changes made)
+(221 real changes made)
+(10,192 real changes made)
+(4,344 real changes made)
+(1,535 real changes made)
+(333 real changes made)
+(167 real changes made)
+(11,982 real changes made)
+(173 real changes made)
+(3,605 real changes made)
+(2,718 real changes made)
+(11,257 real changes made)
+(1,302 real changes made)
+(7,098 real changes made)
+(1,330 real changes made)
+(205 real changes made)
+(12,609 real changes made)
+(5,481 real changes made)
+(3,786 real changes made)
+(1,649 real changes made)
+(6,279 real changes made)
+(2,877 real changes made)
+(7,321 real changes made)
+(1,842 real changes made)
+(5,415 real changes made)
 (143,185 real changes made)
 (57,520 real changes made)
 (1,190 real changes made)
@@ -432,7 +429,7 @@ Notes:
 (416 real changes made)
 (1,777 real changes made)
 (250 real changes made)
-(1,582,505 observations deleted)
+(1,755,020 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -443,14 +440,14 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,697,819
-        from master                 1,697,804  
+    not matched                     1,870,334
+        from master                 1,870,319  
         from using                         15  
 
     matched                           141,562  
     -----------------------------------------
 (141,577 real changes made)
-(1,582,520 observations deleted)
+(1,755,035 observations deleted)
 
 Duplicates in terms of anio dpto loc
 
@@ -460,8 +457,8 @@ file ../temp/loc_2006.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,694,820
-        from master                 1,694,805  
+    not matched                     1,867,335
+        from master                 1,867,320  
         from using                         15  
 
     matched                           144,576  
@@ -472,18 +469,18 @@ file ../temp/2001_2011_loc_homo.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       382,513
-        from master                   382,513  (_merge==1)
+    not matched                       383,151
+        from master                   383,151  (_merge==1)
         from using                          0  (_merge==2)
 
-    matched                         1,456,883  (_merge==3)
+    matched                         1,628,760  (_merge==3)
     -----------------------------------------
 (380,244 real changes made)
 (358 observations deleted)
-(1,458,794 real changes made)
+(1,631,309 real changes made)
 (120,462 real changes made)
 dpto_string generated as str2
-(1,287,298 real changes made)
+(1,419,853 real changes made)
 loc_code: all characters numeric; loc_code_destring generated as long
 (4,082 observations deleted)
 (35,350 observations deleted)
@@ -509,78 +506,78 @@ loc_code: all characters numeric; loc_code_destring generated as long
   (0 bytes saved)
 ===============================================================================
 > ===================
-File: ../temp/clean_loc_2001_2016.dta
+File: ../temp/clean_loc_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1710486:72(36138):848989363:4217190595
+  1883001:72(36138):1879422818:2498013713
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
-        pers |  1,710,486    2.376794    1.503466          1         25
-        anio |  1,710,486    2009.343    4.144144       2001       2016
-      semana |          0
-        dpto |  1,710,486    5.712008    5.809447          1         19
+      numero |  1,883,001    7.60e+08    9.76e+08          1   2.02e+09
+        pers |  1,883,001    2.394427    1.518971          1         27
+        anio |  1,883,001    2008.396    4.955077       1998       2016
+      semana |    172,515    24.40658    13.83848          1         48
+        dpto |  1,883,001    5.627094    5.785383          1         19
 -------------+---------------------------------------------------------
-        secc |  1,641,594    9.084292    16.31907          0         99
-        segm |  1,641,594    58.71646    91.12505          0        845
-     estrato |  1,710,486     5.56798    2.970241          1         12
-      hombre |  1,710,486    .4681652    .4989857          0          1
-        edad |  1,710,486    36.79662    23.48919          0         99
+        secc |  1,730,140    9.575127    16.53226          0         99
+        segm |  1,730,140     61.8744    92.31873          0        845
+     estrato |  1,883,001    5.492968     2.93876          1         12
+      hombre |  1,883,001    .4683386    .4989967          0          1
+        edad |  1,883,001    36.69248    23.47308          0         99
 -------------+---------------------------------------------------------
-    pobpcoac |  1,710,486    3.823276    3.206703          1         11
-horas_trab~p |  1,710,486    17.39364    22.23241          0         99
-horas_trab~s |  1,710,486    .8916115    4.810304          0         98
-horas_trab~o |  1,710,486    18.28525    23.30858          0        180
-busca_trab~o |  1,710,486    .0759141    .2648607          0          1
+    pobpcoac |  1,883,001     3.83691    3.223087          1         99
+horas_trab~p |  1,883,001    17.30703    22.32703          0         99
+horas_trab~s |  1,883,001    .8808381    4.793823          0         98
+horas_trab~o |  1,883,001    18.28341    23.41794          0        180
+busca_trab~o |  1,883,001    .0717796    .2581226          0          1
 -------------+---------------------------------------------------------
-meses_trab~o |  1,431,463    .3423372    1.422152          0         80
-anios_trab~o |  1,431,463    3.980527    8.167336          0         98
-      ytotal |  1,710,486     9452.72    17720.94          0    7244333
-     pesotri |  1,596,014    105.8702    51.49798          1       1527
-     pesosem |  1,484,437    52.49311    27.27095          3       1345
+meses_trab~o |  1,603,978    .9879306    3.922381          0         80
+anios_trab~o |  1,603,978    3.595337    7.811246          0         98
+      ytotal |  1,883,001     8963.94    17118.72          0    7244333
+     pesotri |  1,768,529    112.5999    55.67063          1       1527
+     pesosem |  1,656,952    56.11867    29.23545          3       1345
 -------------+---------------------------------------------------------
-      pesoan |  1,710,486    26.61043      12.967          1       1323
-         ccz |  1,710,486    3.942653    5.511817          0         18
+      pesoan |  1,883,001    28.17228    13.90951          1       1323
+         ccz |  1,799,032    4.177422    5.575519          0         18
       nomloc |          0
-  nbr_people |  1,710,486    3.753415    1.872965          1         25
- nbr_above14 |  1,710,486    2.767848    1.249137          1         16
+  nbr_people |  1,883,001    3.788625    1.892648          1         27
+ nbr_above14 |  1,883,001    2.790203    1.261856          1         16
 -------------+---------------------------------------------------------
- nbr_under14 |  1,710,486    .9853755    1.274995          0         13
-     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
-c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
-c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
-c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
+ nbr_under14 |  1,883,001    .9982677    1.287109          0         14
+     y_hogar |  1,883,001       27942    35279.14          0    7681180
+c98_resid_~e |  1,883,001     .995333     .068156          0          1
+c98_resid_~d |  1,883,001    .6481627    .4775436          0          1
+c98_nbr_ro~s |  1,883,001    3.574194    1.311938          0         80
 -------------+---------------------------------------------------------
-c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
-c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
-c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
-c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
-c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
+c98_nbr_be~s |  1,883,001    2.195521    .8372966          0         40
+c98_b_pipe~r |  1,883,001    .9650021    .1837744          0          1
+c98_hhld_t~t |  1,883,001    .9231094    .2664178          0          1
+c98_b_sewage |  1,883,001    .6019636    .4894932          0          1
+c98_hhld_s~e |  1,883,001    .9487366    .2205345          0          1
 -------------+---------------------------------------------------------
-c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
-c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
- c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
-c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
-c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
+c98_hhld_h~r |  1,883,001    .8768014    .3286651          0          1
+c98_hhld_r~t |  1,883,001     .843982    .3628725          0          1
+ c98_hhld_tv |  1,883,001    .9618635    .1915257          0          1
+c98_hhld_vcr |  1,883,001    .4869907    .4998309          0          1
+c98_hhld_w~c |  1,883,001    .7094075    .4540359          0          1
 -------------+---------------------------------------------------------
-c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
-c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
-c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
-   trimestre |  1,710,486    2.498075    1.117025          1          4
-     married |  1,420,544    .5307995    .4990507          0          1
+c98_hhld_d~r |  1,883,001    .0426776    .2021293          0          1
+c98_hhld_m~e |  1,883,001     .480355    .4996141          0          1
+c98_hhld_car |  1,883,001    .3550816    .4785382          0          1
+   trimestre |  1,883,001    2.497624    1.117098          1          4
+     married |  1,593,059    .5195464     .499618          0          1
 -------------+---------------------------------------------------------
        etnia |  1,431,463    2.291132    .9704668          0          4
-  estudiante |  1,710,486    .0699111    .2549972          0          1
-     trabajo |  1,710,486     .446925    .4971752          0          1
- y_hogar_alt |  1,710,486    29503.43    33568.92          0    7289481
-  anios_prim |  1,693,981    4.977679    1.958824          0          6
+  estudiante |  1,883,001    .0635061     .243871          0          1
+     trabajo |  1,883,001    .4440821    .4968635          0          1
+ y_hogar_alt |  1,883,001    28125.33    32693.99          0    7289481
+  anios_prim |  1,848,281    5.005129    1.924656          0          6
 -------------+---------------------------------------------------------
- anios_secun |  1,693,981    2.140683     2.42439          0          6
-  anios_terc |  1,710,478    .4854754    1.454612          0         40
-  anios_tecn |  1,693,981    .2578884     .783182          0          8
-  educ_level |  1,693,981    1.906642    1.015593          1          4
+ anios_secun |  1,848,281    2.119509    2.420579          0          6
+  anios_terc |  1,864,778    .4804164    1.443628          0         40
+  anios_tecn |  1,848,281     .256131    .7879275          0          8
+  educ_level |  1,848,281    1.898372     1.01154          1          4
          mes |  1,710,486    6.493169    3.444754          1         12
 -------------+---------------------------------------------------------
    trabajo_1 |  1,710,486    .4191785    .4934248          0          1
@@ -607,8 +604,8 @@ c06_b_electr |  1,431,463    .9961228     .062146          0          1
 
 
 
-(note: file ../temp/clean_loc_2001_2016.dta not found)
-file ../temp/clean_loc_2001_2016.dta saved
+(note: file ../temp/clean_loc_1998_2016.dta not found)
+file ../temp/clean_loc_1998_2016.dta saved
 
 . 
 end of do-file
@@ -654,15 +651,15 @@ Notes:
 
 . 
 . program main_prepare_for_analysis 
-  1.     use ../temp/clean_loc_2001_2016.dta, clear
+  1.     use ../temp/clean_loc_1998_2016.dta, clear
   2.     
 .     fix_2012_weights, by_vars(loc_code trimestre edad hombre)
   3.     
 .     import excel ..\..\raw\inflation.xlsx, sheet("Sheet1") firstrow clear
-  4.     merge 1:m anio using ..\temp\clean_loc_2001_2016_fixed_weights.dta, no
+  4.     merge 1:m anio using ..\temp\clean_loc_1998_2016_fixed_weights.dta, no
 > gen ///
 >         assert(1 3)keep(3)
-  5.     save ..\temp\clean_loc_2001_2016_fixed.dta, replace
+  5.     save ..\temp\clean_loc_1998_2016_fixed.dta, replace
   6. 
 .     impute_poverty_lines_pre06
   7.     gen poor       = (y_hogar_alt <= lp_06)
@@ -682,7 +679,7 @@ Notes:
 .     label_vars
  18.     drop if (missing(numero) | missing(pers) | missing(anio))
  19.     replace horas_trabajo = . if horas_trabajo >= 100
- 20.     save_data ../output/clean_loc_2001_2016.dta, key(numero pers anio) rep
+ 20.     save_data ../output/clean_loc_1998_2016.dta, key(numero pers anio) rep
 > lace    
  21. end
 
@@ -698,7 +695,7 @@ Notes:
   6.     
 .     save ../temp/pesos_2012_imputed.dta, replace
   7. 
-.     use ../temp/clean_loc_2001_2016.dta, clear
+.     use ../temp/clean_loc_1998_2016.dta, clear
   8.     
 .     merge m:1 anio `by_vars' using ../temp/pesos_2012_imputed.dta, ///
 >         keepusing(pesosem2 pesotri2) keep(1 3)
@@ -706,14 +703,14 @@ Notes:
  10.     replace pesosem = pesosem2 if _merge == 3
  11.     drop pesotri2 pesosem2 _merge
  12.     
-.     save ../temp/clean_loc_2001_2016_fixed_weights.dta, replace
+.     save ../temp/clean_loc_1998_2016_fixed_weights.dta, replace
  13. end
 
 . 
 . program impute_poverty_lines_pre06
   1.     keep if anio == 2006
   2.     
-.     forval year=2001/2005 {
+.     forval year=1998/2005 {
   3.         replace anio = `year' 
   4.     
 .         local by_vars " trimestre loc_code nbr_above14 nbr_people"
@@ -723,7 +720,7 @@ Notes:
   7.     
 .         save ..\temp\poverty_`year'_imputed.dta, replace
   8. 
-.         use ..\temp\clean_loc_2001_2016_fixed.dta, clear
+.         use ..\temp\clean_loc_1998_2016_fixed.dta, clear
   9. 
 .         merge m:1 `by_vars' using ..\temp\poverty_`year'_imputed.dta, nogen
  10.         replace lp_06 = lp_06_2 if anio == `year'
@@ -732,7 +729,7 @@ Notes:
 .         drop lp_06_2 li_06_2
  13.         replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
  14.         replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
- 15.         save ..\temp\clean_loc_2001_2016_fixed.dta, replace
+ 15.         save ..\temp\clean_loc_1998_2016_fixed.dta, replace
  16.     }
  17. end
 
@@ -773,15 +770,15 @@ Notes:
 
 . 
 . main_prepare_for_analysis
-(1,588,763 observations deleted)
+(1,761,278 observations deleted)
 (note: file ../temp/pesos_2012_imputed.dta not found)
 file ../temp/pesos_2012_imputed.dta saved
 (note: variable anio was int, now float to accommodate using data's values)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,606,429
-        from master                 1,606,429  (_merge==1)
+    not matched                     1,778,944
+        from master                 1,778,944  (_merge==1)
         from using                          0  (_merge==2)
 
     matched                           104,057  (_merge==3)
@@ -790,99 +787,141 @@ variable pesotri was int now float
 (104,057 real changes made)
 variable pesosem was int now float
 (104,057 real changes made)
-(note: file ../temp/clean_loc_2001_2016_fixed_weights.dta not found)
-file ../temp/clean_loc_2001_2016_fixed_weights.dta saved
+(note: file ../temp/clean_loc_1998_2016_fixed_weights.dta not found)
+file ../temp/clean_loc_1998_2016_fixed_weights.dta saved
 (note: variable anio was int, now float to accommodate using data's values)
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,883,001  
     -----------------------------------------
-(note: file ..\temp\clean_loc_2001_2016_fixed.dta not found)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(1,500,582 observations deleted)
+(note: file ..\temp\clean_loc_1998_2016_fixed.dta not found)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,673,097 observations deleted)
 (209,904 real changes made)
+(note: file ..\temp\poverty_1998_imputed.dta not found)
+file ..\temp\poverty_1998_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                        75,486
+        from master                    75,486  
+        from using                          0  
+
+    matched                         1,807,515  
+    -----------------------------------------
+(53,695 real changes made)
+variable li_06 was int now float
+(53,695 real changes made)
+(53,695 real changes made)
+(53,695 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,327 real changes made)
+(note: file ..\temp\poverty_1999_imputed.dta not found)
+file ..\temp\poverty_1999_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,001  
+    -----------------------------------------
+(56,845 real changes made)
+(56,845 real changes made)
+(56,845 real changes made)
+(56,845 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,017 real changes made)
+(note: file ..\temp\poverty_2000_imputed.dta not found)
+file ..\temp\poverty_2000_imputed.dta saved
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                         1,883,001  
+    -----------------------------------------
+(57,093 real changes made)
+(57,093 real changes made)
+(57,093 real changes made)
+(57,093 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,825,591 real changes made)
 (note: file ..\temp\poverty_2001_imputed.dta not found)
 file ..\temp\poverty_2001_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                        65,777
-        from master                    65,777  
-        from using                          0  
-
-    matched                         1,644,709  
+    not matched                             0
+    matched                         1,883,001  
     -----------------------------------------
-(54,640 real changes made)
-variable li_06 was int now float
-(54,640 real changes made)
-(54,640 real changes made)
-(54,640 real changes made)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(1,654,159 real changes made)
+(56,694 real changes made)
+(56,694 real changes made)
+(56,694 real changes made)
+(56,694 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,826,674 real changes made)
 (note: file ..\temp\poverty_2002_imputed.dta not found)
 file ..\temp\poverty_2002_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,883,001  
     -----------------------------------------
 (55,620 real changes made)
 (55,620 real changes made)
 (55,620 real changes made)
 (55,620 real changes made)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(1,655,117 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,827,632 real changes made)
 (note: file ..\temp\poverty_2003_imputed.dta not found)
 file ..\temp\poverty_2003_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,883,001  
     -----------------------------------------
 (54,650 real changes made)
 (54,650 real changes made)
 (54,650 real changes made)
 (54,650 real changes made)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(1,654,899 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,827,414 real changes made)
 (note: file ..\temp\poverty_2004_imputed.dta not found)
 file ..\temp\poverty_2004_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,883,001  
     -----------------------------------------
 (54,842 real changes made)
 (54,842 real changes made)
 (54,842 real changes made)
 (54,842 real changes made)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(1,656,156 real changes made)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,828,671 real changes made)
 (note: file ..\temp\poverty_2005_imputed.dta not found)
 file ..\temp\poverty_2005_imputed.dta saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
-    matched                         1,710,486  
+    matched                         1,883,001  
     -----------------------------------------
 (53,665 real changes made)
 (53,665 real changes made)
 (53,665 real changes made)
 (53,665 real changes made)
-file ..\temp\clean_loc_2001_2016_fixed.dta saved
-(946,027 missing values generated)
-(853,973 missing values generated)
-(853,973 real changes made)
-(1,556,727 missing values generated)
-(1,606,503 missing values generated)
-(1,613,340 missing values generated)
-(1,606,652 missing values generated)
+file ..\temp\clean_loc_1998_2016_fixed.dta saved
+(1,046,794 missing values generated)
+(939,872 missing values generated)
+(939,872 real changes made)
+(1,711,736 missing values generated)
+(1,769,966 missing values generated)
+(1,773,862 missing values generated)
+(1,770,115 missing values generated)
 (0 observations deleted)
 (261 real changes made, 261 to missing)
 (data now sorted by numero pers anio)
@@ -899,84 +938,84 @@ file ..\temp\clean_loc_2001_2016_fixed.dta saved
   variable educ_anios_terc was float now byte
   variable educ_HS_diploma was float now byte
   variable educ_some_college was float now byte
-  (58,156,524 bytes saved)
+  (64,022,034 bytes saved)
 ===============================================================================
 > ===================
-File: ../output/clean_loc_2001_2016.dta
+File: ../output/clean_loc_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1710486:85(100147):1267048295:2131782561
+  1883001:85(100147):1679399254:4223410392
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
-      numero |  1,710,486    8.36e+08    9.92e+08          1   2.02e+09
-        pers |  1,710,486    2.376794    1.503466          1         25
-        anio |  1,710,486    2009.343    4.144144       2001       2016
-   inflation |  1,710,486    8.273495    3.563895       3.59      25.94
-    cpi_2006 |  1,710,486    135.5327    42.76078   54.72384   217.6432
+      numero |  1,883,001    7.60e+08    9.76e+08          1   2.02e+09
+        pers |  1,883,001    2.394427    1.518971          1         27
+        anio |  1,883,001    2008.396    4.955077       1998       2016
+   inflation |  1,883,001    8.059312    3.511605       3.59      25.94
+    cpi_2006 |  1,883,001    127.7241    47.60114   48.00595   217.6432
 -------------+---------------------------------------------------------
-      semana |          0
-        dpto |  1,710,486    5.712008    5.809447          1         19
-        secc |  1,641,594    9.084292    16.31907          0         99
-        segm |  1,641,594    58.71646    91.12505          0        845
-     estrato |  1,710,486     5.56798    2.970241          1         12
+      semana |    172,515    24.40658    13.83848          1         48
+        dpto |  1,883,001    5.627094    5.785383          1         19
+        secc |  1,730,140    9.575127    16.53226          0         99
+        segm |  1,730,140     61.8744    92.31873          0        845
+     estrato |  1,883,001    5.492968     2.93876          1         12
 -------------+---------------------------------------------------------
-      hombre |  1,710,486    .4681652    .4989857          0          1
-        edad |  1,710,486    36.79662    23.48919          0         99
-    pobpcoac |  1,710,486    3.823276    3.206703          1         11
-horas_trab~p |  1,710,486    17.39364    22.23241          0         99
-horas_trab~s |  1,710,486    .8916115    4.810304          0         98
+      hombre |  1,883,001    .4683386    .4989967          0          1
+        edad |  1,883,001    36.69248    23.47308          0         99
+    pobpcoac |  1,883,001     3.83691    3.223087          1         99
+horas_trab~p |  1,883,001    17.30703    22.32703          0         99
+horas_trab~s |  1,883,001    .8808381    4.793823          0         98
 -------------+---------------------------------------------------------
-horas_trab~o |  1,710,225    18.27123    23.28222          0         99
-busca_trab~o |  1,710,486    .0759141    .2648607          0          1
-meses_trab~o |  1,431,463    .3423372    1.422152          0         80
-anios_trab~o |  1,431,463    3.980527    8.167336          0         98
-      ytotal |  1,710,486     9452.72    17720.94          0    7244333
+horas_trab~o |  1,882,740    18.27068    23.39412          0         99
+busca_trab~o |  1,883,001    .0717796    .2581226          0          1
+meses_trab~o |  1,603,978    .9879306    3.922381          0         80
+anios_trab~o |  1,603,978    3.595337    7.811246          0         98
+      ytotal |  1,883,001     8963.94    17118.72          0    7244333
 -------------+---------------------------------------------------------
-     pesotri |  1,700,071    106.0135    50.18924          1       1527
-     pesosem |  1,588,494    52.58373    26.48719          3       1345
-      pesoan |  1,710,486    26.61043      12.967          1       1323
-         ccz |  1,710,486    3.942653    5.511817          0         18
+     pesotri |  1,872,586     112.356    54.35323          1       1527
+     pesosem |  1,761,009    55.98618    28.46612          3       1345
+      pesoan |  1,883,001    28.17228    13.90951          1       1323
+         ccz |  1,799,032    4.177422    5.575519          0         18
       nomloc |          0
 -------------+---------------------------------------------------------
-  nbr_people |  1,710,486    3.753415    1.872965          1         25
- nbr_above14 |  1,710,486    2.767848    1.249137          1         16
- nbr_under14 |  1,710,486    .9853755    1.274995          0         13
-     y_hogar |  1,710,486    29063.75    36371.65          0    7681180
-c98_resid_~e |  1,710,486    .9967904    .0565625          0          1
+  nbr_people |  1,883,001    3.788625    1.892648          1         27
+ nbr_above14 |  1,883,001    2.790203    1.261856          1         16
+ nbr_under14 |  1,883,001    .9982677    1.287109          0         14
+     y_hogar |  1,883,001       27942    35279.14          0    7681180
+c98_resid_~e |  1,883,001     .995333     .068156          0          1
 -------------+---------------------------------------------------------
-c98_resid_~d |  1,710,486    .6438451    .4788619          0          1
-c98_nbr_ro~s |  1,710,486    3.577393    1.304427          1         80
-c98_nbr_be~s |  1,710,486    2.190597    .8312105          1         40
-c98_b_pipe~r |  1,710,486    .9665797    .1797315          0          1
-c98_hhld_t~t |  1,710,486    .9235896    .2656538          0          1
+c98_resid_~d |  1,883,001    .6481627    .4775436          0          1
+c98_nbr_ro~s |  1,883,001    3.574194    1.311938          0         80
+c98_nbr_be~s |  1,883,001    2.195521    .8372966          0         40
+c98_b_pipe~r |  1,883,001    .9650021    .1837744          0          1
+c98_hhld_t~t |  1,883,001    .9231094    .2664178          0          1
 -------------+---------------------------------------------------------
-c98_b_sewage |  1,710,486    .6031724    .4892398          0          1
-c98_hhld_s~e |  1,710,486    .9436301    .2306348          0          1
-c98_hhld_h~r |  1,710,486    .8798353    .3251541          0          1
-c98_hhld_r~t |  1,710,486    .8316777    .3741524          0          1
- c98_hhld_tv |  1,710,486    .9598664    .1962726          0          1
+c98_b_sewage |  1,883,001    .6019636    .4894932          0          1
+c98_hhld_s~e |  1,883,001    .9487366    .2205345          0          1
+c98_hhld_h~r |  1,883,001    .8768014    .3286651          0          1
+c98_hhld_r~t |  1,883,001     .843982    .3628725          0          1
+ c98_hhld_tv |  1,883,001    .9618635    .1915257          0          1
 -------------+---------------------------------------------------------
-c98_hhld_vcr |  1,710,486    .4948909     .499974          0          1
-c98_hhld_w~c |  1,710,486     .719658    .4491664          0          1
-c98_hhld_d~r |  1,710,486    .0424739    .2016678          0          1
-c98_hhld_m~e |  1,710,486    .5047595    .4999775          0          1
-c98_hhld_car |  1,710,486    .3577287    .4793319          0          1
+c98_hhld_vcr |  1,883,001    .4869907    .4998309          0          1
+c98_hhld_w~c |  1,883,001    .7094075    .4540359          0          1
+c98_hhld_d~r |  1,883,001    .0426776    .2021293          0          1
+c98_hhld_m~e |  1,883,001     .480355    .4996141          0          1
+c98_hhld_car |  1,883,001    .3550816    .4785382          0          1
 -------------+---------------------------------------------------------
-   trimestre |  1,710,486    2.498075    1.117025          1          4
-     married |  1,420,544    .5307995    .4990507          0          1
+   trimestre |  1,883,001    2.497624    1.117098          1          4
+     married |  1,593,059    .5195464     .499618          0          1
        etnia |  1,431,463    2.291132    .9704668          0          4
-  estudiante |  1,710,486    .0699111    .2549972          0          1
-     trabajo |  1,710,486     .446925    .4971752          0          1
+  estudiante |  1,883,001    .0635061     .243871          0          1
+     trabajo |  1,883,001    .4440821    .4968635          0          1
 -------------+---------------------------------------------------------
- y_hogar_alt |  1,710,486    29503.43    33568.92          0    7289481
-  anios_prim |  1,693,981    4.977679    1.958824          0          6
- anios_secun |  1,693,981    2.140683     2.42439          0          6
-  anios_terc |  1,710,478    .4854754    1.454612          0         40
-  anios_tecn |  1,693,981    .2578884     .783182          0          8
+ y_hogar_alt |  1,883,001    28125.33    32693.99          0    7289481
+  anios_prim |  1,848,281    5.005129    1.924656          0          6
+ anios_secun |  1,848,281    2.119509    2.420579          0          6
+  anios_terc |  1,864,778    .4804164    1.443628          0         40
+  anios_tecn |  1,848,281     .256131    .7879275          0          8
 -------------+---------------------------------------------------------
-  educ_level |  1,693,981    1.906642    1.015593          1          4
+  educ_level |  1,848,281    1.898372     1.01154          1          4
          mes |  1,710,486    6.493169    3.444754          1         12
    trabajo_1 |  1,710,486    .4191785    .4934248          0          1
 c01_hhld_c~r |  1,710,486    .5257202    .4993382          0          1
@@ -990,33 +1029,33 @@ c01_hhld_c~v |  1,710,486    .5669289    .4955004          0          1
 -------------+---------------------------------------------------------
  live_births |    475,328    1.039613    .6913098          0          2
 live_birth~r |    475,328    1.412622    1.940563          0         65
-       li_06 |  1,704,880     1706.19    551.5225   548.3328       3021
-       lp_06 |  1,704,880    17811.29    9468.899   1807.593   132026.8
+       li_06 |  1,874,567    1621.027    582.7457   363.3281       3021
+       lp_06 |  1,874,567    16984.56    9365.237   1585.694   132026.8
 c06_mat_wa~s |  1,431,463    .9736368    .1602131          0          1
 -------------+---------------------------------------------------------
 c06_mat_roof |  1,431,463    .5677583    .4953877          0          1
 c06_mat_fl~r |  1,431,463    .7912199    .4064371          0          1
 c06_b_electr |  1,431,463    .9961228     .062146          0          1
     loc_code |          0
-        poor |  1,710,486    .3699644    .4827949          0          1
+        poor |  1,883,001    .3720444    .4833503          0          1
 -------------+---------------------------------------------------------
-   indigente |  1,710,486    .0125608    .1113687          0          1
- ind_under14 |  1,710,486    .5124608    .4998449          0          1
-work_part_~e |    764,459     .269295    .4435938          0          1
-    semestre |  1,710,486    1.499258    .4999996          1          2
-    anio_sem |  1,710,486    99.18467    8.303561         82        113
+   indigente |  1,883,001    .0129841    .1132055          0          1
+ ind_under14 |  1,883,001    .5156837    .4997541          0          1
+work_part_~e |    836,207    .2665452    .4421528          0          1
+    semestre |  1,883,001    1.499135    .4999994          1          2
+    anio_sem |  1,883,001    97.29061    9.923175         76        113
 -------------+---------------------------------------------------------
-    anio_qtr |  1,710,486    198.8689    16.61422        164        227
-educ_anios~n |    153,759    2.691199     1.98535          0          6
-educ_anios~c |    103,983    1.924555    1.822042          0         40
-educ_HS_di~a |     97,146    .1144463    .3183542          0          1
-educ_some_~e |    103,834    .7332473    .4422642          0          1
+    anio_qtr |  1,883,001    195.0806    19.85271        152        227
+educ_anios~n |    171,265    2.669699    2.002579          0          6
+educ_anios~c |    113,035    1.916999    1.827092          0         40
+educ_HS_di~a |    109,139    .1157881    .3199721          0          1
+educ_some_~e |    112,886    .7242528     .446892          0          1
 
 
 
 
-(note: file ../output/clean_loc_2001_2016.dta not found)
-file ../output/clean_loc_2001_2016.dta saved
+(note: file ../output/clean_loc_1998_2016.dta not found)
+file ../output/clean_loc_1998_2016.dta saved
 
 . 
 end of do-file
@@ -1153,459 +1192,459 @@ Notes:
  26.         }
  27.     }
  28. }
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000001.tmp saved
 *******
 pop_3_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000002.tmp saved
 *******
 pop_3_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000003.tmp saved
 *******
 pop_3_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000004.tmp saved
 *******
 pop_3_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000005.tmp saved
 *******
 pop_3_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000006.tmp saved
 *******
 pop_3_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000007.tmp saved
 *******
 pop_4_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000008.tmp saved
 *******
 pop_4_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000009.tmp saved
 *******
 pop_4_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000a.tmp saved
 *******
 pop_4_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000b.tmp saved
 *******
 pop_4_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000c.tmp saved
 *******
 pop_4_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000d.tmp saved
 *******
 pop_5_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000e.tmp saved
 *******
 pop_5_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000f.tmp saved
 *******
 pop_5_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000g.tmp saved
 *******
 pop_5_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000h.tmp saved
 *******
 pop_5_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000i.tmp saved
 *******
 pop_5_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000j.tmp saved
 *******
 pop_6_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000k.tmp saved
 *******
 pop_6_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000l.tmp saved
 *******
 pop_6_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000m.tmp saved
 *******
 pop_6_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000n.tmp saved
 *******
 pop_6_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000o.tmp saved
 *******
 pop_6_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000p.tmp saved
 *******
 pop_7_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000q.tmp saved
 *******
 pop_7_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000r.tmp saved
 *******
 pop_7_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000s.tmp saved
 *******
 pop_7_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000t.tmp saved
 *******
 pop_7_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000u.tmp saved
 *******
 pop_7_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000v.tmp saved
 *******
 pop_8_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000w.tmp saved
 *******
 pop_8_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00000x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00000x.tmp saved
 *******
 pop_8_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000010.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000010.tmp saved
 *******
 pop_8_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000011.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000011.tmp saved
 *******
 pop_8_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000012.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000012.tmp saved
 *******
 pop_8_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000013.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000013.tmp saved
 *******
 pop_9_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000014.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000014.tmp saved
 *******
 pop_9_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000015.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000015.tmp saved
 *******
 pop_9_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000016.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000016.tmp saved
 *******
 pop_9_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000017.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000017.tmp saved
 *******
 pop_9_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000018.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000018.tmp saved
 *******
 pop_9_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000019.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000019.tmp saved
 *******
 pop_10_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001a.tmp saved
 *******
 pop_10_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001b.tmp saved
 *******
 pop_10_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001c.tmp saved
 *******
 pop_10_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001d.tmp saved
 *******
 pop_10_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001e.tmp saved
 *******
 pop_10_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001f.tmp saved
 *******
 pop_11_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001g.tmp saved
 *******
 pop_11_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001h.tmp saved
 *******
 pop_11_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001i.tmp saved
 *******
 pop_11_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001j.tmp saved
 *******
 pop_11_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001k.tmp saved
 *******
 pop_11_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001l.tmp saved
 *******
 pop_12_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001m.tmp saved
 *******
 pop_12_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001n.tmp saved
 *******
 pop_12_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001o.tmp saved
 *******
 pop_12_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001p.tmp saved
 *******
 pop_12_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001q.tmp saved
 *******
 pop_12_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001r.tmp saved
 *******
 pop_13_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001s.tmp saved
 *******
 pop_13_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001t.tmp saved
 *******
 pop_13_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001u.tmp saved
 *******
 pop_13_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001v.tmp saved
 *******
 pop_13_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001w.tmp saved
 *******
 pop_13_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00001x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00001x.tmp saved
 *******
 pop_14_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000020.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000020.tmp saved
 *******
 pop_14_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000021.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000021.tmp saved
 *******
 pop_14_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000022.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000022.tmp saved
 *******
 pop_14_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000023.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000023.tmp saved
 *******
 pop_14_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000024.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000024.tmp saved
 *******
 pop_14_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000025.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000025.tmp saved
 *******
 pop_15_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000026.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000026.tmp saved
 *******
 pop_15_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000027.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000027.tmp saved
 *******
 pop_15_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000028.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000028.tmp saved
 *******
 pop_15_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000029.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000029.tmp saved
 *******
 pop_15_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002a.tmp saved
 *******
 pop_15_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002b.tmp saved
 *******
 pop_16_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002c.tmp saved
 *******
 pop_16_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002d.tmp saved
 *******
 pop_16_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002e.tmp saved
 *******
 pop_16_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002f.tmp saved
 *******
 pop_16_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002g.tmp saved
 *******
 pop_16_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002h.tmp saved
 *******
 pop_17_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002i.tmp saved
 *******
 pop_17_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002j.tmp saved
 *******
 pop_17_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002k.tmp saved
 *******
 pop_17_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002l.tmp saved
 *******
 pop_17_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002m.tmp saved
 *******
 pop_17_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002n.tmp saved
 *******
 pop_18_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002o.tmp saved
 *******
 pop_18_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002p.tmp saved
 *******
 pop_18_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002q.tmp saved
 *******
 pop_18_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002r.tmp saved
 *******
 pop_18_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002s.tmp saved
 *******
 pop_18_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002t.tmp saved
 *******
 pop_19_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002u.tmp saved
 *******
 pop_19_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002v.tmp saved
 *******
 pop_19_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002w.tmp saved
 *******
 pop_19_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00002x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00002x.tmp saved
 *******
 pop_19_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000030.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000030.tmp saved
 *******
 pop_19_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000031.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000031.tmp saved
 *******
 pop_20_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000032.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000032.tmp saved
 *******
 pop_20_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000033.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000033.tmp saved
 *******
 pop_20_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000034.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000034.tmp saved
 *******
 pop_20_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000035.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000035.tmp saved
 *******
 pop_20_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000036.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000036.tmp saved
 *******
 pop_20_women_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000037.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000037.tmp saved
 *******
 pop_21_all_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000038.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000038.tmp saved
 *******
 pop_21_all_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_000039.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_000039.tmp saved
 *******
 pop_21_men_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00003a.tmp saved
 *******
 pop_21_men_2
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00003b.tmp saved
 *******
 pop_21_women_1
 *******
-file C:\Users\diegog\AppData\Local\Temp\3\ST_5108_00003c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5150_00003c.tmp saved
 *******
 pop_21_women_2
 *******
@@ -1684,8 +1723,8 @@ file ..\output\population.dta saved
 
 . collapse (sum) pop if fertile_age==1, by(dpto anio age_min age_max)
 
-. drop if inrange(anio,1996,1998) | inrange(anio,2016,2020)
-(912 observations deleted)
+. drop if inrange(anio,1996,1997) | inrange(anio,2017,2020)
+(684 observations deleted)
 
 . 
 . save "..\output\population_fertile_age.dta", replace
@@ -1904,23 +1943,23 @@ Notes:
 
 . 
 . main
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000001.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000002.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000003.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000004.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000005.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000006.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000007.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000008.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_000009.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000a.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000b.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000c.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000d.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000e.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000f.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000g.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_55dc_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5144_00000h.tmp saved
 (note: variable fecparto was str6, now str7 to accommodate using data's
        values)
 (note: variable fecparto was str7, now str8 to accommodate using data's
@@ -1963,4 +2002,4 @@ file ..\output\births_derived.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-30 13:59:25
+ make.py ended: 2020-03-31 14:55:25

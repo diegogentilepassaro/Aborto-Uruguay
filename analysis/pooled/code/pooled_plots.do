@@ -67,7 +67,7 @@ syntax, time(str) by_vars(str)
     save ../temp/TFR_`time'.dta, replace
 
     foreach outcome in `by_vars' {
-        use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
+        use  ..\..\..\assign_treatment\output\ech_final_1998_2016.dta, clear
         keep if hombre==0 & age_fertile==1
         collapse (count) pop_`outcome'=pers [pw=pesoan], by(anio dpto `outcome')
         sort anio dpto `outcome'
@@ -174,7 +174,7 @@ program              pooled_coefplot
 syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) restr(str)]
 
     if substr("`data'",1,3) == "ech" {
-        use  ..\..\..\assign_treatment\output\ech_final_2001_2016.dta, clear
+        use  ..\..\..\assign_treatment\output\ech_final_1998_2016.dta, clear
         local all_controls = "c98_* ${controls}"
         if "`data'" == "ech_labor" {
             keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)

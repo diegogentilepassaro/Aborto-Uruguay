@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 14:00:23 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\code 
+ make.py started: 2020-03-31 14:34:54 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\code 
 
 
 
@@ -42,7 +42,7 @@ Type 'q()' to quit R.
 > quit()
 > proc.time()
    user  system elapsed 
- 513.20   29.29  638.75 
+ 251.48   21.96  276.48 
 
 
 Execute:  StataMP-64 /e do "./create_loc_Xwalk.do"
@@ -1018,17 +1018,17 @@ Notes:
 
 . 
 . main_clean_raw
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000001.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000003.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000004.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -1038,7 +1038,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -1048,20 +1048,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000006.tmp saved
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_p.dta not found)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000007.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000009.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000a.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_h.dta not found)
 file ..\temp\preclean_1998_h.dta saved
@@ -1073,8 +1073,8 @@ file ..\temp\preclean_1998_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1998.dta not found)
 file ..\temp\preclean_1998.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000d.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -1083,9 +1083,9 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000f.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000g.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -1093,7 +1093,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -1103,20 +1103,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000i.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1999_p.dta not found)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000j.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000l.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000m.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000o.tmp saved
 (note: file ..\temp\preclean_1999_h.dta not found)
 file ..\temp\preclean_1999_h.dta saved
 
@@ -1127,8 +1127,8 @@ file ..\temp\preclean_1999_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1999.dta not found)
 file ..\temp\preclean_1999.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000p.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -1138,9 +1138,9 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000r.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000s.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -1148,7 +1148,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -1160,20 +1160,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000u.tmp saved
 (note: variable pg132 was byte, now int to accommodate using data's values)
 (note: file ..\temp\preclean_2000_p.dta not found)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000v.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_00000x.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000010.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000011.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_00000x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000010.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_52a4_000012.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5b00_000012.tmp saved
 (note: file ..\temp\preclean_2000_h.dta not found)
 file ..\temp\preclean_2000_h.dta saved
 
@@ -2240,4 +2240,4 @@ file ../output/clean_1998_2016.dta saved
 . 
 end of do-file
 
- make.py ended: 2020-03-29 14:18:19
+ make.py ended: 2020-03-31 14:43:50

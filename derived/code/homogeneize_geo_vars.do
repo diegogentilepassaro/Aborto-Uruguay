@@ -4,10 +4,8 @@ adopath + ../../library/stata/gslab_misc/ado
 
 program main 
     use ../../base\output\clean_1998_2016, clear
-
-    keep if anio >= 2001
     
-    convert_01_05_to_06_11_cod
+    convert_1998_05_to_06_11_cod
     convert_07_to_06_11_cod
     fill_missing_loc_var, year(2007) loc_var(nomloc) merge_var(loc)
     fill_missing_loc_var, year(2008) loc_var(loc) merge_var(nomloc)
@@ -29,92 +27,92 @@ program main
     drop if missing(loc_code)
     drop if (missing(anio) | missing(numero) | missing(pers))
 
-    save_data ../temp/clean_loc_2001_2016.dta, key(numero pers anio) replace
+    save_data ../temp/clean_loc_1998_2016.dta, key(numero pers anio) replace
 end
 
-program convert_01_05_to_06_11_cod
+program convert_1998_05_to_06_11_cod
     * Montevideo
-    replace loc = "010" if inrange(anio, 2001, 2005) & loc == "0101"
+    replace loc = "010" if inrange(anio, 1998, 2005) & loc == "0101"
 
     * Artigas
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0201"
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0202"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0201"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0202"
     
     * Canelones
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0302"
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0301"
-    replace loc = "023" if inrange(anio, 2001, 2005) & loc == "0303"    
-    replace loc = "024" if inrange(anio, 2001, 2005) & loc == "0304"
-    replace loc = "422" if inrange(anio, 2001, 2005) & loc == "0305"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0302"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0301"
+    replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0303"    
+    replace loc = "024" if inrange(anio, 1998, 2005) & loc == "0304"
+    replace loc = "422" if inrange(anio, 1998, 2005) & loc == "0305"
     
     * Cerro Largo
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0401"
-    replace loc = "522" if inrange(anio, 2001, 2005) & loc == "0402"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0401"
+    replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0402"
 
     * Colonia
-    replace loc = "320" if inrange(anio, 2001, 2005) & loc == "0501"
-    replace loc = "321" if inrange(anio, 2001, 2005) & loc == "0502"
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "0503"    
-    replace loc = "022" if inrange(anio, 2001, 2005) & loc == "0504"
-    replace loc = "023" if inrange(anio, 2001, 2005) & loc == "0505"
+    replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0501"
+    replace loc = "321" if inrange(anio, 1998, 2005) & loc == "0502"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "0503"    
+    replace loc = "022" if inrange(anio, 1998, 2005) & loc == "0504"
+    replace loc = "023" if inrange(anio, 1998, 2005) & loc == "0505"
 
     * Durazno
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0601"
-    replace loc = "421" if inrange(anio, 2001, 2005) & loc == "0602"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0601"
+    replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0602"
 
     * Flores
-    replace loc = "320" if inrange(anio, 2001, 2005) & loc == "0701"
+    replace loc = "320" if inrange(anio, 1998, 2005) & loc == "0701"
 
     * Florida
-    replace loc = "220" if inrange(anio, 2001, 2005) & loc == "0801"
-    replace loc = "421" if inrange(anio, 2001, 2005) & loc == "0802"
+    replace loc = "220" if inrange(anio, 1998, 2005) & loc == "0801"
+    replace loc = "421" if inrange(anio, 1998, 2005) & loc == "0802"
 
     * Lavalleja
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "0901"
-    replace loc = "522" if inrange(anio, 2001, 2005) & loc == "0902"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "0901"
+    replace loc = "522" if inrange(anio, 1998, 2005) & loc == "0902"
 
     * Maldonado
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1001"
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1002"
-    replace loc = "022" if inrange(anio, 2001, 2005) & loc == "1003"    
-    replace loc = "023" if inrange(anio, 2001, 2005) & loc == "1004"
-    replace loc = "024" if inrange(anio, 2001, 2005) & loc == "1005"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1001"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1002"
+    replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1003"    
+    replace loc = "023" if inrange(anio, 1998, 2005) & loc == "1004"
+    replace loc = "024" if inrange(anio, 1998, 2005) & loc == "1005"
 
     * Paysandu
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1101"
-    replace loc = "521" if inrange(anio, 2001, 2005) & loc == "1102"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1101"
+    replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1102"
 
     * Rio Negro
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1201"
-    replace loc = "421" if inrange(anio, 2001, 2005) & loc == "1202"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1201"
+    replace loc = "421" if inrange(anio, 1998, 2005) & loc == "1202"
     
     *Rivera
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1301"
-    replace loc = "522" if inrange(anio, 2001, 2005) & loc == "1302"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1301"
+    replace loc = "522" if inrange(anio, 1998, 2005) & loc == "1302"
     
     *Rocha
-    replace loc = "320" if inrange(anio, 2001, 2005) & loc == "1401"
-    replace loc = "422" if inrange(anio, 2001, 2005) & loc == "1403"
-    replace loc = "521" if inrange(anio, 2001, 2005) & loc == "1404"
+    replace loc = "320" if inrange(anio, 1998, 2005) & loc == "1401"
+    replace loc = "422" if inrange(anio, 1998, 2005) & loc == "1403"
+    replace loc = "521" if inrange(anio, 1998, 2005) & loc == "1404"
     
     * Salto
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1501"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1501"
 
     *San Jose
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1601"
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1602"
-    replace loc = "022" if inrange(anio, 2001, 2005) & loc == "1603"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1601"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1602"
+    replace loc = "022" if inrange(anio, 1998, 2005) & loc == "1603"
 
     *Soriano
-    replace loc = "220" if inrange(anio, 2001, 2005) & loc == "1701"
-    replace loc = "021" if inrange(anio, 2001, 2005) & loc == "1702"
+    replace loc = "220" if inrange(anio, 1998, 2005) & loc == "1701"
+    replace loc = "021" if inrange(anio, 1998, 2005) & loc == "1702"
 
     *Tacuarembo
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1801"
-    replace loc = "321" if inrange(anio, 2001, 2005) & loc == "1802"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1801"
+    replace loc = "321" if inrange(anio, 1998, 2005) & loc == "1802"
 
     *Treinta y Tres
-    replace loc = "020" if inrange(anio, 2001, 2005) & loc == "1901"
+    replace loc = "020" if inrange(anio, 1998, 2005) & loc == "1901"
 end
 
 program convert_07_to_06_11_cod    
