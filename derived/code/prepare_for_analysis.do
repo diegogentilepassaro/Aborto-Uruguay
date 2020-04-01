@@ -3,10 +3,9 @@ set more off
 adopath + ../../library/stata/gslab_misc/ado
 
 program main 
-    use ..\temp\clean_loc_1998_2016.dta, clear
+    use ../temp/clean_loc_1998_2016.dta, clear
     
-    fix_2012_weights
-    save ..\temp\clean_loc_1998_2016_fixed_weights.dta, replace
+    fix_2012_weights, by_vars(loc_code trimestre edad hombre)
     
     import excel ..\..\raw\inflation.xlsx, sheet("Sheet1") firstrow clear
     merge 1:m anio using ..\temp\clean_loc_1998_2016_fixed_weights.dta, nogen ///
@@ -27,9 +26,6 @@ program main
     gen     anio_qtr = yq(anio, trimestre)
     format  anio_qtr %tq
 
-    /*local outcomes = "trabajo horas_trabajo"
-    deseasonalize, outcomes(`outcomes')*/
-     
     label_vars
     drop if (missing(numero) | missing(pers) | missing(anio))
     replace horas_trabajo = . if horas_trabajo >= 100
@@ -37,23 +33,25 @@ program main
 end
 
 program fix_2012_weights
+    syntax, by_vars(str)
+    
     keep if anio == 2013
-    replace anio = 2012 
-    
-    local by_vars "loc_code edad hombre estrato"
-    
+        
     rename (pesotri pesosem) (pesotri2 pesosem2)
-    collapse (mean) pesotri pesosem, by(`by_vars')
+    collapse (mean) pesotri2 pesosem2, by(`by_vars')
+    gen anio = 2012
     
-    save ..\temp\pesos_2012_imputed.dta, replace
+    save ../temp/pesos_2012_imputed.dta, replace
 
-    use ..\temp\clean_loc_1998_2016.dta, clear
-
-    merge m:1 `by_vars' using ..\temp\pesos_2012_imputed.dta, nogen
-    replace pesotri = pesotri2 if anio == 2012
-    replace pesosem = pesosem2 if anio == 2012
+    use ../temp/clean_loc_1998_2016.dta, clear
     
-    drop pesotri2 pesosem2
+    merge m:1 anio `by_vars' using ../temp/pesos_2012_imputed.dta, ///
+        keepusing(pesosem2 pesotri2) keep(1 3)
+    replace pesotri = pesotri2 if _merge == 3
+    replace pesosem = pesosem2 if _merge == 3
+    drop pesotri2 pesosem2 _merge
+    
+    save ../temp/clean_loc_1998_2016_fixed_weights.dta, replace
 end
 
 program impute_poverty_lines_pre06
@@ -79,39 +77,6 @@ program impute_poverty_lines_pre06
         replace lp_06 = (lp_06 * cpi_2006)/100 if anio == `year'
         replace li_06 = (li_06 * cpi_2006)/100 if anio == `year'
         save ..\temp\clean_loc_1998_2016_fixed.dta, replace
-    }
-end
-
-program deseasonalize  
-    syntax, outcomes(str)
-    
-    levelsof dpto, local(dptos)
-    
-    foreach outcome in `outcomes' {
-        gen `outcome'_des = `outcome'
-    }
-    
-    foreach dpto of local dptos {
-        foreach outcome in `outcomes' {
-
-            qui sum `outcome' if anio < 2004 & dpto == `dpto' [aw = pesotri]
-            local mean = r(mean)
-            
-            reg `outcome' i.trimestre if anio < 2004 & dpto == `dpto' [aw = pesotri]
-            predict p_`outcome', resid
-            
-            replace `outcome'_des = p_`outcome' + `mean' if anio < 2004 & dpto == `dpto'
-            drop p_`outcome'
-            
-            qui sum `outcome' if anio >= 2004 & dpto == `dpto' [aw = pesotri]
-            local mean = r(mean)
-            
-            reg `outcome' i.trimestre if anio >= 2004 & dpto == `dpto' [aw = pesotri]
-            predict p_`outcome', resid
-            
-            replace `outcome'_des = p_`outcome' + `mean' if anio >= 2004 & dpto == `dpto'
-            drop p_`outcome'    
-        }
     }
 end
 
