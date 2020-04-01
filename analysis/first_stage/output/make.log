@@ -1,5 +1,5 @@
 
- make.py started: 2020-04-01 07:19:52 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-04-01 07:46:28 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -1061,7 +1061,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_355c_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1073,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_355c_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1085,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_355c_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1298,16 +1298,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_50c_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_50c_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_50c_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_50c_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1334,4 +1334,4 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2020-04-01 07:21:20
+ make.py ended: 2020-04-01 07:47:58

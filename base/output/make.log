@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 09:49:29 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\code 
+ make.py started: 2020-04-01 07:30:06 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\base\code 
 
 
 
@@ -42,7 +42,7 @@ Type 'q()' to quit R.
 > quit()
 > proc.time()
    user  system elapsed 
- 267.48   21.67  289.78 
+ 259.50   23.07  284.06 
 
 
 Execute:  StataMP-64 /e do "./clean_raw.do"
@@ -938,17 +938,17 @@ Notes:
 
 . 
 . main_clean_raw
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000001.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000002.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg102 was int, now long to accommodate using data's values)
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000003.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000004.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000005.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000005.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
 (note: variable pg33o was byte, now int to accommodate using data's values)
@@ -958,7 +958,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000005.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000006.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg11o was int, now long to accommodate using data's values)
@@ -968,20 +968,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000006.tmp saved
 (note: variable pg112 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_p.dta not found)
 file ..\temp\preclean_1998_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000007.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000007.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000008.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000009.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000a.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000b.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000009.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000b.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000c.tmp saved
 (note: variable ht18 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1998_h.dta not found)
 file ..\temp\preclean_1998_h.dta saved
@@ -993,8 +993,8 @@ file ..\temp\preclean_1998_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1998.dta not found)
 file ..\temp\preclean_1998.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000d.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000e.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000e.tmp saved
 (note: variable pg26p was byte, now int to accommodate using data's values)
 (note: variable pg72p was byte, now int to accommodate using data's values)
 (note: variable pg71o was byte, now int to accommodate using data's values)
@@ -1003,9 +1003,9 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000e.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000f.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000g.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000h.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000f.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000g.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000h.tmp saved
 (note: variable pg32p was byte, now int to accommodate using data's values)
 (note: variable pg26o was byte, now int to accommodate using data's values)
 (note: variable pg32o was byte, now int to accommodate using data's values)
@@ -1013,7 +1013,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000h.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000i.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000i.tmp saved
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg22p was int, now long to accommodate using data's values)
 (note: variable pg25p was byte, now int to accommodate using data's values)
@@ -1023,20 +1023,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000i.tmp saved
 (note: variable pg111 was int, now long to accommodate using data's values)
 (note: file ..\temp\preclean_1999_p.dta not found)
 file ..\temp\preclean_1999_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000j.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000k.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000j.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000k.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000l.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000m.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000n.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000l.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000m.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000n.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000o.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000o.tmp saved
 (note: file ..\temp\preclean_1999_h.dta not found)
 file ..\temp\preclean_1999_h.dta saved
 
@@ -1047,8 +1047,8 @@ file ..\temp\preclean_1999_h.dta saved
     -----------------------------------------
 (note: file ..\temp\preclean_1999.dta not found)
 file ..\temp\preclean_1999.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000p.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000q.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000p.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000q.tmp saved
 (note: variable pg71p was int, now long to accommodate using data's values)
 (note: variable pg31o was int, now long to accommodate using data's values)
 (note: variable pg52o was byte, now int to accommodate using data's values)
@@ -1058,9 +1058,9 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000q.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000r.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000s.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000t.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000r.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000s.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000t.tmp saved
 (note: variable pg42p was byte, now int to accommodate using data's values)
 (note: variable pg81p was byte, now int to accommodate using data's values)
 (note: variable pg13o was byte, now int to accommodate using data's values)
@@ -1068,7 +1068,7 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000t.tmp saved
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000u.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000u.tmp saved
 (note: variable pg14p was int, now long to accommodate using data's values)
 (note: variable pg15p was int, now long to accommodate using data's values)
 (note: variable pg71p was int, now long to accommodate using data's values)
@@ -1080,20 +1080,20 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000u.tmp saved
 (note: variable pg132 was byte, now int to accommodate using data's values)
 (note: file ..\temp\preclean_2000_p.dta not found)
 file ..\temp\preclean_2000_p.dta saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000v.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000w.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000v.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000w.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_00000x.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000010.tmp saved
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000011.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_00000x.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000010.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000011.tmp saved
 (note: variable pesosem was byte, now int to accommodate using data's values)
 (note: variable pesoan was byte, now int to accommodate using data's values)
 (note: variable nomlocech was str29, now str43 to accommodate using data's
        values)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3948_000012.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5234_000012.tmp saved
 (note: file ..\temp\preclean_2000_h.dta not found)
 file ..\temp\preclean_2000_h.dta saved
 
@@ -1821,42 +1821,42 @@ Notes:
 
 . 
 . program main_append_years
-  1.         append_years
+  1.     append_years
   2. end
 
 . 
 . program recode_dummies
   1. syntax, vars(varlist)
-  2.         foreach var in `vars' {
-  3.                 replace `var'=0 if `var'==2
-  4.         }
+  2.     foreach var in `vars' {
+  3.         replace `var'=0 if `var'==2
+  4.     }
   5. end
 
 . 
 . program append_years
-  1.         use ..\temp\clean_1998.dta, clear
-  2.         
-.         forval year=1999/2016{
-  3.             append using ..\temp\clean_`year'.dta
-  4.         }
-  5.         replace anio = 1998 if anio == 98
-  6.         replace anio = 1999 if anio == 99
-  7.         replace anio = 2000 if anio == 0
-  8.         
-.         * asserting basic properties: 
-.         * - that there are no missing departamentos in any year
-.         * - and the primary keys
-.         /*forval year=1999/2016{
->             unique dpto if anio == `year'
->                 local n = r(sum)
->                 assert `n' == 19
->         }
->         
->         isid numero pers anio*/
-.         
-.         recode_dummies, vars(trabajo_1 hombre busca_trabajo)
-  9.         
-.         save_data ..\output\clean_1998_2016, key(numero pers anio) replace
+  1.     use ..\temp\clean_1998.dta, clear
+  2.     
+.     forval year=1999/2016{
+  3.         append using ..\temp\clean_`year'.dta
+  4.     }
+  5.     replace anio = 1998 if anio == 98
+  6.     replace anio = 1999 if anio == 99
+  7.     replace anio = 2000 if anio == 0
+  8.     
+.     * asserting basic properties: 
+.     * - that there are no missing departamentos in any year
+.     * - and the primary keys
+.     /*forval year=1999/2016{
+>         unique dpto if anio == `year'
+>         local n = r(sum)
+>         assert `n' == 19
+>     }
+>     
+>     isid numero pers anio*/
+.     
+.     recode_dummies, vars(trabajo_1 hombre busca_trabajo)
+  9.     
+.     save_data ../output/clean_1998_2016.dta, key(numero pers anio) replace
  10. end
 
 . 
@@ -2065,7 +2065,7 @@ Notes:
   (621,671,229 bytes saved)
 ===============================================================================
 > ===================
-File: ..\output\clean_1998_2016
+File: ../output/clean_1998_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
@@ -2165,10 +2165,90 @@ c06_b_electr |  1,560,337    .9857172    .1186542          0          1
 
 
 
-(note: file ..\output\clean_1998_2016.dta not found)
-file ..\output\clean_1998_2016.dta saved
+(note: file ../output/clean_1998_2016.dta not found)
+file ../output/clean_1998_2016.dta saved
 
 . 
 end of do-file
 
- make.py ended: 2020-03-29 10:05:40
+
+Execute:  StataMP-64 /e do "./create_loc_Xwalk.do"
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     MP - Parallel Edition            College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+Single-user 32-core Stata perpetual license:
+       Serial number:  501506205566
+         Licensed to:  KU Leuven FEB (CES)
+                       KU Leuven
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do ./create_loc_Xwalk.do 
+
+. clear all
+
+. set more off
+
+. adopath + ../../library/stata/gslab_misc/ado
+  [1]  (BASE)      "C:\Program Files\Stata15\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata15\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "c:\ado\personal/"
+  [5]  (PLUS)      "c:\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "../../library/stata/gslab_misc/ado"
+
+. 
+. program main 
+  1.     import excel ../../raw/lista_homogen_codes_geo.xlsx, sheet("Sheet1") /
+> //
+>         cellrange(B1:F100) firstrow clear
+  2.     rename (codigodpto localidad codigo98_2005 codigo_2006_2011 codigo_201
+> 2_2014) ///
+>         (dpto nomloc2 loc98_05 loc loc12_14)
+  3.     save_data ../output/loc_xwalk.dta, key(dpto loc) replace
+  4. end
+
+. 
+. * EXECUTE
+. main
+(data now sorted by dpto loc)
+  (0 bytes saved)
+===============================================================================
+> ===================
+File: ../output/loc_xwalk.dta
+Key: dpto loc
+===============================================================================
+> ===================
+  99:5(103587):1892892169:3520476165
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dpto |         99    10.06061    5.242717          1         19
+         loc |          0
+     nomloc2 |          0
+    loc98_05 |          0
+    loc12_14 |          0
+
+
+
+
+(note: file ../output/loc_xwalk.dta not found)
+file ../output/loc_xwalk.dta saved
+
+. 
+end of do-file
+
+ make.py ended: 2020-04-01 07:39:05
