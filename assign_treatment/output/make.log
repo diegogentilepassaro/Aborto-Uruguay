@@ -1,5 +1,5 @@
 
- make.py started: 2020-04-01 08:42:39 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
+ make.py started: 2020-04-01 09:14:00 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\assign_treatment\code 
 
 
 
@@ -43,7 +43,7 @@ Notes:
   [7]              "../../library/stata/gslab_misc/ado"
 
 . 
-. program main_assign_treatment
+. program main
   1.     do ../../analysis/globals.do
   2.     clean_impl_date
   3.     assign_treatment_births, num_periods(6)
@@ -67,18 +67,20 @@ Notes:
   1. syntax, age_var(string)
   2.         assert !mi(`age_var')
   3.         gen yob = anio - `age_var'
-  4.         gen age_young   = inrange(`age_var',16,30)
-  5.         gen age_adult   = inrange(`age_var',31,45)
-  6.         gen age_placebo = inrange(`age_var',46,60)
-  7.         gen age_fertile = inrange(`age_var',16,45) if inrange(`age_var',16
-> ,60)
-  8.         egen    age_group = cut(`age_var') , at(16(5)50)
-  9.         replace age_group = age_group+2
- 10. 
-.         lab def age_young                 0 "Age: 31-45"             1 "Age: 
-> 16-30"
- 11.         lab val age_young                 age_young
- 12. end
+  4.         gen age_young   = inrange(`age_var',15,29)
+  5.         gen age_adult   = inrange(`age_var',30,44)
+  6.         gen age_placebo = inrange(`age_var',45,59)
+  7.         gen age_fertile = inrange(`age_var',15,44) if inrange(`age_var',15
+> ,59)
+  8.         egen    age_group = cut(`age_var') , at(15(5)60)
+  9.         bys age_group: egen age_min = min(`age_var')
+ 10.     bys age_group: egen age_max = max(`age_var')
+ 11.         replace age_group = age_group+2
+ 12. 
+.         lab def age_young                 0 "Age: 30-44"             1 "Age: 
+> 15-29"
+ 13.         lab val age_young                 age_young
+ 14. end
 
 . 
 . capture program drop assign_impl_date_mvd
@@ -140,20 +142,8 @@ Notes:
   9.         create_treat_vars, restr(" & hombre==0 ")
  10.         *rename yob yobm
 . 
-.         preserve
- 11.                 replace edad = .  if edad == 99
- 12.                 replace edad = 15 if inrange(edad,0,14)
- 13.                 replace edad = 49 if inrange(edad,50,98)
- 14.                 keep if inrange(edad,15,49) 
- 15.                 egen age_group15 = cut(edad) ,at(15(5)50)
- 16.                 bys age_group15: egen age_min = min(edad)
- 17.                 bys age_group15: egen age_max = max(edad)
- 18.                 save "..\output\births15.dta", replace
- 19.         restore
- 20. 
-.         keep if inrange(edad,16,45)
- 21.         save "..\output\births.dta", replace
- 22. end
+.         save "..\output\births.dta", replace
+ 11. end
 
 . 
 . program assign_treatment_ech
@@ -194,13 +184,13 @@ Notes:
 .         gen female      = (hombre==0)             if !mi(hombre)
  22.         gen single      = (married==0)            if !mi(married)
  23.         gen lowed       = (educ_level==1)         if !mi(educ_level)
- 24.         gen young       = (inrange(edad, 16, 30)) if inrange(edad,16,45)
+ 24.         gen young       = (inrange(edad, 15, 29)) if inrange(edad,15,44)
  25.         
 .     save_data ../output/ech_final_98_2016.dta, key(numero pers anio) replace 
  26. end
 
 . 
-. main_assign_treatment
+. main
 
 .     * Dates of treatments
 .     global m_date_mvd     "2004m4"
@@ -328,39 +318,32 @@ file ..\temp\timeline_implementation.dta saved
     -----------------------------------------
 (0 observations deleted)
 (0 observations deleted)
-(20,287 missing values generated)
-(20939 missing values generated)
-(811,957 real changes made)
-(761,325 missing values generated)
-(749,205 missing values generated)
-(783,361 missing values generated)
-(644,063 missing values generated)
-(131,355 real changes made)
-(781,011 missing values generated)
-(771,358 missing values generated)
-(798,359 missing values generated)
-(701,827 missing values generated)
-(93,465 real changes made)
-(813,210 missing values generated)
-(810,743 missing values generated)
-(817,898 missing values generated)
-(775,132 missing values generated)
-(37,890 real changes made)
-(832,819 missing values generated)
-(832,826 missing values generated)
-(832,860 missing values generated)
-(832,759 missing values generated)
-(112 real changes made)
+(10,975 missing values generated)
+(10975 missing values generated)
+(821,921 real changes made)
+(760,164 missing values generated)
+(747,897 missing values generated)
+(782,896 missing values generated)
+(642,268 missing values generated)
+(132,949 real changes made)
+(782,622 missing values generated)
+(773,592 missing values generated)
+(800,250 missing values generated)
+(708,682 missing values generated)
+(89,251 real changes made)
+(810,438 missing values generated)
+(807,201 missing values generated)
+(815,542 missing values generated)
+(766,482 missing values generated)
+(43,698 real changes made)
+(832,736 missing values generated)
+(832,747 missing values generated)
+(832,818 missing values generated)
+(832,588 missing values generated)
+(222 real changes made)
 (44,794 real changes made)
 (35,109 real changes made)
 (203,773 real changes made)
-(7,724 real changes made, 7,724 to missing)
-(3,251 real changes made)
-(46 real changes made)
-(7,724 observations deleted)
-(note: file ..\output\births15.dta not found)
-file ..\output\births15.dta saved
-(20,939 observations deleted)
 (note: file ..\output\births.dta not found)
 file ..\output\births.dta saved
 
@@ -372,41 +355,41 @@ file ..\output\births.dta saved
 
     matched                         1,218,999  
     -----------------------------------------
-(803,820 missing values generated)
-(1128602 missing values generated)
-(754,399 real changes made)
-(1,853,020 missing values generated)
-(1,851,909 missing values generated)
-(1,860,367 missing values generated)
-(1,802,007 missing values generated)
-(59,362 real changes made)
-(1,867,540 missing values generated)
-(1,866,410 missing values generated)
-(1,871,600 missing values generated)
-(1,842,102 missing values generated)
-(29,927 real changes made)
-(1,868,481 missing values generated)
-(1,868,500 missing values generated)
-(1,871,768 missing values generated)
-(1,842,906 missing values generated)
-(29,435 real changes made)
-(1,869,901 missing values generated)
-(1,869,417 missing values generated)
-(1,872,219 missing values generated)
-(1,847,675 missing values generated)
-(26,600 real changes made)
+(793,490 missing values generated)
+(793490 missing values generated)
+(1,089,511 real changes made)
+(1,852,483 missing values generated)
+(1,851,295 missing values generated)
+(1,860,210 missing values generated)
+(1,801,297 missing values generated)
+(59,916 real changes made)
+(1,867,014 missing values generated)
+(1,865,993 missing values generated)
+(1,871,315 missing values generated)
+(1,841,412 missing values generated)
+(30,704 real changes made)
+(1,868,470 missing values generated)
+(1,868,303 missing values generated)
+(1,871,896 missing values generated)
+(1,842,886 missing values generated)
+(29,212 real changes made)
+(1,869,759 missing values generated)
+(1,869,400 missing values generated)
+(1,872,131 missing values generated)
+(1,847,426 missing values generated)
+(27,017 real changes made)
 (90,372 real changes made)
 (78,715 real changes made)
 (419,870 real changes made)
 (1,813,527 missing values generated)
 (1,809,027 missing values generated)
 (1,827,807 missing values generated)
-(1,839,920 missing values generated)
-(33,416 real changes made)
+(1,839,241 missing values generated)
+(33,661 real changes made)
 (1,248,726 real changes made)
 (289,942 missing values generated)
 (34,720 missing values generated)
-(1,128,602 missing values generated)
+(1,121,127 missing values generated)
 (data now sorted by numero pers anio)
   variable yob was float now int
   variable age_young was float now byte
@@ -414,6 +397,8 @@ file ..\output\births.dta saved
   variable age_placebo was float now byte
   variable age_fertile was float now byte
   variable age_group was float now byte
+  variable age_min was float now byte
+  variable age_max was float now byte
   variable treatment_rivera was float now byte
   variable treatment_salto was float now byte
   variable treatment_florida was float now byte
@@ -453,14 +438,14 @@ file ..\output\births.dta saved
   variable single was float now byte
   variable lowed was float now byte
   variable young was float now byte
-  (244,790,130 bytes saved)
+  (256,088,136 bytes saved)
 ===============================================================================
 > ===================
 File: ../output/ech_final_98_2016.dta
 Key: numero pers anio
 ===============================================================================
 > ===================
-  1883001:131(93461):3837224207:4112663661
+  1883001:133(74680):3514721023:2363313706
 
     Variable |        Obs        Mean    Std. Dev.       Min        Max
 -------------+---------------------------------------------------------
@@ -568,59 +553,61 @@ educ_some_~e |    112,886    .7242528     .446892          0          1
 -------------+---------------------------------------------------------
 impl_date_~o |  1,511,226    16501.66    753.6664      16162      18414
          yob |  1,883,001    1971.703    23.86183       1900       2016
-   age_young |  1,883,001    .2115002    .4083723          0          1
-   age_adult |  1,883,001    .1891364     .391617          0          1
- age_placebo |  1,883,001    .1724811    .3777981          0          1
+   age_young |  1,883,001    .2145957    .4105417          0          1
+   age_adult |  1,883,001    .1900105    .3923093          0          1
+ age_placebo |  1,883,001    .1739973    .3791072          0          1
 -------------+---------------------------------------------------------
- age_fertile |  1,079,181    .6990477    .4586722          0          1
-   age_group |    754,399    29.88659    8.682937         18         43
-treatment~ra |     29,981    .3838765    .4863365          0          1
-treatment~to |     31,092    .4051203    .4909232          0          1
-treatment~da |     22,634     .326986    .4691224          0          1
+ age_fertile |  1,089,511    .6992807     .458571          0          1
+   age_group |  1,089,511    35.72963    12.98706         17         57
+     age_min |  1,883,001    19.51608    19.36446          0         55
+     age_max |  1,883,001    63.54875    31.82625         19         99
+treatment~ra |     30,518    .3822662    .4859491          0          1
 -------------+---------------------------------------------------------
-   treatment |    140,356    .5770612    .4940276          0          1
-tre~ra_young |     15,461    .3796003    .4853031          0          1
-trea~o_young |     16,591    .4134169    .4924612          0          1
-tre~da_young |     11,401    .3346198    .4718781          0          1
-trea~t_young |     70,826    .5774574    .4939674          0          1
+treatment~to |     31,706    .4058538    .4910642          0          1
+treatment~da |     22,791    .3289895    .4698565          0          1
+   treatment |    141,620    .5769242     .494049          0          1
+tre~ra_young |     15,987    .3771815    .4846961          0          1
+trea~o_young |     17,008    .4156279    .4928444          0          1
 -------------+---------------------------------------------------------
-tre~ra_adult |     14,520    .3884298    .4874099          0          1
-trea~o_adult |     14,501    .3956279     .489002          0          1
-tre~da_adult |     11,233     .319238    .4662021          0          1
-trea~t_adult |     69,530    .5766576    .4940922          0          1
-t~ra_placebo |     13,100     .378626    .4850632          0          1
+tre~da_young |     11,686    .3374979    .4728765          0          1
+trea~t_young |     72,293    .5752839    .4943033          0          1
+tre~ra_adult |     14,531    .3878604    .4872792          0          1
+trea~o_adult |     14,698    .3945435     .488769          0          1
+tre~da_adult |     11,105     .320036    .4665111          0          1
 -------------+---------------------------------------------------------
-tr~o_placebo |     13,584    .4040783    .4907308          0          1
-t~da_placebo |     10,782    .3179373    .4656966          0          1
-tr~t_placebo |     61,926    .5704551    .4950152          0          1
+trea~t_adult |     69,327    .5786346    .4937814          0          1
+t~ra_placebo |     13,242    .3789458    .4851429          0          1
+tr~o_placebo |     13,601    .4046761    .4908473          0          1
+t~da_placebo |     10,870    .3161914      .46501          0          1
+tr~t_placebo |     62,592    .5683634    .4953084          0          1
+-------------+---------------------------------------------------------
 placebo_ri~a |     69,474    .3803869    .4854854          0          1
 placebo_sa~o |     73,974    .3965853    .4891918          0          1
--------------+---------------------------------------------------------
 placebo_fl~a |     55,194    .3224445    .4674163          0          1
   age_rivera |  1,883,001    38.29674    23.86183         -6        110
 under14_ri~a |  1,883,001    .1776393    .3822089          0          1
+-------------+---------------------------------------------------------
 nbr_under~ra |  1,883,001    .8553782    1.184496          0         13
  kids_rivera |  1,883,001    .4663396    .4988658          0          1
--------------+---------------------------------------------------------
    age_salto |  1,883,001    41.29674    23.86183         -3        113
 under14_sa~o |  1,883,001    .1400297    .3470179          0          1
 nbr_under1~o |  1,883,001    .6695312    1.042121          0         11
+-------------+---------------------------------------------------------
   kids_salto |  1,883,001    .3909525    .4879639          0          1
  age_florida |  1,883,001    36.29674    23.86183         -8        108
--------------+---------------------------------------------------------
 under14_fl~a |  1,883,001    .1984731    .3988503          0          1
 nbr_under~da |  1,883,001    .9563463      1.2566          0         14
 kids_florida |  1,883,001    .5023986    .4999944          0          1
- kids_before |  1,325,223    .5217824    .4995255          0          1
-     age_mvd |  1,883,001    32.29674    23.86183        -12        104
 -------------+---------------------------------------------------------
+ kids_before |  1,326,147     .522571    .4994905          0          1
+     age_mvd |  1,883,001    32.29674    23.86183        -12        104
  under14_mvd |  1,883,001    .2231385    .4163506          0          1
 nbr_under1~d |  1,883,001    1.061916    1.304337          0         15
       female |  1,883,001    .5316614    .4989967          0          1
+-------------+---------------------------------------------------------
       single |  1,593,059    .4804536     .499618          0          1
        lowed |  1,848,281    .4338594    .4956062          0          1
--------------+---------------------------------------------------------
-       young |    754,399    .5279103    .4992207          0          1
+       young |    761,874    .5303817    .4990764          0          1
 
 
 
@@ -770,4 +757,4 @@ file ../output/ech_final_98_2016.dta saved
 
 end of do-file
 
- make.py ended: 2020-04-01 08:43:39
+ make.py ended: 2020-04-01 09:15:09

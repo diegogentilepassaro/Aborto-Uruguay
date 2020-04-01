@@ -41,8 +41,8 @@ end
 
 program compute_TFR
 syntax, time(str) by_vars(str)
-	use ..\..\..\assign_treatment\output\births15.dta, clear
-	drop if inrange(edad,45,49)
+	use ..\..\..\assign_treatment\output\births.dta, clear
+    keep if inrange(edad,15,44)
 
 	if "`time'" == "anio_sem" {
 		local time_label "Semesters"
@@ -177,7 +177,7 @@ syntax, data(str) time(str) num_periods(int) outcomes(str) [groups_vars(str) res
 		use  ..\..\..\assign_treatment\output\ech_final_98_2016.dta, clear
 		local all_controls = "c98_* ${controls}"
 		if "`data'" == "ech_labor" {
-			keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 16, 45)
+			keep if hombre == 0 & inrange(horas_trabajo,0,100) //& inrange(edad, 15, 44)
 		}
 		else {
 			keep if hombre == 0 

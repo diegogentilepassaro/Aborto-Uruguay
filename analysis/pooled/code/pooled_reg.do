@@ -73,7 +73,7 @@ program pooled_reg
         
 		* Run main regression that plots coefficients
 		/*reg `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto  ///
-				`all_controls' if !mi(treatment) & inrange(edad, 16, 45) ///
+				`all_controls' if !mi(treatment) & inrange(edad, 15, 44) ///
 				`pweight', vce(cluster `time')*/
 
 		* Run regressions by subsamples
@@ -135,7 +135,7 @@ program pooled_reg
 							_n "\begin{tabular}{l|cc|cc|cc} \hline\hline"  ///
 							_n " & \multicolumn{2}{c|}{`lab_v1'} & \multicolumn{2}{c}{`lab_v2'} & \multicolumn{2}{c}{`lab_v3'} \\ \hline" ///
 							_n " & (1)        & (2)        & (3)        & (4)        & (5)        & (6)  \\ "  ///
-							_n " & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 & Age: 16-45 & Age: 46-60 \\ \hline" ///
+							_n " & Age: 15-44 & Age: 45-59 & Age: 15-44 & Age: 45-59 & Age: 15-44 & Age: 45-59 \\ \hline" ///
 							_n "Mean (baseline) & " %9.3f (`avg_v1_`rd'_fertile') " & " %9.3f (`avg_v1_`rd'_placebo') " & " ///
 							                        %9.3f (`avg_v2_`rd'_fertile') " & " %9.3f (`avg_v2_`rd'_placebo') " & " ///
 							                        %9.3f (`avg_v3_`rd'_fertile') " & " %9.3f (`avg_v3_`rd'_placebo') " \\ \hline "

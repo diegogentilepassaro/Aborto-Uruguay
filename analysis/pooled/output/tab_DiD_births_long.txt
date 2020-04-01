@@ -1,21 +1,21 @@
 \begin{threeparttable}
 \begin{tabular}{l|cc} \hline\hline
  & (log) Number of births & Fertility rate \\ \hline
-Mean &     6.539 &    34.312 \\ \hline 
-Baseline &     -0.020  &     -1.050 \\ 
-          & (    0.036) & (    0.687) \\ 
+Mean &     6.551 &    34.721 \\ \hline 
+Baseline &     -0.022  &     -1.144 \\ 
+          & (    0.035) & (    0.690) \\ 
           &        340  &        340 \\ 
-Had previous pregnancy &     -0.001  &      3.103 \\ 
-          & (    0.042) & (    5.697) \\ 
+Had previous pregnancy &     -0.002  &      2.720 \\ 
+          & (    0.042) & (    5.604) \\ 
           &        340  &        340 \\ 
-First pregnancy &     -0.056  &     -4.489 \\ 
-          & (    0.038) & (    4.769) \\ 
+First pregnancy &     -0.059  &     -4.598 \\ 
+          & (    0.038) & (    5.184) \\ 
           &        340  &        340 \\ 
-Not single &     -0.178  &     -5.649 \\ 
-          & (    0.090) & (    3.422) \\ 
+Not single &     -0.180  &     -5.850 \\ 
+          & (    0.090) & (    3.721) \\ 
           &        340  &        340 \\ 
-Single &      0.169  &      3.849 \\ 
-          & (    0.160) & (    4.530) \\ 
+Single &      0.162  &      3.518 \\ 
+          & (    0.159) & (    4.314) \\ 
           &        340  &        340 \\ 
 \hline\hline
 \end{tabular}
