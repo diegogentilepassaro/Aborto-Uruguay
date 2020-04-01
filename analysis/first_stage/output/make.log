@@ -1,5 +1,5 @@
 
- make.py started: 2020-04-01 08:11:28 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-04-01 08:44:19 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -682,20 +682,20 @@ Notes:
 . 
 .         use "..\..\..\assign_treatment\output\births.dta", clear
 
-.         drop if inlist(depar,20,99) // drop Extranjero, No indicado
+.         drop if inlist(dpto,20,99) // drop Extranjero, No indicado
 (0 observations deleted)
 
 . 
-.         collapse (count) births = edad, by(anio codep depar)
+.         collapse (count) births = edad, by(anio dpto_birth dpto)
 
-.         egen births_tot = total(births), by(anio depar)
+.         egen births_tot = total(births), by(anio dpto)
 
 .         gen births_sh = births/births_tot
 
 .         
-.         gen tag_same = depar==codep
+.         gen tag_same = dpto==dpto_birth
 
-.         gen tag_mvd  = codep==10
+.         gen tag_mvd  = dpto_birth==1
 
 .         gen births_sh_same = births/births_tot if tag_same
 (2,122 missing values generated)
@@ -704,10 +704,10 @@ Notes:
 (2,122 missing values generated)
 
 . 
-.         collapse (max) births_sh_same births_sh_mvd, by(anio depar)
+.         collapse (max) births_sh_same births_sh_mvd, by(anio dpto)
 
-.         xtset depar anio
-       panel variable:  depar (strongly balanced)
+.         xtset dpto anio
+       panel variable:  dpto (strongly balanced)
         time variable:  anio, 1999 to 2015
                 delta:  1 unit
 
@@ -717,11 +717,11 @@ Notes:
 
 .         label var births_sh_mvd  "Share of births in Montevideo"
 
-.         label var    depar "Mother's residential state"
+.         label var    dpto "Mother's residential state"
 
 . 
 .         foreach x in same mvd {
-  2.                 egen min_sh_`x' = min(births_sh_`x'), by(depar)
+  2.                 egen min_sh_`x' = min(births_sh_`x'), by(dpto)
   3.                 qui sum min_sh_`x', det
   4.                 gen tag_`x' = (min_sh_`x'> r(p50))
   5.         }
@@ -1061,7 +1061,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_53dc_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5dd0_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1073,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_53dc_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5dd0_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1085,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_53dc_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_5dd0_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1298,16 +1298,16 @@ Notes:
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3d1c_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2b78_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3d1c_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2b78_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3d1c_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2b78_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_3d1c_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_2b78_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1334,4 +1334,4 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_3d1c_000004.tmp saved
 . 
 end of do-file
 
- make.py ended: 2020-04-01 08:13:14
+ make.py ended: 2020-04-01 08:45:49

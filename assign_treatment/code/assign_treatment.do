@@ -75,7 +75,7 @@ syntax, num_periods(int)
 	use ..\..\derived\output\births_derived.dta, clear
 	merge m:1 dpto using ..\temp\timeline_implementation.dta, assert(1 3) nogen
 	drop if mi(fecparto)
-	drop if inlist(depar,20,99)
+	drop if inlist(dpto,20,99)
 	rename edadm edad
 	new_age_vars, age_var(edad)
 	gen hombre = 0

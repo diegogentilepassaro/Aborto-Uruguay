@@ -53,13 +53,13 @@ syntax, time(str) by_vars(str)
 		local times "anio"
 	}
 	keep if !mi(treatment) | dpto==1
-	collapse (count) births=edad, by(`times' age_min age_max depar dpto impl_date_dpto treatment)
+	collapse (count) births=edad, by(`times' age_min age_max dpto impl_date_dpto treatment)
 	isid `time' age_min age_max dpto
 
-	merge m:1 depar age_min age_max anio using ..\..\..\derived\output\population_fertile_age.dta, keep(3)
+	merge m:1 dpto age_min age_max anio using ..\..\..\derived\output\population_fertile_age.dta, keep(3)
 	gen TFR_agegroup = births/pop
 
-	collapse (sum) TFR = TFR_agegroup, by(`times' dpto impl_date_dpto treatment depar)
+	collapse (sum) TFR = TFR_agegroup, by(`times' dpto impl_date_dpto treatment)
 	isid `time' dpto
 	replace TFR = 5 * TFR
 	lab var TFR "Total Fertility Rate"
@@ -83,7 +83,7 @@ syntax, time(str) by_vars(str)
 	}
 
 	use ..\..\..\derived\output\population_fertile_age.dta, clear
-	collapse (sum) pop, by(depar anio)
+	collapse (sum) pop, by(dpto anio)
 	save ../temp/pop_fertile_age_agg.dta, replace
 end
 
@@ -108,14 +108,14 @@ syntax, time(str) by_vars(str) num_periods(str)
 		}
 		preserve
 			keep if !mi(`by_var')
-			collapse (count) births_l=edad (min) impl_date_dpto, by(`time' dpto depar treatment `by_var')
+			collapse (count) births_l=edad (min) impl_date_dpto, by(`time' dpto treatment `by_var')
 			gen births = log(births_l)
 			tempfile births_`by_var'
 			save `births_`by_var''
 		restore
 	}
 
-	collapse (count) births_l=edad (min) impl_date_dpto , by(`time' dpto depar treatment)
+	collapse (count) births_l=edad (min) impl_date_dpto , by(`time' dpto treatment)
 	gen births = log(births_l)
 	merge 1:1 `time' dpto using ..\temp\TFR_`time'.dta, assert(3) nogen
 	lab var births_l "Number of births"
@@ -130,7 +130,7 @@ syntax, time(str) by_vars(str) num_periods(str)
 	gen age_fertile = 1
 	assert births_l >= births_single0_l + births_single1_l
 	gen anio = year(dofh(anio_sem))
-	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	merge m:1 dpto anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
 	gen GFR = births_l/pop*1000
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {
@@ -157,7 +157,7 @@ syntax, time(str) by_vars(str) num_periods(str)
 		gen post = (`time' >= yofd(impl_date_dpto))
 	}
 	gen anio = year(dofh(anio_sem))
-	merge m:1 depar anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
+	merge m:1 dpto anio using ../temp/pop_fertile_age_agg.dta, assert(2 3) keep(3) nogen
 	gen GFR = births_l/pop*1000 if all_sample==1
 	lab var GFR "General Fertility Rate"
 	foreach by_var in `by_vars' {

@@ -102,11 +102,15 @@ foreach k in `c(ALPHA)' {
 
 * Reshape, aggregate dy depto, and save table
 reshape long pop, i(depar gender_all age_min age_max) j(anio)
+gen     dpto = depar   if inrange(depar,11,19)
+replace dpto = 1       if depar==10
+replace dpto = depar+1 if inrange(depar,1,9)
+drop depar
 save "..\output\population.dta", replace
 
 * Collapse to women of fertile age and save table
 gen fertile_age = (gender_all=="women" & age_min>=15 & age_max<45 & all_ages==0)
-collapse (sum) pop if fertile_age==1, by(depar anio age_min age_max)
+collapse (sum) pop if fertile_age==1, by(dpto anio age_min age_max)
 drop if inrange(anio,1996,1998) | inrange(anio,2016,2020)
 
 save "..\output\population_fertile_age.dta", replace

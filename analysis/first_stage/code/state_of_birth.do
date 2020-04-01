@@ -3,26 +3,26 @@ set more off
 adopath + ../../../library/stata/gslab_misc/ado
 
 	use "..\..\..\assign_treatment\output\births.dta", clear
-	drop if inlist(depar,20,99) // drop Extranjero, No indicado
+	drop if inlist(dpto,20,99) // drop Extranjero, No indicado
 
-	collapse (count) births = edad, by(anio codep depar)
-	egen births_tot = total(births), by(anio depar)
+	collapse (count) births = edad, by(anio dpto_birth dpto)
+	egen births_tot = total(births), by(anio dpto)
 	gen births_sh = births/births_tot
 	
-	gen tag_same = depar==codep
-	gen tag_mvd  = codep==10
+	gen tag_same = dpto==dpto_birth
+	gen tag_mvd  = dpto_birth==1
 	gen births_sh_same = births/births_tot if tag_same
 	gen births_sh_mvd  = births/births_tot if tag_mvd
 
-	collapse (max) births_sh_same births_sh_mvd, by(anio depar)
-	xtset depar anio
+	collapse (max) births_sh_same births_sh_mvd, by(anio dpto)
+	xtset dpto anio
 	label var anio "Birth year"
 	label var births_sh_same "Share of births in same state"
 	label var births_sh_mvd  "Share of births in Montevideo"
-	label var    depar "Mother's residential state"
+	label var    dpto "Mother's residential state"
 
 	foreach x in same mvd {
-		egen min_sh_`x' = min(births_sh_`x'), by(depar)
+		egen min_sh_`x' = min(births_sh_`x'), by(dpto)
 		qui sum min_sh_`x', det
 		gen tag_`x' = (min_sh_`x'> r(p50))
 	}

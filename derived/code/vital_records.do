@@ -77,6 +77,13 @@ program derived_data
 	gen     dpto = depar   if inrange(depar,11,19)
 	replace dpto = 1       if depar==10
 	replace dpto = depar+1 if inrange(depar,1,9)
+
+	gen     dpto_birth = codep   if inrange(codep,11,19)
+    replace dpto_birth = 1       if codep==10
+    replace dpto_birth = codep+1 if inrange(codep,1,9)  
+
+    drop codep depar
+    drop if missing(dpto)
 	
 	* Labelling
 	lab def not_married               0 "Married"                1 "Not married"
@@ -103,33 +110,34 @@ program derived_data
 	lab val recomm_prenatal_numvisits recomm_prenatal_numvisits
 	lab def recomm_prenatal_1stvisit  0 "No prenatal care"       1 "Prenatal care"
 	lab val recomm_prenatal_1stvisit  recomm_prenatal_1stvisit
-	label_depar
+	label_dpto
 
 	save "..\output\births_derived.dta", replace
 end
 
-program label_depar
-	label var    depar "Mother's residential state"
-	label define depar  1 "ARTIGAS" ///
-						2 "CANELONES" ///
-						3 "CERRO LARGO" ///
-						4 "COLONIA" ///
-						5 "DURAZNO" ///
-						6 "FLORES" ///
-						7 "FLORIDA" ///
-						8 "LAVALLEJA" ///
-						9 "MALDONADO" ///
-						10 "MONTEVIDEO" ///
-						11 "PAYSANDU" ///
-						12 "RÍO NEGRO" ///
-						13 "RIVERA" ///
-						14 "ROCHA" ///
-						15 "SALTO" ///
-						16 "SAN JOSÉ" ///
-						17 "SORIANO" ///
-						18 "TACUAREMBÓ" ///
-						19 "TREINTA Y TRES"
-	label values depar depar
+program label_dpto
+    label var dpto "Mother's residential state"
+    label var dpto_birth "Birth state"
+    label define dpto  1 "MONTEVIDEO" ///
+                       2 "ARTIGAS" ///
+                       3 "CANELONES" ///
+                       4 "CERRO LARGO" ///
+                       5 "COLONIA" ///
+                       6 "DURAZNO" ///
+                       7 "FLORES" ///
+                       8 "FLORIDA" ///
+                       9 "LAVALLEJA" ///
+                       10 "MALDONADO" ///
+                       11 "PAYSANDU" ///
+                       12 "RÍO NEGRO" ///
+                       13 "RIVERA" ///
+                       14 "ROCHA" ///
+                       15 "SALTO" ///
+                       16 "SAN JOSÉ" ///
+                       17 "SORIANO" ///
+                       18 "TACUAREMBÓ" ///
+                       19 "TREINTA Y TRES"
+    label values dpto dpto_birth dpto
 end
 
 main
