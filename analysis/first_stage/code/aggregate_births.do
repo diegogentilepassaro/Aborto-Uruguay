@@ -79,7 +79,7 @@ syntax, rescale(int)
 		, `opts' `opt21' tline(2011.5, lcolor(black) lpattern(dot)) name(sal, replace) 
 		
 	graph combine mvd flo riv sal, cols(2) ysize(7) xsize(10) graphregion(fcolor(white))
-	graph export ../output/natality_`rescale'.pdf, replace
+	graph export ../output/natality_`rescale'.png, replace
 	graph drop _all
 end
 

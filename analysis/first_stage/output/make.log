@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 10:15:35 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
+ make.py started: 2020-04-01 07:19:52 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\first_stage\code 
 
 
 
@@ -164,7 +164,7 @@ Notes:
 >         r1title("Maternal mortality over fertile women's deaths, Uruguay", si
 > ze(medsmall)) ///
 >                 ytitle("", axis(1)) ytitle("", axis(2))
-  3.     graph export ../output/mortality_`var_ratio'.pdf, replace
+  3.     graph export ../output/mortality_`var_ratio'.png, replace
   4. end
 
 . 
@@ -296,8 +296,10 @@ The smoother applied was
      (1/5)*[x(t-2) + x(t-1) + 1*x(t) + x(t+1) + x(t+2)]; x(t)= mm_ratio
 (note: file ..\temp\uruguay_mm_data.dta not found)
 file ..\temp\uruguay_mm_data.dta saved
-(file ../output/mortality_ma_mm_ratio.pdf written in PDF format)
-(file ../output/mortality_mm_ratio.pdf written in PDF format)
+(note: file ../output/mortality_ma_mm_ratio.png not found)
+(file ../output/mortality_ma_mm_ratio.png written in PNG format)
+(note: file ../output/mortality_mm_ratio.png not found)
+(file ../output/mortality_mm_ratio.png written in PNG format)
 
       Source |       SS           df       MS      Number of obs   =        52
 -------------+----------------------------------   F(3, 48)        =    265.45
@@ -405,7 +407,7 @@ Notes:
 > ) ///
 >                           graphregion(color(white)) name(g_`time')
   8.                 graph display g_`time', ysiz(18) xsiz(15)
-  9.                 graph export "..\output\births_rivera_`time'.pdf", replace
+  9.                 graph export "..\output\births_rivera_`time'.png", replace
  10.         }
  11. end
 
@@ -450,7 +452,7 @@ Notes:
 >            xtitle("`xtitle'") xsize(8) ///
 >            scheme(s1color) 
 > 
->         graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", rep
+>         graph export "..\output\births_`treatment'_`time'_`by_vars'.png", rep
 > lace*/
 . 
 .         local g_name = substr("`by_vars'",1,9)
@@ -630,8 +632,10 @@ end of do-file
 (51 observations deleted)
 (50 missing values generated)
 (50 missing values generated)
-(file ..\output\births_rivera_anio.pdf written in PDF format)
-(file ..\output\births_rivera_anio_sem.pdf written in PDF format)
+(note: file ..\output\births_rivera_anio.png not found)
+(file ..\output\births_rivera_anio.png written in PNG format)
+(note: file ..\output\births_rivera_anio_sem.png not found)
+(file ..\output\births_rivera_anio_sem.png written in PNG format)
 
 . 
 end of do-file
@@ -750,15 +754,17 @@ Notes:
 .         graph combine mvd_0 mvd_1 same_0 same_1, ysiz(6) xsiz(10) graphregion
 > (color(white)) scale(0.8) 
 
-.         graph export "..\output\births_sh_2groups.pdf", replace
-(file ..\output\births_sh_2groups.pdf written in PDF format)
+.         graph export "..\output\births_sh_2groups.png", replace
+(note: file ..\output\births_sh_2groups.png not found)
+(file ..\output\births_sh_2groups.png written in PNG format)
 
 . 
 .         grc1leg same mvd, rows(1) legendfrom(same) position(6) cols(2) graphr
 > egion(color(white))
 
-.         graph export "..\output\births_sh_1group.pdf", replace
-(file ..\output\births_sh_1group.pdf written in PDF format)
+.         graph export "..\output\births_sh_1group.png", replace
+(note: file ..\output\births_sh_1group.png not found)
+(file ..\output\births_sh_1group.png written in PNG format)
 
 . 
 .         graph drop same_0 same_1 mvd_0 mvd_1 same mvd
@@ -893,7 +899,7 @@ Notes:
  11.                 
 .         graph combine mvd flo riv sal, cols(2) ysize(7) xsize(10) graphregion
 > (fcolor(white))
- 12.         graph export ../output/natality_`rescale'.pdf, replace
+ 12.         graph export ../output/natality_`rescale'.png, replace
  13.         graph drop _all
  14. end
 
@@ -1055,7 +1061,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_level1996 nat_level1997 ... nat_level2015->nat_level
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4bc4_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000002.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1067,7 +1073,7 @@ j variable (20 values)                    ->   year
 xij variables:
 nat_rate1996 nat_rate1997 ... nat_rate2015->   nat_rate
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4bc4_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000004.tmp saved
 (note: j = 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 200
 > 9 2010 2011 2012 2013 2014 2015)
 
@@ -1079,7 +1085,7 @@ j variable (20 values)                    ->   year
 xij variables:
 population1996 population1997 ... population2015->population
 -----------------------------------------------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_4bc4_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_3950_000006.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1095,7 +1101,8 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_4bc4_000006.tmp saved
        panel variable:  dpto_num (strongly balanced)
         time variable:  year, 1996 to 2015
                 delta:  1 unit
-(file ../output/natality_1000.pdf written in PDF format)
+(note: file ../output/natality_1000.png not found)
+(file ../output/natality_1000.png written in PNG format)
 
 . 
 end of do-file
@@ -1170,7 +1177,7 @@ Notes:
 >             asyvars graphregion(fcolor(white) lcolor(white)) ///
 >                 ytitle("Misoprostol annual sales (base 2002)")
   6.                 
-.         graph export ../output/misoprostol_sales_2002_2007.pdf, replace
+.         graph export ../output/misoprostol_sales_2002_2007.png, replace
   7.         
 .     graph twoway connected ug_per_pop year if Region == "Global" || ///
 >             connected ug_per_pop year if Region == "Latin America" || ///
@@ -1185,7 +1192,7 @@ Notes:
 >                 ytitle("Misoprostol (in µg × 10^6) / Population (in millions)
 > ", size(small))
   8. 
-.         graph export ../output/misoprostol_per_capita_2002_2007.pdf, replace
+.         graph export ../output/misoprostol_per_capita_2002_2007.png, replace
   9. end
 
 . 
@@ -1205,8 +1212,10 @@ xij variables:
 (2 real changes made)
 (2 real changes made)
 (2 real changes made)
-(file ../output/misoprostol_sales_2002_2007.pdf written in PDF format)
-(file ../output/misoprostol_per_capita_2002_2007.pdf written in PDF format)
+(note: file ../output/misoprostol_sales_2002_2007.png not found)
+(file ../output/misoprostol_sales_2002_2007.png written in PNG format)
+(note: file ../output/misoprostol_per_capita_2002_2007.png not found)
+(file ../output/misoprostol_per_capita_2002_2007.png written in PNG format)
 
 . 
 end of do-file
@@ -1274,7 +1283,7 @@ Notes:
 >  2008m04 "(e)" ///
 >                 2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0
 > .9) labgap(*.3)) 
- 19.         graph export ../output/google_trends_abortion.pdf, replace
+ 19.         graph export ../output/google_trends_abortion.png, replace
  20.         
 .         tw line misoprostoluruguay misoprostolbrazil date if date<ym(2013,12)
 > , `opts' ///
@@ -1282,23 +1291,23 @@ Notes:
 >  2008m04 "(e)" ///
 >                 2008m11 "(f)" 2012m09 "(g)" 2013m06 "(h)", tp(inside) labs(*0
 > .9) labgap(*.3))
- 21.         graph export ../output/google_trends_misoprostol.pdf, replace
+ 21.         graph export ../output/google_trends_misoprostol.png, replace
  22. end
 
 . 
 . main
 (2 vars, 177 obs)
 abortionuruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_28a8_000001.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000001.tmp saved
 (2 vars, 177 obs)
 misoprostoluruguay already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_28a8_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000002.tmp saved
 (2 vars, 177 obs)
 abortionbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_28a8_000003.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000003.tmp saved
 (2 vars, 177 obs)
 misoprostolbrazil already numeric; no replace
-file C:\Users\diegog\AppData\Local\Temp\3\ST_28a8_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_4a40_000004.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -1317,10 +1326,12 @@ file C:\Users\diegog\AppData\Local\Temp\3\ST_28a8_000004.tmp saved
     not matched                             0
     matched                               177  
     -----------------------------------------
-(file ../output/google_trends_abortion.pdf written in PDF format)
-(file ../output/google_trends_misoprostol.pdf written in PDF format)
+(note: file ../output/google_trends_abortion.png not found)
+(file ../output/google_trends_abortion.png written in PNG format)
+(note: file ../output/google_trends_misoprostol.png not found)
+(file ../output/google_trends_misoprostol.png written in PNG format)
 
 . 
 end of do-file
 
- make.py ended: 2020-03-29 10:17:14
+ make.py ended: 2020-04-01 07:21:20

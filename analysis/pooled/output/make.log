@@ -1,5 +1,5 @@
 
- make.py started: 2020-03-29 10:18:33 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
+ make.py started: 2020-04-01 07:20:13 C:\Users\diegog\Desktop\Diego\Aborto-Uruguay\analysis\pooled\code 
 
 
 
@@ -339,7 +339,7 @@ Notes:
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6") 
 >                         graph export ../output/pooled_es_`outcome'_`time'_nom
-> vd.pdf, replace
+> vd.png, replace
 > 
 >                 reg `outcome' ib`omitted'.t i.`time' i.dpto  ///
 >                         `ES_subsample' `pweight', vce(cluster dpto)
@@ -350,7 +350,7 @@ Notes:
 > ontrols') ///
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6") 
->                         graph export ../output/pooled_es_`outcome'_`time'.pdf
+>                         graph export ../output/pooled_es_`outcome'_`time'.png
 > , replace
 >                         * Coef plot with shift
 >                         qui sum `outcome' if inrange(t, 1, `num_periods')
@@ -371,7 +371,7 @@ Notes:
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6")                                  
 >                         graph export ../output/pooled_es_shift_`outcome'_`tim
-> e'.pdf, replace*/
+> e'.png, replace*/
 .                         
 .                 * DiD: run main regression and plot coefficientss
 .                 reghdfe `outcome' ib`omitted'.t##i.treatment i.`time' i.dpto 
@@ -385,7 +385,7 @@ Notes:
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6") 
  63.                         graph export ../output/pooled_did_`outcome'_`time'
-> .pdf, replace
+> .png, replace
  64.                         * Coef plot with shift
 .                         qui sum `outcome' if inrange(t, 0, `num_periods' - 1)
  65.                         local target_mean = r(mean)
@@ -407,7 +407,7 @@ Notes:
 >                                 xlabel(1 "-6" 3 "-4" 5 "-2" 7 "0" 9 "2" 11 "4
 > " 13 "6")                          
  73.                         graph export ../output/pooled_did_shift_`outcome'_
-> `time'.pdf, replace
+> `time'.png, replace
  74.         }
  75. end
 
@@ -442,13 +442,13 @@ Notes:
 >                         legend(label(1 "Treatment") label( 2 "Control")) ///
 >                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
 > "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 19.                 graph export ../output/pooled_did2_avg_`outcome'_`time'.pd
-> f, replace
+ 19.                 graph export ../output/pooled_did2_avg_`outcome'_`time'.pn
+> g, replace
  20.                 tw connected D_`outcome' t if inrange(t,2,14), sort mc(blu
 > e) lc(blue) ///
 >                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
 > "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 21.                 graph export ../output/pooled_did_avg_`outcome'_`time'.pdf
+ 21.                 graph export ../output/pooled_did_avg_`outcome'_`time'.png
 > , replace
  22.                 
 .                 * Mean ES
@@ -459,7 +459,7 @@ Notes:
 > lue) lc(blue) ///
 >                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
 > "-2" 8 "0" 10 "2" 12 "4" 14 "6")
- 25.                 graph export ../output/pooled_es_avg_`outcome'_`time'.pdf,
+ 25.                 graph export ../output/pooled_es_avg_`outcome'_`time'.png,
 >  replace
  26.                 
 .                 egen         avg_`outcome'_2 = mean(`outcome') if (treatment=
@@ -470,7 +470,7 @@ Notes:
 >                         `opts' xtitle("`time_label'") xlabel(2 "-6" 4 "-4" 6 
 > "-2" 8 "0" 10 "2" 12 "4" 14 "6")
  29.                 graph export ../output/pooled_es_avg_`outcome'_`time'_nomv
-> d.pdf, replace
+> d.png, replace
  30.         }
  31. end
 
@@ -516,24 +516,24 @@ file ../temp/pop_fertile_age_agg.dta saved
 (note: file ../temp/plots_sample_births_ind.dta not found)
 file ../temp/plots_sample_births_ind.dta saved
 (232,095 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_000002.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_000002.tmp saved
 (453,598 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_000004.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_000004.tmp saved
 (45,584 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_000006.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_000006.tmp saved
 (403,185 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_000008.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_000008.tmp saved
 (241,186 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_00000a.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_00000a.tmp saved
 (4,262 observations deleted)
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_00000c.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_00000c.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
     not matched                             0
     matched                               374  
     -----------------------------------------
-file C:\Users\diegog\AppData\Local\Temp\3\ST_43ec_00000d.tmp saved
+file C:\Users\diegog\AppData\Local\Temp\3\ST_33b0_00000d.tmp saved
 
     Result                           # of obs.
     -----------------------------------------
@@ -772,7 +772,8 @@ Number of clusters (dpto)    =         10         Root MSE        =     1.8188
              |
        _cons |   41.48349   2.353351    17.63   0.000     36.15984    46.80714
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_GFR_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_GFR_anio_sem.png not found)
+(file ../output/pooled_did_GFR_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -793,7 +794,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_GFR_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_shift_GFR_anio_sem.png not found)
+(file ../output/pooled_did_shift_GFR_anio_sem.png written in PNG format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
 > lbach & Miller applied.
@@ -896,7 +898,8 @@ Number of clusters (dpto)    =         10         Root MSE        =     4.7219
              |
        _cons |   53.58947   5.849705     9.16   0.000     40.35651    66.82242
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_GFR_single0_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_GFR_single0_anio_sem.png not found)
+(file ../output/pooled_did_GFR_single0_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -917,7 +920,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_GFR_single0_anio_sem.pdf written in PDF format
+(note: file ../output/pooled_did_shift_GFR_single0_anio_sem.png not found)
+(file ../output/pooled_did_shift_GFR_single0_anio_sem.png written in PNG format
 > )
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1021,7 +1025,8 @@ Number of clusters (dpto)    =         10         Root MSE        =     5.4993
              |
        _cons |   24.93305   4.288988     5.81   0.000     15.23068    34.63541
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_GFR_single1_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_GFR_single1_anio_sem.png not found)
+(file ../output/pooled_did_GFR_single1_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1042,7 +1047,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_GFR_single1_anio_sem.pdf written in PDF format
+(note: file ../output/pooled_did_shift_GFR_single1_anio_sem.png not found)
+(file ../output/pooled_did_shift_GFR_single1_anio_sem.png written in PNG format
 > )
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1146,7 +1152,8 @@ GFR_kids_b~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   25.21232   3.347013     7.53   0.000     17.64085    32.78379
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_GFR_kids_before0_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_GFR_kids_before0_anio_sem.png not found)
+(file ../output/pooled_did_GFR_kids_before0_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1167,7 +1174,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_GFR_kids_before0_anio_sem.pdf written in PDF f
+(note: file ../output/pooled_did_shift_GFR_kids_before0_anio_sem.png not found)
+(file ../output/pooled_did_shift_GFR_kids_before0_anio_sem.png written in PNG f
 > ormat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1271,7 +1279,8 @@ GFR_kids_b~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   82.09907   8.409725     9.76   0.000     63.07496    101.1232
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_GFR_kids_before1_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_GFR_kids_before1_anio_sem.png not found)
+(file ../output/pooled_did_GFR_kids_before1_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1292,7 +1301,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_GFR_kids_before1_anio_sem.pdf written in PDF f
+(note: file ../output/pooled_did_shift_GFR_kids_before1_anio_sem.png not found)
+(file ../output/pooled_did_shift_GFR_kids_before1_anio_sem.png written in PNG f
 > ormat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1396,7 +1406,8 @@ Number of clusters (dpto)    =         10         Root MSE        =     0.0617
              |
        _cons |   6.495877   .0747256    86.93   0.000     6.326836    6.664918
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_births_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_births_anio_sem.png not found)
+(file ../output/pooled_did_births_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1417,7 +1428,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_births_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_shift_births_anio_sem.png not found)
+(file ../output/pooled_did_shift_births_anio_sem.png written in PNG format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
 > lbach & Miller applied.
@@ -1520,7 +1532,8 @@ births_sin~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   6.219466   .1498947    41.49   0.000     5.880381    6.558551
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_births_single0_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_births_single0_anio_sem.png not found)
+(file ../output/pooled_did_births_single0_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1541,7 +1554,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_births_single0_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_shift_births_single0_anio_sem.png not found)
+(file ../output/pooled_did_shift_births_single0_anio_sem.png written in PNG for
 > mat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1645,7 +1659,8 @@ births_sin~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   5.076185   .1925403    26.36   0.000     4.640629    5.511742
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_births_single1_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_births_single1_anio_sem.png not found)
+(file ../output/pooled_did_births_single1_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -1666,7 +1681,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_births_single1_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_shift_births_single1_anio_sem.png not found)
+(file ../output/pooled_did_shift_births_single1_anio_sem.png written in PNG for
 > mat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -1770,7 +1786,8 @@ births_kid~0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   5.252887   .0774106    67.86   0.000     5.077772    5.428002
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_births_kids_before0_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_did_births_kids_before0_anio_sem.png not found)
+(file ../output/pooled_did_births_kids_before0_anio_sem.png written in PNG form
 > at)
 
 Generated variables:
@@ -1792,8 +1809,10 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_births_kids_before0_anio_sem.pdf written in PD
-> F format)
+(note: file ../output/pooled_did_shift_births_kids_before0_anio_sem.png not fou
+> nd)
+(file ../output/pooled_did_shift_births_kids_before0_anio_sem.png written in PN
+> G format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
 > lbach & Miller applied.
@@ -1896,7 +1915,8 @@ births_kid~1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   6.146084   .0680985    90.25   0.000     5.992034    6.300134
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_births_kids_before1_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_did_births_kids_before1_anio_sem.png not found)
+(file ../output/pooled_did_births_kids_before1_anio_sem.png written in PNG form
 > at)
 
 Generated variables:
@@ -1918,124 +1938,176 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_births_kids_before1_anio_sem.pdf written in PD
-> F format)
+(note: file ../output/pooled_did_shift_births_kids_before1_anio_sem.png not fou
+> nd)
+(file ../output/pooled_did_shift_births_kids_before1_anio_sem.png written in PN
+> G format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_GFR_anio_sem.pdf written in PDF format)
-(file ../output/pooled_did_avg_GFR_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did2_avg_GFR_anio_sem.png not found)
+(file ../output/pooled_did2_avg_GFR_anio_sem.png written in PNG format)
+(note: file ../output/pooled_did_avg_GFR_anio_sem.png not found)
+(file ../output/pooled_did_avg_GFR_anio_sem.png written in PNG format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_GFR_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_GFR_anio_sem.png not found)
+(file ../output/pooled_es_avg_GFR_anio_sem.png written in PNG format)
 (203 missing values generated)
-(file ../output/pooled_es_avg_GFR_anio_sem_nomvd.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_GFR_anio_sem_nomvd.png not found)
+(file ../output/pooled_es_avg_GFR_anio_sem_nomvd.png written in PNG format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_GFR_single0_anio_sem.pdf written in PDF format)
-(file ../output/pooled_did_avg_GFR_single0_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did2_avg_GFR_single0_anio_sem.png not found)
+(file ../output/pooled_did2_avg_GFR_single0_anio_sem.png written in PNG format)
+(note: file ../output/pooled_did_avg_GFR_single0_anio_sem.png not found)
+(file ../output/pooled_did_avg_GFR_single0_anio_sem.png written in PNG format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_GFR_single0_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_GFR_single0_anio_sem.png not found)
+(file ../output/pooled_es_avg_GFR_single0_anio_sem.png written in PNG format)
 (203 missing values generated)
-(file ../output/pooled_es_avg_GFR_single0_anio_sem_nomvd.pdf written in PDF for
+(note: file ../output/pooled_es_avg_GFR_single0_anio_sem_nomvd.png not found)
+(file ../output/pooled_es_avg_GFR_single0_anio_sem_nomvd.png written in PNG for
 > mat)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_GFR_single1_anio_sem.pdf written in PDF format)
-(file ../output/pooled_did_avg_GFR_single1_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did2_avg_GFR_single1_anio_sem.png not found)
+(file ../output/pooled_did2_avg_GFR_single1_anio_sem.png written in PNG format)
+(note: file ../output/pooled_did_avg_GFR_single1_anio_sem.png not found)
+(file ../output/pooled_did_avg_GFR_single1_anio_sem.png written in PNG format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_GFR_single1_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_GFR_single1_anio_sem.png not found)
+(file ../output/pooled_es_avg_GFR_single1_anio_sem.png written in PNG format)
 (203 missing values generated)
-(file ../output/pooled_es_avg_GFR_single1_anio_sem_nomvd.pdf written in PDF for
+(note: file ../output/pooled_es_avg_GFR_single1_anio_sem_nomvd.png not found)
+(file ../output/pooled_es_avg_GFR_single1_anio_sem_nomvd.png written in PNG for
 > mat)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_GFR_kids_before0_anio_sem.pdf written in PDF fo
+(note: file ../output/pooled_did2_avg_GFR_kids_before0_anio_sem.png not found)
+(file ../output/pooled_did2_avg_GFR_kids_before0_anio_sem.png written in PNG fo
 > rmat)
-(file ../output/pooled_did_avg_GFR_kids_before0_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_avg_GFR_kids_before0_anio_sem.png not found)
+(file ../output/pooled_did_avg_GFR_kids_before0_anio_sem.png written in PNG for
 > mat)
 (174 missing values generated)
-(file ../output/pooled_es_avg_GFR_kids_before0_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_es_avg_GFR_kids_before0_anio_sem.png not found)
+(file ../output/pooled_es_avg_GFR_kids_before0_anio_sem.png written in PNG form
 > at)
 (203 missing values generated)
-(file ../output/pooled_es_avg_GFR_kids_before0_anio_sem_nomvd.pdf written in PD
-> F format)
+(note: file ../output/pooled_es_avg_GFR_kids_before0_anio_sem_nomvd.png not fou
+> nd)
+(file ../output/pooled_es_avg_GFR_kids_before0_anio_sem_nomvd.png written in PN
+> G format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_GFR_kids_before1_anio_sem.pdf written in PDF fo
+(note: file ../output/pooled_did2_avg_GFR_kids_before1_anio_sem.png not found)
+(file ../output/pooled_did2_avg_GFR_kids_before1_anio_sem.png written in PNG fo
 > rmat)
-(file ../output/pooled_did_avg_GFR_kids_before1_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_avg_GFR_kids_before1_anio_sem.png not found)
+(file ../output/pooled_did_avg_GFR_kids_before1_anio_sem.png written in PNG for
 > mat)
 (174 missing values generated)
-(file ../output/pooled_es_avg_GFR_kids_before1_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_es_avg_GFR_kids_before1_anio_sem.png not found)
+(file ../output/pooled_es_avg_GFR_kids_before1_anio_sem.png written in PNG form
 > at)
 (203 missing values generated)
-(file ../output/pooled_es_avg_GFR_kids_before1_anio_sem_nomvd.pdf written in PD
-> F format)
+(note: file ../output/pooled_es_avg_GFR_kids_before1_anio_sem_nomvd.png not fou
+> nd)
+(file ../output/pooled_es_avg_GFR_kids_before1_anio_sem_nomvd.png written in PN
+> G format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_births_anio_sem.pdf written in PDF format)
-(file ../output/pooled_did_avg_births_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did2_avg_births_anio_sem.png not found)
+(file ../output/pooled_did2_avg_births_anio_sem.png written in PNG format)
+(note: file ../output/pooled_did_avg_births_anio_sem.png not found)
+(file ../output/pooled_did_avg_births_anio_sem.png written in PNG format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_births_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_births_anio_sem.png not found)
+(file ../output/pooled_es_avg_births_anio_sem.png written in PNG format)
 (203 missing values generated)
-(file ../output/pooled_es_avg_births_anio_sem_nomvd.pdf written in PDF format)
+(note: file ../output/pooled_es_avg_births_anio_sem_nomvd.png not found)
+(file ../output/pooled_es_avg_births_anio_sem_nomvd.png written in PNG format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_births_single0_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_did2_avg_births_single0_anio_sem.png not found)
+(file ../output/pooled_did2_avg_births_single0_anio_sem.png written in PNG form
 > at)
-(file ../output/pooled_did_avg_births_single0_anio_sem.pdf written in PDF forma
+(note: file ../output/pooled_did_avg_births_single0_anio_sem.png not found)
+(file ../output/pooled_did_avg_births_single0_anio_sem.png written in PNG forma
 > t)
 (174 missing values generated)
-(file ../output/pooled_es_avg_births_single0_anio_sem.pdf written in PDF format
+(note: file ../output/pooled_es_avg_births_single0_anio_sem.png not found)
+(file ../output/pooled_es_avg_births_single0_anio_sem.png written in PNG format
 > )
 (203 missing values generated)
-(file ../output/pooled_es_avg_births_single0_anio_sem_nomvd.pdf written in PDF 
+(note: file ../output/pooled_es_avg_births_single0_anio_sem_nomvd.png not found
+> )
+(file ../output/pooled_es_avg_births_single0_anio_sem_nomvd.png written in PNG 
 > format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_births_single1_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_did2_avg_births_single1_anio_sem.png not found)
+(file ../output/pooled_did2_avg_births_single1_anio_sem.png written in PNG form
 > at)
-(file ../output/pooled_did_avg_births_single1_anio_sem.pdf written in PDF forma
+(note: file ../output/pooled_did_avg_births_single1_anio_sem.png not found)
+(file ../output/pooled_did_avg_births_single1_anio_sem.png written in PNG forma
 > t)
 (174 missing values generated)
-(file ../output/pooled_es_avg_births_single1_anio_sem.pdf written in PDF format
+(note: file ../output/pooled_es_avg_births_single1_anio_sem.png not found)
+(file ../output/pooled_es_avg_births_single1_anio_sem.png written in PNG format
 > )
 (203 missing values generated)
-(file ../output/pooled_es_avg_births_single1_anio_sem_nomvd.pdf written in PDF 
+(note: file ../output/pooled_es_avg_births_single1_anio_sem_nomvd.png not found
+> )
+(file ../output/pooled_es_avg_births_single1_anio_sem_nomvd.png written in PNG 
 > format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_births_kids_before0_anio_sem.pdf written in PDF
+(note: file ../output/pooled_did2_avg_births_kids_before0_anio_sem.png not foun
+> d)
+(file ../output/pooled_did2_avg_births_kids_before0_anio_sem.png written in PNG
 >  format)
-(file ../output/pooled_did_avg_births_kids_before0_anio_sem.pdf written in PDF 
+(note: file ../output/pooled_did_avg_births_kids_before0_anio_sem.png not found
+> )
+(file ../output/pooled_did_avg_births_kids_before0_anio_sem.png written in PNG 
 > format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_births_kids_before0_anio_sem.pdf written in PDF f
+(note: file ../output/pooled_es_avg_births_kids_before0_anio_sem.png not found)
+(file ../output/pooled_es_avg_births_kids_before0_anio_sem.png written in PNG f
 > ormat)
 (203 missing values generated)
-(file ../output/pooled_es_avg_births_kids_before0_anio_sem_nomvd.pdf written in
->  PDF format)
+(note: file ../output/pooled_es_avg_births_kids_before0_anio_sem_nomvd.png not 
+> found)
+(file ../output/pooled_es_avg_births_kids_before0_anio_sem_nomvd.png written in
+>  PNG format)
 (203 missing values generated)
 (145 missing values generated)
 (270 missing values generated)
-(file ../output/pooled_did2_avg_births_kids_before1_anio_sem.pdf written in PDF
+(note: file ../output/pooled_did2_avg_births_kids_before1_anio_sem.png not foun
+> d)
+(file ../output/pooled_did2_avg_births_kids_before1_anio_sem.png written in PNG
 >  format)
-(file ../output/pooled_did_avg_births_kids_before1_anio_sem.pdf written in PDF 
+(note: file ../output/pooled_did_avg_births_kids_before1_anio_sem.png not found
+> )
+(file ../output/pooled_did_avg_births_kids_before1_anio_sem.png written in PNG 
 > format)
 (174 missing values generated)
-(file ../output/pooled_es_avg_births_kids_before1_anio_sem.pdf written in PDF f
+(note: file ../output/pooled_es_avg_births_kids_before1_anio_sem.png not found)
+(file ../output/pooled_es_avg_births_kids_before1_anio_sem.png written in PNG f
 > ormat)
 (203 missing values generated)
-(file ../output/pooled_es_avg_births_kids_before1_anio_sem_nomvd.pdf written in
->  PDF format)
+(note: file ../output/pooled_es_avg_births_kids_before1_anio_sem_nomvd.png not 
+> found)
+(file ../output/pooled_es_avg_births_kids_before1_anio_sem_nomvd.png written in
+>  PNG format)
 (640,109 real changes made)
 (100,789 real changes made)
 (277,795 real changes made)
@@ -2185,7 +2257,8 @@ lowbirthwe~t |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |    .067612   .0051944    13.02   0.000     .0558615    .0793625
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_lowbirthweight_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_lowbirthweight_anio_sem.png not found)
+(file ../output/pooled_did_lowbirthweight_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -2206,7 +2279,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_lowbirthweight_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_shift_lowbirthweight_anio_sem.png not found)
+(file ../output/pooled_did_shift_lowbirthweight_anio_sem.png written in PNG for
 > mat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -2310,7 +2384,8 @@ Number of clusters (dpto)    =         10         Root MSE        =     0.2074
              |
        _cons |   .0381963   .0022779    16.77   0.000     .0330434    .0433493
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_apgar1_low_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_apgar1_low_anio_sem.png not found)
+(file ../output/pooled_did_apgar1_low_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -2331,7 +2406,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_apgar1_low_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_shift_apgar1_low_anio_sem.png not found)
+(file ../output/pooled_did_shift_apgar1_low_anio_sem.png written in PNG format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
 > lbach & Miller applied.
@@ -2434,8 +2510,10 @@ recomm_pre~s |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   .6141755   .0142267    43.17   0.000     .5819924    .6463587
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_recomm_prenatal_numvisits_anio_sem.pdf written in PD
-> F format)
+(note: file ../output/pooled_did_recomm_prenatal_numvisits_anio_sem.png not fou
+> nd)
+(file ../output/pooled_did_recomm_prenatal_numvisits_anio_sem.png written in PN
+> G format)
 
 Generated variables:
               storage   display    value
@@ -2456,8 +2534,10 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_recomm_prenatal_numvisits_anio_sem.pdf written
->  in PDF format)
+(note: file ../output/pooled_did_shift_recomm_prenatal_numvisits_anio_sem.png n
+> ot found)
+(file ../output/pooled_did_shift_recomm_prenatal_numvisits_anio_sem.png written
+>  in PNG format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
 > lbach & Miller applied.
@@ -2560,7 +2640,8 @@ preg_preterm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
              |
        _cons |   .0822736   .0040738    20.20   0.000     .0730581    .0914891
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_preg_preterm_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_preg_preterm_anio_sem.png not found)
+(file ../output/pooled_did_preg_preterm_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -2581,7 +2662,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_preg_preterm_anio_sem.pdf written in PDF forma
+(note: file ../output/pooled_did_shift_preg_preterm_anio_sem.png not found)
+(file ../output/pooled_did_shift_preg_preterm_anio_sem.png written in PNG forma
 > t)
 (821,501 observations deleted)
 (168,495 missing values generated)
@@ -2759,7 +2841,8 @@ c98_hhld_car |  -.0371894   .0067582    -5.50   0.000    -.0524776   -.0219012
         poor |  -.2022643   .0105581   -19.16   0.000    -.2261484   -.1783802
        _cons |   .1169314   .0336011     3.48   0.007     .0409203    .1929425
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_trabajo_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_trabajo_anio_sem.png not found)
+(file ../output/pooled_did_trabajo_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -2780,7 +2863,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_trabajo_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_shift_trabajo_anio_sem.png not found)
+(file ../output/pooled_did_shift_trabajo_anio_sem.png written in PNG format)
 (459,497 observations deleted)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -2907,7 +2991,8 @@ c98_hhld_car |  -.6166411   .2834152    -2.18   0.058    -1.257771    .0244886
         poor |  -5.823497   .4235875   -13.75   0.000    -6.781719   -4.865276
        _cons |   32.42685   2.023362    16.03   0.000     27.84968    37.00401
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_horas_trabajo_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_horas_trabajo_anio_sem.png not found)
+(file ../output/pooled_did_horas_trabajo_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -2928,7 +3013,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_horas_trabajo_anio_sem.pdf written in PDF form
+(note: file ../output/pooled_did_shift_horas_trabajo_anio_sem.png not found)
+(file ../output/pooled_did_shift_horas_trabajo_anio_sem.png written in PNG form
 > at)
 (459,497 observations deleted)
 (MWFE estimator converged in 1 iterations)
@@ -3056,7 +3142,8 @@ c98_hhld_car |   .0258373   .0062002     4.17   0.002     .0118114    .0398632
         poor |   .1678032    .013425    12.50   0.000     .1374337    .1981728
        _cons |   .5385272   .0369209    14.59   0.000     .4550063    .6220482
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_work_part_time_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_work_part_time_anio_sem.png not found)
+(file ../output/pooled_did_work_part_time_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -3077,7 +3164,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_work_part_time_anio_sem.pdf written in PDF for
+(note: file ../output/pooled_did_shift_work_part_time_anio_sem.png not found)
+(file ../output/pooled_did_shift_work_part_time_anio_sem.png written in PNG for
 > mat)
 (821,423 observations deleted)
 (168,507 missing values generated)
@@ -3255,7 +3343,8 @@ c98_hhld_car |   .0493643   .0132707     3.72   0.005     .0193439    .0793848
         poor |  -.0200465   .0161837    -1.24   0.247    -.0566566    .0165635
        _cons |  -.3055849   .0818195    -3.73   0.005    -.4906735   -.1204962
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_educ_HS_diploma_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_educ_HS_diploma_anio_sem.png not found)
+(file ../output/pooled_did_educ_HS_diploma_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -3276,7 +3365,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_educ_HS_diploma_anio_sem.pdf written in PDF fo
+(note: file ../output/pooled_did_shift_educ_HS_diploma_anio_sem.png not found)
+(file ../output/pooled_did_shift_educ_HS_diploma_anio_sem.png written in PNG fo
 > rmat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -3403,7 +3493,8 @@ c98_hhld_car |   .2287733   .0604762     3.78   0.004     .0919666    .3655799
         poor |   -.317419   .0463543    -6.85   0.000    -.4222797   -.2125583
        _cons |  -.4669082   .3551654    -1.31   0.221    -1.270348    .3365317
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_educ_anios_secun_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_educ_anios_secun_anio_sem.png not found)
+(file ../output/pooled_did_educ_anios_secun_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -3424,7 +3515,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_educ_anios_secun_anio_sem.pdf written in PDF f
+(note: file ../output/pooled_did_shift_educ_anios_secun_anio_sem.png not found)
+(file ../output/pooled_did_shift_educ_anios_secun_anio_sem.png written in PNG f
 > ormat)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -3551,7 +3643,8 @@ c98_hhld_car |   .0659864   .0225889     2.92   0.017     .0148868     .117086
         poor |  -.0680165   .0199151    -3.42   0.008    -.1130675   -.0229655
        _cons |   .3048096   .0928102     3.28   0.009     .0948584    .5147608
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_educ_some_college_anio_sem.pdf written in PDF format
+(note: file ../output/pooled_did_educ_some_college_anio_sem.png not found)
+(file ../output/pooled_did_educ_some_college_anio_sem.png written in PNG format
 > )
 
 Generated variables:
@@ -3573,7 +3666,9 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_educ_some_college_anio_sem.pdf written in PDF 
+(note: file ../output/pooled_did_shift_educ_some_college_anio_sem.png not found
+> )
+(file ../output/pooled_did_shift_educ_some_college_anio_sem.png written in PNG 
 > format)
 (MWFE estimator converged in 1 iterations)
 Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Ge
@@ -3700,7 +3795,8 @@ c98_hhld_car |    .253551    .061982     4.09   0.003      .113338    .3937639
         poor |  -.2468842   .0690442    -3.58   0.006     -.403073   -.0906953
        _cons |  -2.732388   .3462601    -7.89   0.000    -3.515683   -1.949094
 ------------------------------------------------------------------------------
-(file ../output/pooled_did_educ_anios_terc_anio_sem.pdf written in PDF format)
+(note: file ../output/pooled_did_educ_anios_terc_anio_sem.png not found)
+(file ../output/pooled_did_educ_anios_terc_anio_sem.png written in PNG format)
 
 Generated variables:
               storage   display    value
@@ -3721,7 +3817,8 @@ __ll1           float   %9.0g                 CI1: lower limit
 __ul1           float   %9.0g                 CI1: upper limit
 (note:  named style dashed not found in class linepattern, default attributes
     used)
-(file ../output/pooled_did_shift_educ_anios_terc_anio_sem.pdf written in PDF fo
+(note: file ../output/pooled_did_shift_educ_anios_terc_anio_sem.png not found)
+(file ../output/pooled_did_shift_educ_anios_terc_anio_sem.png written in PNG fo
 > rmat)
 
 . 
@@ -10876,4 +10973,4 @@ preg_preterm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 . 
 end of do-file
 
- make.py ended: 2020-03-29 10:23:59
+ make.py ended: 2020-04-01 07:24:59

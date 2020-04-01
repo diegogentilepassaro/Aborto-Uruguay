@@ -17,7 +17,7 @@ program main
 			, cols(2) legendfrom(g_`time'_not_marri_0) position(6) ///
 			  graphregion(color(white)) name(g_`time')
 		graph display g_`time', ysiz(18) xsiz(15)
-		graph export "..\output\births_rivera_`time'.pdf", replace
+		graph export "..\output\births_rivera_`time'.png", replace
 	}
 end
 
@@ -55,7 +55,7 @@ syntax, by_vars(string) treatment(string) time(string)
 	   xtitle("`xtitle'") xsize(8) ///
 	   scheme(s1color) 
 
-	graph export "..\output\births_`treatment'_`time'_`by_vars'.pdf", replace*/
+	graph export "..\output\births_`treatment'_`time'_`by_vars'.png", replace*/
 
 	local g_name = substr("`by_vars'",1,9)
 	local opt1 = `"tline(`vertical' `vertical2', lcolor(black) lpattern(dot)) xsize(4) scheme(s1color) "'
